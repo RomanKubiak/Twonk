@@ -26,8 +26,10 @@ public:
     void initialise (const String& commandLine) override
     {
         // This method is where you should put your application's initialisation code..
-
-        mainWindow.reset (new MainWindow (getApplicationName()));
+		bool fullscreen = false;
+		if (commandLine.contains("--fullscreen"))
+			fullscreen = true;
+        mainWindow.reset (new MainWindow (getApplicationName(), fullscreen));
     }
 
     void shutdown() override
@@ -60,21 +62,16 @@ public:
     class MainWindow    : public DocumentWindow
     {
     public:
-        MainWindow (String name)  : DocumentWindow (name,
+        MainWindow (String name, bool fullscreen)  : DocumentWindow (name,
                                                     Desktop::getInstance().getDefaultLookAndFeel()
                                                                           .findColour (ResizableWindow::backgroundColourId),
                                                     DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
             setContentOwned (new TwonkMain(), true);
-
-           #if JUCE_IOS || JUCE_ANDROID
-            setFullScreen (true);
-           #else
             setResizable (true, true);
             centreWithSize (getWidth(), getHeight());
-           #endif
-
+			setFullScreen(fullscreen);
             setVisible (true);
         }
 
