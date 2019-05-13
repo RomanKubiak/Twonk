@@ -21,6 +21,11 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "../JuceLibraryCode/JuceHeader.h"
+
+
+class TwonkLookAndFeel : LookAndFeel
+{
+};
 //[/Headers]
 
 
@@ -53,6 +58,7 @@ public:
     void resized() override;
     void buttonClicked (Button* buttonThatWasClicked) override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
+    void mouseDown (const MouseEvent& e) override;
     void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
 
@@ -60,6 +66,7 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
 	std::unique_ptr<TimeSliceThread> uiManagerThread;
+	Typeface::Ptr defaultTypeface;
     //[/UserVariables]
 
     //==============================================================================
@@ -67,6 +74,9 @@ private:
     std::unique_ptr<drow::Spectroscope> drowScope;
     std::unique_ptr<drow::TriggeredScope> drowOsc;
     std::unique_ptr<Slider> verticalZoomFactor;
+    std::unique_ptr<drow::SegmentedMeter> drowBar;
+    std::unique_ptr<TextButton> qucikReverb_btn;
+    std::unique_ptr<TextButton> quickDistortion_btn;
 
 
     //==============================================================================

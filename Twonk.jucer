@@ -4,8 +4,12 @@
   <MAINGROUP id="COgjR1" name="Twonk">
     <GROUP id="{39B1A460-DDD2-B194-35A9-B5E5AF9A8273}" name="Source">
       <FILE id="UEw4aY" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="Ga89uW" name="Roboto-Medium.ttf" compile="0" resource="1"
+            file="Source/Roboto-Medium.ttf"/>
       <FILE id="EnGjRb" name="TwonkMain.cpp" compile="1" resource="0" file="Source/TwonkMain.cpp"/>
       <FILE id="Kcs0df" name="TwonkMain.h" compile="0" resource="0" file="Source/TwonkMain.h"/>
+      <FILE id="SIB4nX" name="VecTerminus16Medium.otf" compile="0" resource="1"
+            file="Source/VecTerminus16Medium.otf"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
