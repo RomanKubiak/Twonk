@@ -475,6 +475,12 @@
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>Twonk\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Membrane.cpp">
+      <Filter>Twonk\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TwonkLookAndFeel.cpp">
+      <Filter>Twonk\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\TwonkMain.cpp">
       <Filter>Twonk\Source</Filter>
     </ClCompile>
@@ -2616,6 +2622,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Membrane.h">
+      <Filter>Twonk\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TwonkLookAndFeel.h">
+      <Filter>Twonk\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\TwonkMain.h">
       <Filter>Twonk\Source</Filter>
     </ClInclude>

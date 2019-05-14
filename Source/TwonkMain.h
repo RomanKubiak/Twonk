@@ -20,12 +20,7 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
-#include "../JuceLibraryCode/JuceHeader.h"
-
-
-class TwonkLookAndFeel : LookAndFeel
-{
-};
+#include "TwonkLookAndFeel.h"
 //[/Headers]
 
 
@@ -67,6 +62,7 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
 	std::unique_ptr<TimeSliceThread> uiManagerThread;
 	Typeface::Ptr defaultTypeface;
+	TwonkLookAndFeel twonkLookAndFeel;
     //[/UserVariables]
 
     //==============================================================================

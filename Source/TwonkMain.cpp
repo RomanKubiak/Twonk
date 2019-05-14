@@ -30,6 +30,7 @@
 TwonkMain::TwonkMain ()
 {
     //[Constructor_pre] You can add your own custom stuff here..
+	LookAndFeel::setDefaultLookAndFeel(&twonkLookAndFeel);
 	uiManagerThread.reset(new TimeSliceThread("ui thread"));
 	uiManagerThread->startThread(2);
 
@@ -69,6 +70,7 @@ TwonkMain::TwonkMain ()
 
     qucikReverb_btn.reset (new TextButton ("QReverb"));
     addAndMakeVisible (qucikReverb_btn.get());
+    qucikReverb_btn->setButtonText (TRANS("RV"));
     qucikReverb_btn->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnRight | Button::ConnectedOnTop | Button::ConnectedOnBottom);
     qucikReverb_btn->addListener (this);
     qucikReverb_btn->setColour (TextButton::buttonColourId, Colour (0x934bd6f8));
@@ -76,6 +78,7 @@ TwonkMain::TwonkMain ()
 
     quickDistortion_btn.reset (new TextButton ("QDist"));
     addAndMakeVisible (quickDistortion_btn.get());
+    quickDistortion_btn->setButtonText (TRANS("D"));
     quickDistortion_btn->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnRight | Button::ConnectedOnTop | Button::ConnectedOnBottom);
     quickDistortion_btn->addListener (this);
     quickDistortion_btn->setColour (TextButton::buttonColourId, Colour (0x67e129a4));
@@ -288,11 +291,11 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <TEXTBUTTON name="QReverb" id="71f87e916c0cf845" memberName="qucikReverb_btn"
               virtualName="" explicitFocusOrder="0" pos="5.957% 45% 15.039% 25%"
-              bgColOff="934bd6f8" bgColOn="0" buttonText="QReverb" connectedEdges="15"
+              bgColOff="934bd6f8" bgColOn="0" buttonText="RV" connectedEdges="15"
               needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="QDist" id="17e539559cc8386a" memberName="quickDistortion_btn"
               virtualName="" explicitFocusOrder="0" pos="20.996% 45% 150 25%"
-              bgColOff="67e129a4" bgColOn="0" buttonText="QDist" connectedEdges="15"
+              bgColOff="67e129a4" bgColOn="0" buttonText="D" connectedEdges="15"
               needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
