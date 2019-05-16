@@ -4,8 +4,6 @@
   <MAINGROUP id="COgjR1" name="Twonk">
     <GROUP id="{39B1A460-DDD2-B194-35A9-B5E5AF9A8273}" name="Source">
       <FILE id="UEw4aY" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
-      <FILE id="hU1Q3Y" name="Membrane.cpp" compile="1" resource="0" file="Source/Membrane.cpp"/>
-      <FILE id="q9yce3" name="Membrane.h" compile="0" resource="0" file="Source/Membrane.h"/>
       <FILE id="Ga89uW" name="Roboto-Medium.ttf" compile="0" resource="1"
             file="Source/Roboto-Medium.ttf"/>
       <FILE id="jCFjRM" name="TwonkLookAndFeel.cpp" compile="1" resource="0"

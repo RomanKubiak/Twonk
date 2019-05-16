@@ -139,7 +139,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Main.cpp"/>
-    <ClCompile Include="..\..\Source\Membrane.cpp"/>
     <ClCompile Include="..\..\Source\TwonkLookAndFeel.cpp"/>
     <ClCompile Include="..\..\Source\TwonkMain.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\modules\dRowAudio\audio\fft\dRowAudio_FFT.cpp">
@@ -2121,7 +2120,6 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Membrane.h"/>
     <ClInclude Include="..\..\Source\TwonkLookAndFeel.h"/>
     <ClInclude Include="..\..\Source\TwonkMain.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\dRowAudio\audio\fft\fftreal\Array.h"/>
