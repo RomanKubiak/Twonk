@@ -45,11 +45,11 @@ public:
     URLInputSource (URL&& url);
 
     /** Destructor. */
-    ~URLInputSource() override;
+    ~URLInputSource();
 
-    InputStream* createInputStream() override;
-    InputStream* createInputStreamFor (const String& relatedItemPath) override;
-    int64 hashCode() const override;
+    InputStream* createInputStream();
+    InputStream* createInputStreamFor (const String& relatedItemPath);
+    int64 hashCode() const;
 
 private:
     //==============================================================================

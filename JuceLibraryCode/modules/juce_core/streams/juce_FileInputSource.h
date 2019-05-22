@@ -43,11 +43,11 @@ public:
     FileInputSource (const File& file, bool useFileTimeInHashGeneration = false);
 
     /** Destructor. */
-    ~FileInputSource() override;
+    ~FileInputSource();
 
-    InputStream* createInputStream() override;
-    InputStream* createInputStreamFor (const String& relatedItemPath) override;
-    int64 hashCode() const override;
+    InputStream* createInputStream();
+    InputStream* createInputStreamFor (const String& relatedItemPath);
+    int64 hashCode() const;
 
 private:
     //==============================================================================

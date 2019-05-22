@@ -216,8 +216,8 @@ public:
         class JUCE_API  IncomingDataReceiver
         {
         public:
-            IncomingDataReceiver() = default;
-            virtual ~IncomingDataReceiver() = default;
+            IncomingDataReceiver() {}
+            virtual ~IncomingDataReceiver() {}
 
             virtual void reset (int numChannels, double sampleRate, int64 totalSamplesInSource) = 0;
             virtual void addBlock (int64 sampleNumberInSource, const AudioBuffer<float>& newData,

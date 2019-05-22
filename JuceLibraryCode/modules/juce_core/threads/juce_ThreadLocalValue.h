@@ -48,7 +48,9 @@ class ThreadLocalValue
 {
 public:
     /** */
-    ThreadLocalValue() = default;
+    ThreadLocalValue() noexcept
+    {
+    }
 
     /** Destructor.
         When this object is deleted, all the value objects for all threads will be deleted.

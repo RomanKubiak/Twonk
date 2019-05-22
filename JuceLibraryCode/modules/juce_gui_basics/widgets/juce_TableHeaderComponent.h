@@ -53,7 +53,7 @@ public:
     TableHeaderComponent();
 
     /** Destructor. */
-    ~TableHeaderComponent() override;
+    ~TableHeaderComponent();
 
     //==============================================================================
     /** A combination of these flags are passed into the addColumn() method to specify
@@ -306,10 +306,10 @@ public:
     {
     public:
         //==============================================================================
-        Listener() = default;
+        Listener() {}
 
         /** Destructor. */
-        virtual ~Listener() = default;
+        virtual ~Listener() {}
 
         //==============================================================================
         /** This is called when some of the table's columns are added, removed, hidden,
@@ -390,7 +390,7 @@ public:
     /** This abstract base class is implemented by LookAndFeel classes. */
     struct JUCE_API  LookAndFeelMethods
     {
-        virtual ~LookAndFeelMethods() = default;
+        virtual ~LookAndFeelMethods() {}
 
         virtual void drawTableHeaderBackground (Graphics&, TableHeaderComponent&) = 0;
 

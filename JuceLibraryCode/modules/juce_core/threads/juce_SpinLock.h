@@ -41,8 +41,8 @@ namespace juce
 class JUCE_API  SpinLock
 {
 public:
-    inline SpinLock() = default;
-    inline ~SpinLock() = default;
+    inline SpinLock() noexcept {}
+    inline ~SpinLock() noexcept {}
 
     /** Acquires the lock.
         This will block until the lock has been successfully acquired by this thread.

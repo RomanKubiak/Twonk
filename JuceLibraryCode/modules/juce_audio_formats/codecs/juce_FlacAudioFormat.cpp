@@ -117,9 +117,6 @@ namespace FlacNamespace
   #pragma clang diagnostic ignored "-Wconversion"
   #pragma clang diagnostic ignored "-Wshadow"
   #pragma clang diagnostic ignored "-Wdeprecated-register"
-  #if __has_warning("-Wzero-as-null-pointer-constant")
-   #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
-  #endif
  #endif
 
  #if JUCE_INTEL
@@ -204,7 +201,7 @@ public:
         }
     }
 
-    ~FlacReader() override
+    ~FlacReader()
     {
         FlacNamespace::FLAC__stream_decoder_delete (decoder);
     }
@@ -248,7 +245,7 @@ public:
             }
             else
             {
-                if (startSampleInFile >= lengthInSamples)
+                if (startSampleInFile >= (int) lengthInSamples)
                 {
                     samplesInReservoir = 0;
                 }
@@ -301,7 +298,7 @@ public:
                 auto* src = buffer[i];
                 int n = i;
 
-                while (src == nullptr && n > 0)
+                while (src == 0 && n > 0)
                     src = buffer [--n];
 
                 if (src != nullptr)
@@ -404,7 +401,7 @@ public:
                                                this) == FlacNamespace::FLAC__STREAM_ENCODER_INIT_STATUS_OK;
     }
 
-    ~FlacWriter() override
+    ~FlacWriter()
     {
         if (ok)
         {

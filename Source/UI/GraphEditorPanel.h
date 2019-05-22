@@ -50,7 +50,7 @@ public:
     void mouseDown (const MouseEvent&) override;
     void mouseUp   (const MouseEvent&) override;
     void mouseDrag (const MouseEvent&) override;
-
+	void mouseDoubleClick(const MouseEvent &) override;
     void changeListenerCallback (ChangeBroadcaster*) override;
 
     //==============================================================================
@@ -132,7 +132,6 @@ public:
     //==============================================================================
     void showSidePanel (bool isSettingsPanel);
     void hideLastSidePanel();
-
     BurgerMenuComponent burgerMenu;
 
 private:

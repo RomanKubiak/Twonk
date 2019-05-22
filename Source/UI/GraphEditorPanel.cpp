@@ -250,22 +250,30 @@ struct GraphEditorPanel::FilterComponent   : public Component,
 
     void mouseUp (const MouseEvent& e) override
     {
+		DBG("mouseUp "+String(e.getLengthOfMousePress()));
         if (isOnTouchDevice())
         {
             stopTimer();
             callAfterDelay (250, []() { PopupMenu::dismissAllActiveMenus(); });
         }
 
-        if (e.mouseWasDraggedSinceMouseDown())
-        {
-            graph.setChangedFlag (true);
-        }
-        else if (e.getNumberOfClicks() == 2)
-        {
-            if (auto f = graph.graph.getNodeForId (pluginID))
-                if (auto* w = graph.getOrCreateWindowFor (f, PluginWindow::Type::normal))
-                    w->toFront (true);
-        }
+		if (e.mouseWasDraggedSinceMouseDown())
+		{
+			graph.setChangedFlag (true);
+		}
+		else if (e.getNumberOfClicks() == 2)
+		{
+			if (auto f = graph.graph.getNodeForId (pluginID))
+				if (auto* w = graph.getOrCreateWindowFor (f, PluginWindow::Type::normal))
+					w->toFront (true);
+		}
+		
+		if (e.getLengthOfMousePress() > 500)
+		{
+			DBG("select me");
+			isSelected = !isSelected;
+			repaint();
+		}
     }
 
     bool hitTest (int x, int y) override
@@ -290,7 +298,11 @@ struct GraphEditorPanel::FilterComponent   : public Component,
         if (isBypassed)
             boxColour = boxColour.brighter();
 
+		if (isSelected)
+			boxColour = boxColour.overlaidWith(Colours::aqua);
+
         g.setColour (boxColour);
+		
         g.fillRect (boxArea.toFloat());
 
         g.setColour (findColour (TextEditor::textColourId));
@@ -501,6 +513,7 @@ struct GraphEditorPanel::FilterComponent   : public Component,
     int numIns = 0, numOuts = 0;
     DropShadowEffect shadow;
     std::unique_ptr<PopupMenu> menu;
+	bool isSelected = false;
 };
 
 
@@ -729,6 +742,13 @@ void GraphEditorPanel::mouseDown (const MouseEvent& e)
 
     if (e.mods.isPopupMenu())
         showPopupMenu (e.position.toInt());
+
+}
+
+void GraphEditorPanel::mouseDoubleClick(const MouseEvent &e)
+{
+	DBG("mouseDoubleClick " + String(e.getLengthOfMousePress()));
+	showPopupMenu (e.position.toInt());
 }
 
 void GraphEditorPanel::mouseUp (const MouseEvent&)

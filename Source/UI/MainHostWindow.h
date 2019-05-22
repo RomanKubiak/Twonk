@@ -71,7 +71,6 @@ public:
     void fileDragMove (const StringArray& files, int, int) override;
     void fileDragExit (const StringArray& files) override;
     void filesDropped (const StringArray& files, int, int) override;
-
     void menuBarActivated (bool isActive) override;
 
     StringArray getMenuBarNames() override;

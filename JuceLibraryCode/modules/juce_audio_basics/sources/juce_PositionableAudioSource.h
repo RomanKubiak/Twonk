@@ -40,11 +40,11 @@ class JUCE_API  PositionableAudioSource  : public AudioSource
 protected:
     //==============================================================================
     /** Creates the PositionableAudioSource. */
-    PositionableAudioSource() = default;
+    PositionableAudioSource() noexcept  {}
 
 public:
     /** Destructor */
-    ~PositionableAudioSource() override = default;
+    ~PositionableAudioSource()          {}
 
     //==============================================================================
     /** Tells the stream to move to a new position.

@@ -62,7 +62,7 @@ public:
                bool deleteComponentWhenNoLongerNeeded = true);
 
     /** Destructor */
-    ~SidePanel() override;
+    ~SidePanel();
 
     //==============================================================================
     /** Sets the component that this SidePanel will contain.
@@ -161,7 +161,7 @@ public:
      */
     struct JUCE_API  LookAndFeelMethods
     {
-        virtual ~LookAndFeelMethods() = default;
+        virtual ~LookAndFeelMethods() {}
 
         virtual Font getSidePanelTitleFont (SidePanel&) = 0;
         virtual Justification getSidePanelTitleJustification (SidePanel&) = 0;

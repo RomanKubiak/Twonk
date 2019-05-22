@@ -46,8 +46,8 @@ class JUCE_API  AudioThumbnailBase    : public ChangeBroadcaster,
 {
 public:
     //==============================================================================
-    AudioThumbnailBase() = default;
-    ~AudioThumbnailBase() override = default;
+    AudioThumbnailBase() {}
+    virtual ~AudioThumbnailBase() {}
 
     //==============================================================================
     /** Clears and resets the thumbnail. */

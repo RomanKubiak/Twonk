@@ -38,8 +38,13 @@ namespace juce
 
     e.g.
     @code
-    struct MyFifo
+    class MyFifo
     {
+    public:
+        MyFifo()  : abstractFifo (1024)
+        {
+        }
+
         void addToFifo (const int* someData, int numItems)
         {
             int start1, size1, start2, size2;
@@ -68,8 +73,9 @@ namespace juce
             abstractFifo.finishedRead (size1 + size2);
         }
 
-        AbstractFifo abstractFifo { 1024 };
-        int myBuffer[1024];
+    private:
+        AbstractFifo abstractFifo;
+        int myBuffer [1024];
     };
     @endcode
 
@@ -219,10 +225,7 @@ public:
             This object will hold a pointer back to the fifo, so make sure that
             the fifo outlives this object.
         */
-        ScopedReadWrite (AbstractFifo& f, int num) noexcept  : fifo (&f)
-        {
-            prepare (*fifo, num);
-        }
+        ScopedReadWrite (AbstractFifo&, int num) noexcept;
 
         ScopedReadWrite (const ScopedReadWrite&) = delete;
         ScopedReadWrite (ScopedReadWrite&&) noexcept;
@@ -233,11 +236,7 @@ public:
         /** Calls finishedRead or finishedWrite if this is a non-null scoped
             reader/writer.
         */
-        ~ScopedReadWrite() noexcept
-        {
-            if (fifo != nullptr)
-                finish (*fifo, blockSize1 + blockSize2);
-        }
+        ~ScopedReadWrite() noexcept;
 
         /** Calls the passed function with each index that was deemed valid
             for the current read/write operation.
@@ -282,7 +281,7 @@ public:
         } // readHandle goes out of scope here, finishing the read operation
         @endcode
     */
-    ScopedRead read (int numToRead) noexcept;
+    ScopedRead read (int numToRead) noexcept      { return { *this, numToRead }; }
 
     /** Replaces prepareToWrite/finishedWrite with a single function.
         This function returns an object which contains the start indices and
@@ -304,7 +303,7 @@ public:
         } // writeHandle goes out of scope here, finishing the write operation
         @endcode
     */
-    ScopedWrite write (int numToWrite) noexcept;
+    ScopedWrite write (int numToWrite) noexcept    { return { *this, numToWrite }; }
 
 private:
     //==============================================================================
@@ -313,30 +312,5 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AbstractFifo)
 };
-
-template<>
-inline void AbstractFifo::ScopedReadWrite<AbstractFifo::ReadOrWrite::read>::finish (AbstractFifo& f, int num) noexcept
-{
-    f.finishedRead (num);
-}
-
-template<>
-inline void AbstractFifo::ScopedReadWrite<AbstractFifo::ReadOrWrite::write>::finish (AbstractFifo& f, int num) noexcept
-{
-    f.finishedWrite (num);
-}
-
-template<>
-inline void AbstractFifo::ScopedReadWrite<AbstractFifo::ReadOrWrite::read>::prepare (AbstractFifo& f, int num) noexcept
-{
-    f.prepareToRead (num, startIndex1, blockSize1, startIndex2, blockSize2);
-}
-
-template<>
-inline void AbstractFifo::ScopedReadWrite<AbstractFifo::ReadOrWrite::write>::prepare (AbstractFifo& f, int num) noexcept
-{
-    f.prepareToWrite (num, startIndex1, blockSize1, startIndex2, blockSize2);
-}
-
 
 } // namespace juce
