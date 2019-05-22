@@ -3,17 +3,22 @@
 <JUCERPROJECT id="Xg0o36" name="Twonk" projectType="guiapp" jucerVersion="5.4.3">
   <MAINGROUP id="COgjR1" name="Twonk">
     <GROUP id="{39B1A460-DDD2-B194-35A9-B5E5AF9A8273}" name="Source">
+      <FILE id="KB2qEC" name="60sekuntia.ttf" compile="0" resource="1" file="Source/60sekuntia.ttf"/>
       <FILE id="UEw4aY" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="Ga89uW" name="Roboto-Medium.ttf" compile="0" resource="1"
             file="Source/Roboto-Medium.ttf"/>
+      <FILE id="dIL0zP" name="TwonkChannel.cpp" compile="1" resource="0"
+            file="Source/TwonkChannel.cpp"/>
+      <FILE id="utldRD" name="TwonkChannel.h" compile="0" resource="0" file="Source/TwonkChannel.h"/>
       <FILE id="jCFjRM" name="TwonkLookAndFeel.cpp" compile="1" resource="0"
             file="Source/TwonkLookAndFeel.cpp"/>
       <FILE id="QCqVCt" name="TwonkLookAndFeel.h" compile="0" resource="0"
             file="Source/TwonkLookAndFeel.h"/>
       <FILE id="EnGjRb" name="TwonkMain.cpp" compile="1" resource="0" file="Source/TwonkMain.cpp"/>
       <FILE id="Kcs0df" name="TwonkMain.h" compile="0" resource="0" file="Source/TwonkMain.h"/>
-      <FILE id="SIB4nX" name="VecTerminus16Medium.otf" compile="0" resource="1"
-            file="Source/VecTerminus16Medium.otf"/>
+      <FILE id="n1dNja" name="TwonkToolbar.cpp" compile="1" resource="0"
+            file="Source/TwonkToolbar.cpp"/>
+      <FILE id="An8kLw" name="TwonkToolbar.h" compile="0" resource="0" file="Source/TwonkToolbar.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

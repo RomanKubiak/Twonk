@@ -20,18 +20,10 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
-#include "TwonkLookAndFeel.h"
+#include "../JuceLibraryCode/JuceHeader.h"
+class TwonkMain;
 //[/Headers]
 
-#include "TwonkChannel.h"
-#include "TwonkChannel.h"
-#include "TwonkChannel.h"
-#include "TwonkChannel.h"
-#include "TwonkChannel.h"
-#include "TwonkChannel.h"
-#include "TwonkChannel.h"
-#include "TwonkChannel.h"
-#include "TwonkToolbar.h"
 
 
 //==============================================================================
@@ -42,50 +34,40 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class TwonkMain  : public AudioAppComponent
+class TwonkChannel  : public Component,
+                      public ComboBox::Listener
 {
 public:
     //==============================================================================
-    TwonkMain ();
-    ~TwonkMain();
+    TwonkChannel (TwonkMain *_parent, uint8_t _idx);
+    ~TwonkChannel();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-	void prepareToPlay (int, double) override;
-	void releaseResources() override;
-	void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
-	AudioProcessorGraph &getProcessorGraph() { return (processorGraph); }
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel) override;
+    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-	std::unique_ptr<TimeSliceThread> uiManagerThread;
-	Typeface::Ptr defaultTypeface;
-	TwonkLookAndFeel twonkLookAndFeel;
-	AudioProcessorGraph processorGraph;
+    TwonkMain *parent;
+    uint8_t idx;
+	AudioProcessor *currentAudioProcessor;
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<TwonkChannel> ch1;
-    std::unique_ptr<TwonkChannel> ch2;
-    std::unique_ptr<TwonkChannel> ch3;
-    std::unique_ptr<TwonkChannel> ch4;
-    std::unique_ptr<TwonkChannel> ch5;
-    std::unique_ptr<TwonkChannel> ch6;
-    std::unique_ptr<TwonkChannel> ch7;
-    std::unique_ptr<TwonkChannel> ch8;
-    std::unique_ptr<TwonkToolbar> toolbar;
+    std::unique_ptr<ComboBox> comboBox;
+    std::unique_ptr<ComboBox> comboBox2;
+    std::unique_ptr<ComboBox> comboBox3;
+    std::unique_ptr<ComboBox> comboBox4;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkMain)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkChannel)
 };
 
 //[EndFile] You can add extra defines here...

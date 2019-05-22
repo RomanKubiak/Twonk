@@ -12,34 +12,60 @@
 
 void TwonkLookAndFeel::drawButtonBackground (Graphics &g, Button &button, const Colour& backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
-	float x = 0.0f, y = 0.0f, width = static_cast<float> (button.proportionOfWidth (1.0000f)), height = static_cast<float> (button.proportionOfHeight (1.0000f));
-	Colour fillColour1 = Colour (backgroundColour), fillColour2 = Colour (0x00ffffff);
-	//[UserPaintCustomArguments] Customize the painting arguments here..
-	//[/UserPaintCustomArguments]
-	g.setGradientFill (ColourGradient (fillColour1,
-		static_cast<float> ((button.getWidth() / 2)) - 0.0f + x,
-		static_cast<float> ((button.getHeight() / 2)) - 0.0f + y,
-		fillColour2,
-		static_cast<float> (button.proportionOfWidth (shouldDrawButtonAsDown ? 0.25f : 0.5000f)) - 0.0f + x,
-		0.0f - 0.0f + y,
-		true));
-	g.fillEllipse (x, y, width, height);
+	auto cornerSize = 6.0f;
+	auto bounds = button.getLocalBounds().toFloat().reduced (0.5f, 0.5f);
+
+	auto baseColour = backgroundColour.withMultipliedSaturation (button.hasKeyboardFocus (true) ? 1.3f : 0.9f)
+		.withMultipliedAlpha (button.isEnabled() ? 1.0f : 0.5f);
+
+	if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
+		baseColour = baseColour.contrasting (shouldDrawButtonAsDown ? 0.2f : 0.05f);
+
+	g.setColour (baseColour);
+
+	if (button.isConnectedOnLeft() || button.isConnectedOnRight())
+	{
+		Path path;
+		path.addRoundedRectangle (bounds.getX(), bounds.getY(),
+			bounds.getWidth(), bounds.getHeight(),
+			cornerSize, cornerSize,
+			!button.isConnectedOnLeft(),
+			!button.isConnectedOnRight(),
+			!button.isConnectedOnLeft(),
+			!button.isConnectedOnRight());
+
+		g.fillPath (path);
+
+		g.setColour (button.findColour (ComboBox::outlineColourId));
+		g.strokePath (path, PathStrokeType (1.0f));
+	}
+	else
+	{
+		g.fillRoundedRectangle (bounds, cornerSize);
+
+		g.setColour (button.findColour (ComboBox::outlineColourId));
+		g.drawRoundedRectangle (bounds, cornerSize, 1.0f);
+	}
 }
 int TwonkLookAndFeel::getTextButtonWidthToFitText(TextButton &b, int buttonHeight)
 {
 	return getTextButtonFont (b, buttonHeight).getStringWidth (b.getButtonText()) + buttonHeight;
 }
 
-Font TwonkLookAndFeel::getTextButtonFont(TextButton &, int buttonHeight)
+Font TwonkLookAndFeel::getTextButtonFont(TextButton &b, int buttonHeight)
 {
-	return Font (jmin (32.0f, buttonHeight * 0.8f));
+	Typeface::Ptr ptr = Typeface::createSystemTypefaceFor(BinaryData::_60sekuntia_ttf, BinaryData::_60sekuntia_ttfSize);
+	Font f = Font(ptr);
+	f.setHeight(b.proportionOfHeight (0.5f));
+	
+	return (f);
 }
 void TwonkLookAndFeel::drawButtonText(Graphics &g, TextButton &button, bool, bool)
 {
 	Font font (getTextButtonFont (button, button.getHeight()));
 	g.setFont (font);
 	g.setColour (button.findColour (button.getToggleState() ? TextButton::textColourOnId : TextButton::textColourOffId) .withMultipliedAlpha (button.isEnabled() ? 1.0f : 0.5f));
-	g.drawFittedText (button.getButtonText(), Rectangle<int>(0, 0, button.getWidth(), button.getHeight()), Justification::bottomRight, 1);
+	g.drawFittedText (button.getButtonText(), Rectangle<int>(0, 0, button.getWidth(), button.getHeight()), Justification::centred, 1);
 }
 
 void TwonkLookAndFeel::drawDrawableButton (Graphics&, DrawableButton&, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)

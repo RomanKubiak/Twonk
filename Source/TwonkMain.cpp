@@ -42,52 +42,28 @@ TwonkMain::TwonkMain ()
 	lf.setDefaultSansSerifTypeface(defaultTypeface);
     //[/Constructor_pre]
 
-    settingsButton.reset (new TextButton ("Settings"));
-    addAndMakeVisible (settingsButton.get());
-    settingsButton->addListener (this);
-    settingsButton->setColour (TextButton::buttonColourId, Colour (0xff5c85a4));
-
-    drowScope.reset (new drow::Spectroscope (10));
-    addAndMakeVisible (drowScope.get());
-    drowScope->setName ("Scope Alt");
-
-    drowOsc.reset (new drow::TriggeredScope (nullptr));
-    addAndMakeVisible (drowOsc.get());
-    drowOsc->setName ("Oscilloscope");
-
-    verticalZoomFactor.reset (new Slider ("Verical Zoom"));
-    addAndMakeVisible (verticalZoomFactor.get());
-    verticalZoomFactor->setRange (1.01, 127, 0.5);
-    verticalZoomFactor->setSliderStyle (Slider::LinearBar);
-    verticalZoomFactor->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
-    verticalZoomFactor->setColour (Slider::backgroundColourId, Colour (0xff092d5b));
-    verticalZoomFactor->setColour (Slider::trackColourId, Colour (0xff255a77));
-    verticalZoomFactor->addListener (this);
-
-    drowBar.reset (new drow::SegmentedMeter());
-    addAndMakeVisible (drowBar.get());
-    drowBar->setName ("Level Bar");
-
-    qucikReverb_btn.reset (new TextButton ("QReverb"));
-    addAndMakeVisible (qucikReverb_btn.get());
-    qucikReverb_btn->setButtonText (TRANS("RV"));
-    qucikReverb_btn->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnRight | Button::ConnectedOnTop | Button::ConnectedOnBottom);
-    qucikReverb_btn->addListener (this);
-    qucikReverb_btn->setColour (TextButton::buttonColourId, Colour (0x934bd6f8));
-    qucikReverb_btn->setColour (TextButton::buttonOnColourId, Colour (0x00000000));
-
-    quickDistortion_btn.reset (new TextButton ("QDist"));
-    addAndMakeVisible (quickDistortion_btn.get());
-    quickDistortion_btn->setButtonText (TRANS("D"));
-    quickDistortion_btn->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnRight | Button::ConnectedOnTop | Button::ConnectedOnBottom);
-    quickDistortion_btn->addListener (this);
-    quickDistortion_btn->setColour (TextButton::buttonColourId, Colour (0x67e129a4));
-    quickDistortion_btn->setColour (TextButton::buttonOnColourId, Colour (0x00000000));
-
+    ch1.reset (new TwonkChannel (this, 0));
+    addAndMakeVisible (ch1.get());
+    ch2.reset (new TwonkChannel (this, 1));
+    addAndMakeVisible (ch2.get());
+    ch3.reset (new TwonkChannel (this, 2));
+    addAndMakeVisible (ch3.get());
+    ch4.reset (new TwonkChannel (this, 3));
+    addAndMakeVisible (ch4.get());
+    ch5.reset (new TwonkChannel (this, 4));
+    addAndMakeVisible (ch5.get());
+    ch6.reset (new TwonkChannel (this, 5));
+    addAndMakeVisible (ch6.get());
+    ch7.reset (new TwonkChannel (this, 6));
+    addAndMakeVisible (ch7.get());
+    ch8.reset (new TwonkChannel (this, 7));
+    addAndMakeVisible (ch8.get());
+    toolbar.reset (new TwonkToolbar());
+    addAndMakeVisible (toolbar.get());
 
     //[UserPreSize]
-	uiManagerThread->addTimeSliceClient (drowScope.get());
-	uiManagerThread->addTimeSliceClient (drowBar.get());
+	//uiManagerThread->addTimeSliceClient (drowScope.get());
+	//uiManagerThread->addTimeSliceClient (drowBar.get());
     //[/UserPreSize]
 
     setSize (1024, 600);
@@ -104,13 +80,15 @@ TwonkMain::~TwonkMain()
 	uiManagerThread->removeAllClients();
     //[/Destructor_pre]
 
-    settingsButton = nullptr;
-    drowScope = nullptr;
-    drowOsc = nullptr;
-    verticalZoomFactor = nullptr;
-    drowBar = nullptr;
-    qucikReverb_btn = nullptr;
-    quickDistortion_btn = nullptr;
+    ch1 = nullptr;
+    ch2 = nullptr;
+    ch3 = nullptr;
+    ch4 = nullptr;
+    ch5 = nullptr;
+    ch6 = nullptr;
+    ch7 = nullptr;
+    ch8 = nullptr;
+    toolbar = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -128,7 +106,7 @@ void TwonkMain::paint (Graphics& g)
 
     {
         int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        Colour fillColour1 = Colours::black, fillColour2 = Colour (0xff0f1f26);
+        Colour fillColour1 = Colour (0x6a000000), fillColour2 = Colour (0x9800b0ff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
@@ -150,60 +128,17 @@ void TwonkMain::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    settingsButton->setBounds (0, proportionOfHeight (0.9000f), getWidth() - 0, proportionOfHeight (0.1000f));
-    drowScope->setBounds (proportionOfWidth (0.0596f), 0, proportionOfWidth (0.4697f), proportionOfHeight (0.4500f));
-    drowOsc->setBounds (proportionOfWidth (0.5303f), 0, proportionOfWidth (0.4697f), proportionOfHeight (0.4000f));
-    verticalZoomFactor->setBounds (proportionOfWidth (0.5303f), proportionOfHeight (0.4000f), proportionOfWidth (0.4697f), proportionOfHeight (0.0500f));
-    drowBar->setBounds (0, 0, proportionOfWidth (0.0596f), proportionOfHeight (0.9000f));
-    qucikReverb_btn->setBounds (proportionOfWidth (0.0596f), proportionOfHeight (0.4500f), proportionOfWidth (0.1504f), proportionOfHeight (0.2500f));
-    quickDistortion_btn->setBounds (proportionOfWidth (0.2100f), proportionOfHeight (0.4500f), 150, proportionOfHeight (0.2500f));
+    ch1->setBounds (0, proportionOfHeight (0.1000f), proportionOfWidth (0.2500f), proportionOfHeight (0.4500f));
+    ch2->setBounds (proportionOfWidth (0.2500f), proportionOfHeight (0.1000f), proportionOfWidth (0.2500f), proportionOfHeight (0.4500f));
+    ch3->setBounds (proportionOfWidth (0.5000f), proportionOfHeight (0.1000f), proportionOfWidth (0.2500f), proportionOfHeight (0.4500f));
+    ch4->setBounds (proportionOfWidth (0.7500f), proportionOfHeight (0.1000f), proportionOfWidth (0.2500f), proportionOfHeight (0.4500f));
+    ch5->setBounds (0, proportionOfHeight (0.5500f), proportionOfWidth (0.2500f), proportionOfHeight (0.4500f));
+    ch6->setBounds (proportionOfWidth (0.2500f), proportionOfHeight (0.5500f), proportionOfWidth (0.2500f), proportionOfHeight (0.4500f));
+    ch7->setBounds (proportionOfWidth (0.5000f), proportionOfHeight (0.5500f), proportionOfWidth (0.2500f), proportionOfHeight (0.4500f));
+    ch8->setBounds (proportionOfWidth (0.7500f), proportionOfHeight (0.5500f), proportionOfWidth (0.2500f), proportionOfHeight (0.4500f));
+    toolbar->setBounds (0, 0, proportionOfWidth (1.0000f), proportionOfHeight (0.1000f));
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
-}
-
-void TwonkMain::buttonClicked (Button* buttonThatWasClicked)
-{
-    //[UserbuttonClicked_Pre]
-    //[/UserbuttonClicked_Pre]
-
-    if (buttonThatWasClicked == settingsButton.get())
-    {
-        //[UserButtonCode_settingsButton] -- add your button handler code here..
-		AudioDeviceSelectorComponent selector(deviceManager,1,16,0,16, false, false, false, false);
-		selector.setSize(900, 400);
-		selector.setItemHeight(64);
-		DialogWindow::showModalDialog("Settings", &selector, this, Colours::black, true, true, true);
-        //[/UserButtonCode_settingsButton]
-    }
-    else if (buttonThatWasClicked == qucikReverb_btn.get())
-    {
-        //[UserButtonCode_qucikReverb_btn] -- add your button handler code here..
-        //[/UserButtonCode_qucikReverb_btn]
-    }
-    else if (buttonThatWasClicked == quickDistortion_btn.get())
-    {
-        //[UserButtonCode_quickDistortion_btn] -- add your button handler code here..
-        //[/UserButtonCode_quickDistortion_btn]
-    }
-
-    //[UserbuttonClicked_Post]
-    //[/UserbuttonClicked_Post]
-}
-
-void TwonkMain::sliderValueChanged (Slider* sliderThatWasMoved)
-{
-    //[UsersliderValueChanged_Pre]
-    //[/UsersliderValueChanged_Pre]
-
-    if (sliderThatWasMoved == verticalZoomFactor.get())
-    {
-        //[UserSliderCode_verticalZoomFactor] -- add your slider handling code here..
-		drowOsc->setVerticalZoomFactor(sliderThatWasMoved->getValue());
-        //[/UserSliderCode_verticalZoomFactor]
-    }
-
-    //[UsersliderValueChanged_Post]
-    //[/UsersliderValueChanged_Post]
 }
 
 void TwonkMain::mouseDown (const MouseEvent& e)
@@ -233,20 +168,6 @@ void TwonkMain::releaseResources()
 
 void TwonkMain::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-	if (bufferToFill.buffer->getNumChannels() > 0)
-	{
-		auto* channelData = bufferToFill.buffer->getReadPointer (0, bufferToFill.startSample);
-
-		if (drowScope)
-			drowScope->copySamples (channelData, bufferToFill.numSamples);
-		if (drowBar)
-			drowBar->copySamples (channelData, bufferToFill.numSamples);
-	}
-
-	if (drowOsc)
-	{
-		drowOsc->addSamples(*bufferToFill.buffer);
-	}
 }
 //[/MiscUserCode]
 
@@ -269,34 +190,36 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="ff000000">
-    <RECT pos="0 0 0M 0M" fill="linear: 0 0, 0R 0R, 0=ff000000, 1=ff0f1f26"
+    <RECT pos="0 0 0M 0M" fill="linear: 0 0, 0R 0R, 0=6a000000, 1=9800b0ff"
           hasStroke="0"/>
   </BACKGROUND>
-  <TEXTBUTTON name="Settings" id="27e35d18b20eab94" memberName="settingsButton"
-              virtualName="" explicitFocusOrder="0" pos="0 90% 0M 10%" bgColOff="ff5c85a4"
-              buttonText="Settings" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
-  <GENERICCOMPONENT name="Scope Alt" id="f78267218e40ea7" memberName="drowScope"
-                    virtualName="" explicitFocusOrder="0" pos="5.957% 0 46.973% 45%"
-                    class="drow::Spectroscope" params="10"/>
-  <GENERICCOMPONENT name="Oscilloscope" id="51d4a9aade6dfd31" memberName="drowOsc"
-                    virtualName="" explicitFocusOrder="0" pos="53.027% 0 46.973% 40%"
-                    class="drow::TriggeredScope" params="nullptr"/>
-  <SLIDER name="Verical Zoom" id="4824d8a5fb869c53" memberName="verticalZoomFactor"
-          virtualName="" explicitFocusOrder="0" pos="53.027% 40% 46.973% 5%"
-          bkgcol="ff092d5b" trackcol="ff255a77" min="1.01" max="127.0"
-          int="0.5" style="LinearBar" textBoxPos="TextBoxLeft" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
-  <GENERICCOMPONENT name="Level Bar" id="118a09b67acf7ba1" memberName="drowBar" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 5.957% 90%" class="drow::SegmentedMeter"
-                    params=""/>
-  <TEXTBUTTON name="QReverb" id="71f87e916c0cf845" memberName="qucikReverb_btn"
-              virtualName="" explicitFocusOrder="0" pos="5.957% 45% 15.039% 25%"
-              bgColOff="934bd6f8" bgColOn="0" buttonText="RV" connectedEdges="15"
-              needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="QDist" id="17e539559cc8386a" memberName="quickDistortion_btn"
-              virtualName="" explicitFocusOrder="0" pos="20.996% 45% 150 25%"
-              bgColOff="67e129a4" bgColOn="0" buttonText="D" connectedEdges="15"
-              needsCallback="1" radioGroupId="0"/>
+  <JUCERCOMP name="" id="447b20729ad0d1ec" memberName="ch1" virtualName=""
+             explicitFocusOrder="0" pos="0 10% 25% 45%" sourceFile="TwonkChannel.cpp"
+             constructorParams="this, 0"/>
+  <JUCERCOMP name="" id="955cdb7f122ab433" memberName="ch2" virtualName=""
+             explicitFocusOrder="0" pos="25% 10% 25% 45%" sourceFile="TwonkChannel.cpp"
+             constructorParams="this, 1"/>
+  <JUCERCOMP name="" id="fa47a0bd90143f39" memberName="ch3" virtualName=""
+             explicitFocusOrder="0" pos="50% 10% 25% 45%" sourceFile="TwonkChannel.cpp"
+             constructorParams="this, 2"/>
+  <JUCERCOMP name="" id="b45592675f5e3273" memberName="ch4" virtualName=""
+             explicitFocusOrder="0" pos="75% 10% 25% 45%" sourceFile="TwonkChannel.cpp"
+             constructorParams="this, 3"/>
+  <JUCERCOMP name="" id="b75cabc4ad3d324c" memberName="ch5" virtualName=""
+             explicitFocusOrder="0" pos="0 55% 25% 45%" sourceFile="TwonkChannel.cpp"
+             constructorParams="this, 4"/>
+  <JUCERCOMP name="" id="2f32036001489d9c" memberName="ch6" virtualName=""
+             explicitFocusOrder="0" pos="25% 55% 25% 45%" sourceFile="TwonkChannel.cpp"
+             constructorParams="this, 5"/>
+  <JUCERCOMP name="" id="c28d91323daa42f2" memberName="ch7" virtualName=""
+             explicitFocusOrder="0" pos="50% 55% 25% 45%" sourceFile="TwonkChannel.cpp"
+             constructorParams="this, 6"/>
+  <JUCERCOMP name="" id="54e1b3008d039734" memberName="ch8" virtualName=""
+             explicitFocusOrder="0" pos="75% 55% 25% 45%" sourceFile="TwonkChannel.cpp"
+             constructorParams="this, 7"/>
+  <JUCERCOMP name="" id="a2d9166279d37b07" memberName="toolbar" virtualName=""
+             explicitFocusOrder="0" pos="0 0 100% 10%" sourceFile="TwonkToolbar.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
