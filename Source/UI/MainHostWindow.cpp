@@ -132,17 +132,7 @@ MainHostWindow::MainHostWindow(bool _fullscreen)
     addKeyListener (getCommandManager().getKeyMappings());
 
     Process::setPriority (Process::HighPriority);
-
-  #if JUCE_IOS || JUCE_ANDROID
-    graphHolder->burgerMenu.setModel (this);
-  #else
-   #if JUCE_MAC
-    setMacMainMenu (this);
-   #else
-    setMenuBar (this);
-   #endif
-  #endif
-
+    setMenuBar (this, 32);
     getCommandManager().setFirstCommandTarget (this);
 }
 
