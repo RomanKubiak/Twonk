@@ -60,11 +60,6 @@ AudioProcessor::~AudioProcessor()
     // or more parameters without having made a corresponding call to endParameterChangeGesture...
     jassert (changingParams.countNumberOfSetBits() == 0);
    #endif
-
-    // The parameters are owned by an AudioProcessorParameterGroup, but we need
-    // to keep the managedParameters array populated to maintain backwards
-    // compatibility.
-    managedParameters.clearQuick (false);
 }
 
 //==============================================================================
@@ -696,34 +691,15 @@ AudioProcessorParameter* AudioProcessor::getParamChecked (int index) const noexc
     return p;
 }
 
-void AudioProcessor::addParameterInternal (AudioProcessorParameter* param)
+void AudioProcessor::addParameter (AudioProcessorParameter* p)
 {
-    param->processor = this;
-    param->parameterIndex = managedParameters.size();
-    managedParameters.add (param);
+    p->processor = this;
+    p->parameterIndex = managedParameters.size();
+    managedParameters.add (p);
 
    #ifdef JUCE_DEBUG
     shouldCheckParamsForDupeIDs = true;
    #endif
-}
-
-void AudioProcessor::addParameter (AudioProcessorParameter* param)
-{
-    addParameterInternal (param);
-    parameterTree.addChild (std::unique_ptr<AudioProcessorParameter> (param));
-}
-
-void AudioProcessor::addParameterGroup (std::unique_ptr<AudioProcessorParameterGroup> group)
-{
-    for (auto* param : group->getParameters (true))
-        addParameterInternal (param);
-
-    parameterTree.addChild (std::move (group));
-}
-
-const AudioProcessorParameterGroup& AudioProcessor::getParameterTree()
-{
-    return parameterTree;
 }
 
 #ifdef JUCE_DEBUG
@@ -1411,7 +1387,6 @@ const char* AudioProcessor::getWrapperTypeDescription (AudioProcessor::WrapperTy
         case AudioProcessor::wrapperType_RTAS:          return "RTAS";
         case AudioProcessor::wrapperType_AAX:           return "AAX";
         case AudioProcessor::wrapperType_Standalone:    return "Standalone";
-        case AudioProcessor::wrapperType_Unity:         return "Unity";
         default:                                        jassertfalse; return {};
     }
 }

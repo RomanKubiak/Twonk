@@ -235,10 +235,8 @@ private:
         static String quotedIfContainsSpaces (NSString* file)
         {
             String s (nsStringToJuce (file));
-            s = s.unquoted().replace ("\"", "\\\"");
-
             if (s.containsChar (' '))
-                s = s.quoted();
+                s = s.quoted ('"');
 
             return s;
         }
@@ -383,7 +381,7 @@ bool MessageManager::runDispatchLoopUntil (int millisecondsToRunFor)
     jassert (millisecondsToRunFor >= 0);
     jassert (isThisTheMessageThread()); // must only be called by the message thread
 
-    auto endTime = Time::currentTimeMillis() + millisecondsToRunFor;
+    uint32 endTime = Time::getMillisecondCounter() + (uint32) millisecondsToRunFor;
 
     while (quitMessagePosted.get() == 0)
     {
@@ -399,7 +397,7 @@ bool MessageManager::runDispatchLoopUntil (int millisecondsToRunFor)
             if (e != nil && (isEventBlockedByModalComps == nullptr || ! (*isEventBlockedByModalComps) (e)))
                 [NSApp sendEvent: e];
 
-            if (Time::currentTimeMillis() >= endTime)
+            if (Time::getMillisecondCounter() >= endTime)
                 break;
         }
     }
@@ -456,7 +454,7 @@ void __attribute__ ((visibility("default"))) repostCurrentNSEvent()
     struct EventReposter  : public CallbackMessage
     {
         EventReposter() : e ([[NSApp currentEvent] retain])  {}
-        ~EventReposter() override  { [e release]; }
+        ~EventReposter()  { [e release]; }
 
         void messageCallback() override
         {

@@ -56,19 +56,17 @@
 #define JUCE_MODULE_AVAILABLE_juce_core                  1
 #define JUCE_MODULE_AVAILABLE_juce_cryptography          1
 #define JUCE_MODULE_AVAILABLE_juce_data_structures       1
+#define JUCE_MODULE_AVAILABLE_juce_dsp                   1
 #define JUCE_MODULE_AVAILABLE_juce_events                1
 #define JUCE_MODULE_AVAILABLE_juce_graphics              1
 #define JUCE_MODULE_AVAILABLE_juce_gui_basics            1
 #define JUCE_MODULE_AVAILABLE_juce_gui_extra             1
+#define JUCE_MODULE_AVAILABLE_juce_opengl                1
 
 #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
 
 //==============================================================================
 // juce_audio_devices flags:
-
-#ifndef    JUCE_USE_WINRT_MIDI
- #define   JUCE_USE_WINRT_MIDI 0
-#endif
 
 #ifndef    JUCE_ASIO
  #define   JUCE_ASIO 0
@@ -106,6 +104,10 @@
  #define   JUCE_USE_ANDROID_OPENSLES 0
 #endif
 
+#ifndef    JUCE_USE_WINRT_MIDI
+ #define   JUCE_USE_WINRT_MIDI 0
+#endif
+
 #ifndef    JUCE_DISABLE_AUDIO_MIXING_WITH_OTHER_APPS
  #define   JUCE_DISABLE_AUDIO_MIXING_WITH_OTHER_APPS 0
 #endif
@@ -137,7 +139,7 @@
 // juce_audio_processors flags:
 
 #ifndef    JUCE_PLUGINHOST_VST
- //#define JUCE_PLUGINHOST_VST 0
+ #define   JUCE_PLUGINHOST_VST 1
 #endif
 
 #ifndef    JUCE_PLUGINHOST_VST3
@@ -207,6 +209,29 @@
 #endif
 
 //==============================================================================
+// juce_dsp flags:
+
+#ifndef    JUCE_ASSERTION_FIRFILTER
+ //#define JUCE_ASSERTION_FIRFILTER 1
+#endif
+
+#ifndef    JUCE_DSP_USE_INTEL_MKL
+ //#define JUCE_DSP_USE_INTEL_MKL 0
+#endif
+
+#ifndef    JUCE_DSP_USE_SHARED_FFTW
+ //#define JUCE_DSP_USE_SHARED_FFTW 0
+#endif
+
+#ifndef    JUCE_DSP_USE_STATIC_FFTW
+ //#define JUCE_DSP_USE_STATIC_FFTW 0
+#endif
+
+#ifndef    JUCE_DSP_ENABLE_SNAP_TO_ZERO
+ //#define JUCE_DSP_ENABLE_SNAP_TO_ZERO 1
+#endif
+
+//==============================================================================
 // juce_events flags:
 
 #ifndef    JUCE_EXECUTE_APP_SUSPEND_ON_IOS_BACKGROUND_TASK
@@ -255,10 +280,6 @@
  //#define JUCE_USE_XCURSOR 1
 #endif
 
-#ifndef    JUCE_WIN_PER_MONITOR_DPI_AWARE
- //#define JUCE_WIN_PER_MONITOR_DPI_AWARE 1
-#endif
-
 //==============================================================================
 // juce_gui_extra flags:
 
@@ -269,7 +290,6 @@
 #ifndef    JUCE_ENABLE_LIVE_CONSTANT_EDITOR
  //#define JUCE_ENABLE_LIVE_CONSTANT_EDITOR 0
 #endif
-
 //==============================================================================
 #ifndef    JUCE_STANDALONE_APPLICATION
  #if defined(JucePlugin_Name) && defined(JucePlugin_Build_Standalone)

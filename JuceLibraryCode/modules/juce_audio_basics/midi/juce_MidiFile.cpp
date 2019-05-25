@@ -169,14 +169,14 @@ MidiFile& MidiFile::operator= (const MidiFile& other)
 }
 
 MidiFile::MidiFile (MidiFile&& other)
-    : tracks (std::move (other.tracks)),
+    : tracks (static_cast<OwnedArray<MidiMessageSequence>&&> (other.tracks)),
       timeFormat (other.timeFormat)
 {
 }
 
 MidiFile& MidiFile::operator= (MidiFile&& other)
 {
-    tracks = std::move (other.tracks);
+    tracks = static_cast<OwnedArray<MidiMessageSequence>&&> (other.tracks);
     timeFormat = other.timeFormat;
     return *this;
 }
@@ -363,7 +363,7 @@ void MidiFile::convertTimestampTicksToSeconds()
 }
 
 //==============================================================================
-bool MidiFile::writeTo (OutputStream& out, int midiFileType) const
+bool MidiFile::writeTo (OutputStream& out, int midiFileType)
 {
     jassert (midiFileType >= 0 && midiFileType <= 2);
 
@@ -381,7 +381,7 @@ bool MidiFile::writeTo (OutputStream& out, int midiFileType) const
     return true;
 }
 
-bool MidiFile::writeTrack (OutputStream& mainOut, const MidiMessageSequence& ms) const
+bool MidiFile::writeTrack (OutputStream& mainOut, const MidiMessageSequence& ms)
 {
     MemoryOutputStream out;
 

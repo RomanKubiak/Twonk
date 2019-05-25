@@ -105,7 +105,6 @@
 #endif
 
 #if JUCE_ANDROID
- #include <ifaddrs.h>
  #include <android/log.h>
 #endif
 
@@ -119,18 +118,19 @@
 
 //==============================================================================
 #include "containers/juce_AbstractFifo.cpp"
-#include "containers/juce_ArrayBase.cpp"
 #include "containers/juce_NamedValueSet.cpp"
-#include "containers/juce_OwnedArray.cpp"
 #include "containers/juce_PropertySet.cpp"
-#include "containers/juce_ReferenceCountedArray.cpp"
 #include "containers/juce_SparseSet.cpp"
+#include "containers/juce_Variant.cpp"
 #include "files/juce_DirectoryIterator.cpp"
 #include "files/juce_File.cpp"
 #include "files/juce_FileInputStream.cpp"
 #include "files/juce_FileOutputStream.cpp"
 #include "files/juce_FileSearchPath.cpp"
 #include "files/juce_TemporaryFile.cpp"
+#include "javascript/juce_JSON.cpp"
+#include "javascript/juce_Javascript.cpp"
+#include "containers/juce_DynamicObject.cpp"
 #include "logging/juce_FileLogger.cpp"
 #include "logging/juce_Logger.cpp"
 #include "maths/juce_BigInteger.cpp"
@@ -141,7 +141,6 @@
 #include "misc/juce_Result.cpp"
 #include "misc/juce_Uuid.cpp"
 #include "misc/juce_StdFunctionCompat.cpp"
-#include "misc/juce_ConsoleApplication.cpp"
 #include "network/juce_MACAddress.cpp"
 #include "network/juce_NamedPipe.cpp"
 #include "network/juce_Socket.cpp"
@@ -171,10 +170,6 @@
 #include "time/juce_RelativeTime.cpp"
 #include "time/juce_Time.cpp"
 #include "unit_tests/juce_UnitTest.cpp"
-#include "containers/juce_Variant.cpp"
-#include "javascript/juce_JSON.cpp"
-#include "javascript/juce_Javascript.cpp"
-#include "containers/juce_DynamicObject.cpp"
 #include "xml/juce_XmlDocument.cpp"
 #include "xml/juce_XmlElement.cpp"
 #include "zip/juce_GZIPDecompressorInputStream.cpp"
@@ -187,9 +182,6 @@
 #if ! JUCE_WINDOWS
 #include "native/juce_posix_SharedCode.h"
 #include "native/juce_posix_NamedPipe.cpp"
-#if ! JUCE_ANDROID || __ANDROID_API__ >= 24
- #include "native/juce_posix_IPAddress.h"
-#endif
 #endif
 
 //==============================================================================
@@ -221,9 +213,7 @@
 
 //==============================================================================
 #elif JUCE_ANDROID
-
 #include "native/juce_linux_CommonFile.cpp"
-#include "native/juce_android_JNIHelpers.cpp"
 #include "native/juce_android_Files.cpp"
 #include "native/juce_android_Misc.cpp"
 #include "native/juce_android_Network.cpp"

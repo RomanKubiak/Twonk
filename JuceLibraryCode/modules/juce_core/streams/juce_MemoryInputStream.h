@@ -63,7 +63,7 @@ public:
                        bool keepInternalCopyOfData);
 
     /** Destructor. */
-    ~MemoryInputStream() override;
+    ~MemoryInputStream();
 
     /** Returns a pointer to the source data block from which this stream is reading. */
     const void* getData() const noexcept        { return data; }
@@ -77,7 +77,6 @@ public:
     int64 getTotalLength() override;
     bool isExhausted() override;
     int read (void* destBuffer, int maxBytesToRead) override;
-    void skipNextBytes (int64 numBytesToSkip) override;
 
 private:
     //==============================================================================

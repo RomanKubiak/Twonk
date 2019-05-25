@@ -53,7 +53,9 @@ public:
 
     //==============================================================================
     /** Creates an empty set. */
-    SelectedItemSet() = default;
+    SelectedItemSet()
+    {
+    }
 
     /** Creates a set based on an array of items. */
     explicit SelectedItemSet (const ItemArray& items)
@@ -63,7 +65,7 @@ public:
 
     /** Creates a copy of another set. */
     SelectedItemSet (const SelectedItemSet& other)
-        : ChangeBroadcaster(), selectedItems (other.selectedItems)
+        : selectedItems (other.selectedItems)
     {
     }
 

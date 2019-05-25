@@ -126,7 +126,7 @@ public:
     class Listener
     {
     public:
-        virtual ~Listener() = default;
+        virtual ~Listener() {}
 
         /** Called when the list of available audio devices changes. */
         virtual void audioDeviceListChanged() = 0;

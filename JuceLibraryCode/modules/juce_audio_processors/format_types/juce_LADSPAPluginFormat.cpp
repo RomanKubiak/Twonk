@@ -180,9 +180,7 @@ public:
 
         inputs.clear();
         outputs.clear();
-        managedParameters.clear (false);
-        AudioProcessorParameterGroup group ({}, {}, {});
-        parameterTree.swapWith (group);
+        managedParameters.clear();
 
         for (unsigned int i = 0; i < plugin->PortCount; ++i)
         {
@@ -423,7 +421,7 @@ private:
             reset();
         }
 
-        float getValue() const override
+        virtual float getValue() const override
         {
             if (pluginInstance.plugin != nullptr)
             {
@@ -450,7 +448,7 @@ private:
             return {};
         }
 
-        void setValue (float newValue) override
+        virtual void setValue (float newValue) override
         {
             if (auto* interface = pluginInstance.plugin)
             {
@@ -518,7 +516,7 @@ private:
             if (useLog && low > 0 && high > 0)
                 return expf (logf (low) * (1.0f - alpha) + logf (high) * alpha);
 
-            return low + (high - low) * alpha;
+                return low + (high - low) * alpha;
         }
 
         static float toIntIfNecessary (const LADSPA_PortRangeHintDescriptor& desc, float value)

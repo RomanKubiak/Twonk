@@ -264,7 +264,7 @@ namespace SocketHelpers
         }
         else
         {
-            timeoutp = nullptr;
+            timeoutp = 0;
         }
 
         fd_set rset, wset;
@@ -282,8 +282,7 @@ namespace SocketHelpers
        #else
         {
             int result;
-
-            while ((result = select (h + 1, prset, pwset, nullptr, timeoutp)) < 0
+            while ((result = select (h + 1, prset, pwset, 0, timeoutp)) < 0
                     && errno == EINTR)
             {
             }

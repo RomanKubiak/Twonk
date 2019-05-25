@@ -49,10 +49,10 @@ class JUCE_API  CallbackMessage   : public MessageManager::MessageBase
 {
 public:
     //==============================================================================
-    CallbackMessage() = default;
+    CallbackMessage() noexcept {}
 
     /** Destructor. */
-    ~CallbackMessage() override = default;
+    ~CallbackMessage() {}
 
     //==============================================================================
     /** Called when the message is delivered.
@@ -63,7 +63,7 @@ public:
         Note that like all other messages, this object will be deleted immediately
         after this method has been invoked.
     */
-    virtual void messageCallback() override = 0;
+    virtual void messageCallback() = 0;
 
 private:
     // Avoid the leak-detector because for plugins, the host can unload our DLL with undelivered

@@ -96,9 +96,8 @@ public:
     {
         if (getText().isEmpty() && ! isBeingEdited())
         {
-            auto& lf = owner.getLookAndFeel();
-            auto textArea = lf.getLabelBorderSize (*this).subtractedFrom (getLocalBounds());
-            auto labelFont = lf.getLabelFont (*this);
+            auto textArea = getBorderSize().subtractedFrom (getLocalBounds());
+            auto labelFont = owner.getLookAndFeel().getLabelFont (*this);
 
             g.setColour (owner.findColour (TextPropertyComponent::textColourId).withAlpha (alphaToUseForEmptyText));
             g.setFont (labelFont);
@@ -124,32 +123,26 @@ private:
 class TextPropertyComponent::RemapperValueSourceWithDefault    : public Value::ValueSource
 {
 public:
-    RemapperValueSourceWithDefault (ValueWithDefault* vwd)
+    RemapperValueSourceWithDefault (const ValueWithDefault& vwd)
         : valueWithDefault (vwd)
     {
     }
 
     var getValue() const override
     {
-        if (valueWithDefault == nullptr || valueWithDefault->isUsingDefault())
-            return {};
-
-        return valueWithDefault->get();
+        return valueWithDefault.isUsingDefault() ? var() : valueWithDefault.get();
     }
 
     void setValue (const var& newValue) override
     {
-        if (valueWithDefault == nullptr)
-            return;
-
         if (newValue.toString().isEmpty())
-            valueWithDefault->resetToDefault();
+            valueWithDefault.resetToDefault();
         else
-            *valueWithDefault = newValue;
+            valueWithDefault = newValue;
     }
 
 private:
-    WeakReference<ValueWithDefault> valueWithDefault;
+    ValueWithDefault valueWithDefault;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RemapperValueSourceWithDefault)
@@ -177,22 +170,18 @@ TextPropertyComponent::TextPropertyComponent (ValueWithDefault& valueToControl, 
                                               int maxNumChars, bool multiLine, bool isEditable)
     : TextPropertyComponent (name, maxNumChars, multiLine, isEditable)
 {
-    valueWithDefault = &valueToControl;
+    textEditor->getTextValue().referTo (Value (new RemapperValueSourceWithDefault (valueToControl)));
+    textEditor->setTextToDisplayWhenEmpty (valueToControl.getDefault(), 0.5f);
 
-    textEditor->getTextValue().referTo (Value (new RemapperValueSourceWithDefault (valueWithDefault)));
-    textEditor->setTextToDisplayWhenEmpty (valueWithDefault->getDefault(), 0.5f);
-
-    valueWithDefault->onDefaultChange = [this]
+    valueToControl.onDefaultChange = [this, &valueToControl]
     {
-        textEditor->setTextToDisplayWhenEmpty (valueWithDefault->getDefault(), 0.5f);
+        textEditor->setTextToDisplayWhenEmpty (valueToControl.getDefault(), 0.5f);
         repaint();
     };
 }
 
 TextPropertyComponent::~TextPropertyComponent()
 {
-    if (valueWithDefault != nullptr)
-        valueWithDefault->onDefaultChange = nullptr;
 }
 
 void TextPropertyComponent::setText (const String& newText)

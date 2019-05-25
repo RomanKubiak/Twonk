@@ -36,7 +36,7 @@ public:
         triggerAsyncUpdate();
     }
 
-    ~TimerThread() override
+    ~TimerThread() noexcept
     {
         signalThreadShouldExit();
         callbackArrived.signal();
@@ -324,7 +324,7 @@ void Timer::startTimer (int interval) noexcept
 {
     // If you're calling this before (or after) the MessageManager is
     // running, then you're not going to get any timer callbacks!
-    JUCE_ASSERT_MESSAGE_MANAGER_EXISTS
+    jassert (MessageManager::getInstanceWithoutCreating() != nullptr);
 
     const TimerThread::LockType::ScopedLockType sl (TimerThread::lock);
 

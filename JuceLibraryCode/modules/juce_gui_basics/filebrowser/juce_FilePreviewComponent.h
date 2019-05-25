@@ -49,7 +49,7 @@ public:
     FilePreviewComponent();
 
     /** Destructor. */
-    ~FilePreviewComponent() override;
+    ~FilePreviewComponent();
 
     /** Called to indicate that the user's currently selected file has changed.
 
