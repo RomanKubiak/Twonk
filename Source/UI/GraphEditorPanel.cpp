@@ -267,8 +267,7 @@ struct GraphEditorPanel::FilterComponent   : public Component,
 				if (auto* w = graph.getOrCreateWindowFor (f, PluginWindow::Type::normal))
 					w->toFront (true);
 		}
-		
-		if (e.getLengthOfMousePress() > 500)
+		else if (e.getNumberOfClicks() == 2)
 		{
 			DBG("select me");
 			isSelected = !isSelected;

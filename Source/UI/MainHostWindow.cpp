@@ -49,7 +49,7 @@ public:
 
         setResizable (true, false);
         setResizeLimits (300, 400, 800, 1500);
-        setTopLeftPosition (60, 60);
+        centreAroundComponent (&mw, 300, 400);
 
         restoreWindowStateFromString (getAppProperties().getUserSettings()->getValue ("listWindowPos"));
         setVisible (true);
