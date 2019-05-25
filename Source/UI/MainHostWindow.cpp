@@ -73,10 +73,10 @@ private:
 };
 
 //==============================================================================
-MainHostWindow::MainHostWindow(bool _fullscreen)
+MainHostWindow::MainHostWindow(bool _fullscreen, bool _opengl)
     : DocumentWindow (JUCEApplication::getInstance()->getApplicationName(),
                       LookAndFeel::getDefaultLookAndFeel().findColour (ResizableWindow::backgroundColourId),
-                      DocumentWindow::allButtons), fullscreen(_fullscreen)
+                      DocumentWindow::allButtons), fullscreen(_fullscreen), opengl(_opengl)
 {
     formatManager.addDefaultFormats();
     formatManager.addFormat (new InternalPluginFormat());
@@ -134,6 +134,9 @@ MainHostWindow::MainHostWindow(bool _fullscreen)
     Process::setPriority (Process::HighPriority);
     setMenuBar (this, 32);
     getCommandManager().setFirstCommandTarget (this);
+
+	if (opengl)
+		openGLContext.attachTo (*getTopLevelComponent());
 }
 
 MainHostWindow::~MainHostWindow()
@@ -640,3 +643,28 @@ void MainHostWindow::updatePrecisionMenuItem (ApplicationCommandInfo& info)
     info.setInfo ("Double floating point precision rendering", String(), "General", 0);
     info.setTicked (isDoublePrecisionProcessing());
 }
+
+void MainHostWindow::updateRenderingEngine (int renderingEngineIndex)
+{
+	if (renderingEngineIndex == (renderingEngines.size() - 1))
+	{
+		if (isShowingHeavyweightDemo)
+			return;
+
+		openGLContext.attachTo (*getTopLevelComponent());
+	}
+	else
+	{
+		openGLContext.detach();
+		peer->setCurrentRenderingEngine (renderingEngineIndex);
+	}
+
+	currentRenderingEngineIdx = renderingEngineIndex;
+}
+
+void MainHostWindow::setRenderingEngine (int renderingEngineIndex)
+{
+	if (renderingEngineIndex != currentRenderingEngineIdx)
+		updateRenderingEngine (renderingEngineIndex);
+}
+

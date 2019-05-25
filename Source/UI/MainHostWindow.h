@@ -59,7 +59,7 @@ class MainHostWindow    : public DocumentWindow,
 {
 public:
     //==============================================================================
-    MainHostWindow(bool _fullscreen);
+    MainHostWindow(bool _fullscreen, bool _opengl);
     ~MainHostWindow() override;
 
     //==============================================================================
@@ -90,7 +90,8 @@ public:
 
     bool isDoublePrecisionProcessing();
     void updatePrecisionMenuItem (ApplicationCommandInfo& info);
-
+	void updateRenderingEngine (int index);
+	void setRenderingEngine (int renderingEngineIndex);
     std::unique_ptr<GraphDocumentComponent> graphHolder;
 
 private:
@@ -104,8 +105,13 @@ private:
 
     class PluginListWindow;
     std::unique_ptr<PluginListWindow> pluginListWindow;
-
+	OpenGLContext openGLContext;
+	ComponentPeer* peer = nullptr;
+	StringArray renderingEngines;
+	int currentRenderingEngineIdx = -1;
+	bool isShowingHeavyweightDemo = false;
     void showAudioSettings();
 	bool fullscreen;
+	bool opengl;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainHostWindow)
 };

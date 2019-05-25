@@ -44,8 +44,13 @@ public:
     {
         // initialise our settings file..
 		bool fullscreen = false;
+		bool opengl = false;
 		if (commandLine.contains("--fullscreen"))
 			fullscreen = true;
+
+		if (commandLine.contains("--opengl"))
+			opengl = true;
+
         PropertiesFile::Options options;
         options.applicationName     = "Juce Audio Plugin Host";
         options.filenameSuffix      = "settings";
@@ -54,7 +59,7 @@ public:
         appProperties.reset (new ApplicationProperties());
         appProperties->setStorageParameters (options);
 
-        mainWindow.reset (new MainHostWindow(fullscreen));
+        mainWindow.reset (new MainHostWindow(fullscreen, opengl));
         mainWindow->setUsingNativeTitleBar (true);
 
         commandManager.registerAllCommandsForTarget (this);
