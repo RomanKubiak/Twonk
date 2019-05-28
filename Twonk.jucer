@@ -2,8 +2,9 @@
 
 <JUCERPROJECT id="NTe0XB0ij" name="Twonk" projectType="guiapp" version="1.0.0"
               juceFolder="../../../juce" vstFolderMac="~/SDKs/vstsdk2.4" vstFolderPC="c:\SDKs\vstsdk2.4"
-              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.3.2"
-              companyName="Instigator" displaySplashScreen="0" reportAppUsage="0">
+              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.3"
+              companyName="Instigator" displaySplashScreen="0" reportAppUsage="0"
+              headerPath="..\..\vst3sdk">
   <EXPORTFORMATS>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" vstFolder="" vst3Folder=""
                 smallIcon="c97aUr" bigIcon="c97aUr">
@@ -25,8 +26,8 @@
         <MODULEPATH id="juce_audio_formats" path="../../modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../modules"/>
-        <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../modules"/>
+        <MODULEPATH id="juce_dsp" path="../modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <VS2017 targetFolder="Builds/VisualStudio2017" smallIcon="c97aUr" bigIcon="c97aUr"
@@ -48,13 +49,19 @@
         <MODULEPATH id="juce_audio_formats" path="../../modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../modules"/>
-        <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../modules"/>
+        <MODULEPATH id="juce_dsp" path="../modules"/>
       </MODULEPATHS>
     </VS2017>
   </EXPORTFORMATS>
   <MAINGROUP id="YdWL7hi7p" name="Twonk">
     <GROUP id="{CFED5B3D-D1D8-0F3F-4D67-B2A810D057EF}" name="Source">
+      <FILE id="bcv7n6" name="TwonkSlider.cpp" compile="1" resource="0" file="Source/TwonkSlider.cpp"/>
+      <FILE id="vGrTrK" name="TwonkSlider.h" compile="0" resource="0" file="Source/TwonkSlider.h"/>
+      <FILE id="MF2LSG" name="TwonkLookAndFeel.h" compile="0" resource="0"
+            file="Source/TwonkLookAndFeel.h"/>
+      <FILE id="SLs0Y3" name="TwonkLookAndFeel.cpp" compile="1" resource="0"
+            file="Source/TwonkLookAndFeel.cpp"/>
       <GROUP id="{AE20356E-1F78-F99D-7D44-08529665AEDA}" name="Filters">
         <FILE id="CogQ5Q" name="FilterGraph.cpp" compile="1" resource="0" file="Source/Filters/FilterGraph.cpp"/>
         <FILE id="pfZWFw" name="FilterGraph.h" compile="0" resource="0" file="Source/Filters/FilterGraph.h"/>
@@ -89,20 +96,20 @@
                JUCE_USE_ANDROID_OBOE="0" JUCE_BELA="0" JUCE_USE_WINRT_MIDI="0"
                JUCE_DISABLE_AUDIO_MIXING_WITH_OTHER_APPS="0" JUCE_PLUGINHOST_VST="1"/>
   <MODULES>
-    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_core" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_events" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
   </MODULES>
   <LIVE_SETTINGS>
     <OSX/>

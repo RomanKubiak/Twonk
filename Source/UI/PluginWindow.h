@@ -27,7 +27,7 @@
 #pragma once
 
 #include "../Filters/FilterIOConfiguration.h"
-
+#include "../TwonkLookAndFeel.h"
 class FilterGraph;
 
 /**
@@ -197,7 +197,7 @@ public:
 
 private:
     float getDesktopScaleFactor() const override     { return 1.0f; }
-
+	
     static AudioProcessorEditor* createProcessorEditor (AudioProcessor& processor, PluginWindow::Type type)
     {
         if (type == PluginWindow::Type::normal)
@@ -208,8 +208,8 @@ private:
             type = PluginWindow::Type::generic;
         }
 
-        if (type == PluginWindow::Type::generic)
-            return new GenericAudioProcessorEditor (&processor);
+		if (type == PluginWindow::Type::generic)
+			return new TwonkFilterPropertiesEditor(&processor);
 
         if (type == PluginWindow::Type::programs)
             return new ProgramAudioProcessorEditor (processor);
@@ -264,7 +264,6 @@ private:
             }
 
             panel.addProperties (programs);
-
             setSize (400, jlimit (25, 400, totalHeight));
         }
 
@@ -295,9 +294,8 @@ private:
             void refresh() override {}
             void audioProcessorChanged (AudioProcessor*) override {}
             void audioProcessorParameterChanged (AudioProcessor*, int, float) override {}
-
+			
             AudioProcessor& owner;
-
             JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PropertyComp)
         };
 

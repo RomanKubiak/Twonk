@@ -94,7 +94,7 @@ struct ItemComponent  : public Component
         addMouseListener (&parent, false);
     }
 
-    ~ItemComponent()
+    ~ItemComponent() override
     {
         removeChildComponent (customComp.get());
     }
@@ -211,10 +211,10 @@ struct MenuWindow  : public Component
 
         setLookAndFeel (parent != nullptr ? &(parent->getLookAndFeel())
                                           : menu.lookAndFeel.get());
-
         auto& lf = getLookAndFeel();
 
         parentComponent = lf.getParentComponentForMenuOptions (options);
+        const_cast<Options&>(options) = options.withParentComponent (parentComponent);
 
         if (parentComponent == nullptr && parentWindow == nullptr && lf.shouldPopupMenuScaleWithTargetComponent (options))
             if (auto* targetComponent = options.getTargetComponent())
@@ -267,7 +267,7 @@ struct MenuWindow  : public Component
         getMouseState (Desktop::getInstance().getMainMouseSource()); // forces creation of a mouse source watcher for the main mouse
     }
 
-    ~MenuWindow()
+    ~MenuWindow() override
     {
         getActiveWindows().removeFirstMatchingValue (this);
         Desktop::getInstance().removeGlobalMouseListener (this);
@@ -592,10 +592,13 @@ struct MenuWindow  : public Component
     }
 
     //==============================================================================
-    Rectangle<int> getParentArea (Point<int> targetPoint)
+    Rectangle<int> getParentArea (Point<int> targetPoint, Component* relativeTo = nullptr)
     {
-        auto parentArea = Desktop::getInstance().getDisplays().getDisplayContaining (targetPoint)
-                              #if JUCE_MAC
+        if (relativeTo != nullptr)
+            targetPoint = relativeTo->localPointToGlobal (targetPoint);
+
+        auto parentArea = Desktop::getInstance().getDisplays().findDisplayForPoint (targetPoint)
+                              #if JUCE_MAC || JUCE_ANDROID
                                .userArea;
                               #else
                                .totalArea; // on windows, don't stop the menu overlapping the taskbar
@@ -789,7 +792,7 @@ struct MenuWindow  : public Component
                                                     windowPos.getHeight() - (PopupMenuSettings::scrollZone + m->getHeight())),
                                               currentY);
 
-                        auto parentArea = getParentArea (windowPos.getPosition()) / scaleFactor;
+                        auto parentArea = getParentArea (windowPos.getPosition(), parentComponent) / scaleFactor;
                         auto deltaY = wantedY - currentY;
 
                         windowPos.setSize (jmin (windowPos.getWidth(), parentArea.getWidth()),
@@ -909,7 +912,8 @@ struct MenuWindow  : public Component
             activeSubMenu.reset (new HelperClasses::MenuWindow (*(childComp->item.subMenu), this,
                                                                 options.withTargetScreenArea (childComp->getScreenBounds())
                                                                        .withMinimumWidth (0)
-                                                                       .withTargetComponent (nullptr),
+                                                                       .withTargetComponent (nullptr)
+                                                                       .withParentComponent (parentComponent),
                                                                 false, dismissOnMouseUp, managerOfChosenCommand, scaleFactor));
 
             activeSubMenu->setVisible (true); // (must be called before enterModalState on Windows to avoid DropShadower confusion)
@@ -1085,7 +1089,7 @@ private:
             {
                 PopupMenuSettings::menuWasHiddenBecauseOfAppChange = true;
                 window.dismissMenu (nullptr);
-                // Note: this object may have been deleted by the previous call..
+                // Note: This object may have been deleted by the previous call.
             }
         }
         else if (wasDown && timeNow > window.windowCreationTime + 250
@@ -1096,7 +1100,7 @@ private:
             else if ((window.hasBeenOver || ! window.dismissOnMouseUp) && ! isOverAny)
                 window.dismissMenu (nullptr);
 
-            // Note: this object may have been deleted by the previous call..
+            // Note: This object may have been deleted by the previous call.
         }
         else
         {

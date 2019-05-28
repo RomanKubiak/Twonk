@@ -46,6 +46,7 @@ struct CURLSymbols
         std::unique_ptr<CURLSymbols> symbols (new CURLSymbols);
 
        #if JUCE_LOAD_CURL_SYMBOLS_LAZILY
+        const ScopedLock sl (getLibcurlLock());
         #define JUCE_INIT_CURL_SYMBOL(name)  if (! symbols->loadSymbol (symbols->name, #name)) return nullptr;
        #else
         #define JUCE_INIT_CURL_SYMBOL(name)  symbols->name = ::name;
@@ -70,13 +71,28 @@ struct CURLSymbols
         return symbols;
     }
 
+    // liburl's curl_multi_init calls curl_global_init which is not thread safe
+    // so we need to get a lock during calls to curl_multi_init and curl_multi_cleanup
+    static CriticalSection& getLibcurlLock() noexcept
+    {
+        static CriticalSection cs;
+        return cs;
+    }
+
 private:
     CURLSymbols() = default;
 
    #if JUCE_LOAD_CURL_SYMBOLS_LAZILY
     static DynamicLibrary& getLibcurl()
     {
-        static DynamicLibrary libcurl { "libcurl.so" };
+        const ScopedLock sl (getLibcurlLock());
+        static DynamicLibrary libcurl;
+
+        if (libcurl.getNativeHandle() == nullptr)
+            for (auto libName : { "libcurl.so", "libcurl.so.4", "libcurl.so.3" })
+                if (libcurl.open (libName))
+                    break;
+
         return libcurl;
     }
 
@@ -100,7 +116,10 @@ public:
     {
         jassert (symbols); // Unable to load libcurl!
 
-        multi = symbols->curl_multi_init();
+        {
+            const ScopedLock sl (CURLSymbols::getLibcurlLock());
+            multi = symbols->curl_multi_init();
+        }
 
         if (multi != nullptr)
         {
@@ -170,6 +189,7 @@ public:
     void cleanup()
     {
         const ScopedLock lock (cleanupLock);
+        const ScopedLock sl (CURLSymbols::getLibcurlLock());
 
         if (curl != nullptr)
         {
