@@ -26,6 +26,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "UI/MainHostWindow.h"
+#include "UI/GraphDocument.h"
 #include "Filters/InternalFilters.h"
 
 #if ! (JUCE_PLUGINHOST_VST || JUCE_PLUGINHOST_VST3 || JUCE_PLUGINHOST_AU)
@@ -52,7 +53,7 @@ public:
 			opengl = true;
 
         PropertiesFile::Options options;
-        options.applicationName     = "Juce Audio Plugin Host";
+        options.applicationName     = "Twonk";
         options.filenameSuffix      = "settings";
         options.osxLibrarySubFolder = "Preferences";
 
@@ -155,7 +156,9 @@ static PluginHostApp& getApp()                    { return *dynamic_cast<PluginH
 ApplicationProperties& getAppProperties()         { return *getApp().appProperties; }
 ApplicationCommandManager& getCommandManager()    { return getApp().commandManager; }
 
-bool isOnTouchDevice()                            { return Desktop::getInstance().getMainMouseSource().isTouch(); }
-
+//bool isOnTouchDevice()                            { return Desktop::getInstance().getMainMouseSource().isTouch(); }
+bool isOnTouchDevice()                            {
+	return true;
+}
 // This kicks the whole thing off..
 START_JUCE_APPLICATION (PluginHostApp)

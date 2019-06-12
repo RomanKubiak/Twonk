@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="NTe0XB0ij" name="Twonk" projectType="guiapp" version="1.0.0"
               juceFolder="../../../juce" vstFolderMac="~/SDKs/vstsdk2.4" vstFolderPC="c:\SDKs\vstsdk2.4"
-              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.3"
+              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.3.2"
               companyName="Instigator" displaySplashScreen="0" reportAppUsage="0"
               headerPath="..\..\vst3sdk">
   <EXPORTFORMATS>
@@ -20,7 +20,7 @@
         <MODULEPATH id="juce_events" path="../../modules"/>
         <MODULEPATH id="juce_data_structures" path="../../modules"/>
         <MODULEPATH id="juce_cryptography" path="../../modules"/>
-        <MODULEPATH id="juce_core" path="../../modules"/>
+        <MODULEPATH id="juce_core" path="~/JUCE"/>
         <MODULEPATH id="juce_audio_utils" path="../../modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../modules"/>
@@ -31,9 +31,10 @@
       </MODULEPATHS>
     </LINUX_MAKE>
     <VS2017 targetFolder="Builds/VisualStudio2017" smallIcon="c97aUr" bigIcon="c97aUr"
-            extraCompilerFlags="/w44265 /w45038 /w44062" windowsTargetPlatformVersion="10.0.17763.0">
+            extraCompilerFlags="/w44265 /w45038 /w44062 /w44244" windowsTargetPlatformVersion="10.0.17763.0"
+            extraDefs="_USE_MATH_DEFINES">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" targetName="Twonk"/>
+        <CONFIGURATION name="Debug" isDebug="1" targetName="Twonk" winWarningLevel="2"/>
         <CONFIGURATION name="Release" isDebug="0" targetName="Twonk" debugInformationFormat="ProgramDatabase"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -53,9 +54,139 @@
         <MODULEPATH id="juce_dsp" path="../modules"/>
       </MODULEPATHS>
     </VS2017>
+    <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_opengl" path="../modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../modules"/>
+        <MODULEPATH id="juce_graphics" path="../../modules"/>
+        <MODULEPATH id="juce_events" path="../../modules"/>
+        <MODULEPATH id="juce_dsp" path="../modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../modules"/>
+        <MODULEPATH id="juce_core" path="../../modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../modules"/>
+      </MODULEPATHS>
+    </CODEBLOCKS_LINUX>
   </EXPORTFORMATS>
   <MAINGROUP id="YdWL7hi7p" name="Twonk">
     <GROUP id="{CFED5B3D-D1D8-0F3F-4D67-B2A810D057EF}" name="Source">
+      <FILE id="lMKGeJ" name="Settings.svg" compile="0" resource="1" file="Source/Settings.svg"/>
+      <FILE id="RvTEzL" name="PianoKeyboard.svg" compile="0" resource="1"
+            file="Source/PianoKeyboard.svg"/>
+      <FILE id="tmMkf8" name="1.jpg" compile="0" resource="1" file="Source/1.jpg"/>
+      <FILE id="BVHqim" name="60sekuntia.ttf" compile="0" resource="1" file="Source/60sekuntia.ttf"/>
+      <GROUP id="{8203BEF7-7441-1B1E-5D75-20E4312BBD00}" name="FX">
+        <GROUP id="{2699263F-D123-752F-6C22-C936171CB24C}" name="Compressor">
+          <FILE id="NcPCVl" name="TwonkCEEditor.cpp" compile="1" resource="0"
+                file="Source/FX/Compressor/TwonkCEEditor.cpp"/>
+          <FILE id="cGDK6J" name="TwonkCEEditor.h" compile="0" resource="0" file="Source/FX/Compressor/TwonkCEEditor.h"/>
+          <FILE id="CiXZ5s" name="TwonkCEProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/Compressor/TwonkCEProcessor.cpp"/>
+          <FILE id="OKR5gj" name="TwonkCEProcessor.h" compile="0" resource="0"
+                file="Source/FX/Compressor/TwonkCEProcessor.h"/>
+        </GROUP>
+        <GROUP id="{9F8BB251-89EE-BF38-E5FA-FB17C0483C32}" name="Distortion">
+          <FILE id="ubr2yk" name="TwonkDistortionEditor.cpp" compile="1" resource="0"
+                file="Source/FX/Distortion/TwonkDistortionEditor.cpp"/>
+          <FILE id="I6tXhR" name="TwonkDistortionEditor.h" compile="0" resource="0"
+                file="Source/FX/Distortion/TwonkDistortionEditor.h"/>
+          <FILE id="Vrp3PG" name="TwonkDistortionProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/Distortion/TwonkDistortionProcessor.cpp"/>
+          <FILE id="EWdCUp" name="TwonkDistortionProcessor.h" compile="0" resource="0"
+                file="Source/FX/Distortion/TwonkDistortionProcessor.h"/>
+        </GROUP>
+        <GROUP id="{4ECE16E0-58B6-2741-B743-64D40BA76209}" name="Flanger">
+          <FILE id="K0w45q" name="TwonkFlangerEditor.cpp" compile="1" resource="0"
+                file="Source/FX/Flanger/TwonkFlangerEditor.cpp"/>
+          <FILE id="agBhzd" name="TwonkFlangerEditor.h" compile="0" resource="0"
+                file="Source/FX/Flanger/TwonkFlangerEditor.h"/>
+          <FILE id="e3u721" name="TwonkFlangerProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/Flanger/TwonkFlangerProcessor.cpp"/>
+          <FILE id="RJ8kTR" name="TwonkFlangerProcessor.h" compile="0" resource="0"
+                file="Source/FX/Flanger/TwonkFlangerProcessor.h"/>
+        </GROUP>
+        <GROUP id="{40DAC0BA-6E03-1CD4-4245-CCFC33ACAC56}" name="Phaser">
+          <FILE id="RfnU0h" name="TwonkPhaserEditor.cpp" compile="1" resource="0"
+                file="Source/FX/Phaser/TwonkPhaserEditor.cpp"/>
+          <FILE id="VfDeoF" name="TwonkPhaserEditor.h" compile="0" resource="0"
+                file="Source/FX/Phaser/TwonkPhaserEditor.h"/>
+          <FILE id="VzbjdX" name="TwonkPhaserProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/Phaser/TwonkPhaserProcessor.cpp"/>
+          <FILE id="BXWyPO" name="TwonkPhaserProcessor.h" compile="0" resource="0"
+                file="Source/FX/Phaser/TwonkPhaserProcessor.h"/>
+        </GROUP>
+        <GROUP id="{50DD91BD-78B9-37B7-0126-79B8DABA82B0}" name="Ping-Pong Delay">
+          <FILE id="hWt3tP" name="TwonkPPDelayEditor.cpp" compile="1" resource="0"
+                file="Source/FX/Ping-Pong Delay/TwonkPPDelayEditor.cpp"/>
+          <FILE id="uqiY5R" name="TwonkPPDelayEditor.h" compile="0" resource="0"
+                file="Source/FX/Ping-Pong Delay/TwonkPPDelayEditor.h"/>
+          <FILE id="ISuW6f" name="TwonkPPDelayProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/Ping-Pong Delay/TwonkPPDelayProcessor.cpp"/>
+          <FILE id="wF6oLY" name="TwonkPPDelayProcessor.h" compile="0" resource="0"
+                file="Source/FX/Ping-Pong Delay/TwonkPPDelayProcessor.h"/>
+        </GROUP>
+        <GROUP id="{6102CCE1-6FAA-0C95-265E-6AC8FF97C47C}" name="Pitch Shift">
+          <FILE id="FiXFGL" name="TwonkPSProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/Pitch Shift/TwonkPSProcessor.cpp"/>
+          <FILE id="sgI21H" name="TwonkPSEditor.cpp" compile="1" resource="0"
+                file="Source/FX/Pitch Shift/TwonkPSEditor.cpp"/>
+          <FILE id="I3HoKN" name="TwonkPSEditor.h" compile="0" resource="0" file="Source/FX/Pitch Shift/TwonkPSEditor.h"/>
+          <FILE id="YjB8JU" name="TwonkPSProcessor.h" compile="0" resource="0"
+                file="Source/FX/Pitch Shift/TwonkPSProcessor.h"/>
+        </GROUP>
+        <GROUP id="{8FA3EB3A-8B03-C2D4-3D52-FAA3A0263393}" name="Ring Modulator">
+          <FILE id="jUflxM" name="TwonkRMProcessor.h" compile="0" resource="0"
+                file="Source/FX/Ring Modulator/TwonkRMProcessor.h"/>
+          <FILE id="xkbgIi" name="TwonkRMEditor.cpp" compile="1" resource="0"
+                file="Source/FX/Ring Modulator/TwonkRMEditor.cpp"/>
+          <FILE id="Ulsx6J" name="TwonkRMEditor.h" compile="0" resource="0" file="Source/FX/Ring Modulator/TwonkRMEditor.h"/>
+          <FILE id="gLMwNl" name="TwonkRMProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/Ring Modulator/TwonkRMProcessor.cpp"/>
+        </GROUP>
+        <GROUP id="{83F9AF3C-A6EC-32BA-F3A8-46805016D8C5}" name="Robotization-Whisperization">
+          <FILE id="PkAaeE" name="STFT.h" compile="0" resource="0" file="Source/FX/Robotization-Whisperization/STFT.h"/>
+          <FILE id="ZRqwTz" name="TwonkRWEditor.cpp" compile="1" resource="0"
+                file="Source/FX/Robotization-Whisperization/TwonkRWEditor.cpp"/>
+          <FILE id="vdF12g" name="TwonkRWEditor.h" compile="0" resource="0" file="Source/FX/Robotization-Whisperization/TwonkRWEditor.h"/>
+          <FILE id="MhoNz4" name="TwonkRWProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/Robotization-Whisperization/TwonkRWProcessor.cpp"/>
+          <FILE id="eA6MDv" name="TwonkRWProcessor.h" compile="0" resource="0"
+                file="Source/FX/Robotization-Whisperization/TwonkRWProcessor.h"/>
+        </GROUP>
+        <GROUP id="{064E2E72-9C31-0F33-0C54-6F722C4B5D27}" name="Tremolo">
+          <FILE id="lOH2jw" name="TwonkTremoloEditor.h" compile="0" resource="0"
+                file="Source/FX/Tremolo/TwonkTremoloEditor.h"/>
+          <FILE id="K9izb4" name="TwonkTremoloProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/Tremolo/TwonkTremoloProcessor.cpp"/>
+          <FILE id="fTusjl" name="TwonkTremoloProcessor.h" compile="0" resource="0"
+                file="Source/FX/Tremolo/TwonkTremoloProcessor.h"/>
+          <FILE id="svX9KF" name="TwonkTremoloEditor.cpp" compile="1" resource="0"
+                file="Source/FX/Tremolo/TwonkTremoloEditor.cpp"/>
+        </GROUP>
+        <GROUP id="{665B2A41-B322-2EBF-69CD-444ABA6174D4}" name="Wah-Wah">
+          <FILE id="ob5VpI" name="TwonkWWEditor.cpp" compile="1" resource="0"
+                file="Source/FX/Wah-Wah/TwonkWWEditor.cpp"/>
+          <FILE id="zHmNXP" name="TwonkWWEditor.h" compile="0" resource="0" file="Source/FX/Wah-Wah/TwonkWWEditor.h"/>
+          <FILE id="dtNtj2" name="TwonkWWProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/Wah-Wah/TwonkWWProcessor.cpp"/>
+          <FILE id="iie6us" name="TwonkWWProcessor.h" compile="0" resource="0"
+                file="Source/FX/Wah-Wah/TwonkWWProcessor.h"/>
+        </GROUP>
+        <FILE id="swQiJx" name="PluginParameter.h" compile="0" resource="0"
+              file="Source/FX/PluginParameter.h"/>
+        <FILE id="CbOOkz" name="TwonkFilters.cpp" compile="1" resource="0"
+              file="Source/FX/TwonkFilters.cpp"/>
+        <FILE id="YnA2wY" name="TwonkFilters.h" compile="0" resource="0" file="Source/FX/TwonkFilters.h"/>
+      </GROUP>
       <FILE id="bcv7n6" name="TwonkSlider.cpp" compile="1" resource="0" file="Source/TwonkSlider.cpp"/>
       <FILE id="vGrTrK" name="TwonkSlider.h" compile="0" resource="0" file="Source/TwonkSlider.h"/>
       <FILE id="MF2LSG" name="TwonkLookAndFeel.h" compile="0" resource="0"
@@ -75,6 +206,25 @@
               file="Source/Filters/InternalFilters.h"/>
       </GROUP>
       <GROUP id="{D892BFB2-FE85-B70F-10D3-450F407E2B3D}" name="UI">
+        <FILE id="Rs82B4" name="TwonkBubbleComponent.cpp" compile="1" resource="0"
+              file="Source/UI/TwonkBubbleComponent.cpp"/>
+        <FILE id="eWNOJC" name="TwonkBubbleComponent.h" compile="0" resource="0"
+              file="Source/UI/TwonkBubbleComponent.h"/>
+        <FILE id="sY7LP8" name="TwonkFilterComponent.cpp" compile="1" resource="0"
+              file="Source/UI/TwonkFilterComponent.cpp"/>
+        <FILE id="xJvh7N" name="TwonkFilterComponent.h" compile="0" resource="0"
+              file="Source/UI/TwonkFilterComponent.h"/>
+        <FILE id="hjEdYo" name="TwonkFilterConnector.cpp" compile="1" resource="0"
+              file="Source/UI/TwonkFilterConnector.cpp"/>
+        <FILE id="sa4yf3" name="TwonkFilterConnector.h" compile="0" resource="0"
+              file="Source/UI/TwonkFilterConnector.h"/>
+        <FILE id="aSQVEf" name="TwonkFilterComponentPin.cpp" compile="1" resource="0"
+              file="Source/UI/TwonkFilterComponentPin.cpp"/>
+        <FILE id="QL7bD3" name="TwonkFilterComponentPin.h" compile="0" resource="0"
+              file="Source/UI/TwonkFilterComponentPin.h"/>
+        <FILE id="zXrRsE" name="GraphDocument.cpp" compile="1" resource="0"
+              file="Source/UI/GraphDocument.cpp"/>
+        <FILE id="Nv5yqA" name="GraphDocument.h" compile="0" resource="0" file="Source/UI/GraphDocument.h"/>
         <FILE id="wPgLS9" name="GraphEditorPanel.cpp" compile="1" resource="0"
               file="Source/UI/GraphEditorPanel.cpp"/>
         <FILE id="BDMvfT" name="GraphEditorPanel.h" compile="0" resource="0"
@@ -88,28 +238,29 @@
       <FILE id="OmIhwQ" name="HostStartup.cpp" compile="1" resource="0" file="Source/HostStartup.cpp"/>
     </GROUP>
   </MAINGROUP>
-  <JUCEOPTIONS JUCE_WASAPI="0" JUCE_DIRECTSOUND="1" JUCE_ALSA="1" JUCE_QUICKTIME="disabled"
+  <JUCEOPTIONS JUCE_WASAPI="1" JUCE_DIRECTSOUND="1" JUCE_ALSA="1" JUCE_QUICKTIME="disabled"
                JUCE_USE_FLAC="0" JUCE_USE_OGGVORBIS="1" JUCE_USE_CDBURNER="0"
                JUCE_USE_CDREADER="0" JUCE_USE_CAMERA="0" JUCE_PLUGINHOST_AU="0"
-               JUCE_WEB_BROWSER="0" JUCE_PLUGINHOST_VST3="1" JUCE_PLUGINHOST_LADSPA="1"
-               JUCE_ASIO="0" JUCE_WASAPI_EXCLUSIVE="0" JUCE_JACK="1" JUCE_USE_ANDROID_OPENSLES="0"
-               JUCE_USE_ANDROID_OBOE="0" JUCE_BELA="0" JUCE_USE_WINRT_MIDI="0"
-               JUCE_DISABLE_AUDIO_MIXING_WITH_OTHER_APPS="0" JUCE_PLUGINHOST_VST="1"/>
+               JUCE_WEB_BROWSER="0" JUCE_PLUGINHOST_VST3="0" JUCE_PLUGINHOST_LADSPA="0"
+               JUCE_ASIO="0" JUCE_WASAPI_EXCLUSIVE="1" JUCE_JACK="1" JUCE_USE_ANDROID_OPENSLES="0"
+               JUCE_USE_ANDROID_OBOE="0" JUCE_BELA="0" JUCE_USE_WINRT_MIDI="1"
+               JUCE_DISABLE_AUDIO_MIXING_WITH_OTHER_APPS="0" JUCE_PLUGINHOST_VST="1"
+               JUCE_USE_CURL="1"/>
   <MODULES>
-    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_core" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_events" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
-    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
   </MODULES>
   <LIVE_SETTINGS>
     <OSX/>

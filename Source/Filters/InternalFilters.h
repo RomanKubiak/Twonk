@@ -28,6 +28,113 @@
 
 #include "FilterGraph.h"
 
+class InternalPlugin : public AudioPluginInstance
+{
+protected:
+	InternalPlugin (const PluginDescription& descr, bool _weHaveOurEditor = false,
+		const AudioChannelSet& channelSetToUse = AudioChannelSet::stereo())
+		: AudioPluginInstance (getBusProperties (descr.numInputChannels == 0, channelSetToUse)),
+		name  (descr.fileOrIdentifier.upToFirstOccurrenceOf (":", false, false)),
+		state (descr.fileOrIdentifier.fromFirstOccurrenceOf (":", false, false)),
+		isGenerator (descr.numInputChannels == 0),
+		hasMidi (descr.isInstrument),
+		channelSet (channelSetToUse)
+	{
+		jassert (channelSetToUse.size() == descr.numOutputChannels);
+		weHaveOurEditor = _weHaveOurEditor;
+	}
+
+public:
+	//==============================================================================
+	const String getName() const override { return name; }
+	double getTailLengthSeconds() const override { return 0.0; }
+	bool acceptsMidi() const override { return hasMidi; }
+	bool producesMidi() const override { return hasMidi; }
+	int getNumPrograms() override { return 0; }
+	int getCurrentProgram() override { return 0; }
+	void setCurrentProgram (int) override {}
+	const String getProgramName (int) override { return {}; }
+	void changeProgramName (int, const String&) override {}
+	void getStateInformation (juce::MemoryBlock&) override {}
+	void setStateInformation (const void*, int) override {}
+	bool isBusesLayoutSupported (const BusesLayout& layout) const override { return false; }
+
+	//==============================================================================
+	void fillInPluginDescription (PluginDescription& description) const override
+	{
+		description = getPluginDescription (name + ":" + state,
+			isGenerator,
+			hasMidi,
+			channelSet);
+	}
+
+	static PluginDescription getPluginDescription (const String& identifier,
+		bool registerAsGenerator,
+		bool acceptsMidi,
+		const AudioChannelSet& channelSetToUse
+		= AudioChannelSet::stereo())
+	{
+		PluginDescription descr;
+		auto pluginName = identifier.upToFirstOccurrenceOf (":", false, false);
+		auto pluginState = identifier.fromFirstOccurrenceOf (":", false, false);
+
+		descr.name = pluginName;
+		descr.descriptiveName = pluginName;
+		descr.pluginFormatName = "Internal";
+		descr.category = (registerAsGenerator ? (acceptsMidi ? "Synth" : "Generator") : "Effect");
+		descr.manufacturerName = "JUCE";
+		descr.version = ProjectInfo::versionString;
+		descr.fileOrIdentifier = pluginName + ":" + pluginState;
+		descr.uid = pluginName.hashCode();
+		descr.isInstrument = (acceptsMidi && registerAsGenerator);
+		descr.numInputChannels = (registerAsGenerator ? 0 : channelSetToUse.size());
+		descr.numOutputChannels = channelSetToUse.size();
+
+		return descr;
+	}
+
+	static PluginDescription getPluginDescriptionForTwonk (const String& identifier,
+		bool registerAsGenerator,
+		bool acceptsMidi,
+		const AudioChannelSet& channelSetToUse
+		= AudioChannelSet::stereo())
+	{
+		PluginDescription descr;
+		auto pluginName = identifier.upToFirstOccurrenceOf (":", false, false);
+		auto pluginState = identifier.fromFirstOccurrenceOf (":", false, false).upToLastOccurrenceOf(":", false, false);
+
+		descr.name = pluginName;
+		descr.descriptiveName = pluginName;
+		descr.pluginFormatName = "Internal";
+		descr.category = (registerAsGenerator ? (acceptsMidi ? "Synth" : "Generator") : "Effect");
+		descr.manufacturerName = "Instigator";
+		descr.fileOrIdentifier = pluginName + ":" + pluginState + ":Twonk";
+		descr.uid = pluginName.hashCode();
+		descr.isInstrument = (acceptsMidi && registerAsGenerator);
+		descr.numInputChannels = (registerAsGenerator ? 0 : channelSetToUse.size());
+		descr.numOutputChannels = channelSetToUse.size();
+
+		return descr;
+	}
+private:
+	static BusesProperties getBusProperties (bool registerAsGenerator,
+		const AudioChannelSet& channelSetToUse)
+	{
+		return registerAsGenerator ? BusesProperties().withOutput ("Output", channelSetToUse)
+			: BusesProperties().withInput  ("Input", channelSetToUse)
+			.withOutput ("Output", channelSetToUse);
+	}
+
+	//==============================================================================
+	String name, state;
+	bool isGenerator, hasMidi;
+	AudioChannelSet channelSet;
+	bool weHaveOurEditor;
+
+	//==============================================================================
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InternalPlugin)
+};
+
 
 //==============================================================================
 /**

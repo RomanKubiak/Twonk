@@ -68,20 +68,16 @@
 //==============================================================================
 // juce_audio_devices flags:
 
-#ifndef    JUCE_USE_WINRT_MIDI
- #define   JUCE_USE_WINRT_MIDI 0
-#endif
-
 #ifndef    JUCE_ASIO
  #define   JUCE_ASIO 0
 #endif
 
 #ifndef    JUCE_WASAPI
- #define   JUCE_WASAPI 0
+ #define   JUCE_WASAPI 1
 #endif
 
 #ifndef    JUCE_WASAPI_EXCLUSIVE
- #define   JUCE_WASAPI_EXCLUSIVE 0
+ #define   JUCE_WASAPI_EXCLUSIVE 1
 #endif
 
 #ifndef    JUCE_DIRECTSOUND
@@ -106,6 +102,10 @@
 
 #ifndef    JUCE_USE_ANDROID_OPENSLES
  #define   JUCE_USE_ANDROID_OPENSLES 0
+#endif
+
+#ifndef    JUCE_USE_WINRT_MIDI
+ #define   JUCE_USE_WINRT_MIDI 1
 #endif
 
 #ifndef    JUCE_DISABLE_AUDIO_MIXING_WITH_OTHER_APPS
@@ -143,7 +143,7 @@
 #endif
 
 #ifndef    JUCE_PLUGINHOST_VST3
- #define   JUCE_PLUGINHOST_VST3 1
+ #define   JUCE_PLUGINHOST_VST3 0
 #endif
 
 #ifndef    JUCE_PLUGINHOST_AU
@@ -151,7 +151,7 @@
 #endif
 
 #ifndef    JUCE_PLUGINHOST_LADSPA
- #define   JUCE_PLUGINHOST_LADSPA 1
+ #define   JUCE_PLUGINHOST_LADSPA 0
 #endif
 
 //==============================================================================
@@ -189,7 +189,7 @@
 #endif
 
 #ifndef    JUCE_USE_CURL
- //#define JUCE_USE_CURL 0
+ #define   JUCE_USE_CURL 1
 #endif
 
 #ifndef    JUCE_LOAD_CURL_SYMBOLS_LAZILY
@@ -280,10 +280,6 @@
  //#define JUCE_USE_XCURSOR 1
 #endif
 
-#ifndef    JUCE_WIN_PER_MONITOR_DPI_AWARE
- //#define JUCE_WIN_PER_MONITOR_DPI_AWARE 1
-#endif
-
 //==============================================================================
 // juce_gui_extra flags:
 
@@ -294,7 +290,6 @@
 #ifndef    JUCE_ENABLE_LIVE_CONSTANT_EDITOR
  //#define JUCE_ENABLE_LIVE_CONSTANT_EDITOR 0
 #endif
-
 //==============================================================================
 #ifndef    JUCE_STANDALONE_APPLICATION
  #if defined(JucePlugin_Name) && defined(JucePlugin_Build_Standalone)

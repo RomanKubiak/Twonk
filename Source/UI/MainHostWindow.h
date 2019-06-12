@@ -87,9 +87,6 @@ public:
 
     void addPluginsToMenu (PopupMenu&) const;
     const PluginDescription* getChosenType (int menuID) const;
-
-    bool isDoublePrecisionProcessing();
-    void updatePrecisionMenuItem (ApplicationCommandInfo& info);
 	void updateRenderingEngine (int index);
 	void setRenderingEngine (int renderingEngineIndex);
     std::unique_ptr<GraphDocumentComponent> graphHolder;

@@ -43,10 +43,10 @@ class JUCE_API  TextInputTarget
 public:
     //==============================================================================
     /** */
-    TextInputTarget() = default;
+    TextInputTarget() {}
 
     /** Destructor. */
-    virtual ~TextInputTarget() = default;
+    virtual ~TextInputTarget() {}
 
     /** Returns true if this input target is currently accepting input.
         For example, a text editor might return false if it's in read-only mode.

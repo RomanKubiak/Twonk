@@ -65,7 +65,7 @@ public:
     explicit ProgressBar (double& progress);
 
     /** Destructor. */
-    ~ProgressBar() override;
+    ~ProgressBar();
 
     //==============================================================================
     /** Turns the percentage display on or off.
@@ -102,7 +102,7 @@ public:
     /** This abstract base class is implemented by LookAndFeel classes. */
     struct JUCE_API  LookAndFeelMethods
     {
-        virtual ~LookAndFeelMethods() = default;
+        virtual ~LookAndFeelMethods() {}
 
         /** Draws a progress bar.
 

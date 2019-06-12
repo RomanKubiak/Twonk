@@ -136,7 +136,7 @@ public:
         class Visitor
         {
         public:
-            virtual ~Visitor() = default;
+            virtual ~Visitor() {}
             virtual void visit (const Scope&) = 0;
         };
 

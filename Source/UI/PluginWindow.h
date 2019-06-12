@@ -148,22 +148,12 @@ public:
          node (n), type (t)
     {
         setSize (400, 300);
-
+		DBG("create plugin window");
         if (auto* ui = createProcessorEditor (*node->getProcessor(), type))
             setContentOwned (ui, true);
 
-       #if JUCE_IOS || JUCE_ANDROID
-        auto screenBounds = Desktop::getInstance().getDisplays().getTotalBounds (true).toFloat();
-
-        auto scaleFactor = jmin ((screenBounds.getWidth() - 50) / getWidth(), (screenBounds.getHeight() - 50) / getHeight());
-        if (scaleFactor < 1.0f)
-            setSize (getWidth() * scaleFactor, getHeight() * scaleFactor);
-
-        setTopLeftPosition (20, 20);
-       #else
         setTopLeftPosition (node->properties.getWithDefault (getLastXProp (type), Random::getSystemRandom().nextInt (500)),
                             node->properties.getWithDefault (getLastYProp (type), Random::getSystemRandom().nextInt (500)));
-       #endif
 
         node->properties.set (getOpenProp (type), true);
 

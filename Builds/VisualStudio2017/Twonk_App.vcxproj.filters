@@ -2,6 +2,39 @@
 
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Twonk\Source\FX\Compressor">
+      <UniqueIdentifier>{E1DEE12B-0A63-9BBA-02BC-705E50023A8F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\FX\Distortion">
+      <UniqueIdentifier>{CBD82D54-4D61-02AA-CFC9-6C2665579C70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\FX\Flanger">
+      <UniqueIdentifier>{AD44E9BE-45D2-DCEA-6BA3-B26AF6FB0ECC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\FX\Phaser">
+      <UniqueIdentifier>{5EFE7C29-360B-E0AB-F44B-AA983545D6F8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\FX\Ping-Pong Delay">
+      <UniqueIdentifier>{8F122A87-68A2-B9B0-1F23-6886D0943D7E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\FX\Pitch Shift">
+      <UniqueIdentifier>{EB12EDE4-07CA-FEA1-896C-BF5DEF379286}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\FX\Ring Modulator">
+      <UniqueIdentifier>{E3E2DB4E-6EE1-E656-3FD3-820836F0B78F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\FX\Robotization-Whisperization">
+      <UniqueIdentifier>{D57EF017-DAD1-9172-084C-BA3894823F48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\FX\Tremolo">
+      <UniqueIdentifier>{38EEF8D6-C163-B8CC-1393-B5C20D7F5376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\FX\Wah-Wah">
+      <UniqueIdentifier>{6BD92D8B-DD3E-4DFC-D0F8-8A51BFC27B02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\FX">
+      <UniqueIdentifier>{67230778-8169-4A5D-C1C0-5043447FE1FE}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Twonk\Source\Filters">
       <UniqueIdentifier>{625A5023-3AE7-6F48-9BBD-66713F3AF3AB}</UniqueIdentifier>
     </Filter>
@@ -20,6 +53,9 @@
     <Filter Include="JUCE Modules\juce_audio_basics\buffers">
       <UniqueIdentifier>{5FCF559E-451A-CB1E-B177-A5DC5A0005BB}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\juce_audio_basics\effects">
+      <UniqueIdentifier>{31054003-EA72-6A9D-D650-56451D9820E6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\juce_audio_basics\midi">
       <UniqueIdentifier>{D78296AF-218E-B17E-7F8B-9D148601188D}</UniqueIdentifier>
     </Filter>
@@ -34,9 +70,6 @@
     </Filter>
     <Filter Include="JUCE Modules\juce_audio_basics\synthesisers">
       <UniqueIdentifier>{8292766D-2459-2E7E-7615-17216318BA93}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\juce_audio_basics\utilities">
-      <UniqueIdentifier>{9BD56105-DAB4-EBD5-00DD-BD540E98FE88}</UniqueIdentifier>
     </Filter>
     <Filter Include="JUCE Modules\juce_audio_basics">
       <UniqueIdentifier>{10472B2C-9888-D269-F351-0D0AC3BCD16C}</UniqueIdentifier>
@@ -134,6 +167,9 @@
     <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst">
       <UniqueIdentifier>{B90A44F3-B62D-B5C0-81A2-683D2650AEE6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x">
+      <UniqueIdentifier>{0723C856-9C0F-5AF7-81B2-1986BC1E09E3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces">
       <UniqueIdentifier>{DAF30656-5915-0E45-C4E4-54439617D525}</UniqueIdentifier>
     </Filter>
@@ -205,9 +241,6 @@
     </Filter>
     <Filter Include="JUCE Modules\juce_core\misc">
       <UniqueIdentifier>{09B91E68-1FF4-C7ED-9055-D4D96E66A0BA}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\juce_core\native\java">
-      <UniqueIdentifier>{30B3DA63-C1E4-F2EA-CEF0-8035D8CBFF64}</UniqueIdentifier>
     </Filter>
     <Filter Include="JUCE Modules\juce_core\native">
       <UniqueIdentifier>{4F24EEED-AA33-AC6C-9A39-72E71CF83EF0}</UniqueIdentifier>
@@ -353,9 +386,6 @@
     <Filter Include="JUCE Modules\juce_gui_basics\components">
       <UniqueIdentifier>{E4EA47E5-B41C-2A19-1783-7E9104096ECD}</UniqueIdentifier>
     </Filter>
-    <Filter Include="JUCE Modules\juce_gui_basics\desktop">
-      <UniqueIdentifier>{B331BC33-9770-3DB5-73F2-BC2469ECCF7F}</UniqueIdentifier>
-    </Filter>
     <Filter Include="JUCE Modules\juce_gui_basics\drawables">
       <UniqueIdentifier>{46A17AC9-0BFF-B5CE-26D6-B9D1992C88AC}</UniqueIdentifier>
     </Filter>
@@ -439,6 +469,69 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\FX\Compressor\TwonkCEEditor.cpp">
+      <Filter>Twonk\Source\FX\Compressor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Compressor\TwonkCEProcessor.cpp">
+      <Filter>Twonk\Source\FX\Compressor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Distortion\TwonkDistortionEditor.cpp">
+      <Filter>Twonk\Source\FX\Distortion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Distortion\TwonkDistortionProcessor.cpp">
+      <Filter>Twonk\Source\FX\Distortion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Flanger\TwonkFlangerEditor.cpp">
+      <Filter>Twonk\Source\FX\Flanger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Flanger\TwonkFlangerProcessor.cpp">
+      <Filter>Twonk\Source\FX\Flanger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Phaser\TwonkPhaserEditor.cpp">
+      <Filter>Twonk\Source\FX\Phaser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Phaser\TwonkPhaserProcessor.cpp">
+      <Filter>Twonk\Source\FX\Phaser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Ping-Pong Delay\TwonkPPDelayEditor.cpp">
+      <Filter>Twonk\Source\FX\Ping-Pong Delay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Ping-Pong Delay\TwonkPPDelayProcessor.cpp">
+      <Filter>Twonk\Source\FX\Ping-Pong Delay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Pitch Shift\TwonkPSProcessor.cpp">
+      <Filter>Twonk\Source\FX\Pitch Shift</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Pitch Shift\TwonkPSEditor.cpp">
+      <Filter>Twonk\Source\FX\Pitch Shift</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Ring Modulator\TwonkRMEditor.cpp">
+      <Filter>Twonk\Source\FX\Ring Modulator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Ring Modulator\TwonkRMProcessor.cpp">
+      <Filter>Twonk\Source\FX\Ring Modulator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWEditor.cpp">
+      <Filter>Twonk\Source\FX\Robotization-Whisperization</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.cpp">
+      <Filter>Twonk\Source\FX\Robotization-Whisperization</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Tremolo\TwonkTremoloProcessor.cpp">
+      <Filter>Twonk\Source\FX\Tremolo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Tremolo\TwonkTremoloEditor.cpp">
+      <Filter>Twonk\Source\FX\Tremolo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Wah-Wah\TwonkWWEditor.cpp">
+      <Filter>Twonk\Source\FX\Wah-Wah</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Wah-Wah\TwonkWWProcessor.cpp">
+      <Filter>Twonk\Source\FX\Wah-Wah</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\TwonkFilters.cpp">
+      <Filter>Twonk\Source\FX</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\TwonkSlider.cpp">
       <Filter>Twonk\Source</Filter>
     </ClCompile>
@@ -453,6 +546,21 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Filters\InternalFilters.cpp">
       <Filter>Twonk\Source\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkBubbleComponent.cpp">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkFilterComponent.cpp">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkFilterConnector.cpp">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkFilterComponentPin.cpp">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\GraphDocument.cpp">
+      <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\GraphEditorPanel.cpp">
       <Filter>Twonk\Source\UI</Filter>
@@ -469,11 +577,17 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
       <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioProcessLoadMeasurer.cpp">
-      <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_FloatVectorOperations.cpp">
       <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_CatmullRomInterpolator.cpp">
+      <Filter>JUCE Modules\juce_audio_basics\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_IIRFilter.cpp">
+      <Filter>JUCE Modules\juce_audio_basics\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_LagrangeInterpolator.cpp">
+      <Filter>JUCE Modules\juce_audio_basics\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\midi\juce_MidiBuffer.cpp">
       <Filter>JUCE Modules\juce_audio_basics\midi</Filter>
@@ -546,18 +660,6 @@
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\synthesisers\juce_Synthesiser.cpp">
       <Filter>JUCE Modules\juce_audio_basics\synthesisers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\utilities\juce_CatmullRomInterpolator.cpp">
-      <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\utilities\juce_IIRFilter.cpp">
-      <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\utilities\juce_LagrangeInterpolator.cpp">
-      <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\utilities\juce_SmoothedValue.cpp">
-      <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\juce_audio_basics.cpp">
       <Filter>JUCE Modules\juce_audio_basics</Filter>
@@ -859,9 +961,6 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\hostclasses.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\pluginterfacesupport.cpp">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstbus.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
     </ClCompile>
@@ -908,9 +1007,6 @@
       <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_processors\processors\juce_AudioProcessorGraph.cpp">
-      <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_processors\processors\juce_AudioProcessorParameterGroup.cpp">
       <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_processors\processors\juce_GenericAudioProcessorEditor.cpp">
@@ -1006,9 +1102,6 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\containers\juce_AbstractFifo.cpp">
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\containers\juce_ArrayBase.cpp">
-      <Filter>JUCE Modules\juce_core\containers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\containers\juce_DynamicObject.cpp">
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClCompile>
@@ -1018,13 +1111,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\containers\juce_NamedValueSet.cpp">
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\containers\juce_OwnedArray.cpp">
-      <Filter>JUCE Modules\juce_core\containers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\containers\juce_PropertySet.cpp">
-      <Filter>JUCE Modules\juce_core\containers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\containers\juce_ReferenceCountedArray.cpp">
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\containers\juce_SparseSet.cpp">
@@ -1081,9 +1168,6 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\memory\juce_MemoryBlock.cpp">
       <Filter>JUCE Modules\juce_core\memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\misc\juce_ConsoleApplication.cpp">
-      <Filter>JUCE Modules\juce_core\misc</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\misc\juce_Result.cpp">
       <Filter>JUCE Modules\juce_core\misc</Filter>
     </ClCompile>
@@ -1097,9 +1181,6 @@
       <Filter>JUCE Modules\juce_core\misc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\native\juce_android_Files.cpp">
-      <Filter>JUCE Modules\juce_core\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\native\juce_android_JNIHelpers.cpp">
       <Filter>JUCE Modules\juce_core\native</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_core\native\juce_android_Misc.cpp">
@@ -1369,9 +1450,6 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.cpp">
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_data_structures\values\juce_ValueWithDefault.cpp">
-      <Filter>JUCE Modules\juce_data_structures\values</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_data_structures\juce_data_structures.cpp">
       <Filter>JUCE Modules\juce_data_structures</Filter>
     </ClCompile>
@@ -1395,9 +1473,6 @@
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_dsp\frequency\juce_Windowing.cpp">
       <Filter>JUCE Modules\juce_dsp\frequency</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_dsp\maths\juce_LogRampedValue_test.cpp">
-      <Filter>JUCE Modules\juce_dsp\maths</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_dsp\maths\juce_LookupTable.cpp">
       <Filter>JUCE Modules\juce_dsp\maths</Filter>
@@ -1457,9 +1532,6 @@
       <Filter>JUCE Modules\juce_events\interprocess</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_events\interprocess\juce_InterprocessConnectionServer.cpp">
-      <Filter>JUCE Modules\juce_events\interprocess</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_events\interprocess\juce_NetworkServiceDiscovery.cpp">
       <Filter>JUCE Modules\juce_events\interprocess</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_events\messages\juce_ApplicationBase.cpp">
@@ -1867,14 +1939,11 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_ComponentListener.cpp">
       <Filter>JUCE Modules\juce_gui_basics\components</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_ModalComponentManager.cpp">
+    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_Desktop.cpp">
       <Filter>JUCE Modules\juce_gui_basics\components</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_basics\desktop\juce_Desktop.cpp">
-      <Filter>JUCE Modules\juce_gui_basics\desktop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_basics\desktop\juce_Displays.cpp">
-      <Filter>JUCE Modules\juce_gui_basics\desktop</Filter>
+    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_ModalComponentManager.cpp">
+      <Filter>JUCE Modules\juce_gui_basics\components</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_basics\drawables\juce_Drawable.cpp">
       <Filter>JUCE Modules\juce_gui_basics\drawables</Filter>
@@ -2383,6 +2452,9 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_opengl\juce_opengl.mm">
       <Filter>JUCE Modules\juce_opengl</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp">
+      <Filter>JUCE Library Code</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_basics.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
@@ -2427,6 +2499,75 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\FX\Compressor\TwonkCEEditor.h">
+      <Filter>Twonk\Source\FX\Compressor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Compressor\TwonkCEProcessor.h">
+      <Filter>Twonk\Source\FX\Compressor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Distortion\TwonkDistortionEditor.h">
+      <Filter>Twonk\Source\FX\Distortion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Distortion\TwonkDistortionProcessor.h">
+      <Filter>Twonk\Source\FX\Distortion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Flanger\TwonkFlangerEditor.h">
+      <Filter>Twonk\Source\FX\Flanger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Flanger\TwonkFlangerProcessor.h">
+      <Filter>Twonk\Source\FX\Flanger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Phaser\TwonkPhaserEditor.h">
+      <Filter>Twonk\Source\FX\Phaser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Phaser\TwonkPhaserProcessor.h">
+      <Filter>Twonk\Source\FX\Phaser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Ping-Pong Delay\TwonkPPDelayEditor.h">
+      <Filter>Twonk\Source\FX\Ping-Pong Delay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Ping-Pong Delay\TwonkPPDelayProcessor.h">
+      <Filter>Twonk\Source\FX\Ping-Pong Delay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Pitch Shift\TwonkPSEditor.h">
+      <Filter>Twonk\Source\FX\Pitch Shift</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Pitch Shift\TwonkPSProcessor.h">
+      <Filter>Twonk\Source\FX\Pitch Shift</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Ring Modulator\TwonkRMProcessor.h">
+      <Filter>Twonk\Source\FX\Ring Modulator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Ring Modulator\TwonkRMEditor.h">
+      <Filter>Twonk\Source\FX\Ring Modulator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\STFT.h">
+      <Filter>Twonk\Source\FX\Robotization-Whisperization</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWEditor.h">
+      <Filter>Twonk\Source\FX\Robotization-Whisperization</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.h">
+      <Filter>Twonk\Source\FX\Robotization-Whisperization</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Tremolo\TwonkTremoloEditor.h">
+      <Filter>Twonk\Source\FX\Tremolo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Tremolo\TwonkTremoloProcessor.h">
+      <Filter>Twonk\Source\FX\Tremolo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Wah-Wah\TwonkWWEditor.h">
+      <Filter>Twonk\Source\FX\Wah-Wah</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Wah-Wah\TwonkWWProcessor.h">
+      <Filter>Twonk\Source\FX\Wah-Wah</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\PluginParameter.h">
+      <Filter>Twonk\Source\FX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\TwonkFilters.h">
+      <Filter>Twonk\Source\FX</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\TwonkSlider.h">
       <Filter>Twonk\Source</Filter>
     </ClInclude>
@@ -2441,6 +2582,21 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Filters\InternalFilters.h">
       <Filter>Twonk\Source\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkBubbleComponent.h">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkFilterComponent.h">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkFilterConnector.h">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkFilterComponentPin.h">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\GraphDocument.h">
+      <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\GraphEditorPanel.h">
       <Filter>Twonk\Source\UI</Filter>
@@ -2460,14 +2616,29 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h">
       <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioProcessLoadMeasurer.h">
-      <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioSampleBuffer.h">
       <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_FloatVectorOperations.h">
       <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_CatmullRomInterpolator.h">
+      <Filter>JUCE Modules\juce_audio_basics\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_Decibels.h">
+      <Filter>JUCE Modules\juce_audio_basics\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_IIRFilter.h">
+      <Filter>JUCE Modules\juce_audio_basics\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_LagrangeInterpolator.h">
+      <Filter>JUCE Modules\juce_audio_basics\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_LinearSmoothedValue.h">
+      <Filter>JUCE Modules\juce_audio_basics\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_Reverb.h">
+      <Filter>JUCE Modules\juce_audio_basics\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\midi\juce_MidiBuffer.h">
       <Filter>JUCE Modules\juce_audio_basics\midi</Filter>
@@ -2549,27 +2720,6 @@
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\synthesisers\juce_Synthesiser.h">
       <Filter>JUCE Modules\juce_audio_basics\synthesisers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\utilities\juce_ADSR.h">
-      <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\utilities\juce_CatmullRomInterpolator.h">
-      <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\utilities\juce_Decibels.h">
-      <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\utilities\juce_IIRFilter.h">
-      <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\utilities\juce_LagrangeInterpolator.h">
-      <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\utilities\juce_Reverb.h">
-      <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\utilities\juce_SmoothedValue.h">
-      <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\juce_audio_basics.h">
       <Filter>JUCE Modules\juce_audio_basics</Filter>
@@ -2991,9 +3141,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\smartpointer.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\typesizecheck.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ustring.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
     </ClInclude>
@@ -3039,19 +3186,10 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstmidicontrollers.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstmidilearn.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstnoteexpression.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstparameterchanges.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstphysicalui.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstpluginterfacesupport.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstplugview.h">
@@ -3069,14 +3207,20 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstunits.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstpshpack4.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstspeaker.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vsttypes.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\aeffect.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\aeffectx.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\vstfxstore.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common</Filter>
@@ -3085,9 +3229,6 @@
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\hostclasses.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\pluginterfacesupport.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstbus.h">
@@ -3150,9 +3291,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\processors\juce_AudioProcessorParameter.h">
       <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\processors\juce_AudioProcessorParameterGroup.h">
-      <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\processors\juce_GenericAudioProcessorEditor.h">
       <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
     </ClInclude>
@@ -3184,9 +3322,6 @@
       <Filter>JUCE Modules\juce_audio_processors\utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\utilities\juce_AudioProcessorValueTreeState.h">
-      <Filter>JUCE Modules\juce_audio_processors\utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\utilities\juce_RangedAudioParameter.h">
       <Filter>JUCE Modules\juce_audio_processors\utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\juce_audio_processors.h">
@@ -3244,9 +3379,6 @@
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\containers\juce_ArrayAllocationBase.h">
-      <Filter>JUCE Modules\juce_core\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\containers\juce_ArrayBase.h">
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\containers\juce_DynamicObject.h">
@@ -3360,9 +3492,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\memory\juce_HeapBlock.h">
       <Filter>JUCE Modules\juce_core\memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\memory\juce_HeavyweightLeakedObjectDetector.h">
-      <Filter>JUCE Modules\juce_core\memory</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\memory\juce_LeakedObjectDetector.h">
       <Filter>JUCE Modules\juce_core\memory</Filter>
     </ClInclude>
@@ -3390,9 +3519,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\memory\juce_WeakReference.h">
       <Filter>JUCE Modules\juce_core\memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\misc\juce_ConsoleApplication.h">
-      <Filter>JUCE Modules\juce_core\misc</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\misc\juce_Result.h">
       <Filter>JUCE Modules\juce_core\misc</Filter>
     </ClInclude>
@@ -3418,9 +3544,6 @@
       <Filter>JUCE Modules\juce_core\native</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\native\juce_osx_ObjCHelpers.h">
-      <Filter>JUCE Modules\juce_core\native</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\native\juce_posix_IPAddress.h">
       <Filter>JUCE Modules\juce_core\native</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\native\juce_posix_SharedCode.h">
@@ -3729,9 +3852,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_dsp\maths\juce_FastMathApproximations.h">
       <Filter>JUCE Modules\juce_dsp\maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_dsp\maths\juce_LogRampedValue.h">
-      <Filter>JUCE Modules\juce_dsp\maths</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_dsp\maths\juce_LookupTable.h">
       <Filter>JUCE Modules\juce_dsp\maths</Filter>
     </ClInclude>
@@ -3832,9 +3952,6 @@
       <Filter>JUCE Modules\juce_events\interprocess</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_events\interprocess\juce_InterprocessConnectionServer.h">
-      <Filter>JUCE Modules\juce_events\interprocess</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_events\interprocess\juce_NetworkServiceDiscovery.h">
       <Filter>JUCE Modules\juce_events\interprocess</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_events\messages\juce_ApplicationBase.h">
@@ -4119,14 +4236,11 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_ComponentListener.h">
       <Filter>JUCE Modules\juce_gui_basics\components</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_ModalComponentManager.h">
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_Desktop.h">
       <Filter>JUCE Modules\juce_gui_basics\components</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\desktop\juce_Desktop.h">
-      <Filter>JUCE Modules\juce_gui_basics\desktop</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\desktop\juce_Displays.h">
-      <Filter>JUCE Modules\juce_gui_basics\desktop</Filter>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_ModalComponentManager.h">
+      <Filter>JUCE Modules\juce_gui_basics\components</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\drawables\juce_Drawable.h">
       <Filter>JUCE Modules\juce_gui_basics\drawables</Filter>
@@ -4521,9 +4635,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_extra\embedding\juce_NSViewComponent.h">
       <Filter>JUCE Modules\juce_gui_extra\embedding</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_extra\embedding\juce_ScopedDPIAwarenessDisabler.h">
-      <Filter>JUCE Modules\juce_gui_extra\embedding</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_extra\embedding\juce_UIViewComponent.h">
       <Filter>JUCE Modules\juce_gui_extra\embedding</Filter>
     </ClInclude>
@@ -4647,11 +4758,26 @@
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">
       <Filter>JUCE Library Code</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h">
+      <Filter>JUCE Library Code</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">
       <Filter>JUCE Library Code</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Source\Settings.svg">
+      <Filter>Twonk\Source</Filter>
+    </None>
+    <None Include="..\..\Source\PianoKeyboard.svg">
+      <Filter>Twonk\Source</Filter>
+    </None>
+    <None Include="..\..\Source\1.jpg">
+      <Filter>Twonk\Source</Filter>
+    </None>
+    <None Include="..\..\Source\60sekuntia.ttf">
+      <Filter>Twonk\Source</Filter>
+    </None>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_formats\codecs\flac\Flac Licence.txt">
       <Filter>JUCE Modules\juce_audio_formats\codecs\flac</Filter>
     </None>
@@ -4672,9 +4798,6 @@
     </None>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\README.md">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK</Filter>
-    </None>
-    <None Include="..\..\JuceLibraryCode\modules\juce_core\native\java\README.txt">
-      <Filter>JUCE Modules\juce_core\native\java</Filter>
     </None>
     <None Include="..\..\JuceLibraryCode\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>

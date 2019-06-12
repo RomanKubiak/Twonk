@@ -26,6 +26,7 @@
 
 #pragma once
 
+#include "../JuceLibraryCode/JuceHeader.h"
 class MainHostWindow;
 class GraphDocumentComponent;
 

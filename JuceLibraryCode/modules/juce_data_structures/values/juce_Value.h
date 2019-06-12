@@ -138,8 +138,8 @@ public:
     class JUCE_API  Listener
     {
     public:
-        Listener() = default;
-        virtual ~Listener() = default;
+        Listener()          {}
+        virtual ~Listener() {}
 
         /** Called when a Value object is changed.
 
@@ -180,7 +180,7 @@ public:
     {
     public:
         ValueSource();
-        ~ValueSource() override;
+        virtual ~ValueSource();
 
         /** Returns the current value of this object. */
         virtual var getValue() const = 0;

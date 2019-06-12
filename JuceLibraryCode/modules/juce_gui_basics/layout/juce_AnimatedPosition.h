@@ -55,8 +55,9 @@ class AnimatedPosition  : private Timer
 {
 public:
     AnimatedPosition()
-        :  range (-std::numeric_limits<double>::max(),
-                   std::numeric_limits<double>::max())
+        : position(), grabbedPos(), releaseVelocity(),
+          range (-std::numeric_limits<double>::max(),
+                  std::numeric_limits<double>::max())
     {
     }
 
@@ -133,7 +134,7 @@ public:
     class Listener
     {
     public:
-        virtual ~Listener() = default;
+        virtual ~Listener() {}
 
         /** Called synchronously when an AnimatedPosition changes. */
         virtual void positionChanged (AnimatedPosition&, double newPosition) = 0;
@@ -153,7 +154,7 @@ public:
 
 private:
     //==============================================================================
-    double position = 0.0, grabbedPos = 0.0, releaseVelocity = 0.0;
+    double position, grabbedPos, releaseVelocity;
     Range<double> range;
     Time lastUpdate, lastDrag;
     ListenerList<Listener> listeners;

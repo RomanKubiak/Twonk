@@ -148,13 +148,9 @@ PluginWindow* FilterGraph::getOrCreateWindowFor (AudioProcessorGraph::Node* node
 {
     jassert (node != nullptr);
 
-   #if JUCE_IOS || JUCE_ANDROID
-    closeAnyOpenPluginWindows();
-   #else
     for (auto* w : activePluginWindows)
         if (w->node.get() == node && w->type == type)
             return w;
-   #endif
 
     if (auto* processor = node->getProcessor())
     {
@@ -162,21 +158,17 @@ PluginWindow* FilterGraph::getOrCreateWindowFor (AudioProcessorGraph::Node* node
         {
             auto description = plugin->getPluginDescription();
 
+			if (description.fileOrIdentifier.endsWith(":Twonk"))
+			{
+				DBG("open a twonk filter editor");
+				return activePluginWindows.add (new PluginWindow (node, type, activePluginWindows));
+			}
             if (description.pluginFormatName == "Internal")
             {
                 getCommandManager().invokeDirectly (CommandIDs::showAudioSettings, false);
                 return nullptr;
             }
         }
-
-       #if JUCE_WINDOWS && JUCE_WIN_PER_MONITOR_DPI_AWARE
-        if (! node->properties["DPIAware"]
-            && ! node->getProcessor()->getName().contains ("Kontakt")) // Kontakt doesn't behave correctly in DPI unaware mode...
-        {
-            ScopedDPIAwarenessDisabler disableDPIAwareness;
-            return activePluginWindows.add (new PluginWindow (node, type, activePluginWindows));
-        }
-       #endif
 
         return activePluginWindows.add (new PluginWindow (node, type, activePluginWindows));
     }

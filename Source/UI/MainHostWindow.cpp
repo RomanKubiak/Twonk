@@ -27,7 +27,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MainHostWindow.h"
 #include "../Filters/InternalFilters.h"
-
+#include "../UI/GraphDocument.h"
 
 //==============================================================================
 class MainHostWindow::PluginListWindow  : public DocumentWindow
@@ -132,7 +132,7 @@ MainHostWindow::MainHostWindow(bool _fullscreen, bool _opengl)
     addKeyListener (getCommandManager().getKeyMappings());
 
     Process::setPriority (Process::HighPriority);
-    setMenuBar (this, 32);
+    // setMenuBar (this, 32);
     getCommandManager().setFirstCommandTarget (this);
 
 	if (opengl)
@@ -321,7 +321,6 @@ void MainHostWindow::menuItemSelected (int menuItemID, int /*topLevelMenuIndex*/
             if (auto* graph = graphHolder->graph.get())
                 graph->clear();
     }
-   #if ! (JUCE_ANDROID || JUCE_IOS)
     else if (menuItemID >= 100 && menuItemID < 200)
     {
         RecentlyOpenedFilesList recentFiles;
@@ -333,7 +332,6 @@ void MainHostWindow::menuItemSelected (int menuItemID, int /*topLevelMenuIndex*/
                 if (graph != nullptr && graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
                     graph->loadFrom (recentFiles.getFile (menuItemID - 100), true);
     }
-   #endif
     else if (menuItemID >= 200 && menuItemID < 210)
     {
              if (menuItemID == 200)     pluginSortMethod = KnownPluginList::defaultOrder;
@@ -401,16 +399,12 @@ void MainHostWindow::getAllCommands (Array<CommandID>& commands)
 {
     // this returns the set of all commands that this target can perform..
     const CommandID ids[] = {
-                             #if ! (JUCE_IOS || JUCE_ANDROID)
                               CommandIDs::newFile,
                               CommandIDs::open,
                               CommandIDs::save,
                               CommandIDs::saveAs,
-                             #endif
                               CommandIDs::showPluginListEditor,
                               CommandIDs::showAudioSettings,
-                              CommandIDs::toggleDoublePrecision,
-                              CommandIDs::aboutBox,
                               CommandIDs::allWindowsForward
                             };
 
@@ -423,7 +417,6 @@ void MainHostWindow::getCommandInfo (const CommandID commandID, ApplicationComma
 
     switch (commandID)
     {
-   #if ! (JUCE_IOS || JUCE_ANDROID)
     case CommandIDs::newFile:
         result.setInfo ("New", "Creates a new filter graph file", category, 0);
         result.defaultKeypresses.add(KeyPress('n', ModifierKeys::commandModifier, 0));
@@ -444,8 +437,7 @@ void MainHostWindow::getCommandInfo (const CommandID commandID, ApplicationComma
                         "Saves a copy of the current graph to a file",
                         category, 0);
         result.defaultKeypresses.add (KeyPress ('s', ModifierKeys::shiftModifier | ModifierKeys::commandModifier, 0));
-        break;
-   #endif
+        break;   
 
     case CommandIDs::showPluginListEditor:
         result.setInfo ("Edit the list of available plug-Ins...", String(), category, 0);
@@ -455,10 +447,6 @@ void MainHostWindow::getCommandInfo (const CommandID commandID, ApplicationComma
     case CommandIDs::showAudioSettings:
         result.setInfo ("Change the audio device settings", String(), category, 0);
         result.addDefaultKeypress ('a', ModifierKeys::commandModifier);
-        break;
-
-    case CommandIDs::toggleDoublePrecision:
-        updatePrecisionMenuItem (result);
         break;
 
     case CommandIDs::aboutBox:
@@ -479,7 +467,6 @@ bool MainHostWindow::perform (const InvocationInfo& info)
 {
     switch (info.commandID)
     {
-   #if ! (JUCE_IOS || JUCE_ANDROID)
     case CommandIDs::newFile:
         if (graphHolder != nullptr && graphHolder->graph != nullptr && graphHolder->graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
             graphHolder->graph->newDocument();
@@ -499,7 +486,6 @@ bool MainHostWindow::perform (const InvocationInfo& info)
         if (graphHolder != nullptr && graphHolder->graph != nullptr)
             graphHolder->graph->saveAs (File(), true, true, true);
         break;
-   #endif
 
     case CommandIDs::showPluginListEditor:
         if (pluginListWindow == nullptr)
@@ -510,23 +496,6 @@ bool MainHostWindow::perform (const InvocationInfo& info)
 
     case CommandIDs::showAudioSettings:
         showAudioSettings();
-        break;
-
-    case CommandIDs::toggleDoublePrecision:
-        if (auto* props = getAppProperties().getUserSettings())
-        {
-            bool newIsDoublePrecision = ! isDoublePrecisionProcessing();
-            props->setValue ("doublePrecisionProcessing", var (newIsDoublePrecision));
-
-            {
-                ApplicationCommandInfo cmdInfo (info.commandID);
-                updatePrecisionMenuItem (cmdInfo);
-                menuItemsChanged();
-            }
-
-            if (graphHolder != nullptr)
-                graphHolder->setDoublePrecision (newIsDoublePrecision);
-        }
         break;
 
     case CommandIDs::aboutBox:
@@ -628,20 +597,6 @@ void MainHostWindow::filesDropped (const StringArray& files, int x, int y)
                     createPlugin (*desc, pos);
         }
     }
-}
-
-bool MainHostWindow::isDoublePrecisionProcessing()
-{
-    if (auto* props = getAppProperties().getUserSettings())
-        return props->getBoolValue ("doublePrecisionProcessing", false);
-
-    return false;
-}
-
-void MainHostWindow::updatePrecisionMenuItem (ApplicationCommandInfo& info)
-{
-    info.setInfo ("Double floating point precision rendering", String(), "General", 0);
-    info.setTicked (isDoublePrecisionProcessing());
 }
 
 void MainHostWindow::updateRenderingEngine (int renderingEngineIndex)

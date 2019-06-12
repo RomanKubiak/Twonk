@@ -68,14 +68,41 @@ ifeq ($(CONFIG),Release)
 endif
 
 OBJECTS_APP := \
+  $(JUCE_OBJDIR)/TwonkCEEditor_b150544c.o \
+  $(JUCE_OBJDIR)/TwonkCEProcessor_16925f5d.o \
+  $(JUCE_OBJDIR)/TwonkDistortionEditor_c39324bf.o \
+  $(JUCE_OBJDIR)/TwonkDistortionProcessor_23d1d60a.o \
+  $(JUCE_OBJDIR)/TwonkFlangerEditor_997d0a31.o \
+  $(JUCE_OBJDIR)/TwonkFlangerProcessor_8195a358.o \
+  $(JUCE_OBJDIR)/TwonkPhaserEditor_561d44b3.o \
+  $(JUCE_OBJDIR)/TwonkPhaserProcessor_1b8e4196.o \
+  $(JUCE_OBJDIR)/TwonkPPDelayEditor_ed313ffe.o \
+  $(JUCE_OBJDIR)/TwonkPPDelayProcessor_39d67e6b.o \
+  $(JUCE_OBJDIR)/TwonkPSProcessor_c97da4f1.o \
+  $(JUCE_OBJDIR)/TwonkPSEditor_f9011738.o \
+  $(JUCE_OBJDIR)/TwonkRMEditor_a45e46ff.o \
+  $(JUCE_OBJDIR)/TwonkRMProcessor_9ab88bca.o \
+  $(JUCE_OBJDIR)/TwonkRWEditor_fd6adaed.o \
+  $(JUCE_OBJDIR)/TwonkRWProcessor_596b491c.o \
+  $(JUCE_OBJDIR)/TwonkTremoloProcessor_36282d78.o \
+  $(JUCE_OBJDIR)/TwonkTremoloEditor_63b411.o \
+  $(JUCE_OBJDIR)/TwonkWWEditor_409921e2.o \
+  $(JUCE_OBJDIR)/TwonkWWProcessor_3fbea207.o \
+  $(JUCE_OBJDIR)/TwonkFilters_70d0b1f0.o \
   $(JUCE_OBJDIR)/TwonkSlider_80550cab.o \
   $(JUCE_OBJDIR)/TwonkLookAndFeel_76432fbe.o \
   $(JUCE_OBJDIR)/FilterGraph_769715e3.o \
   $(JUCE_OBJDIR)/FilterIOConfiguration_d1cf3d25.o \
   $(JUCE_OBJDIR)/InternalFilters_eceadbab.o \
+  $(JUCE_OBJDIR)/TwonkBubbleComponent_e7ba7544.o \
+  $(JUCE_OBJDIR)/TwonkFilterComponent_edb4fdd8.o \
+  $(JUCE_OBJDIR)/TwonkFilterConnector_73c3ad28.o \
+  $(JUCE_OBJDIR)/TwonkFilterComponentPin_49c857a7.o \
+  $(JUCE_OBJDIR)/GraphDocument_b2b91f97.o \
   $(JUCE_OBJDIR)/GraphEditorPanel_2223d925.o \
   $(JUCE_OBJDIR)/MainHostWindow_b3494acd.o \
   $(JUCE_OBJDIR)/HostStartup_5ce96f96.o \
+  $(JUCE_OBJDIR)/BinaryData_ce4232d4.o \
   $(JUCE_OBJDIR)/include_juce_audio_basics_8a4e984a.o \
   $(JUCE_OBJDIR)/include_juce_audio_devices_63111d02.o \
   $(JUCE_OBJDIR)/include_juce_audio_formats_15f82001.o \
@@ -91,18 +118,121 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/include_juce_gui_extra_6dee1c1a.o \
   $(JUCE_OBJDIR)/include_juce_opengl_a8a032b.o \
 
-.PHONY: clean all strip
+.PHONY: clean all
 
 all : $(JUCE_OUTDIR)/$(JUCE_TARGET_APP)
 
-$(JUCE_OUTDIR)/$(JUCE_TARGET_APP) : $(OBJECTS_APP) $(RESOURCES)
-	@command -v pkg-config >/dev/null 2>&1 || { echo >&2 "pkg-config not installed. Please, install it."; exit 1; }
-	@pkg-config --print-errors alsa freetype2 x11 xext xinerama libcurl
+$(JUCE_OUTDIR)/$(JUCE_TARGET_APP) : check-pkg-config $(OBJECTS_APP) $(RESOURCES)
 	@echo Linking "Twonk - App"
 	-$(V_AT)mkdir -p $(JUCE_BINDIR)
 	-$(V_AT)mkdir -p $(JUCE_LIBDIR)
 	-$(V_AT)mkdir -p $(JUCE_OUTDIR)
 	$(V_AT)$(CXX) -o $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) $(OBJECTS_APP) $(JUCE_LDFLAGS) $(JUCE_LDFLAGS_APP) $(RESOURCES) $(TARGET_ARCH)
+
+$(JUCE_OBJDIR)/TwonkCEEditor_b150544c.o: ../../Source/FX/Compressor/TwonkCEEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkCEEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkCEProcessor_16925f5d.o: ../../Source/FX/Compressor/TwonkCEProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkCEProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkDistortionEditor_c39324bf.o: ../../Source/FX/Distortion/TwonkDistortionEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkDistortionEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkDistortionProcessor_23d1d60a.o: ../../Source/FX/Distortion/TwonkDistortionProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkDistortionProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkFlangerEditor_997d0a31.o: ../../Source/FX/Flanger/TwonkFlangerEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkFlangerEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkFlangerProcessor_8195a358.o: ../../Source/FX/Flanger/TwonkFlangerProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkFlangerProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkPhaserEditor_561d44b3.o: ../../Source/FX/Phaser/TwonkPhaserEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkPhaserEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkPhaserProcessor_1b8e4196.o: ../../Source/FX/Phaser/TwonkPhaserProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkPhaserProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkPPDelayEditor_ed313ffe.o: ../../Source/FX/Ping-Pong\ Delay/TwonkPPDelayEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkPPDelayEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkPPDelayProcessor_39d67e6b.o: ../../Source/FX/Ping-Pong\ Delay/TwonkPPDelayProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkPPDelayProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkPSProcessor_c97da4f1.o: ../../Source/FX/Pitch\ Shift/TwonkPSProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkPSProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkPSEditor_f9011738.o: ../../Source/FX/Pitch\ Shift/TwonkPSEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkPSEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkRMEditor_a45e46ff.o: ../../Source/FX/Ring\ Modulator/TwonkRMEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkRMEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkRMProcessor_9ab88bca.o: ../../Source/FX/Ring\ Modulator/TwonkRMProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkRMProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkRWEditor_fd6adaed.o: ../../Source/FX/Robotization-Whisperization/TwonkRWEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkRWEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkRWProcessor_596b491c.o: ../../Source/FX/Robotization-Whisperization/TwonkRWProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkRWProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkTremoloProcessor_36282d78.o: ../../Source/FX/Tremolo/TwonkTremoloProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkTremoloProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkTremoloEditor_63b411.o: ../../Source/FX/Tremolo/TwonkTremoloEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkTremoloEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkWWEditor_409921e2.o: ../../Source/FX/Wah-Wah/TwonkWWEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkWWEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkWWProcessor_3fbea207.o: ../../Source/FX/Wah-Wah/TwonkWWProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkWWProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkFilters_70d0b1f0.o: ../../Source/FX/TwonkFilters.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkFilters.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkSlider_80550cab.o: ../../Source/TwonkSlider.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
@@ -129,6 +259,31 @@ $(JUCE_OBJDIR)/InternalFilters_eceadbab.o: ../../Source/Filters/InternalFilters.
 	@echo "Compiling InternalFilters.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/TwonkBubbleComponent_e7ba7544.o: ../../Source/UI/TwonkBubbleComponent.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkBubbleComponent.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkFilterComponent_edb4fdd8.o: ../../Source/UI/TwonkFilterComponent.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkFilterComponent.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkFilterConnector_73c3ad28.o: ../../Source/UI/TwonkFilterConnector.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkFilterConnector.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkFilterComponentPin_49c857a7.o: ../../Source/UI/TwonkFilterComponentPin.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkFilterComponentPin.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/GraphDocument_b2b91f97.o: ../../Source/UI/GraphDocument.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling GraphDocument.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/GraphEditorPanel_2223d925.o: ../../Source/UI/GraphEditorPanel.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling GraphEditorPanel.cpp"
@@ -142,6 +297,11 @@ $(JUCE_OBJDIR)/MainHostWindow_b3494acd.o: ../../Source/UI/MainHostWindow.cpp
 $(JUCE_OBJDIR)/HostStartup_5ce96f96.o: ../../Source/HostStartup.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling HostStartup.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/BinaryData_ce4232d4.o: ../../JuceLibraryCode/BinaryData.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling BinaryData.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/include_juce_audio_basics_8a4e984a.o: ../../JuceLibraryCode/include_juce_audio_basics.cpp
@@ -213,6 +373,10 @@ $(JUCE_OBJDIR)/include_juce_opengl_a8a032b.o: ../../JuceLibraryCode/include_juce
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_opengl.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+check-pkg-config:
+	@command -v pkg-config >/dev/null 2>&1 || { echo >&2 "pkg-config not installed. Please, install it."; exit 1; }
+	@pkg-config --print-errors alsa freetype2 x11 xext xinerama libcurl
 
 clean:
 	@echo Cleaning Twonk

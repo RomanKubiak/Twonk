@@ -59,7 +59,6 @@ bool InterprocessConnection::connectToSocket (const String& hostName,
 
     if (socket->connect (hostName, portNumber, timeOutMillisecs))
     {
-        threadIsRunning = true;
         connectionMadeInt();
         thread->startThread();
         return true;
@@ -131,7 +130,7 @@ bool InterprocessConnection::isConnected() const
 
     return ((socket != nullptr && socket->isConnected())
               || (pipe != nullptr && pipe->isOpen()))
-            && threadIsRunning;
+            && thread->isThreadRunning();
 }
 
 String InterprocessConnection::getConnectedHostName() const
@@ -180,8 +179,6 @@ void InterprocessConnection::initialiseWithSocket (StreamingSocket* newSocket)
 {
     jassert (socket == nullptr && pipe == nullptr);
     socket.reset (newSocket);
-
-    threadIsRunning = true;
     connectionMadeInt();
     thread->startThread();
 }
@@ -190,8 +187,6 @@ void InterprocessConnection::initialiseWithPipe (NamedPipe* newPipe)
 {
     jassert (socket == nullptr && pipe == nullptr);
     pipe.reset (newPipe);
-
-    threadIsRunning = true;
     connectionMadeInt();
     thread->startThread();
 }
@@ -371,8 +366,6 @@ void InterprocessConnection::runThread()
         if (thread->threadShouldExit() || ! readNextMessage())
             break;
     }
-
-    threadIsRunning = false;
 }
 
 } // namespace juce

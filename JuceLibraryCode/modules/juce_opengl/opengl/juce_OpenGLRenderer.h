@@ -39,8 +39,8 @@ namespace juce
 class JUCE_API  OpenGLRenderer
 {
 public:
-    OpenGLRenderer() = default;
-    virtual ~OpenGLRenderer() = default;
+    OpenGLRenderer() {}
+    virtual ~OpenGLRenderer() {}
 
     /** Called when a new GL context has been created.
         You can use this as an opportunity to create your textures, shaders, etc.

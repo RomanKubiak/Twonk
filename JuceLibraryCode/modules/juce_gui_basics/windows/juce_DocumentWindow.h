@@ -95,7 +95,7 @@ public:
     /** Destructor.
         If a content component has been set with setContentOwned(), it will be deleted.
     */
-    ~DocumentWindow() override;
+    ~DocumentWindow();
 
     //==============================================================================
     /** Changes the component's name.
@@ -232,7 +232,7 @@ public:
     */
     struct JUCE_API  LookAndFeelMethods
     {
-        virtual ~LookAndFeelMethods() = default;
+        virtual ~LookAndFeelMethods() {}
 
         virtual void drawDocumentWindowTitleBar (DocumentWindow&,
                                                  Graphics&, int w, int h,

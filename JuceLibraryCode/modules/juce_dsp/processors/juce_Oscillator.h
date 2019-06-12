@@ -44,7 +44,8 @@ public:
     using NumericType = typename SampleTypeHelpers::ElementType<SampleType>::Type;
 
     /** Creates an uninitialised oscillator. Call initialise before first use. */
-    Oscillator() = default;
+    Oscillator()
+    {}
 
     /** Creates an oscillator with a periodic input function (-pi..pi).
 
@@ -82,16 +83,7 @@ public:
 
     //==============================================================================
     /** Sets the frequency of the oscillator. */
-    void setFrequency (NumericType newFrequency, bool force = false) noexcept
-    {
-        if (force)
-        {
-            frequency.setCurrentAndTargetValue (newFrequency);
-            return;
-        }
-
-        frequency.setTargetValue (newFrequency);
-    }
+    void setFrequency (NumericType newFrequency, bool force = false) noexcept    { frequency.setValue (newFrequency, force); }
 
     /** Returns the current frequency of the oscillator. */
     NumericType getFrequency() const noexcept                    { return frequency.getTargetValue(); }
@@ -243,7 +235,7 @@ private:
     std::function<NumericType (NumericType)> generator;
     std::unique_ptr<LookupTableTransform<NumericType>> lookupTable;
     Array<NumericType> rampBuffer;
-    SmoothedValue<NumericType> frequency { static_cast<NumericType> (440.0) };
+    LinearSmoothedValue<NumericType> frequency { static_cast<NumericType> (440.0) };
     NumericType sampleRate = 48000.0;
     Phase<NumericType> phase;
 };

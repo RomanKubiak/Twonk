@@ -44,7 +44,7 @@ class JUCE_API  OpenGLImageType     : public ImageType
 {
 public:
     OpenGLImageType();
-    ~OpenGLImageType() override;
+    ~OpenGLImageType();
 
     ImagePixelData::Ptr create (Image::PixelFormat, int width, int height, bool shouldClearImage) const override;
     int getTypeID() const override;

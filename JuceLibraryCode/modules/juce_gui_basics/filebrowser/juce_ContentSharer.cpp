@@ -111,7 +111,9 @@ private:
 
         if (tempFile.create().wasOk())
         {
-            if (auto outputStream = std::unique_ptr<FileOutputStream> (tempFile.createOutputStream()))
+            std::unique_ptr<FileOutputStream> outputStream (tempFile.createOutputStream());
+
+            if (outputStream != nullptr)
             {
                 size_t pos = 0;
                 size_t totalSize = data.getSize();
@@ -183,7 +185,7 @@ void ContentSharer::startNewShare (std::function<void (bool, const String&)> cal
 
     // You need to pass a valid callback.
     jassert (callbackToUse);
-    callback = std::move (callbackToUse);
+    callback = static_cast<std::function<void (bool, const String&)>&&> (callbackToUse);
 
     pimpl.reset (createPimpl());
 }

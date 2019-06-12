@@ -29,7 +29,7 @@
 #include "InternalFilters.h"
 #include "../UI/MainHostWindow.h"
 #include "FilterIOConfiguration.h"
-
+#include "../UI/GraphDocument.h"
 
 //==============================================================================
 struct NumberedBoxes  : public TableListBox,
