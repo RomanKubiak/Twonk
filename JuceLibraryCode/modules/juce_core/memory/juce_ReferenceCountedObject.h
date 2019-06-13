@@ -49,7 +49,7 @@ namespace juce
     Once a new ReferenceCountedObject has been assigned to a pointer, be
     careful not to delete the object manually.
 
-    This class uses an Atomic<int> value to hold the reference count, so that it
+    This class uses an Atomic<int> value to hold the reference count, so that
     the pointers can be passed between threads safely. For a faster but non-thread-safe
     version, use SingleThreadedReferenceCountedObject instead.
 
@@ -99,7 +99,7 @@ public:
 protected:
     //==============================================================================
     /** Creates the reference-counted object (with an initial ref count of zero). */
-    ReferenceCountedObject() {}
+    ReferenceCountedObject() = default;
 
     /** Copying from another object does not affect this one's reference-count. */
     ReferenceCountedObject (const ReferenceCountedObject&) noexcept {}
@@ -187,7 +187,7 @@ public:
 protected:
     //==============================================================================
     /** Creates the reference-counted object (with an initial ref count of zero). */
-    SingleThreadedReferenceCountedObject() {}
+    SingleThreadedReferenceCountedObject() = default;
 
     /** Copying from another object does not affect this one's reference-count. */
     SingleThreadedReferenceCountedObject (const SingleThreadedReferenceCountedObject&) {}
@@ -246,7 +246,7 @@ public:
 
     //==============================================================================
     /** Creates a pointer to a null object. */
-    ReferenceCountedObjectPtr() noexcept {}
+    ReferenceCountedObjectPtr() = default;
 
     /** Creates a pointer to a null object. */
     ReferenceCountedObjectPtr (decltype (nullptr)) noexcept {}
@@ -411,7 +411,7 @@ public:
 
    #if JUCE_STRICT_REFCOUNTEDPOINTER
     /** Checks whether this pointer is null */
-    operator bool() const noexcept                          { return referencedObject != nullptr; }
+    explicit operator bool() const noexcept                 { return referencedObject != nullptr; }
 
    #else
     /** Returns the object that this pointer references.

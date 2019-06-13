@@ -37,7 +37,7 @@ class TwonkBubbleComponent  : public Component
 {
 public:
     //==============================================================================
-	TwonkBubbleComponent ();
+    TwonkBubbleComponent ();
     ~TwonkBubbleComponent();
 
     //==============================================================================

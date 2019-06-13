@@ -163,16 +163,16 @@ void TwonkFilterComponent::update()
 	if (f->getProcessor()->producesMidi())
 		++numOuts;
 
-	int w = 32;
-	int h = 32;
+	int w = 64;
+	int h = 64;
+	
+	//w = jmax (w, (jmax (numIns, numOuts) + 1) * 20);
 
-	w = jmax (w, (jmax (numIns, numOuts) + 1) * 20);
-
-	const int textWidth = font.getStringWidth (f->getProcessor()->getName());
-	w = jmax (w, 16 + jmin (textWidth, 300));
-	if (textWidth > 300)
-		h = 100;
-
+	//const int textWidth = font.getStringWidth (f->getProcessor()->getName());
+	//w = jmax (w, 16 + jmin (textWidth, 300));
+	//if (textWidth > 300)
+	//	h = 100;
+	
 	setSize (w, h);
 
 	setName (f->getProcessor()->getName());

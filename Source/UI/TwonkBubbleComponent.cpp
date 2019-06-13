@@ -112,7 +112,7 @@ void TwonkBubbleComponent::resized()
 
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="Bubble" componentName=""
+<JUCER_COMPONENT documentType="Component" className="TwonkBubbleComponent" componentName=""
                  parentClasses="public Component" constructorParams="" variableInitialisers=""
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="32" initialHeight="32">

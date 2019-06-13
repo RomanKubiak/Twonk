@@ -40,13 +40,14 @@ struct FallbackDownloadTask  : public URL::DownloadTask,
         jassert (fileStream != nullptr);
         jassert (stream != nullptr);
 
-        contentLength = stream->getTotalLength();
-        httpCode      = stream->getStatusCode();
+        targetLocation = fileStream->getFile();
+        contentLength  = stream->getTotalLength();
+        httpCode       = stream->getStatusCode();
 
         startThread();
     }
 
-    ~FallbackDownloadTask()
+    ~FallbackDownloadTask() override
     {
         signalThreadShouldExit();
         stream->cancel();
@@ -118,9 +119,7 @@ URL::DownloadTask* URL::DownloadTask::createFallbackDownloader (const URL& urlTo
     const size_t bufferSize = 0x8000;
     targetFileToUse.deleteFile();
 
-    std::unique_ptr<FileOutputStream> outputStream (targetFileToUse.createOutputStream (bufferSize));
-
-    if (outputStream != nullptr)
+    if (auto outputStream = std::unique_ptr<FileOutputStream> (targetFileToUse.createOutputStream (bufferSize)))
     {
         std::unique_ptr<WebInputStream> stream (new WebInputStream (urlToUse, usePostRequest));
         stream->withExtraHeaders (extraHeadersToUse);
@@ -211,26 +210,26 @@ void URL::init()
 URL::URL (const String& u, int)  : url (u) {}
 
 URL::URL (URL&& other)
-    : url             (static_cast<String&&> (other.url)),
-      postData        (static_cast<MemoryBlock&&> (other.postData)),
-      parameterNames  (static_cast<StringArray&&> (other.parameterNames)),
-      parameterValues (static_cast<StringArray&&> (other.parameterValues)),
-      filesToUpload   (static_cast<ReferenceCountedArray<Upload>&&> (other.filesToUpload))
+    : url             (std::move (other.url)),
+      postData        (std::move (other.postData)),
+      parameterNames  (std::move (other.parameterNames)),
+      parameterValues (std::move (other.parameterValues)),
+      filesToUpload   (std::move (other.filesToUpload))
    #if JUCE_IOS
-    , bookmark        (static_cast<Bookmark::Ptr&&> (other.bookmark))
+    , bookmark        (std::move (other.bookmark))
    #endif
 {
 }
 
 URL& URL::operator= (URL&& other)
 {
-    url             = static_cast<String&&> (other.url);
-    postData        = static_cast<MemoryBlock&&> (other.postData);
-    parameterNames  = static_cast<StringArray&&> (other.parameterNames);
-    parameterValues = static_cast<StringArray&&> (other.parameterValues);
-    filesToUpload   = static_cast<ReferenceCountedArray<Upload>&&> (other.filesToUpload);
+    url             = std::move (other.url);
+    postData        = std::move (other.postData);
+    parameterNames  = std::move (other.parameterNames);
+    parameterValues = std::move (other.parameterValues);
+    filesToUpload   = std::move (other.filesToUpload);
    #if JUCE_IOS
-    bookmark        = static_cast<Bookmark::Ptr&&> (other.bookmark);
+    bookmark        = std::move (other.bookmark);
    #endif
 
     return *this;
@@ -345,14 +344,7 @@ bool URL::isWellFormed() const
 
 String URL::getDomain() const
 {
-    auto start = URLHelpers::findStartOfNetLocation (url);
-    auto end1 = url.indexOfChar (start, '/');
-    auto end2 = url.indexOfChar (start, ':');
-
-    auto end = (end1 < 0 && end2 < 0) ? std::numeric_limits<int>::max()
-                                      : ((end1 < 0 || end2 < 0) ? jmax (end1, end2)
-                                                                : jmin (end1, end2));
-    return url.substring (start, end);
+    return getDomainInternal (false);
 }
 
 String URL::getSubPath() const
@@ -393,7 +385,7 @@ File URL::fileFromFileSchemeURL (const URL& fileURL)
         return {};
     }
 
-    auto path = removeEscapeChars (fileURL.getDomain()).replace ("+", "%2B");
+    auto path = removeEscapeChars (fileURL.getDomainInternal (true)).replace ("+", "%2B");
 
    #ifdef JUCE_WINDOWS
     bool isUncPath = (! fileURL.url.startsWith ("file:///"));
@@ -531,6 +523,18 @@ bool URL::isProbablyAnEmailAddress (const String& possibleEmailAddress)
         && ! possibleEmailAddress.endsWithChar ('.');
 }
 
+String URL::getDomainInternal (bool ignorePort) const
+{
+    auto start = URLHelpers::findStartOfNetLocation (url);
+    auto end1 = url.indexOfChar (start, '/');
+    auto end2 = ignorePort ? -1 : url.indexOfChar (start, ':');
+
+    auto end = (end1 < 0 && end2 < 0) ? std::numeric_limits<int>::max()
+                                      : ((end1 < 0 || end2 < 0) ? jmax (end1, end2)
+                                                                : jmin (end1, end2));
+    return url.substring (start, end);
+}
+
 #if JUCE_IOS
 URL::Bookmark::Bookmark (void* bookmarkToUse)
     : data (bookmarkToUse)
@@ -576,11 +580,11 @@ public:
             BOOL isBookmarkStale = false;
             NSError* error = nil;
 
-            auto* nsURL = [NSURL URLByResolvingBookmarkData: bookmark
-                                                    options: 0
-                                              relativeToURL: nil
-                                        bookmarkDataIsStale: &isBookmarkStale
-                                                      error: &error];
+            auto nsURL = [NSURL URLByResolvingBookmarkData: bookmark
+                                                   options: 0
+                                             relativeToURL: nil
+                                       bookmarkDataIsStale: &isBookmarkStale
+                                                     error: &error];
 
             if (error == nil)
             {
@@ -591,7 +595,7 @@ public:
             }
             else
             {
-                auto* desc = [error localizedDescription];
+                auto desc = [error localizedDescription];
                 ignoreUnused (desc);
                 jassertfalse;
             }
@@ -609,10 +613,10 @@ private:
             BOOL isBookmarkStale = false;
             NSError* error = nil;
 
-            auto* nsURL = [NSURL URLByResolvingBookmarkData: bookmark
-                                                    options: 0
-                                              relativeToURL: nil
-                                        bookmarkDataIsStale: &isBookmarkStale
+            auto nsURL = [NSURL URLByResolvingBookmarkData: bookmark
+                                                   options: 0
+                                             relativeToURL: nil
+                                       bookmarkDataIsStale: &isBookmarkStale
                                                       error: &error];
 
             if (error == nil)
@@ -626,7 +630,7 @@ private:
             }
             else
             {
-                auto* desc = [error localizedDescription];
+                auto desc = [error localizedDescription];
                 ignoreUnused (desc);
                 jassertfalse;
             }

@@ -85,7 +85,7 @@ public:
             nativeContext.reset();
     }
 
-    ~CachedImage()
+    ~CachedImage() override
     {
         stop();
     }
@@ -280,23 +280,21 @@ public:
     {
         if (auto* peer = component.getPeer())
         {
-            lastScreenBounds = component.getTopLevelComponent()->getScreenBounds();
-
-            auto newScale = Desktop::getInstance().getDisplays()
-                              .getDisplayContaining (lastScreenBounds.getCentre()).scale;
+           #if JUCE_WINDOWS
+            auto newScale = nativeContext->getWindowScaleFactor (component.getTopLevelComponent()->getScreenBounds());
+           #else
+            auto newScale = Desktop::getInstance().getDisplays().findDisplayForRect (component.getTopLevelComponent()->getScreenBounds()).scale;
+           #endif
 
             auto localBounds = component.getLocalBounds();
-
-            auto newArea = peer->getComponent().getLocalArea (&component, localBounds)
-                                               .withZeroOrigin()
-                             * newScale;
+            auto newArea = peer->getComponent().getLocalArea (&component, localBounds).withZeroOrigin() * newScale;
 
             if (scale != newScale || viewportArea != newArea)
             {
                 scale = newScale;
                 viewportArea = newArea;
-                transform = AffineTransform::scale ((float) newArea.getRight()  / (float) localBounds.getRight(),
-                                                    (float) newArea.getBottom() / (float) localBounds.getBottom());
+                transform = AffineTransform::scale ((float) newArea.getWidth()  / (float) localBounds.getWidth(),
+                                                    (float) newArea.getHeight() / (float) localBounds.getHeight());
 
                 if (canTriggerUpdate)
                     invalidateAll();
@@ -542,7 +540,7 @@ public:
     struct BlockingWorker  : public OpenGLContext::AsyncWorker
     {
         BlockingWorker (OpenGLContext::AsyncWorker::Ptr && workerToUse)
-            : originalWorker (static_cast<OpenGLContext::AsyncWorker::Ptr&&> (workerToUse))
+            : originalWorker (std::move (workerToUse))
         {}
 
         void operator() (OpenGLContext& calleeContext)
@@ -592,7 +590,7 @@ public:
         {
             if (shouldBlock)
             {
-                auto blocker = new BlockingWorker (static_cast<OpenGLContext::AsyncWorker::Ptr&&> (workerToUse));
+                auto blocker = new BlockingWorker (std::move (workerToUse));
                 OpenGLContext::AsyncWorker::Ptr worker (*blocker);
                 workQueue.add (worker);
 
@@ -603,7 +601,7 @@ public:
             }
             else
             {
-                workQueue.add (static_cast<OpenGLContext::AsyncWorker::Ptr&&> (workerToUse));
+                workQueue.add (std::move (workerToUse));
 
                 messageManagerLock.abort();
                 context.triggerRepaint();
@@ -673,7 +671,7 @@ public:
             attach();
     }
 
-    ~Attachment()
+    ~Attachment() override
     {
         detach();
     }
@@ -1059,7 +1057,7 @@ size_t OpenGLContext::getImageCacheSize() const noexcept            { return ima
 void OpenGLContext::execute (OpenGLContext::AsyncWorker::Ptr workerToUse, bool shouldBlock)
 {
     if (auto* c = getCachedImage())
-        c->execute (static_cast<OpenGLContext::AsyncWorker::Ptr&&> (workerToUse), shouldBlock);
+        c->execute (std::move (workerToUse), shouldBlock);
     else
         jassertfalse; // You must have attached the context to a component
 }
@@ -1197,7 +1195,7 @@ void OpenGLContext::copyTexture (const Rectangle<int>& targetClipArea,
         extensions.glBufferData (GL_ARRAY_BUFFER, sizeof (vertices), vertices, GL_STATIC_DRAW);
 
         auto index = (GLuint) program.params.positionAttribute.attributeID;
-        extensions.glVertexAttribPointer (index, 2, GL_SHORT, GL_FALSE, 4, 0);
+        extensions.glVertexAttribPointer (index, 2, GL_SHORT, GL_FALSE, 4, nullptr);
         extensions.glEnableVertexAttribArray (index);
         JUCE_CHECK_OPENGL_ERROR
 
@@ -1220,7 +1218,7 @@ void OpenGLContext::copyTexture (const Rectangle<int>& targetClipArea,
 EGLDisplay OpenGLContext::NativeContext::display = EGL_NO_DISPLAY;
 EGLDisplay OpenGLContext::NativeContext::config;
 
-void OpenGLContext::NativeContext::surfaceCreated (jobject holder)
+void OpenGLContext::NativeContext::surfaceCreated (LocalRef<jobject> holder)
 {
     ignoreUnused (holder);
 
@@ -1237,7 +1235,7 @@ void OpenGLContext::NativeContext::surfaceCreated (jobject holder)
     }
 }
 
-void OpenGLContext::NativeContext::surfaceDestroyed (jobject holder)
+void OpenGLContext::NativeContext::surfaceDestroyed (LocalRef<jobject> holder)
 {
     ignoreUnused (holder);
 
