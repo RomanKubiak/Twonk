@@ -49,11 +49,13 @@ GraphEditorPanel::~GraphEditorPanel()
 
 void GraphEditorPanel::paint (Graphics& g)
 {
-	int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+	/*int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
 	g.setColour (Colours::black);
 	g.drawImage (bgImage,
 		x, y, width, height,
 		0, 0, bgImage.getWidth(), bgImage.getHeight());
+		*/
+	g.fillAll(Colours::black);
 }
 
 void GraphEditorPanel::mouseDown (const MouseEvent& e)

@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -37,11 +37,13 @@ class TwonkBubbleComponent  : public Component
 {
 public:
     //==============================================================================
-	TwonkBubbleComponent ();
+    TwonkBubbleComponent ();
     ~TwonkBubbleComponent();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+	void mouseDown (const MouseEvent& e);
+	void mouseDrag (const MouseEvent& e);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -51,6 +53,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+	ComponentDragger myDragger;
     //[/UserVariables]
 
     //==============================================================================
@@ -62,4 +65,3 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
-

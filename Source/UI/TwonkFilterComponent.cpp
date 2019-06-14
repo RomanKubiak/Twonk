@@ -4,8 +4,8 @@
 TwonkFilterComponent::TwonkFilterComponent(GraphEditorPanel& p, AudioProcessorGraph::NodeID id) 
 	: panel (p), graph (p.graph), pluginID (id)
 {
-	shadow.setShadowProperties (DropShadow (Colours::black.withAlpha (0.5f), 3, {0, 1}));
-	setComponentEffect (&shadow);
+	// shadow.setShadowProperties (DropShadow (Colours::black.withAlpha (0.5f), 3, {0, 1}));
+	// setComponentEffect (&shadow);
 
 	if (auto f = graph.graph.getNodeForId (pluginID))
 	{
@@ -33,6 +33,7 @@ TwonkFilterComponent::~TwonkFilterComponent()
 
 void TwonkFilterComponent::mouseDown (const MouseEvent& e)
 {
+	DBG("TwonkFilterComponent::mouseDown");
 	originalPos = localPointToGlobal (Point<int>());
 
 	toFront (true);
@@ -43,6 +44,7 @@ void TwonkFilterComponent::mouseDown (const MouseEvent& e)
 
 void TwonkFilterComponent::mouseDrag (const MouseEvent& e)
 {
+	DBG("TwonkFilterComponent::mouseDrag");
 	if (!e.mods.isPopupMenu())
 	{
 		auto pos = originalPos + e.getOffsetFromDragStart();
@@ -60,6 +62,7 @@ void TwonkFilterComponent::mouseDrag (const MouseEvent& e)
 
 void TwonkFilterComponent::mouseUp (const MouseEvent& e)
 {
+	DBG("TwonkFilterComponent::mouseUp");
 	if (e.mouseWasDraggedSinceMouseDown())
 	{
 		graph.setChangedFlag (true);
@@ -77,7 +80,7 @@ void TwonkFilterComponent::mouseUp (const MouseEvent& e)
 	}
 }
 
-bool TwonkFilterComponent::hitTest (int x, int y)
+/*bool TwonkFilterComponent::hitTest (int x, int y)
 {
 	for (auto* child : getChildren())
 		if (child->getBounds().contains (x, y))
@@ -85,6 +88,7 @@ bool TwonkFilterComponent::hitTest (int x, int y)
 
 	return x >= 3 && x < getWidth() - 6 && y >= pinSize && y < getHeight() - pinSize;
 }
+*/
 
 /*void TwonkFilterComponent::paint (Graphics& g)
 {
@@ -163,15 +167,15 @@ void TwonkFilterComponent::update()
 	if (f->getProcessor()->producesMidi())
 		++numOuts;
 
-	int w = 32;
-	int h = 32;
+	int w = 64;
+	int h = 64;
 
 	w = jmax (w, (jmax (numIns, numOuts) + 1) * 20);
 
-	const int textWidth = font.getStringWidth (f->getProcessor()->getName());
-	w = jmax (w, 16 + jmin (textWidth, 300));
-	if (textWidth > 300)
-		h = 100;
+	//const int textWidth = font.getStringWidth (f->getProcessor()->getName());
+	//w = jmax (w, 16 + jmin (textWidth, 300));
+	//if (textWidth > 300)
+	//	h = 100;
 
 	setSize (w, h);
 

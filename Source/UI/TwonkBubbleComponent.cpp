@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -79,9 +79,9 @@ void TwonkBubbleComponent::paint (Graphics& g)
                                        static_cast<float> ((getHeight() / 2)) - 2.0f + y,
                                        strokeColour2,
                                        static_cast<float> ((getWidth() / 2)) - 2.0f + x,
-                                       static_cast<float> (proportionOfHeight (1.2500f)) - 2.0f + y,
+                                       static_cast<float> (proportionOfHeight (1.25f)) - 2.0f + y,
                                        true));
-        g.drawEllipse (x, y, width, height, 3.000f);
+        g.drawEllipse (x, y, width, height, 3.0f);
     }
 
     //[UserPaint] Add your own custom painting code here..
@@ -100,6 +100,16 @@ void TwonkBubbleComponent::resized()
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void TwonkBubbleComponent::mouseDown (const MouseEvent& e)
+{
+	DBG("TwonkBubbleComponent::mouseDown");
+	myDragger.startDraggingComponent (this, e);
+}
+
+void TwonkBubbleComponent::mouseDrag (const MouseEvent& e)
+{
+	myDragger.dragComponent (this, e, nullptr);
+}
 //[/MiscUserCode]
 
 
@@ -112,9 +122,9 @@ void TwonkBubbleComponent::resized()
 
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="Bubble" componentName=""
+<JUCER_COMPONENT documentType="Component" className="TwonkBubbleComponent" componentName=""
                  parentClasses="public Component" constructorParams="" variableInitialisers=""
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.33"
                  fixedSize="1" initialWidth="32" initialHeight="32">
   <BACKGROUND backgroundColour="0">
     <ELLIPSE pos="2 2 4M 4M" fill=" radial: 0C 0C, 0C 0, 0=0, 1=ff008000"
@@ -129,4 +139,3 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
-
