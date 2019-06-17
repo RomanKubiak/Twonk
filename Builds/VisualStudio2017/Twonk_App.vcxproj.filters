@@ -547,6 +547,9 @@
     <ClCompile Include="..\..\Source\Filters\InternalFilters.cpp">
       <Filter>Twonk\Source\Filters</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkBubbleNodeComponent.cpp">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkBubbleComponent.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
@@ -2582,6 +2585,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Filters\InternalFilters.h">
       <Filter>Twonk\Source\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkBubbleNodeComponent.h">
+      <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkBubbleComponent.h">
       <Filter>Twonk\Source\UI</Filter>

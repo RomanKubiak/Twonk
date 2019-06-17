@@ -176,6 +176,7 @@
     <ClCompile Include="..\..\Source\Filters\FilterGraph.cpp"/>
     <ClCompile Include="..\..\Source\Filters\FilterIOConfiguration.cpp"/>
     <ClCompile Include="..\..\Source\Filters\InternalFilters.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkBubbleNodeComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkBubbleComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkFilterComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkFilterConnector.cpp"/>
@@ -1990,6 +1991,7 @@
     <ClInclude Include="..\..\Source\Filters\FilterGraph.h"/>
     <ClInclude Include="..\..\Source\Filters\FilterIOConfiguration.h"/>
     <ClInclude Include="..\..\Source\Filters\InternalFilters.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkBubbleNodeComponent.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkBubbleComponent.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkFilterComponent.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkFilterConnector.h"/>

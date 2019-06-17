@@ -400,6 +400,16 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/UI/TwonkBubbleNodeComponent.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkBubbleNodeComponent.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/UI/TwonkBubbleComponent.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>

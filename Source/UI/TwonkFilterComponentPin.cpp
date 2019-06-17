@@ -14,13 +14,25 @@
 TwonkFilterComponentPin::TwonkFilterComponentPin (GraphEditorPanel& p, AudioProcessorGraph::NodeAndChannel pinToUse, bool isIn)
 	: panel (p), graph (p.graph), pin (pinToUse), isInput (isIn)
 {
+	if (isInput)
+	{
+		
+		stroke = Colours::blue;
+	}
+	else
+	{
+		fillColour = Colours::yellow;
+		stroke = Colours::yellow;
+	}
+
 	if (auto node = graph.graph.getNodeForId (pin.nodeID))
 	{
 		String tip;
 
 		if (pin.isMIDI())
 		{
-			tip = isInput ? "MIDI Input" : "MIDI Output";
+			
+			tip = isInput ? ("MIDI Input") : "MIDI Output";
 		}
 		else
 		{
@@ -40,7 +52,7 @@ TwonkFilterComponentPin::TwonkFilterComponentPin (GraphEditorPanel& p, AudioProc
 	setSize (32, 32);
 }
 
-void TwonkFilterComponentPin::paint (Graphics& g)
+/*void TwonkFilterComponentPin::paint (Graphics& g)
 {
 	auto w = (float)getWidth();
 	auto h = (float)getHeight();
@@ -53,7 +65,7 @@ void TwonkFilterComponentPin::paint (Graphics& g)
 
 	g.setColour (colour.withRotatedHue (busIdx / 5.0f));
 	g.fillPath (p);
-}
+}*/
 
 void TwonkFilterComponentPin::mouseDown (const MouseEvent& e)
 {

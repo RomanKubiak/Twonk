@@ -15,9 +15,9 @@ class TwonkFilterComponent : public TwonkBubbleComponent, public Timer, private 
 		void mouseDown (const MouseEvent& e) override;
 		void mouseDrag (const MouseEvent& e) override;
 		void mouseUp (const MouseEvent& e) override;
-		// bool hitTest (int x, int y) override;
+		//bool hitTest (int x, int y) override;
 		//void paint (Graphics& g) override;
-		//void resized() override;
+		void resized() override;
 		Point<float> getPinPos (int index, bool isInput) const;
 		void update();
 		AudioProcessor* getProcessor() const;

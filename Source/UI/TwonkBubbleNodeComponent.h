@@ -20,7 +20,7 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "../../JuceLibraryCode/JuceHeader.h"
 //[/Headers]
 
 
@@ -33,20 +33,17 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class TwonkBubbleComponent  : public Component
+class TwonkBubbleNodeComponent  : public Component
 {
 public:
     //==============================================================================
-    TwonkBubbleComponent ();
-    ~TwonkBubbleComponent();
+    TwonkBubbleNodeComponent ();
+    ~TwonkBubbleNodeComponent();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-	void mouseDown (const MouseEvent& e);
-	void mouseDrag (const MouseEvent& e);
 	Colour fillColour;
 	Colour stroke;
-	void setComponentName(const String &newName);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -56,15 +53,13 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-	ComponentDragger myDragger;
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<Label> componentName;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkBubbleComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkBubbleNodeComponent)
 };
 
 //[EndFile] You can add extra defines here...

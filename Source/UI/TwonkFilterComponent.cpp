@@ -118,7 +118,7 @@ void TwonkFilterComponent::mouseUp (const MouseEvent& e)
 	g.drawFittedText (getName(), boxArea, Justification::centred, 2);
 }*/
 
-/*void TwonkFilterComponent::resized()
+void TwonkFilterComponent::resized()
 {
 	if (auto f = graph.graph.getNodeForId (pluginID))
 	{
@@ -143,7 +143,7 @@ void TwonkFilterComponent::mouseUp (const MouseEvent& e)
 			}
 		}
 	}
-}*/
+}
 
 Point<float> TwonkFilterComponent::getPinPos (int index, bool isInput) const
 {
@@ -167,8 +167,8 @@ void TwonkFilterComponent::update()
 	if (f->getProcessor()->producesMidi())
 		++numOuts;
 
-	int w = 64;
-	int h = 64;
+	int w = 128;
+	int h = 128;
 
 	w = jmax (w, (jmax (numIns, numOuts) + 1) * 20);
 
@@ -179,7 +179,7 @@ void TwonkFilterComponent::update()
 
 	setSize (w, h);
 
-	setName (f->getProcessor()->getName());
+	setComponentName (f->getProcessor()->getName());
 
 	{
 		auto p = graph.getNodePosition (pluginID);

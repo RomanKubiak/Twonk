@@ -206,6 +206,10 @@
               file="Source/Filters/InternalFilters.h"/>
       </GROUP>
       <GROUP id="{D892BFB2-FE85-B70F-10D3-450F407E2B3D}" name="UI">
+        <FILE id="Bk27Rh" name="TwonkBubbleNodeComponent.cpp" compile="1" resource="0"
+              file="Source/UI/TwonkBubbleNodeComponent.cpp"/>
+        <FILE id="g6gfs9" name="TwonkBubbleNodeComponent.h" compile="0" resource="0"
+              file="Source/UI/TwonkBubbleNodeComponent.h"/>
         <FILE id="Rs82B4" name="TwonkBubbleComponent.cpp" compile="1" resource="0"
               file="Source/UI/TwonkBubbleComponent.cpp"/>
         <FILE id="eWNOJC" name="TwonkBubbleComponent.h" compile="0" resource="0"

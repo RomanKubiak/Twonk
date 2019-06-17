@@ -94,6 +94,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/FilterGraph_769715e3.o \
   $(JUCE_OBJDIR)/FilterIOConfiguration_d1cf3d25.o \
   $(JUCE_OBJDIR)/InternalFilters_eceadbab.o \
+  $(JUCE_OBJDIR)/TwonkBubbleNodeComponent_9bcff162.o \
   $(JUCE_OBJDIR)/TwonkBubbleComponent_e7ba7544.o \
   $(JUCE_OBJDIR)/TwonkFilterComponent_edb4fdd8.o \
   $(JUCE_OBJDIR)/TwonkFilterConnector_73c3ad28.o \
@@ -257,6 +258,11 @@ $(JUCE_OBJDIR)/FilterIOConfiguration_d1cf3d25.o: ../../Source/Filters/FilterIOCo
 $(JUCE_OBJDIR)/InternalFilters_eceadbab.o: ../../Source/Filters/InternalFilters.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling InternalFilters.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkBubbleNodeComponent_9bcff162.o: ../../Source/UI/TwonkBubbleNodeComponent.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkBubbleNodeComponent.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkBubbleComponent_e7ba7544.o: ../../Source/UI/TwonkBubbleComponent.cpp
