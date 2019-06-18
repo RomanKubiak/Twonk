@@ -2,10 +2,10 @@
 
 //==============================================================================
 TwonkFilterComponent::TwonkFilterComponent(GraphEditorPanel& p, AudioProcessorGraph::NodeID id) 
-	: panel (p), graph (p.graph), pluginID (id)
+	: panel (p), TwonkBubbleComponent(p.graph , id)
 {
-	// shadow.setShadowProperties (DropShadow (Colours::black.withAlpha (0.5f), 3, {0, 1}));
-	// setComponentEffect (&shadow);
+	shadow.setShadowProperties (DropShadow (Colours::white.withAlpha (0.5f), 15, {0, 1}));
+	setComponentEffect (&shadow);
 
 	if (auto f = graph.graph.getNodeForId (pluginID))
 	{
@@ -39,12 +39,31 @@ void TwonkFilterComponent::mouseDown (const MouseEvent& e)
 	toFront (true);
 
 	if (e.mods.isPopupMenu())
-		showPopupMenu();	
+		showPopupMenu();
+
+	startTimer(450);
+}
+
+void TwonkFilterComponent::timerCallback()
+{
+	DBG("TwonkFilterComponent::timerCallback");
+	stopTimer();
+	if (isMouseButtonDown(true))
+	{
+		toggleOptions(true);
+		startTimer(2500);
+	}
+	else
+	{
+		toggleOptions(false);
+		stopTimer();
+	}
 }
 
 void TwonkFilterComponent::mouseDrag (const MouseEvent& e)
 {
 	DBG("TwonkFilterComponent::mouseDrag");
+	stopTimer();
 	if (!e.mods.isPopupMenu())
 	{
 		auto pos = originalPos + e.getOffsetFromDragStart();
@@ -156,6 +175,7 @@ Point<float> TwonkFilterComponent::getPinPos (int index, bool isInput) const
 
 void TwonkFilterComponent::update()
 {
+	DBG("TwonkFilterComponent::update");
 	const AudioProcessorGraph::Node::Ptr f (graph.graph.getNodeForId (pluginID));
 	jassert (f != nullptr);
 
@@ -167,8 +187,8 @@ void TwonkFilterComponent::update()
 	if (f->getProcessor()->producesMidi())
 		++numOuts;
 
-	int w = 128;
-	int h = 128;
+	int w = 96;
+	int h = 96;
 
 	w = jmax (w, (jmax (numIns, numOuts) + 1) * 20);
 
@@ -180,7 +200,7 @@ void TwonkFilterComponent::update()
 	setSize (w, h);
 
 	setComponentName (f->getProcessor()->getName());
-
+	setBypassed(f->isBypassed());
 	{
 		auto p = graph.getNodePosition (pluginID);
 		setCentreRelative ((float)p.x, (float)p.y);
@@ -249,6 +269,8 @@ void TwonkFilterComponent::showPopupMenu()
 				node->setBypassed (!node->isBypassed());
 
 			repaint();
+			update();
+			resized();
 
 			break;
 		}
@@ -279,10 +301,6 @@ void TwonkFilterComponent::showWindow (PluginWindow::Type type)
 	if (auto node = graph.graph.getNodeForId (pluginID))
 		if (auto* w = graph.getOrCreateWindowFor (node, type))
 			w->toFront (true);
-}
-
-void TwonkFilterComponent::timerCallback()
-{
 }
 
 void TwonkFilterComponent::parameterValueChanged (int, float)

@@ -43,7 +43,7 @@ public:
         startTimer (100);
     }
 
-    virtual ~ParameterListener()
+    ~ParameterListener() override
     {
         if (LegacyAudioParameter::isLegacy (&parameter))
             processor.removeListener (this);
@@ -506,7 +506,7 @@ private:
 };
 
 //==============================================================================
-struct  GenericAudioProcessorEditor::Pimpl
+struct GenericAudioProcessorEditor::Pimpl
 {
     Pimpl (GenericAudioProcessorEditor& parent)
         : owner (parent)

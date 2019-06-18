@@ -14,8 +14,3 @@ void TwonkFilterProperties::drawLinearSlider (Graphics &, int x, int y, int widt
 {
 
 }
-
-TwonkFilterPropertiesEditor::TwonkFilterPropertiesEditor(AudioProcessor *owner) : GenericAudioProcessorEditor(owner)
-{
-	setLookAndFeel(&lf);
-}

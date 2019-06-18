@@ -141,7 +141,7 @@ public:
         Note that calling this just points this at the new object and invokes the
         Listener::valueTreeRedirected callback, but it's not an undoable operation. If
         you're trying to replace an entire tree in an undoable way, you probably want
-        to use copyPropertiesAndChildren() instead.
+        to use copyPropertiesAndChildrenFrom() instead.
     */
     ValueTree& operator= (const ValueTree&);
 
@@ -400,10 +400,11 @@ public:
     */
     struct Iterator
     {
-        Iterator (const ValueTree&, bool isEnd) noexcept;
-        Iterator& operator++() noexcept;
+        Iterator (const ValueTree&, bool isEnd);
+        Iterator& operator++();
 
-        bool operator!= (const Iterator&) const noexcept;
+        bool operator== (const Iterator&) const;
+        bool operator!= (const Iterator&) const;
         ValueTree operator*() const;
 
         using difference_type    = std::ptrdiff_t;
@@ -474,7 +475,7 @@ public:
     {
     public:
         /** Destructor. */
-        virtual ~Listener() {}
+        virtual ~Listener() = default;
 
         /** This method is called when a property of this tree (or of one of its sub-trees) is changed.
             Note that when you register a listener to a tree, it will receive this callback for

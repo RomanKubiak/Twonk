@@ -94,6 +94,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/FilterGraph_769715e3.o \
   $(JUCE_OBJDIR)/FilterIOConfiguration_d1cf3d25.o \
   $(JUCE_OBJDIR)/InternalFilters_eceadbab.o \
+  $(JUCE_OBJDIR)/TwonkFilterPropertiesEditor_f042fcf.o \
   $(JUCE_OBJDIR)/TwonkBubbleNodeComponent_9bcff162.o \
   $(JUCE_OBJDIR)/TwonkBubbleComponent_e7ba7544.o \
   $(JUCE_OBJDIR)/TwonkFilterComponent_edb4fdd8.o \
@@ -119,11 +120,13 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/include_juce_gui_extra_6dee1c1a.o \
   $(JUCE_OBJDIR)/include_juce_opengl_a8a032b.o \
 
-.PHONY: clean all
+.PHONY: clean all strip
 
 all : $(JUCE_OUTDIR)/$(JUCE_TARGET_APP)
 
-$(JUCE_OUTDIR)/$(JUCE_TARGET_APP) : check-pkg-config $(OBJECTS_APP) $(RESOURCES)
+$(JUCE_OUTDIR)/$(JUCE_TARGET_APP) : $(OBJECTS_APP) $(RESOURCES)
+	@command -v pkg-config >/dev/null 2>&1 || { echo >&2 "pkg-config not installed. Please, install it."; exit 1; }
+	@pkg-config --print-errors alsa freetype2 x11 xext xinerama libcurl
 	@echo Linking "Twonk - App"
 	-$(V_AT)mkdir -p $(JUCE_BINDIR)
 	-$(V_AT)mkdir -p $(JUCE_LIBDIR)
@@ -260,6 +263,11 @@ $(JUCE_OBJDIR)/InternalFilters_eceadbab.o: ../../Source/Filters/InternalFilters.
 	@echo "Compiling InternalFilters.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/TwonkFilterPropertiesEditor_f042fcf.o: ../../Source/UI/TwonkFilterPropertiesEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkFilterPropertiesEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/TwonkBubbleNodeComponent_9bcff162.o: ../../Source/UI/TwonkBubbleNodeComponent.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkBubbleNodeComponent.cpp"
@@ -379,10 +387,6 @@ $(JUCE_OBJDIR)/include_juce_opengl_a8a032b.o: ../../JuceLibraryCode/include_juce
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_opengl.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-check-pkg-config:
-	@command -v pkg-config >/dev/null 2>&1 || { echo >&2 "pkg-config not installed. Please, install it."; exit 1; }
-	@pkg-config --print-errors alsa freetype2 x11 xext xinerama libcurl
 
 clean:
 	@echo Cleaning Twonk

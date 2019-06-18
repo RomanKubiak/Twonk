@@ -45,20 +45,20 @@ void TwonkFilterConnector::update()
 		resizeToFit();
 }
 
-	void TwonkFilterConnector::resizeToFit()
-	{
-		Point<float> p1, p2;
-		getPoints (p1, p2);
+void TwonkFilterConnector::resizeToFit()
+{
+	Point<float> p1, p2;
+	getPoints (p1, p2);
 
-		auto newBounds = Rectangle<float> (p1, p2).expanded (24.0f).getSmallestIntegerContainer();
+	auto newBounds = Rectangle<float> (p1, p2).expanded (24.0f).getSmallestIntegerContainer();
 
-		if (newBounds != getBounds())
-			setBounds (newBounds);
-		else
-			resized();
+	if (newBounds != getBounds())
+		setBounds (newBounds);
+	else
+		resized();
 
-		repaint();
-	}
+	repaint();
+}
 
 void TwonkFilterConnector::getPoints (Point<float>& p1, Point<float>& p2) const
 {
@@ -150,14 +150,14 @@ void TwonkFilterConnector::resized()
 		p2.x, p1.y + (p2.y - p1.y) * 0.66f,
 		p2.x, p2.y);
 
-	PathStrokeType wideStroke (16.0f);
+	PathStrokeType wideStroke (4.0f);
 	wideStroke.createStrokedPath (hitPath, linePath);
 
-	PathStrokeType stroke (8.5f);
+	PathStrokeType stroke (2.5f);
 	stroke.createStrokedPath (linePath, linePath);
 
-	auto arrowW = 24.0f;
-	auto arrowL = 16.0f;
+	auto arrowW = 8.0f;
+	auto arrowL = 8.0f;
 
 	Path arrow;
 	arrow.addTriangle (-arrowL, arrowW,

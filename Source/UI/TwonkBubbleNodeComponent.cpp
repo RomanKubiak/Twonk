@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.3
 
   ------------------------------------------------------------------------------
 
@@ -61,23 +61,18 @@ void TwonkBubbleNodeComponent::paint (Graphics& g)
     //[/UserPrePaint]
 
     {
-        float x = static_cast<float> (proportionOfWidth (0.1f)), y = static_cast<float> (proportionOfHeight (0.1f)), width = static_cast<float> (proportionOfWidth (0.8f)), height = static_cast<float> (proportionOfHeight (0.8f));
-        Colour fillColour1 = Colours::red, fillColour2 = Colours::black;
-        Colour strokeColour = Colour (0xff9e0000);
+        int x = 2, y = 2, width = getWidth() - 4, height = getHeight() - 4;
+        Colour fillColour = Colour (0x6c32f8ff);
+        Colour strokeColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
-    		fillColour1 = fillColour;
-    		strokeColour = stroke;
+    		fillColour = fill;
+    		strokeColour = fill.brighter(0.9f);
         //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       static_cast<float> ((getWidth() / 2)) - static_cast<float> (proportionOfWidth (0.1f)) + x,
-                                       static_cast<float> ((getHeight() / 2)) - static_cast<float> (proportionOfHeight (0.1f)) + y,
-                                       fillColour2,
-                                       static_cast<float> (getWidth()) - static_cast<float> (proportionOfWidth (0.1f)) + x,
-                                       0.0f - static_cast<float> (proportionOfHeight (0.1f)) + y,
-                                       true));
-        g.fillEllipse (x, y, width, height);
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
         g.setColour (strokeColour);
-        g.drawEllipse (x, y, width, height, 2.0f);
+        g.drawRect (x, y, width, height, 2);
+
     }
 
     //[UserPaint] Add your own custom painting code here..
@@ -111,10 +106,10 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="TwonkBubbleNodeComponent"
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.33" fixedSize="1" initialWidth="32" initialHeight="32">
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="32" initialHeight="32">
   <BACKGROUND backgroundColour="0">
-    <ELLIPSE pos="10% 10% 80% 80%" fill=" radial: 0C 0C, 0R 0, 0=ffff0000, 1=ff000000"
-             hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ff9e0000"/>
+    <RECT pos="2 2 4M 4M" fill="solid: 6c32f8ff" hasStroke="1" stroke="2, mitered, butt"
+          strokeColour="solid: ffffffff"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
 
@@ -125,3 +120,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

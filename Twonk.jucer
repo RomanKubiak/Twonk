@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="NTe0XB0ij" name="Twonk" projectType="guiapp" version="1.0.0"
               juceFolder="../../../juce" vstFolderMac="~/SDKs/vstsdk2.4" vstFolderPC="c:\SDKs\vstsdk2.4"
-              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.3.2"
+              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.3"
               companyName="Instigator" displaySplashScreen="0" reportAppUsage="0"
               headerPath="..\..\vst3sdk">
   <EXPORTFORMATS>
@@ -206,6 +206,10 @@
               file="Source/Filters/InternalFilters.h"/>
       </GROUP>
       <GROUP id="{D892BFB2-FE85-B70F-10D3-450F407E2B3D}" name="UI">
+        <FILE id="WE9Kzb" name="TwonkFilterPropertiesEditor.cpp" compile="1"
+              resource="0" file="Source/UI/TwonkFilterPropertiesEditor.cpp"/>
+        <FILE id="rxc1yx" name="TwonkFilterPropertiesEditor.h" compile="0"
+              resource="0" file="Source/UI/TwonkFilterPropertiesEditor.h"/>
         <FILE id="Bk27Rh" name="TwonkBubbleNodeComponent.cpp" compile="1" resource="0"
               file="Source/UI/TwonkBubbleNodeComponent.cpp"/>
         <FILE id="g6gfs9" name="TwonkBubbleNodeComponent.h" compile="0" resource="0"

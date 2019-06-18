@@ -9,18 +9,10 @@
 */
 
 #pragma once
-#include "JuceHeader.h"
+#include "../JuceHeader.h"
 
 class TwonkFilterProperties : public LookAndFeel_V4
 {
 	public:
 		void drawLinearSlider (Graphics &, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle, Slider &) override;
-};
-
-class TwonkFilterPropertiesEditor : public GenericAudioProcessorEditor
-{
-	public:
-		TwonkFilterPropertiesEditor(AudioProcessor *owner);
-	private:
-		TwonkFilterProperties lf;
 };
