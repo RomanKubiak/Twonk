@@ -31,7 +31,7 @@ class TwonkFilterComponent : public TwonkBubbleComponent, public Timer, private 
 		GraphEditorPanel& panel;
 		OwnedArray<TwonkFilterComponentPin> pins;
 		int numInputs = 0, numOutputs = 0;
-		int pinSize = 24;
+		int pinSize = 32;
 		Point<int> originalPos;
 		Font font {"Liberation Sans", 12.0f, Font::bold};
 		int numIns = 0, numOuts = 0;

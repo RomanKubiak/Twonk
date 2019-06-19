@@ -150,14 +150,14 @@ void TwonkFilterConnector::resized()
 		p2.x, p1.y + (p2.y - p1.y) * 0.66f,
 		p2.x, p2.y);
 
-	PathStrokeType wideStroke (4.0f);
+	PathStrokeType wideStroke (8.0f);
 	wideStroke.createStrokedPath (hitPath, linePath);
 
-	PathStrokeType stroke (2.5f);
+	PathStrokeType stroke (6.5f);
 	stroke.createStrokedPath (linePath, linePath);
 
-	auto arrowW = 8.0f;
-	auto arrowL = 8.0f;
+	auto arrowW = 12.0f;
+	auto arrowL = 12.0f;
 
 	Path arrow;
 	arrow.addTriangle (-arrowL, arrowW,
