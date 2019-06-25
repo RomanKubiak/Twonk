@@ -44,6 +44,67 @@ public:
         // ..and give the synth a sound to play
         synth.addSound (new SineWaveSound());
     }
+	class Editor : public AudioProcessorEditor
+	{
+		public:
+			Editor(AudioProcessor *filter) : AudioProcessorEditor(filter)
+			{
+				addAndMakeVisible (timecodeDisplayLabel);
+				timecodeDisplayLabel.setFont (Font (Font::getDefaultMonospacedFontName(), 15.0f, Font::plain));
+
+				setSize(128, 32);
+			}
+
+			static String timeToTimecodeString (double seconds)
+			{
+				auto millisecs = roundToInt (seconds * 1000.0);
+				auto absMillisecs = std::abs (millisecs);
+
+				return String::formatted ("%02d:%02d:%02d.%03d",
+					millisecs / 3600000,
+					(absMillisecs / 60000) % 60,
+					(absMillisecs / 1000) % 60,
+					absMillisecs % 1000);
+			}
+
+			// quick - and-dirty function to format a bars / beats string
+			static String quarterNotePositionToBarsBeatsString (double quarterNotes, int numerator, int denominator)
+			{
+				if (numerator == 0 || denominator == 0)
+					return "1|1|000";
+
+				auto quarterNotesPerBar = (numerator * 4 / denominator);
+				auto beats = (fmod (quarterNotes, quarterNotesPerBar) / quarterNotesPerBar) * numerator;
+
+				auto bar = ((int)quarterNotes) / quarterNotesPerBar + 1;
+				auto beat = ((int)beats) + 1;
+				auto ticks = ((int)(fmod (beats, 1.0) * 960.0 + 0.5));
+
+				return String::formatted ("%d|%d|%03d", bar, beat, ticks);
+			}
+
+			void updateTimecodeDisplay (AudioPlayHead::CurrentPositionInfo pos)
+			{
+				MemoryOutputStream displayText;
+
+				displayText << "[" << SystemStats::getJUCEVersion() << "]   "
+					<< String (pos.bpm, 2) << " bpm, "
+					<< pos.timeSigNumerator << '/' << pos.timeSigDenominator
+					<< "  -  " << timeToTimecodeString (pos.timeInSeconds)
+					<< "  -  " << quarterNotePositionToBarsBeatsString (pos.ppqPosition,
+						pos.timeSigNumerator,
+						pos.timeSigDenominator);
+
+				if (pos.isRecording)
+					displayText << "  (recording)";
+				else if (pos.isPlaying)
+					displayText << "  (playing)";
+
+				timecodeDisplayLabel.setText (displayText.toString(), dontSendNotification);
+			}
+	private:
+		Label timecodeDisplayLabel;
+	};
 
     static String getIdentifier()
     {
@@ -54,8 +115,9 @@ public:
     {
         return InternalPlugin::getPluginDescription (getIdentifier(), true, true);
     }
-	bool hasEditor() const override { return false; }
-	AudioProcessorEditor *createEditor() override { return nullptr; }
+	bool hasEditor() const override { return true; }
+	AudioProcessorEditor *createEditor() override { return new Editor(this); }
+	
     //==============================================================================
     void prepareToPlay (double newSampleRate, int) override
     {
@@ -188,6 +250,7 @@ private:
 
     private:
         double currentAngle, angleDelta, level, tailOff;
+
     };
 
     //==============================================================================

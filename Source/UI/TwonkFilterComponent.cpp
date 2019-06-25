@@ -4,9 +4,6 @@
 TwonkFilterComponent::TwonkFilterComponent(GraphEditorPanel& p, AudioProcessorGraph::NodeID id) 
 	: panel (p), TwonkBubbleComponent(p.graph , id)
 {
-	shadow.setShadowProperties (DropShadow (Colours::white.withAlpha (0.5f), 15, {0, 1}));
-	setComponentEffect (&shadow);
-
 	if (auto f = graph.graph.getNodeForId (pluginID))
 	{
 		if (auto* processor = f->getProcessor())
@@ -99,46 +96,9 @@ void TwonkFilterComponent::mouseUp (const MouseEvent& e)
 	}
 }
 
-/*bool TwonkFilterComponent::hitTest (int x, int y)
-{
-	for (auto* child : getChildren())
-		if (child->getBounds().contains (x, y))
-			return true;
-
-	return x >= 3 && x < getWidth() - 6 && y >= pinSize && y < getHeight() - pinSize;
-}
-*/
-
-/*void TwonkFilterComponent::paint (Graphics& g)
-{
-	auto boxArea = getLocalBounds().reduced (4, pinSize);
-	bool isBypassed = false;
-
-	if (auto* f = graph.graph.getNodeForId (pluginID))
-		isBypassed = f->isBypassed();
-
-	auto boxColour = Colours::black.withAlpha(0.9f);
-
-	if (isBypassed)
-		boxColour = boxColour.brighter();
-
-	if (isSelected)
-		boxColour = boxColour.overlaidWith(Colours::aqua);
-
-
-	g.setColour (boxColour.brighter(0.5f));
-	g.drawRoundedRectangle (boxArea.toFloat(), 8.0f, 4.0f);
-
-	g.setColour (boxColour);
-	g.fillRoundedRectangle (boxArea.toFloat(), 8.0f);
-
-	g.setColour (Colours::white);
-	g.setFont (font);
-	g.drawFittedText (getName(), boxArea, Justification::centred, 2);
-}*/
-
 void TwonkFilterComponent::resized()
 {
+	pinSize = _BASE * 0.25;
 	if (auto f = graph.graph.getNodeForId (pluginID))
 	{
 		if (auto* processor = f->getProcessor())
@@ -187,8 +147,8 @@ void TwonkFilterComponent::update()
 	if (f->getProcessor()->producesMidi())
 		++numOuts;
 
-	int w = 96;
-	int h = 96;
+	int w = _BASE;
+	int h = _BASE * 0.75f;
 
 	w = jmax (w, (jmax (numIns, numOuts) + 1) * 20);
 

@@ -9,7 +9,7 @@
 */
 
 #pragma once
-#include "../TwonkLookAndFeel.h"
+#include "../JuceLibraryCode/JuceHeader.h"
 class TwonkFilterPropertiesEditor : public GenericAudioProcessorEditor
 {
 	public:

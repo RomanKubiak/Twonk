@@ -30,6 +30,7 @@
 TwonkBubbleNodeComponent::TwonkBubbleNodeComponent ()
 {
     //[Constructor_pre] You can add your own custom stuff here..
+
     //[/Constructor_pre]
 
 
@@ -61,18 +62,17 @@ void TwonkBubbleNodeComponent::paint (Graphics& g)
     //[/UserPrePaint]
 
     {
-        int x = 2, y = 2, width = getWidth() - 4, height = getHeight() - 4;
-        Colour fillColour = Colour (0x6c32f8ff);
-        Colour strokeColour = Colours::white;
+        float x = static_cast<float> (proportionOfWidth (0.1000f)), y = static_cast<float> (proportionOfHeight (0.1000f)), width = static_cast<float> (proportionOfWidth (0.8000f)), height = static_cast<float> (proportionOfHeight (0.8000f));
+        Colour fillColour = Colour (0xff2a7da5);
+        Colour strokeColour = Colour (0xffadc9ff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
     		fillColour = fill;
-    		strokeColour = fill.brighter(0.9f);
+    		strokeColour = fill.brighter(0.8f);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
+        g.fillRoundedRectangle (x, y, width, height, 5.000f);
         g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
-
+        g.drawRoundedRectangle (x, y, width, height, 5.000f, 2.000f);
     }
 
     //[UserPaint] Add your own custom painting code here..
@@ -108,8 +108,8 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="1" initialWidth="32" initialHeight="32">
   <BACKGROUND backgroundColour="0">
-    <RECT pos="2 2 4M 4M" fill="solid: 6c32f8ff" hasStroke="1" stroke="2, mitered, butt"
-          strokeColour="solid: ffffffff"/>
+    <ROUNDRECT pos="10% 10% 80% 80%" cornerSize="5.0" fill="solid: ff2a7da5"
+               hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffadc9ff"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
 

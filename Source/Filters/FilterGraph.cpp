@@ -108,7 +108,7 @@ void FilterGraph::addFilterCallback (AudioPluginInstance* instance, const String
     else
     {
         instance->enableAllBuses();
-
+		instance->setPlayHead(&position);
         if (auto node = graph.addNode (instance))
         {
             node->properties.set ("x", pos.x);

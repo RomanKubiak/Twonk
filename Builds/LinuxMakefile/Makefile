@@ -70,6 +70,8 @@ endif
 OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkCEEditor_b150544c.o \
   $(JUCE_OBJDIR)/TwonkCEProcessor_16925f5d.o \
+  $(JUCE_OBJDIR)/TwonkDebugInfoEditor_208e4471.o \
+  $(JUCE_OBJDIR)/TwonkDebugInfoProcessor_6f5f4118.o \
   $(JUCE_OBJDIR)/TwonkDistortionEditor_c39324bf.o \
   $(JUCE_OBJDIR)/TwonkDistortionProcessor_23d1d60a.o \
   $(JUCE_OBJDIR)/TwonkFlangerEditor_997d0a31.o \
@@ -89,11 +91,10 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkWWEditor_409921e2.o \
   $(JUCE_OBJDIR)/TwonkWWProcessor_3fbea207.o \
   $(JUCE_OBJDIR)/TwonkFilters_70d0b1f0.o \
-  $(JUCE_OBJDIR)/TwonkSlider_80550cab.o \
-  $(JUCE_OBJDIR)/TwonkLookAndFeel_76432fbe.o \
   $(JUCE_OBJDIR)/FilterGraph_769715e3.o \
   $(JUCE_OBJDIR)/FilterIOConfiguration_d1cf3d25.o \
   $(JUCE_OBJDIR)/InternalFilters_eceadbab.o \
+  $(JUCE_OBJDIR)/TwonkBubbleComponentLabel_967ea65a.o \
   $(JUCE_OBJDIR)/TwonkFilterPropertiesEditor_f042fcf.o \
   $(JUCE_OBJDIR)/TwonkBubbleNodeComponent_9bcff162.o \
   $(JUCE_OBJDIR)/TwonkBubbleComponent_e7ba7544.o \
@@ -141,6 +142,16 @@ $(JUCE_OBJDIR)/TwonkCEEditor_b150544c.o: ../../Source/FX/Compressor/TwonkCEEdito
 $(JUCE_OBJDIR)/TwonkCEProcessor_16925f5d.o: ../../Source/FX/Compressor/TwonkCEProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkCEProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkDebugInfoEditor_208e4471.o: ../../Source/FX/DebugInfo/TwonkDebugInfoEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkDebugInfoEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkDebugInfoProcessor_6f5f4118.o: ../../Source/FX/DebugInfo/TwonkDebugInfoProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkDebugInfoProcessor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkDistortionEditor_c39324bf.o: ../../Source/FX/Distortion/TwonkDistortionEditor.cpp
@@ -238,16 +249,6 @@ $(JUCE_OBJDIR)/TwonkFilters_70d0b1f0.o: ../../Source/FX/TwonkFilters.cpp
 	@echo "Compiling TwonkFilters.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TwonkSlider_80550cab.o: ../../Source/TwonkSlider.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkSlider.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/TwonkLookAndFeel_76432fbe.o: ../../Source/TwonkLookAndFeel.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkLookAndFeel.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/FilterGraph_769715e3.o: ../../Source/Filters/FilterGraph.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling FilterGraph.cpp"
@@ -261,6 +262,11 @@ $(JUCE_OBJDIR)/FilterIOConfiguration_d1cf3d25.o: ../../Source/Filters/FilterIOCo
 $(JUCE_OBJDIR)/InternalFilters_eceadbab.o: ../../Source/Filters/InternalFilters.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling InternalFilters.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkBubbleComponentLabel_967ea65a.o: ../../Source/UI/TwonkBubbleComponentLabel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkBubbleComponentLabel.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkFilterPropertiesEditor_f042fcf.o: ../../Source/UI/TwonkFilterPropertiesEditor.cpp

@@ -36,7 +36,6 @@ GraphEditorPanel::GraphEditorPanel (FilterGraph& g)  : graph (g)
 {
     graph.addChangeListener (this);
     setOpaque (true);
-	bgImage = ImageCache::getFromMemory (BinaryData::_1_jpg, BinaryData::_1_jpgSize);
 }
 
 GraphEditorPanel::~GraphEditorPanel()
@@ -49,12 +48,6 @@ GraphEditorPanel::~GraphEditorPanel()
 
 void GraphEditorPanel::paint (Graphics& g)
 {
-	/*int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-	g.setColour (Colours::black);
-	g.drawImage (bgImage,
-		x, y, width, height,
-		0, 0, bgImage.getWidth(), bgImage.getHeight());
-		*/
 	g.fillAll(Colours::black);
 }
 
@@ -93,7 +86,6 @@ void GraphEditorPanel::mouseDrag (const MouseEvent& e)
 
 void GraphEditorPanel::createNewPlugin (const PluginDescription& desc, Point<int> position)
 {
-	DBG("GraphEditorPanel::createNewPlugin");
     graph.addPlugin (desc, position.toDouble() / Point<double> ((double) getWidth(), (double) getHeight()));
 }
 

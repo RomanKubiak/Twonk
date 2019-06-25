@@ -4,6 +4,7 @@
 #include "GraphEditorPanel.h"
 #include "TwonkBubbleComponent.h"
 
+#define _BASE 128
 //==============================================================================
 class TwonkFilterComponent : public TwonkBubbleComponent, public Timer, private AudioProcessorParameter::Listener
 {
@@ -31,11 +32,10 @@ class TwonkFilterComponent : public TwonkBubbleComponent, public Timer, private 
 		GraphEditorPanel& panel;
 		OwnedArray<TwonkFilterComponentPin> pins;
 		int numInputs = 0, numOutputs = 0;
-		int pinSize = 32;
+		int pinSize;
 		Point<int> originalPos;
 		Font font {"Liberation Sans", 12.0f, Font::bold};
 		int numIns = 0, numOuts = 0;
-		DropShadowEffect shadow;
 		std::unique_ptr<PopupMenu> menu;
 		bool isSelected = false;
 };

@@ -24,6 +24,7 @@
 #include "../Filters/FilterGraph.h"
 //[/Headers]
 
+#include "TwonkBubbleComponentLabel.h"
 
 
 //==============================================================================
@@ -67,9 +68,9 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<Label> componentName;
     std::unique_ptr<TextButton> removeButton;
     std::unique_ptr<TextButton> bypassButton;
+    std::unique_ptr<TwonkBubbleComponentLabel> label;
 
 
     //==============================================================================

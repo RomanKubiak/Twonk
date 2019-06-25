@@ -33,6 +33,16 @@
 /**
     A collection of filters and some connections between them.
 */
+class FilterPosition : public AudioPlayHead
+{
+	public:
+		bool getCurrentPosition(AudioPlayHead::CurrentPositionInfo &pos)
+		{
+			DBG("FilterPosition::getCurrentPosition");
+			return (true);
+		}
+};
+
 class FilterGraph   : public FileBasedDocument,
                       public AudioProcessorListener,
                       private ChangeListener
@@ -82,7 +92,7 @@ public:
 
     //==============================================================================
     AudioProcessorGraph graph;
-
+	FilterPosition position;
 private:
     //==============================================================================
     AudioPluginFormatManager& formatManager;

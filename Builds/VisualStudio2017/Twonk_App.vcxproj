@@ -142,6 +142,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\FX\Compressor\TwonkCEEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Compressor\TwonkCEProcessor.cpp"/>
+    <ClCompile Include="..\..\Source\FX\DebugInfo\TwonkDebugInfoEditor.cpp"/>
+    <ClCompile Include="..\..\Source\FX\DebugInfo\TwonkDebugInfoProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Distortion\TwonkDistortionEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Distortion\TwonkDistortionProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Flanger\TwonkFlangerEditor.cpp"/>
@@ -161,11 +163,10 @@
     <ClCompile Include="..\..\Source\FX\Wah-Wah\TwonkWWEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Wah-Wah\TwonkWWProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\TwonkFilters.cpp"/>
-    <ClCompile Include="..\..\Source\TwonkSlider.cpp"/>
-    <ClCompile Include="..\..\Source\TwonkLookAndFeel.cpp"/>
     <ClCompile Include="..\..\Source\Filters\FilterGraph.cpp"/>
     <ClCompile Include="..\..\Source\Filters\FilterIOConfiguration.cpp"/>
     <ClCompile Include="..\..\Source\Filters\InternalFilters.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkBubbleComponentLabel.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkFilterPropertiesEditor.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkBubbleNodeComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkBubbleComponent.cpp"/>
@@ -186,15 +187,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_FloatVectorOperations.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_CatmullRomInterpolator.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_IIRFilter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_LagrangeInterpolator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\midi\juce_MidiBuffer.cpp">
@@ -1514,9 +1506,6 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_ComponentListener.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_Desktop.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_ModalComponentManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2007,6 +1996,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\FX\Compressor\TwonkCEEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Compressor\TwonkCEProcessor.h"/>
+    <ClInclude Include="..\..\Source\FX\DebugInfo\TwonkDebugInfoEditor.h"/>
+    <ClInclude Include="..\..\Source\FX\DebugInfo\TwonkDebugInfoProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\Distortion\TwonkDistortionEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Distortion\TwonkDistortionProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\Flanger\TwonkFlangerEditor.h"/>
@@ -2028,11 +2019,10 @@
     <ClInclude Include="..\..\Source\FX\Wah-Wah\TwonkWWProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\PluginParameter.h"/>
     <ClInclude Include="..\..\Source\FX\TwonkFilters.h"/>
-    <ClInclude Include="..\..\Source\TwonkSlider.h"/>
-    <ClInclude Include="..\..\Source\TwonkLookAndFeel.h"/>
     <ClInclude Include="..\..\Source\Filters\FilterGraph.h"/>
     <ClInclude Include="..\..\Source\Filters\FilterIOConfiguration.h"/>
     <ClInclude Include="..\..\Source\Filters\InternalFilters.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkBubbleComponentLabel.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkFilterPropertiesEditor.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkBubbleNodeComponent.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkBubbleComponent.h"/>
@@ -2049,12 +2039,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioProcessLoadMeasurer.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioSampleBuffer.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_FloatVectorOperations.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_CatmullRomInterpolator.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_Decibels.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_IIRFilter.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_LagrangeInterpolator.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_LinearSmoothedValue.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_Reverb.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\midi\juce_MidiBuffer.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\midi\juce_MidiFile.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\midi\juce_MidiKeyboardState.h"/>
@@ -2258,9 +2242,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstpshpack4.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstspeaker.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vsttypes.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\aeffect.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\aeffectx.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\vstfxstore.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\pluginview.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\hostclasses.h"/>
@@ -2608,7 +2589,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_CachedComponentImage.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_Component.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_ComponentListener.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_Desktop.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\components\juce_ModalComponentManager.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\desktop\juce_Desktop.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_gui_basics\desktop\juce_Displays.h"/>
@@ -2791,7 +2771,6 @@
   <ItemGroup>
     <None Include="..\..\Source\Settings.svg"/>
     <None Include="..\..\Source\PianoKeyboard.svg"/>
-    <None Include="..\..\Source\1.jpg"/>
     <None Include="..\..\Source\60sekuntia.ttf"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_formats\codecs\oggvorbis\Ogg Vorbis Licence.txt"/>

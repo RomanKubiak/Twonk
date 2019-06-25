@@ -42,6 +42,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+	void setFillColour(const Colour &_fill) { fill = _fill; repaint(); }
 	Colour fill;
 	Colour stroke;
     //[/UserMethods]

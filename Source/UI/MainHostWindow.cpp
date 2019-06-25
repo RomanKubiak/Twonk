@@ -99,7 +99,7 @@ MainHostWindow::MainHostWindow(bool _fullscreen, bool _opengl)
    {
 	   setResizable (true, false);
 	   setResizeLimits (500, 400, 10000, 10000);
-	   centreWithSize (1024, 600);
+	   centreWithSize (600, 1024);
    }
 
     graphHolder.reset (new GraphDocumentComponent (formatManager, deviceManager, knownPluginList));

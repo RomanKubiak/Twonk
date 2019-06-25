@@ -35,16 +35,6 @@ TwonkBubbleComponent::TwonkBubbleComponent (FilterGraph &g, const AudioProcessor
 	stroke = Colours::red;
     //[/Constructor_pre]
 
-    componentName.reset (new Label ("new label",
-                                    TRANS("CH")));
-    addAndMakeVisible (componentName.get());
-    componentName->setFont (Font (24.00f, Font::plain).withTypefaceStyle ("Regular"));
-    componentName->setJustificationType (Justification::centred);
-    componentName->setEditable (false, false, false);
-    componentName->setColour (Label::outlineColourId, Colours::white);
-    componentName->setColour (TextEditor::textColourId, Colours::black);
-    componentName->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-
     removeButton.reset (new TextButton ("new button"));
     addAndMakeVisible (removeButton.get());
     removeButton->setButtonText (TRANS("Remove"));
@@ -59,15 +49,17 @@ TwonkBubbleComponent::TwonkBubbleComponent (FilterGraph &g, const AudioProcessor
     bypassButton->addListener (this);
     bypassButton->setColour (TextButton::buttonColourId, Colour (0xff20d7d7));
 
+    label.reset (new TwonkBubbleComponentLabel (*this));
+    addAndMakeVisible (label.get());
 
     //[UserPreSize]
 	removeButton->setAlwaysOnTop(true);
 	bypassButton->setAlwaysOnTop(true);
 	toggleOptions(false);
-	componentName->addMouseListener(this, true);
+	label->addMouseListener(this, true);
     //[/UserPreSize]
 
-    setSize (96, 96);
+    setSize (128, 96);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -79,9 +71,9 @@ TwonkBubbleComponent::~TwonkBubbleComponent()
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
 
-    componentName = nullptr;
     removeButton = nullptr;
     bypassButton = nullptr;
+    label = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -94,6 +86,15 @@ void TwonkBubbleComponent::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
+    {
+        float x = static_cast<float> (proportionOfWidth (0.0000f)), y = static_cast<float> (proportionOfHeight (0.3300f)), width = static_cast<float> (proportionOfWidth (1.0000f)), height = static_cast<float> (proportionOfHeight (0.3300f));
+        Colour strokeColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (strokeColour);
+        g.drawRoundedRectangle (x, y, width, height, 10.000f, 2.000f);
+    }
+
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
@@ -103,13 +104,13 @@ void TwonkBubbleComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    componentName->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.2500f), proportionOfWidth (1.0000f), proportionOfHeight (0.5000f));
-    removeButton->setBounds (proportionOfWidth (0.0104f), proportionOfHeight (0.0000f), proportionOfWidth (0.9792f), proportionOfHeight (0.2500f));
-    bypassButton->setBounds (proportionOfWidth (0.0104f), proportionOfHeight (0.7500f), proportionOfWidth (0.9792f), proportionOfHeight (0.2500f));
+    removeButton->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.0000f), proportionOfWidth (1.0000f), proportionOfHeight (0.3958f));
+    bypassButton->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.6042f), proportionOfWidth (1.0000f), proportionOfHeight (0.3958f));
+    label->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.3300f), proportionOfWidth (1.0000f), proportionOfHeight (0.3300f));
     //[UserResized] Add your own custom resize handling here..
-	Font f = Typeface::createSystemTypefaceFor (BinaryData::_60sekuntia_ttf, BinaryData::_60sekuntia_ttfSize);
-	f.setHeight(proportionOfHeight (0.15f));
-	componentName->setFont(f);
+	//Font f = Typeface::createSystemTypefaceFor (BinaryData::_60sekuntia_ttf, BinaryData::_60sekuntia_ttfSize);
+	//f.setHeight(proportionOfHeight (0.15f));
+	//label->setFont(f);
     //[/UserResized]
 }
 
@@ -150,13 +151,13 @@ void TwonkBubbleComponent::mouseDrag (const MouseEvent& e)
 
 void TwonkBubbleComponent::setComponentName(const String &newName)
 {
-	componentName->setText(newName.replace(" ", "\n", true), NotificationType::sendNotificationAsync);
+	label->setText(newName);
 }
 
 void TwonkBubbleComponent::setBypassed(const bool isBypassed)
 {
-	componentName->setColour(Label::backgroundColourId, isBypassed ? Colours::white.withAlpha(0.5f) : Colours::black);
-	componentName->setColour(Label::outlineColourId, isBypassed ? Colours::black : Colours::white);
+	//componentName->setColour(Label::backgroundColourId, isBypassed ? Colours::white.withAlpha(0.5f) : Colours::black);
+	//componentName->setColour(Label::outlineColourId, isBypassed ? Colours::black : Colours::white);
 }
 
 void TwonkBubbleComponent::toggleOptions(const bool shouldBeVisible)
@@ -180,21 +181,22 @@ BEGIN_JUCER_METADATA
                  parentClasses="public Component" constructorParams="FilterGraph &amp;g, const AudioProcessorGraph::NodeID id"
                  variableInitialisers="graph(g), pluginID(id)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
-                 initialWidth="96" initialHeight="96">
-  <BACKGROUND backgroundColour="0"/>
-  <LABEL name="new label" id="9aa4a2de4ff90afd" memberName="componentName"
-         virtualName="" explicitFocusOrder="0" pos="0% 25% 100% 50%" outlineCol="ffffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="CH" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="24.0" kerning="0.0" bold="0" italic="0" justification="36"/>
+                 initialWidth="128" initialHeight="96">
+  <BACKGROUND backgroundColour="0">
+    <ROUNDRECT pos="0% 33% 100% 33%" cornerSize="10.0" fill="solid: 0" hasStroke="1"
+               stroke="2, mitered, butt" strokeColour="solid: ffffffff"/>
+  </BACKGROUND>
   <TEXTBUTTON name="new button" id="796884a9cba9bda" memberName="removeButton"
-              virtualName="" explicitFocusOrder="0" pos="1.042% 0% 97.917% 25%"
+              virtualName="" explicitFocusOrder="0" pos="0% 0% 100% 39.583%"
               bgColOff="ffff2121" buttonText="Remove" connectedEdges="15" needsCallback="1"
               radioGroupId="0"/>
   <TEXTBUTTON name="new button" id="5c7943a6f46993ef" memberName="bypassButton"
-              virtualName="" explicitFocusOrder="0" pos="1.042% 75% 97.917% 25%"
+              virtualName="" explicitFocusOrder="0" pos="0% 60.417% 100% 39.583%"
               bgColOff="ff20d7d7" buttonText="Bypass" connectedEdges="15" needsCallback="1"
               radioGroupId="0"/>
+  <JUCERCOMP name="" id="49f0fc13431e884" memberName="label" virtualName=""
+             explicitFocusOrder="0" pos="0% 33.333% 100% 33.333%" sourceFile="TwonkBubbleComponentLabel.cpp"
+             constructorParams="*this"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

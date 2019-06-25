@@ -14,14 +14,11 @@ namespace BinaryData
     extern const char*   PianoKeyboard_svg;
     const int            PianoKeyboard_svgSize = 2217;
 
-    extern const char*   _1_jpg;
-    const int            _1_jpgSize = 16369;
-
     extern const char*   _60sekuntia_ttf;
     const int            _60sekuntia_ttfSize = 97264;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 4;
+    const int namedResourceListSize = 3;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

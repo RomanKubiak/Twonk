@@ -79,11 +79,12 @@
   </EXPORTFORMATS>
   <MAINGROUP id="YdWL7hi7p" name="Twonk">
     <GROUP id="{CFED5B3D-D1D8-0F3F-4D67-B2A810D057EF}" name="Source">
-      <FILE id="lMKGeJ" name="Settings.svg" compile="0" resource="1" file="Source/Settings.svg"/>
-      <FILE id="RvTEzL" name="PianoKeyboard.svg" compile="0" resource="1"
-            file="Source/PianoKeyboard.svg"/>
-      <FILE id="tmMkf8" name="1.jpg" compile="0" resource="1" file="Source/1.jpg"/>
-      <FILE id="BVHqim" name="60sekuntia.ttf" compile="0" resource="1" file="Source/60sekuntia.ttf"/>
+      <GROUP id="{57019B1D-353D-5093-EBC0-83896771E4E4}" name="Resources">
+        <FILE id="lMKGeJ" name="Settings.svg" compile="0" resource="1" file="Source/Settings.svg"/>
+        <FILE id="RvTEzL" name="PianoKeyboard.svg" compile="0" resource="1"
+              file="Source/PianoKeyboard.svg"/>
+        <FILE id="BVHqim" name="60sekuntia.ttf" compile="0" resource="1" file="Source/60sekuntia.ttf"/>
+      </GROUP>
       <GROUP id="{8203BEF7-7441-1B1E-5D75-20E4312BBD00}" name="FX">
         <GROUP id="{2699263F-D123-752F-6C22-C936171CB24C}" name="Compressor">
           <FILE id="NcPCVl" name="TwonkCEEditor.cpp" compile="1" resource="0"
@@ -93,6 +94,16 @@
                 file="Source/FX/Compressor/TwonkCEProcessor.cpp"/>
           <FILE id="OKR5gj" name="TwonkCEProcessor.h" compile="0" resource="0"
                 file="Source/FX/Compressor/TwonkCEProcessor.h"/>
+        </GROUP>
+        <GROUP id="{0CC52632-1F5E-0F89-F68F-2277B9BA635F}" name="DebugInfo">
+          <FILE id="TDdyRW" name="TwonkDebugInfoEditor.cpp" compile="1" resource="0"
+                file="Source/FX/DebugInfo/TwonkDebugInfoEditor.cpp"/>
+          <FILE id="QPDk2R" name="TwonkDebugInfoEditor.h" compile="0" resource="0"
+                file="Source/FX/DebugInfo/TwonkDebugInfoEditor.h"/>
+          <FILE id="xabXYX" name="TwonkDebugInfoProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/DebugInfo/TwonkDebugInfoProcessor.cpp"/>
+          <FILE id="WIeX58" name="TwonkDebugInfoProcessor.h" compile="0" resource="0"
+                file="Source/FX/DebugInfo/TwonkDebugInfoProcessor.h"/>
         </GROUP>
         <GROUP id="{9F8BB251-89EE-BF38-E5FA-FB17C0483C32}" name="Distortion">
           <FILE id="ubr2yk" name="TwonkDistortionEditor.cpp" compile="1" resource="0"
@@ -187,12 +198,6 @@
               file="Source/FX/TwonkFilters.cpp"/>
         <FILE id="YnA2wY" name="TwonkFilters.h" compile="0" resource="0" file="Source/FX/TwonkFilters.h"/>
       </GROUP>
-      <FILE id="bcv7n6" name="TwonkSlider.cpp" compile="1" resource="0" file="Source/TwonkSlider.cpp"/>
-      <FILE id="vGrTrK" name="TwonkSlider.h" compile="0" resource="0" file="Source/TwonkSlider.h"/>
-      <FILE id="MF2LSG" name="TwonkLookAndFeel.h" compile="0" resource="0"
-            file="Source/TwonkLookAndFeel.h"/>
-      <FILE id="SLs0Y3" name="TwonkLookAndFeel.cpp" compile="1" resource="0"
-            file="Source/TwonkLookAndFeel.cpp"/>
       <GROUP id="{AE20356E-1F78-F99D-7D44-08529665AEDA}" name="Filters">
         <FILE id="CogQ5Q" name="FilterGraph.cpp" compile="1" resource="0" file="Source/Filters/FilterGraph.cpp"/>
         <FILE id="pfZWFw" name="FilterGraph.h" compile="0" resource="0" file="Source/Filters/FilterGraph.h"/>
@@ -206,6 +211,10 @@
               file="Source/Filters/InternalFilters.h"/>
       </GROUP>
       <GROUP id="{D892BFB2-FE85-B70F-10D3-450F407E2B3D}" name="UI">
+        <FILE id="bCWLSk" name="TwonkBubbleComponentLabel.cpp" compile="1"
+              resource="0" file="Source/UI/TwonkBubbleComponentLabel.cpp"/>
+        <FILE id="EWqYBo" name="TwonkBubbleComponentLabel.h" compile="0" resource="0"
+              file="Source/UI/TwonkBubbleComponentLabel.h"/>
         <FILE id="WE9Kzb" name="TwonkFilterPropertiesEditor.cpp" compile="1"
               resource="0" file="Source/UI/TwonkFilterPropertiesEditor.cpp"/>
         <FILE id="rxc1yx" name="TwonkFilterPropertiesEditor.h" compile="0"

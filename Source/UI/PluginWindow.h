@@ -27,7 +27,6 @@
 #pragma once
 
 #include "../Filters/FilterIOConfiguration.h"
-#include "../TwonkLookAndFeel.h"
 #include "TwonkFilterPropertiesEditor.h"
 class FilterGraph;
 
