@@ -68,6 +68,7 @@ ifeq ($(CONFIG),Release)
 endif
 
 OBJECTS_APP := \
+  $(JUCE_OBJDIR)/TwonkPlayHead_1245343e.o \
   $(JUCE_OBJDIR)/TwonkCEEditor_b150544c.o \
   $(JUCE_OBJDIR)/TwonkCEProcessor_16925f5d.o \
   $(JUCE_OBJDIR)/TwonkDebugInfoEditor_208e4471.o \
@@ -86,6 +87,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkRMProcessor_9ab88bca.o \
   $(JUCE_OBJDIR)/TwonkRWEditor_fd6adaed.o \
   $(JUCE_OBJDIR)/TwonkRWProcessor_596b491c.o \
+  $(JUCE_OBJDIR)/SineWaveSynth_5dad0889.o \
   $(JUCE_OBJDIR)/TwonkTremoloProcessor_36282d78.o \
   $(JUCE_OBJDIR)/TwonkTremoloEditor_63b411.o \
   $(JUCE_OBJDIR)/TwonkWWEditor_409921e2.o \
@@ -94,6 +96,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/FilterGraph_769715e3.o \
   $(JUCE_OBJDIR)/FilterIOConfiguration_d1cf3d25.o \
   $(JUCE_OBJDIR)/InternalFilters_eceadbab.o \
+  $(JUCE_OBJDIR)/TwonkTitleBarComponent_e453c015.o \
   $(JUCE_OBJDIR)/TwonkBubbleComponentLabel_967ea65a.o \
   $(JUCE_OBJDIR)/TwonkFilterPropertiesEditor_f042fcf.o \
   $(JUCE_OBJDIR)/TwonkBubbleNodeComponent_9bcff162.o \
@@ -133,6 +136,11 @@ $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) : $(OBJECTS_APP) $(RESOURCES)
 	-$(V_AT)mkdir -p $(JUCE_LIBDIR)
 	-$(V_AT)mkdir -p $(JUCE_OUTDIR)
 	$(V_AT)$(CXX) -o $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) $(OBJECTS_APP) $(JUCE_LDFLAGS) $(JUCE_LDFLAGS_APP) $(RESOURCES) $(TARGET_ARCH)
+
+$(JUCE_OBJDIR)/TwonkPlayHead_1245343e.o: ../../Source/TwonkPlayHead.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkPlayHead.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkCEEditor_b150544c.o: ../../Source/FX/Compressor/TwonkCEEditor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
@@ -224,6 +232,11 @@ $(JUCE_OBJDIR)/TwonkRWProcessor_596b491c.o: ../../Source/FX/Robotization-Whisper
 	@echo "Compiling TwonkRWProcessor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/SineWaveSynth_5dad0889.o: ../../Source/FX/SineWaveSynth/SineWaveSynth.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SineWaveSynth.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/TwonkTremoloProcessor_36282d78.o: ../../Source/FX/Tremolo/TwonkTremoloProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkTremoloProcessor.cpp"
@@ -262,6 +275,11 @@ $(JUCE_OBJDIR)/FilterIOConfiguration_d1cf3d25.o: ../../Source/Filters/FilterIOCo
 $(JUCE_OBJDIR)/InternalFilters_eceadbab.o: ../../Source/Filters/InternalFilters.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling InternalFilters.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkTitleBarComponent_e453c015.o: ../../Source/UI/TwonkTitleBarComponent.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkTitleBarComponent.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkBubbleComponentLabel_967ea65a.o: ../../Source/UI/TwonkBubbleComponentLabel.cpp

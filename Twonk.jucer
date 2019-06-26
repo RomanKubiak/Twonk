@@ -79,12 +79,26 @@
   </EXPORTFORMATS>
   <MAINGROUP id="YdWL7hi7p" name="Twonk">
     <GROUP id="{CFED5B3D-D1D8-0F3F-4D67-B2A810D057EF}" name="Source">
-      <GROUP id="{57019B1D-353D-5093-EBC0-83896771E4E4}" name="Resources">
-        <FILE id="lMKGeJ" name="Settings.svg" compile="0" resource="1" file="Source/Settings.svg"/>
-        <FILE id="RvTEzL" name="PianoKeyboard.svg" compile="0" resource="1"
-              file="Source/PianoKeyboard.svg"/>
-        <FILE id="BVHqim" name="60sekuntia.ttf" compile="0" resource="1" file="Source/60sekuntia.ttf"/>
+      <GROUP id="{2A443038-39E2-452E-37A0-3AD92CBC82C3}" name="Resources">
+        <FILE id="IJis9L" name="60sekuntia.ttf" compile="0" resource="1" file="Source/Resources/60sekuntia.ttf"/>
+        <FILE id="YUpw5f" name="iconfinder_icon-pause_211871.png" compile="0"
+              resource="1" file="Source/Resources/iconfinder_icon-pause_211871.png"/>
+        <FILE id="UUivlw" name="iconfinder_icon-play_211876.png" compile="0"
+              resource="1" file="Source/Resources/iconfinder_icon-play_211876.png"/>
+        <FILE id="TJO747" name="iconfinder_icon-stop_211931.png" compile="0"
+              resource="1" file="Source/Resources/iconfinder_icon-stop_211931.png"/>
+        <FILE id="rsnRys" name="iconfinder_plugin_3671838.png" compile="0"
+              resource="1" file="Source/Resources/iconfinder_plugin_3671838.png"/>
+        <FILE id="op7HUw" name="iconfinder_Streamline-75_185095.png" compile="0"
+              resource="1" file="Source/Resources/iconfinder_Streamline-75_185095.png"/>
+        <FILE id="ciZsqF" name="PianoKeyboard.svg.png" compile="0" resource="1"
+              file="Source/Resources/PianoKeyboard.svg.png"/>
+        <FILE id="gxldLH" name="sync_off.png" compile="0" resource="1" file="Source/Resources/sync_off.png"/>
+        <FILE id="PFzDe5" name="sync_on.png" compile="0" resource="1" file="Source/Resources/sync_on.png"/>
       </GROUP>
+      <FILE id="DeRA1G" name="TwonkPlayHead.cpp" compile="1" resource="0"
+            file="Source/TwonkPlayHead.cpp"/>
+      <FILE id="EjziJc" name="TwonkPlayHead.h" compile="0" resource="0" file="Source/TwonkPlayHead.h"/>
       <GROUP id="{8203BEF7-7441-1B1E-5D75-20E4312BBD00}" name="FX">
         <GROUP id="{2699263F-D123-752F-6C22-C936171CB24C}" name="Compressor">
           <FILE id="NcPCVl" name="TwonkCEEditor.cpp" compile="1" resource="0"
@@ -173,6 +187,11 @@
           <FILE id="eA6MDv" name="TwonkRWProcessor.h" compile="0" resource="0"
                 file="Source/FX/Robotization-Whisperization/TwonkRWProcessor.h"/>
         </GROUP>
+        <GROUP id="{A594AB27-A86E-A115-E651-E3CC62EDB688}" name="SineWaveSynth">
+          <FILE id="qiD8bc" name="SineWaveSynth.cpp" compile="1" resource="0"
+                file="Source/FX/SineWaveSynth/SineWaveSynth.cpp"/>
+          <FILE id="E8VN7k" name="SineWaveSynth.h" compile="0" resource="0" file="Source/FX/SineWaveSynth/SineWaveSynth.h"/>
+        </GROUP>
         <GROUP id="{064E2E72-9C31-0F33-0C54-6F722C4B5D27}" name="Tremolo">
           <FILE id="lOH2jw" name="TwonkTremoloEditor.h" compile="0" resource="0"
                 file="Source/FX/Tremolo/TwonkTremoloEditor.h"/>
@@ -211,6 +230,10 @@
               file="Source/Filters/InternalFilters.h"/>
       </GROUP>
       <GROUP id="{D892BFB2-FE85-B70F-10D3-450F407E2B3D}" name="UI">
+        <FILE id="Lhw9Qp" name="TwonkTitleBarComponent.cpp" compile="1" resource="0"
+              file="Source/UI/TwonkTitleBarComponent.cpp"/>
+        <FILE id="N24pYf" name="TwonkTitleBarComponent.h" compile="0" resource="0"
+              file="Source/UI/TwonkTitleBarComponent.h"/>
         <FILE id="bCWLSk" name="TwonkBubbleComponentLabel.cpp" compile="1"
               resource="0" file="Source/UI/TwonkBubbleComponentLabel.cpp"/>
         <FILE id="EWqYBo" name="TwonkBubbleComponentLabel.h" compile="0" resource="0"

@@ -78,19 +78,10 @@ MainHostWindow::MainHostWindow(bool _fullscreen, bool _opengl)
                       LookAndFeel::getDefaultLookAndFeel().findColour (ResizableWindow::backgroundColourId),
                       DocumentWindow::allButtons), fullscreen(_fullscreen), opengl(_opengl)
 {
+	twonkPlayHead = new TwonkPlayHead(deviceManager);
     formatManager.addDefaultFormats();
-    formatManager.addFormat (new InternalPluginFormat());
-
+    formatManager.addFormat (new InternalPluginFormat(*twonkPlayHead));
     auto safeThis = SafePointer<MainHostWindow> (this);
-    RuntimePermissions::request (RuntimePermissions::recordAudio,
-                                 [safeThis] (bool granted) mutable
-                                 {
-                                     std::unique_ptr<XmlElement> savedAudioState (getAppProperties().getUserSettings()
-                                                                                  ->getXmlValue ("audioDeviceState"));
-
-                                     safeThis->deviceManager.initialise (granted ? 256 : 0, 256, savedAudioState.get(), true);
-                                 });
-
 	if (fullscreen)
 	{
 		setFullScreen (true);
@@ -101,8 +92,8 @@ MainHostWindow::MainHostWindow(bool _fullscreen, bool _opengl)
 	   setResizeLimits (500, 400, 10000, 10000);
 	   centreWithSize (600, 1024);
    }
-
-    graphHolder.reset (new GraphDocumentComponent (formatManager, deviceManager, knownPluginList));
+	deviceManager.initialise(2, 2, getAppProperties().getUserSettings()->getXmlValue("audioDeviceState"), true);
+    graphHolder.reset (new GraphDocumentComponent (formatManager, deviceManager, knownPluginList, *twonkPlayHead));
 
     setContentNonOwned (graphHolder.get(), false);
 
@@ -110,7 +101,7 @@ MainHostWindow::MainHostWindow(bool _fullscreen, bool _opengl)
 
     setVisible (true);
 
-    InternalPluginFormat internalFormat;
+    InternalPluginFormat internalFormat(*twonkPlayHead);
     internalFormat.getAllTypes (internalTypes);
 
     std::unique_ptr<XmlElement> savedPluginList (getAppProperties().getUserSettings()->getXmlValue ("pluginList"));
@@ -159,6 +150,7 @@ MainHostWindow::~MainHostWindow()
   #endif
 
     graphHolder = nullptr;
+	deleteAndZero(twonkPlayHead);
 }
 
 void MainHostWindow::closeButtonPressed()
@@ -522,8 +514,8 @@ bool MainHostWindow::perform (const InvocationInfo& info)
 void MainHostWindow::showAudioSettings()
 {
     auto* audioSettingsComp = new AudioDeviceSelectorComponent (deviceManager,
-                                                                0, 256,
-                                                                0, 256,
+                                                                1, 256,
+                                                                1, 256,
                                                                 true, true,
                                                                 true, false);
 

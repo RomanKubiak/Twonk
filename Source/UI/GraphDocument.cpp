@@ -13,102 +13,8 @@
 #include "../Filters/InternalFilters.h"
 #include "MainHostWindow.h"
 #include "GraphDocument.h"
-
-//==============================================================================
-class GraphDocumentComponent::TitleBarComponent : public Component,
-	private Button::Listener
-{
-public:
-	TitleBarComponent (GraphDocumentComponent& graphDocumentComponent)
-		: owner (graphDocumentComponent)
-	{
-		static const unsigned char pluginListPathData[]
-			= { 110,109,193,202,222,64,80,50,21,64,108,0,0,48,65,0,0,0,0,108,160,154,112,65,80,50,21,64,108,0,0,48,65,80,
-				50,149,64,108,193,202,222,64,80,50,21,64,99,109,0,0,192,64,251,220,127,64,108,160,154,32,65,165,135,202,
-				64,108,160,154,32,65,250,220,47,65,108,0,0,192,64,102,144,10,65,108,0,0,192,64,251,220,127,64,99,109,0,0,
-				128,65,251,220,127,64,108,0,0,128,65,103,144,10,65,108,96,101,63,65,251,220,47,65,108,96,101,63,65,166,135,
-				202,64,108,0,0,128,65,251,220,127,64,99,109,96,101,79,65,148,76,69,65,108,0,0,136,65,0,0,32,65,108,80,
-				77,168,65,148,76,69,65,108,0,0,136,65,40,153,106,65,108,96,101,79,65,148,76,69,65,99,109,0,0,64,65,63,247,
-				95,65,108,80,77,128,65,233,161,130,65,108,80,77,128,65,125,238,167,65,108,0,0,64,65,51,72,149,65,108,0,0,64,
-				65,63,247,95,65,99,109,0,0,176,65,63,247,95,65,108,0,0,176,65,51,72,149,65,108,176,178,143,65,125,238,167,65,
-				108,176,178,143,65,233,161,130,65,108,0,0,176,65,63,247,95,65,99,109,12,86,118,63,148,76,69,65,108,0,0,160,
-				64,0,0,32,65,108,159,154,16,65,148,76,69,65,108,0,0,160,64,40,153,106,65,108,12,86,118,63,148,76,69,65,99,
-				109,0,0,0,0,63,247,95,65,108,62,53,129,64,233,161,130,65,108,62,53,129,64,125,238,167,65,108,0,0,0,0,51,
-				72,149,65,108,0,0,0,0,63,247,95,65,99,109,0,0,32,65,63,247,95,65,108,0,0,32,65,51,72,149,65,108,193,202,190,
-				64,125,238,167,65,108,193,202,190,64,233,161,130,65,108,0,0,32,65,63,247,95,65,99,101,0,0 };
-
-		{
-			settingsIcon.reset(Drawable::createFromImageData(BinaryData::Settings_svg, BinaryData::Settings_svgSize));
-			settingsButton.setImages(settingsIcon.get());
-		}
-
-		{
-			Path p;
-			p.loadPathFromData (pluginListPathData, sizeof (pluginListPathData));
-			pluginButton.setShape (p, true, true, false);
-		}
-		{
-			midiKeyboardIcon.reset(Drawable::createFromImageData(BinaryData::PianoKeyboard_svg, BinaryData::PianoKeyboard_svgSize));
-			midiKeysButton.setImages(midiKeyboardIcon.get());
-		}
-
-		pluginButton.addListener (this);
-		addAndMakeVisible (pluginButton);
-
-		midiKeysButton.addListener(this);
-		addAndMakeVisible (midiKeysButton);
-
-		settingsButton.addListener(this);
-		addAndMakeVisible (settingsButton);
-
-		setOpaque (true);
-	}
-
-private:
-	void paint (Graphics& g) override
-	{
-		auto titleBarBackgroundColour = getLookAndFeel().findColour (ResizableWindow::backgroundColourId).darker();
-
-		g.setColour (titleBarBackgroundColour);
-		g.fillRect (getLocalBounds());
-	}
-
-	void resized() override
-	{
-		auto r = getLocalBounds();
-
-		settingsButton.setBounds (r.removeFromLeft (40).withSizeKeepingCentre (32, 32));
-		pluginButton.setBounds (r.removeFromRight (40).withSizeKeepingCentre (32, 32));
-		midiKeysButton.setBounds(r.removeFromRight(72).withSizeKeepingCentre(32, 32));
-	}
-
-	void buttonClicked (Button* b) override
-	{
-		if (b == &settingsButton)
-		{
-			owner.showSidePanel(true);
-		}
-
-		if (b == &pluginButton)
-		{
-			owner.showSidePanel(false);
-		}
-
-		if (b == &midiKeysButton)
-		{
-			owner.showMidiKeyboardComponent();
-		}
-	}
-
-	GraphDocumentComponent& owner;
-	std::unique_ptr<Drawable> midiKeyboardIcon;
-	std::unique_ptr<Drawable> settingsIcon;
-	ShapeButton pluginButton{ "pluginButton", Colours::lightgrey, Colours::lightgrey, Colours::white };
-	DrawableButton midiKeysButton{ "midiKeysButton", DrawableButton::ImageFitted };
-	DrawableButton settingsButton{ "settingsButton", DrawableButton::ImageFitted };
-
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TitleBarComponent)
-};
+#include "../TwonkPlayHead.h"
+#include "../UI/TwonkTitlebarComponent.h"
 
 //==============================================================================
 struct GraphDocumentComponent::PluginListBoxModel : public ListBoxModel,
@@ -173,13 +79,12 @@ struct GraphDocumentComponent::PluginListBoxModel : public ListBoxModel,
 };
 
 //==============================================================================
-GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm,
-	AudioDeviceManager& dm,
-	KnownPluginList& kpl)
-	: graph (new FilterGraph (fm)),
-	deviceManager (dm),
-	pluginList (kpl),
-	formatManager(fm)
+GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm, AudioDeviceManager& dm, KnownPluginList& kpl, TwonkPlayHead &_twonkPlayHead)
+	: graph (new FilterGraph (fm, _twonkPlayHead)),
+		deviceManager (dm),
+		pluginList (kpl),
+		formatManager(fm),
+		twonkPlayHead(_twonkPlayHead)
 {
 	init();
 
@@ -194,7 +99,7 @@ void GraphDocumentComponent::init()
 	addAndMakeVisible (graphPanel.get());
 	graphPlayer.setProcessor (&graph->graph);
 
-	audioSettingsComponent.reset(new AudioDeviceSelectorComponent (deviceManager, 0, 2, 0, 2, true, true, true, false));
+	audioSettingsComponent.reset(new AudioDeviceSelectorComponent (deviceManager, 1, 8, 1, 8, true, true, true, false));
 
 	keyState.addListener (&graphPlayer.getMidiMessageCollector());
 	keyboardComp.reset(new MidiKeyboardComponent(keyState, MidiKeyboardComponent::horizontalKeyboard));
@@ -207,7 +112,8 @@ void GraphDocumentComponent::init()
 	{
 		if (isOnTouchDevice())
 		{
-			titleBarComponent.reset (new TitleBarComponent (*this));
+			titleBarComponent.reset (new TwonkTitleBarComponent (*this));
+			twonkPlayHead.addClockListener(titleBarComponent.get());
 			addAndMakeVisible (titleBarComponent.get());
 		}
 
@@ -251,7 +157,7 @@ GraphDocumentComponent::~GraphDocumentComponent()
 void GraphDocumentComponent::resized()
 {
 	auto r = getLocalBounds();
-	const int titleBarHeight = 32;
+	const int titleBarHeight = TITLEBAR_HEIGHT;
 	const int keysHeight = keyboardComp->isVisible() ? 100 : 0;
 
 	if (isOnTouchDevice())
@@ -352,4 +258,22 @@ bool GraphDocumentComponent::closeAnyOpenPluginWindows()
 void GraphDocumentComponent::showMidiKeyboardComponent()
 {
 	keyboardComp.get()->setVisible(!keyboardComp.get()->isVisible());
+}
+
+void GraphDocumentComponent::stop()
+{
+	twonkPlayHead.stop();
+}
+void GraphDocumentComponent::toggleTransport(const bool shouldPlay)
+{
+	twonkPlayHead.toggle(shouldPlay);
+}
+void GraphDocumentComponent::toggleSync(const bool shouldBeSynced)
+{
+	twonkPlayHead.setExternalSync(shouldBeSynced);
+}
+
+void GraphDocumentComponent::setTempo(const double bpm)
+{
+	twonkPlayHead.setTempo(bpm);
 }

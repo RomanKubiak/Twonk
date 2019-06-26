@@ -20,30 +20,34 @@
 //[Headers] You can add your own extra header files here...
 //[/Headers]
 
-#include "TwonkToolbar.h"
+#include "TwonkBubbleComponentLabel.h"
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
+#include "TwonkBubbleComponent.h"
 //[/MiscUserDefs]
 
 //==============================================================================
-TwonkToolbar::TwonkToolbar ()
+TwonkBubbleComponentLabel::TwonkBubbleComponentLabel (TwonkBubbleComponent &_owner)
+    : owner(_owner)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
 
     //[UserPreSize]
+	glow.setGlowProperties(1.0f, Colours::white.withAlpha(0.5f));
+	setComponentEffect(&glow);
     //[/UserPreSize]
 
-    setSize (600, 400);
+    setSize (128, 48);
 
 
     //[Constructor] You can add your own custom stuff here..
     //[/Constructor]
 }
 
-TwonkToolbar::~TwonkToolbar()
+TwonkBubbleComponentLabel::~TwonkBubbleComponentLabel()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
@@ -55,18 +59,31 @@ TwonkToolbar::~TwonkToolbar()
 }
 
 //==============================================================================
-void TwonkToolbar::paint (Graphics& g)
+void TwonkBubbleComponentLabel::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (Colour (0x37812ef5));
-
     //[UserPaint] Add your own custom painting code here..
+	Font f (CustomTypeface::createSystemTypefaceFor(BinaryData::_60sekuntia_ttf, BinaryData::_60sekuntia_ttfSize));
+	f.setHeight(proportionOfHeight(0.4f));
+	g.setFont(f);
+	g.setColour(Colours::white);
+	g.drawFittedText(
+		text, 
+		Rectangle<int>(
+			proportionOfWidth(0.1f),
+			proportionOfHeight(0.1f),
+			proportionOfWidth(0.8f),
+			proportionOfHeight(0.8f)
+		),
+		Justification::centred,
+		1
+	);
     //[/UserPaint]
 }
 
-void TwonkToolbar::resized()
+void TwonkBubbleComponentLabel::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -78,6 +95,10 @@ void TwonkToolbar::resized()
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void TwonkBubbleComponentLabel::setText(const String &_text)
+{
+	text = _text;
+}
 //[/MiscUserCode]
 
 
@@ -90,11 +111,12 @@ void TwonkToolbar::resized()
 
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="TwonkToolbar" componentName=""
-                 parentClasses="public Component" constructorParams="" variableInitialisers=""
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
-  <BACKGROUND backgroundColour="37812ef5"/>
+<JUCER_COMPONENT documentType="Component" className="TwonkBubbleComponentLabel"
+                 componentName="" parentClasses="public Component" constructorParams="TwonkBubbleComponent &amp;_owner"
+                 variableInitialisers="owner(_owner)" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="128"
+                 initialHeight="48">
+  <BACKGROUND backgroundColour="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

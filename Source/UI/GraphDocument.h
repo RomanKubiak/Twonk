@@ -10,6 +10,12 @@
 
 #pragma once
 #include "../Filters/FilterGraph.h"
+#include "../UI/GraphEditorPanel.h"
+#define TITLEBAR_HEIGHT 64
+
+class TwonkPlayHead;
+class TwonkTitleBarComponent;
+
 class SidePanelLookAndFeel : public LookAndFeel_V4
 {
 public:
@@ -32,7 +38,8 @@ class GraphDocumentComponent : public Component,
 public:
 	GraphDocumentComponent (AudioPluginFormatManager& formatManager,
 		AudioDeviceManager& deviceManager,
-		KnownPluginList& pluginList);
+		KnownPluginList& pluginList,
+		TwonkPlayHead &_twonkPlayHead);
 
 	~GraphDocumentComponent() override;
 
@@ -56,6 +63,10 @@ public:
 	std::unique_ptr<MidiKeyboardComponent> keyboardComp;
 	MidiKeyboardState keyState;
 	void showMidiKeyboardComponent();
+	void stop();
+	void toggleTransport(const bool shouldPlay);
+	void toggleSync(const bool shouldBeSynced);
+	void setTempo(const double bpm);
 	//==============================================================================
 	void showSidePanel (bool isSettingsPanel);
 	void hideLastSidePanel();
@@ -65,11 +76,11 @@ private:
 	//==============================================================================
 	AudioDeviceManager& deviceManager;
 	KnownPluginList& pluginList;
-
+	TwonkPlayHead &twonkPlayHead;
 	AudioProcessorPlayer graphPlayer;
 
 	class TitleBarComponent;
-	std::unique_ptr<TitleBarComponent> titleBarComponent;
+	std::unique_ptr<TwonkTitleBarComponent> titleBarComponent;
 	std::unique_ptr<PluginListComponent> pluginListComponent;
 	//==============================================================================
 	struct PluginListBoxModel;

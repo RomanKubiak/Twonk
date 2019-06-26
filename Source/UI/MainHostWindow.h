@@ -26,9 +26,8 @@
 
 #pragma once
 
-#include "../Filters/FilterGraph.h"
 #include "GraphEditorPanel.h"
-
+#include "../TwonkPlayHead.h"
 
 //==============================================================================
 namespace CommandIDs
@@ -95,7 +94,7 @@ private:
     //==============================================================================
     AudioDeviceManager deviceManager;
     AudioPluginFormatManager formatManager;
-
+	TwonkPlayHead *twonkPlayHead;
     OwnedArray<PluginDescription> internalTypes;
     KnownPluginList knownPluginList;
     KnownPluginList::SortMethod pluginSortMethod;

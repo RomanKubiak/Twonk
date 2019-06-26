@@ -140,6 +140,7 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\TwonkPlayHead.cpp"/>
     <ClCompile Include="..\..\Source\FX\Compressor\TwonkCEEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Compressor\TwonkCEProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\DebugInfo\TwonkDebugInfoEditor.cpp"/>
@@ -158,6 +159,7 @@
     <ClCompile Include="..\..\Source\FX\Ring Modulator\TwonkRMProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.cpp"/>
+    <ClCompile Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.cpp"/>
     <ClCompile Include="..\..\Source\FX\Tremolo\TwonkTremoloProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Tremolo\TwonkTremoloEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Wah-Wah\TwonkWWEditor.cpp"/>
@@ -166,6 +168,7 @@
     <ClCompile Include="..\..\Source\Filters\FilterGraph.cpp"/>
     <ClCompile Include="..\..\Source\Filters\FilterIOConfiguration.cpp"/>
     <ClCompile Include="..\..\Source\Filters\InternalFilters.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkTitleBarComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkBubbleComponentLabel.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkFilterPropertiesEditor.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkBubbleNodeComponent.cpp"/>
@@ -1994,6 +1997,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\TwonkPlayHead.h"/>
     <ClInclude Include="..\..\Source\FX\Compressor\TwonkCEEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Compressor\TwonkCEProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\DebugInfo\TwonkDebugInfoEditor.h"/>
@@ -2013,6 +2017,7 @@
     <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\STFT.h"/>
     <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.h"/>
+    <ClInclude Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.h"/>
     <ClInclude Include="..\..\Source\FX\Tremolo\TwonkTremoloEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Tremolo\TwonkTremoloProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\Wah-Wah\TwonkWWEditor.h"/>
@@ -2022,6 +2027,7 @@
     <ClInclude Include="..\..\Source\Filters\FilterGraph.h"/>
     <ClInclude Include="..\..\Source\Filters\FilterIOConfiguration.h"/>
     <ClInclude Include="..\..\Source\Filters\InternalFilters.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkTitleBarComponent.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkBubbleComponentLabel.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkFilterPropertiesEditor.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkBubbleNodeComponent.h"/>
@@ -2769,9 +2775,15 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Source\Settings.svg"/>
-    <None Include="..\..\Source\PianoKeyboard.svg"/>
-    <None Include="..\..\Source\60sekuntia.ttf"/>
+    <None Include="..\..\Source\Resources\60sekuntia.ttf"/>
+    <None Include="..\..\Source\Resources\iconfinder_icon-pause_211871.png"/>
+    <None Include="..\..\Source\Resources\iconfinder_icon-play_211876.png"/>
+    <None Include="..\..\Source\Resources\iconfinder_icon-stop_211931.png"/>
+    <None Include="..\..\Source\Resources\iconfinder_plugin_3671838.png"/>
+    <None Include="..\..\Source\Resources\iconfinder_Streamline-75_185095.png"/>
+    <None Include="..\..\Source\Resources\PianoKeyboard.svg.png"/>
+    <None Include="..\..\Source\Resources\sync_off.png"/>
+    <None Include="..\..\Source\Resources\sync_on.png"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_formats\codecs\oggvorbis\Ogg Vorbis Licence.txt"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_processors\format_types\VST3_SDK\base\LICENSE.txt"/>

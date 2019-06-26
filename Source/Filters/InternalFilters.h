@@ -27,7 +27,7 @@
 #pragma once
 
 #include "FilterGraph.h"
-
+class TwonkPlayHead;
 class InternalPlugin : public AudioPluginInstance
 {
 protected:
@@ -144,7 +144,7 @@ class InternalPluginFormat   : public AudioPluginFormat
 {
 public:
     //==============================================================================
-    InternalPluginFormat();
+    InternalPluginFormat(TwonkPlayHead &_twonkPlayHead);
     ~InternalPluginFormat() override {}
 
     //==============================================================================
@@ -164,6 +164,7 @@ public:
     StringArray searchPathsForPlugins (const FileSearchPath&, bool, bool) override      { return {}; }
 
 private:
+	TwonkPlayHead &twonkPlayHead;
     //==============================================================================
     void createPluginInstance (const PluginDescription&, double initialSampleRate, int initialBufferSize,
                                void* userData, PluginCreationCallback) override;

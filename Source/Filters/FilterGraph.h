@@ -28,28 +28,18 @@
 
 #include "../UI/PluginWindow.h"
 
-
+class TwonkPlayHead;
 //==============================================================================
 /**
     A collection of filters and some connections between them.
 */
-class FilterPosition : public AudioPlayHead
-{
-	public:
-		bool getCurrentPosition(AudioPlayHead::CurrentPositionInfo &pos)
-		{
-			DBG("FilterPosition::getCurrentPosition");
-			return (true);
-		}
-};
-
 class FilterGraph   : public FileBasedDocument,
                       public AudioProcessorListener,
                       private ChangeListener
 {
 public:
     //==============================================================================
-    FilterGraph (AudioPluginFormatManager&);
+    FilterGraph (AudioPluginFormatManager&, TwonkPlayHead &_twonkPlayHead);
     ~FilterGraph() override;
 
     //==============================================================================
@@ -61,7 +51,7 @@ public:
 
     void setNodePosition (NodeID, Point<double>);
     Point<double> getNodePosition (NodeID) const;
-
+	AudioPlayHead *getTwonkPlayHead();
     //==============================================================================
     void clear();
 
@@ -92,7 +82,7 @@ public:
 
     //==============================================================================
     AudioProcessorGraph graph;
-	FilterPosition position;
+	TwonkPlayHead &twonkPlayHead;
 private:
     //==============================================================================
     AudioPluginFormatManager& formatManager;

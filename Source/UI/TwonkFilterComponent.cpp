@@ -30,7 +30,6 @@ TwonkFilterComponent::~TwonkFilterComponent()
 
 void TwonkFilterComponent::mouseDown (const MouseEvent& e)
 {
-	DBG("TwonkFilterComponent::mouseDown");
 	originalPos = localPointToGlobal (Point<int>());
 
 	toFront (true);
@@ -43,7 +42,6 @@ void TwonkFilterComponent::mouseDown (const MouseEvent& e)
 
 void TwonkFilterComponent::timerCallback()
 {
-	DBG("TwonkFilterComponent::timerCallback");
 	stopTimer();
 	if (isMouseButtonDown(true))
 	{
@@ -59,7 +57,6 @@ void TwonkFilterComponent::timerCallback()
 
 void TwonkFilterComponent::mouseDrag (const MouseEvent& e)
 {
-	DBG("TwonkFilterComponent::mouseDrag");
 	stopTimer();
 	if (!e.mods.isPopupMenu())
 	{
@@ -78,7 +75,6 @@ void TwonkFilterComponent::mouseDrag (const MouseEvent& e)
 
 void TwonkFilterComponent::mouseUp (const MouseEvent& e)
 {
-	DBG("TwonkFilterComponent::mouseUp");
 	if (e.mouseWasDraggedSinceMouseDown())
 	{
 		graph.setChangedFlag (true);
@@ -135,7 +131,6 @@ Point<float> TwonkFilterComponent::getPinPos (int index, bool isInput) const
 
 void TwonkFilterComponent::update()
 {
-	DBG("TwonkFilterComponent::update");
 	const AudioProcessorGraph::Node::Ptr f (graph.graph.getNodeForId (pluginID));
 	jassert (f != nullptr);
 

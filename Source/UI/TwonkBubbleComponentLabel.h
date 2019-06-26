@@ -20,7 +20,8 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "../../JuceLibraryCode/JuceHeader.h"
+class TwonkBubbleComponent;
 //[/Headers]
 
 
@@ -33,15 +34,16 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class TwonkToolbar  : public Component
+class TwonkBubbleComponentLabel  : public Component
 {
 public:
     //==============================================================================
-    TwonkToolbar ();
-    ~TwonkToolbar();
+    TwonkBubbleComponentLabel (TwonkBubbleComponent &_owner);
+    ~TwonkBubbleComponentLabel();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+	void setText(const String &_text);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -51,13 +53,16 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+	TwonkBubbleComponent &owner;
+	GlowEffect glow;
+	String text;
     //[/UserVariables]
 
     //==============================================================================
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkToolbar)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkBubbleComponentLabel)
 };
 
 //[EndFile] You can add extra defines here...

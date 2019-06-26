@@ -32,6 +32,9 @@
     <Filter Include="Twonk\Source\FX\Robotization-Whisperization">
       <UniqueIdentifier>{D57EF017-DAD1-9172-084C-BA3894823F48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Twonk\Source\FX\SineWaveSynth">
+      <UniqueIdentifier>{449558DF-FAA4-03F3-15AD-EF7C4D070B37}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Twonk\Source\FX\Tremolo">
       <UniqueIdentifier>{38EEF8D6-C163-B8CC-1393-B5C20D7F5376}</UniqueIdentifier>
     </Filter>
@@ -478,6 +481,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\TwonkPlayHead.cpp">
+      <Filter>Twonk\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\FX\Compressor\TwonkCEEditor.cpp">
       <Filter>Twonk\Source\FX\Compressor</Filter>
     </ClCompile>
@@ -532,6 +538,9 @@
     <ClCompile Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.cpp">
       <Filter>Twonk\Source\FX\Robotization-Whisperization</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.cpp">
+      <Filter>Twonk\Source\FX\SineWaveSynth</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\FX\Tremolo\TwonkTremoloProcessor.cpp">
       <Filter>Twonk\Source\FX\Tremolo</Filter>
     </ClCompile>
@@ -555,6 +564,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Filters\InternalFilters.cpp">
       <Filter>Twonk\Source\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkTitleBarComponent.cpp">
+      <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkBubbleComponentLabel.cpp">
       <Filter>Twonk\Source\UI</Filter>
@@ -2556,6 +2568,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\TwonkPlayHead.h">
+      <Filter>Twonk\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\FX\Compressor\TwonkCEEditor.h">
       <Filter>Twonk\Source\FX\Compressor</Filter>
     </ClInclude>
@@ -2613,6 +2628,9 @@
     <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.h">
       <Filter>Twonk\Source\FX\Robotization-Whisperization</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.h">
+      <Filter>Twonk\Source\FX\SineWaveSynth</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\FX\Tremolo\TwonkTremoloEditor.h">
       <Filter>Twonk\Source\FX\Tremolo</Filter>
     </ClInclude>
@@ -2639,6 +2657,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Filters\InternalFilters.h">
       <Filter>Twonk\Source\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkTitleBarComponent.h">
+      <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkBubbleComponentLabel.h">
       <Filter>Twonk\Source\UI</Filter>
@@ -4877,13 +4898,31 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Source\Settings.svg">
+    <None Include="..\..\Source\Resources\60sekuntia.ttf">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
-    <None Include="..\..\Source\PianoKeyboard.svg">
+    <None Include="..\..\Source\Resources\iconfinder_icon-pause_211871.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
-    <None Include="..\..\Source\60sekuntia.ttf">
+    <None Include="..\..\Source\Resources\iconfinder_icon-play_211876.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\iconfinder_icon-stop_211931.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\iconfinder_plugin_3671838.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\iconfinder_Streamline-75_185095.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\PianoKeyboard.svg.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\sync_off.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\sync_on.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_formats\codecs\flac\Flac Licence.txt">

@@ -29,17 +29,18 @@
 #include "FilterGraph.h"
 #include "InternalFilters.h"
 #include "../UI/GraphEditorPanel.h"
-
-
+#include "../TwonkPlayHead.h"
 //==============================================================================
-FilterGraph::FilterGraph (AudioPluginFormatManager& fm)
+FilterGraph::FilterGraph (AudioPluginFormatManager& fm, TwonkPlayHead &_twonkPlayHead)
     : FileBasedDocument (getFilenameSuffix(),
                          getFilenameWildcard(),
                          "Load a filter graph",
                          "Save a filter graph"),
-      formatManager (fm)
+		formatManager (fm),
+		twonkPlayHead(_twonkPlayHead)
 {
     newDocument();
+	graph.setPlayHead(&twonkPlayHead);
     graph.addListener (this);
 }
 
@@ -90,7 +91,6 @@ void FilterGraph::addPlugin (const PluginDescription& desc, Point<double> p)
         FilterGraph& owner;
         Point<double> position;
     };
-
     formatManager.createPluginInstanceAsync (desc,
                                              graph.getSampleRate(),
                                              graph.getBlockSize(),
@@ -108,7 +108,6 @@ void FilterGraph::addFilterCallback (AudioPluginInstance* instance, const String
     else
     {
         instance->enableAllBuses();
-		instance->setPlayHead(&position);
         if (auto node = graph.addNode (instance))
         {
             node->properties.set ("x", pos.x);
@@ -199,7 +198,7 @@ void FilterGraph::newDocument()
 
     graph.removeChangeListener (this);
 
-    InternalPluginFormat internalFormat;
+    InternalPluginFormat internalFormat(twonkPlayHead);
 
     addPlugin (internalFormat.audioInDesc,  { 0.5,  0.1 });
     addPlugin (internalFormat.midiInDesc,   { 0.25, 0.1 });

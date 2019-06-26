@@ -20,8 +20,9 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
-#include "../JuceLibraryCode/JuceHeader.h"
-class TwonkMain;
+#include "../../JuceLibraryCode/JuceHeader.h"
+#include "../TwonkPlayHead.h"
+class GraphDocumentComponent;
 //[/Headers]
 
 
@@ -34,13 +35,15 @@ class TwonkMain;
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class TwonkChannel  : public Component,
-                      public ComboBox::Listener
+class TwonkTitleBarComponent  : public Component,
+                                public TwonkClockListener,
+                                public Button::Listener,
+                                public Slider::Listener
 {
 public:
     //==============================================================================
-    TwonkChannel (TwonkMain *_parent, uint8_t _idx);
-    ~TwonkChannel();
+    TwonkTitleBarComponent (GraphDocumentComponent &_owner);
+    ~TwonkTitleBarComponent();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -48,26 +51,32 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
+    void sliderValueChanged (Slider* sliderThatWasMoved) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    TwonkMain *parent;
-    uint8_t idx;
-	AudioProcessor *currentAudioProcessor;
+	GraphDocumentComponent &owner;
+	void stepIncrement(int currentStep);
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<ComboBox> comboBox;
-    std::unique_ptr<ComboBox> comboBox2;
-    std::unique_ptr<ComboBox> comboBox3;
-    std::unique_ptr<ComboBox> comboBox4;
+    std::unique_ptr<ImageButton> settingsButton;
+    std::unique_ptr<ImageButton> midiKeysButton;
+    std::unique_ptr<ImageButton> pluginButton;
+    std::unique_ptr<ImageButton> syncButton;
+    std::unique_ptr<ImageButton> stopButton;
+    std::unique_ptr<ImageButton> playButton;
+    std::unique_ptr<Slider> tempoSlider;
+    std::unique_ptr<Slider> positionIndicator;
+    std::unique_ptr<Slider> seqLength;
+    std::unique_ptr<Slider> seqFirst;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkChannel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkTitleBarComponent)
 };
 
 //[EndFile] You can add extra defines here...
