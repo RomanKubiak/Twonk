@@ -95,7 +95,11 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkFilters_70d0b1f0.o \
   $(JUCE_OBJDIR)/FilterGraph_769715e3.o \
   $(JUCE_OBJDIR)/FilterIOConfiguration_d1cf3d25.o \
+  $(JUCE_OBJDIR)/HostAudioProcessorPlayer_d48d06e2.o \
+  $(JUCE_OBJDIR)/HostPlayHead_b216fb39.o \
   $(JUCE_OBJDIR)/InternalFilters_eceadbab.o \
+  $(JUCE_OBJDIR)/MidiPatternSequencer_3b4479f.o \
+  $(JUCE_OBJDIR)/PlaybackComponent_5d736330.o \
   $(JUCE_OBJDIR)/TwonkTitleBarComponent_e453c015.o \
   $(JUCE_OBJDIR)/TwonkBubbleComponentLabel_967ea65a.o \
   $(JUCE_OBJDIR)/TwonkFilterPropertiesEditor_f042fcf.o \
@@ -272,9 +276,29 @@ $(JUCE_OBJDIR)/FilterIOConfiguration_d1cf3d25.o: ../../Source/Filters/FilterIOCo
 	@echo "Compiling FilterIOConfiguration.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/HostAudioProcessorPlayer_d48d06e2.o: ../../Source/Filters/HostAudioProcessorPlayer.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling HostAudioProcessorPlayer.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/HostPlayHead_b216fb39.o: ../../Source/Filters/HostPlayHead.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling HostPlayHead.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/InternalFilters_eceadbab.o: ../../Source/Filters/InternalFilters.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling InternalFilters.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/MidiPatternSequencer_3b4479f.o: ../../Source/Filters/MidiPatternSequencer.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling MidiPatternSequencer.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PlaybackComponent_5d736330.o: ../../Source/UI/PlaybackComponent.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PlaybackComponent.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkTitleBarComponent_e453c015.o: ../../Source/UI/TwonkTitleBarComponent.cpp

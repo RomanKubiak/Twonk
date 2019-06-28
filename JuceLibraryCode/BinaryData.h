@@ -12,7 +12,7 @@ namespace BinaryData
     const int            _60sekuntia_ttfSize = 97264;
 
     extern const char*   iconfinder_iconpause_211871_png;
-    const int            iconfinder_iconpause_211871_pngSize = 508;
+    const int            iconfinder_iconpause_211871_pngSize = 537;
 
     extern const char*   iconfinder_iconplay_211876_png;
     const int            iconfinder_iconplay_211876_pngSize = 1303;
@@ -35,8 +35,11 @@ namespace BinaryData
     extern const char*   sync_on_png;
     const int            sync_on_pngSize = 997;
 
+    extern const char*   terminess_ttf;
+    const int            terminess_ttfSize = 879176;
+
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 9;
+    const int namedResourceListSize = 10;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

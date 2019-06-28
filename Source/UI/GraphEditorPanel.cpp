@@ -48,7 +48,7 @@ GraphEditorPanel::~GraphEditorPanel()
 
 void GraphEditorPanel::paint (Graphics& g)
 {
-	g.fillAll(Colours::black);
+	g.fillAll(Colour (0xff464646));
 }
 
 void GraphEditorPanel::mouseDown (const MouseEvent& e)

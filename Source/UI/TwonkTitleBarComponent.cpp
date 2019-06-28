@@ -32,6 +32,9 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     : owner(_owner)
 {
     //[Constructor_pre] You can add your own custom stuff here..
+	labelFont = CustomTypeface::createSystemTypefaceFor(BinaryData::terminess_ttf, BinaryData::terminess_ttfSize);
+	titleBarLookAndFeel = new TitleBarLookAndFeel(labelFont);
+	setLookAndFeel(titleBarLookAndFeel);
     //[/Constructor_pre]
 
     settingsButton.reset (new ImageButton ("new button"));
@@ -52,7 +55,7 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
                                ImageCache::getFromMemory (BinaryData::PianoKeyboard_svg_png, BinaryData::PianoKeyboard_svg_pngSize), 1.000f, Colour (0x00000000),
                                ImageCache::getFromMemory (BinaryData::PianoKeyboard_svg_png, BinaryData::PianoKeyboard_svg_pngSize), 1.000f, Colour (0x00000000),
                                ImageCache::getFromMemory (BinaryData::PianoKeyboard_svg_png, BinaryData::PianoKeyboard_svg_pngSize), 1.000f, Colour (0x00000000));
-    midiKeysButton->setBounds (40, 4, 40, 40);
+    midiKeysButton->setBounds (48, 4, 40, 40);
 
     pluginButton.reset (new ImageButton ("new button"));
     addAndMakeVisible (pluginButton.get());
@@ -94,7 +97,7 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
                            ImageCache::getFromMemory (BinaryData::iconfinder_iconpause_211871_png, BinaryData::iconfinder_iconpause_211871_pngSize), 1.000f, Colour (0x00000000));
     playButton->setBounds (198, 4, 40, 40);
 
-    tempoSlider.reset (new Slider ("new slider"));
+    tempoSlider.reset (new Slider (String()));
     addAndMakeVisible (tempoSlider.get());
     tempoSlider->setRange (1, 240, 0.5);
     tempoSlider->setSliderStyle (Slider::LinearHorizontal);
@@ -102,46 +105,64 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     tempoSlider->setColour (Slider::thumbColourId, Colour (0xff1afa00));
     tempoSlider->addListener (this);
 
-    tempoSlider->setBounds (246, 4, 150, 20);
+    tempoSlider->setBounds (246, 4, 150, 16);
 
-    positionIndicator.reset (new Slider ("new slider"));
-    addAndMakeVisible (positionIndicator.get());
-    positionIndicator->setRange (0, 128, 1);
-    positionIndicator->setSliderStyle (Slider::ThreeValueHorizontal);
-    positionIndicator->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
-    positionIndicator->addListener (this);
+    timeLabel.reset (new Label (String(),
+                                TRANS("00:00:00:000")));
+    addAndMakeVisible (timeLabel.get());
+    timeLabel->setFont (Font (Font::getDefaultMonospacedFontName(), 12.00f, Font::plain).withTypefaceStyle ("Regular"));
+    timeLabel->setJustificationType (Justification::centred);
+    timeLabel->setEditable (false, false, false);
+    timeLabel->setColour (TextEditor::textColourId, Colours::black);
+    timeLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    seqLength.reset (new Slider ("new slider"));
-    addAndMakeVisible (seqLength.get());
-    seqLength->setRange (1, 128, 1);
-    seqLength->setSliderStyle (Slider::LinearHorizontal);
-    seqLength->setTextBoxStyle (Slider::TextBoxLeft, false, 32, 20);
-    seqLength->addListener (this);
+    timeLabel->setBounds (400, 4, 96, 20);
 
-    seqLength->setBounds (399, 4, 150, 20);
+    clockPositionIndicator.reset (new Slider (String()));
+    addAndMakeVisible (clockPositionIndicator.get());
+    clockPositionIndicator->setRange (1, 24, 1);
+    clockPositionIndicator->setSliderStyle (Slider::LinearBar);
+    clockPositionIndicator->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    clockPositionIndicator->setColour (Slider::backgroundColourId, Colour (0xff55cd32));
+    clockPositionIndicator->setColour (Slider::trackColourId, Colour (0xff43c7ff));
+    clockPositionIndicator->setColour (Slider::rotarySliderFillColourId, Colour (0xff0eb7ff));
+    clockPositionIndicator->addListener (this);
 
-    seqFirst.reset (new Slider ("new slider"));
-    addAndMakeVisible (seqFirst.get());
-    seqFirst->setRange (1, 128, 1);
-    seqFirst->setSliderStyle (Slider::LinearHorizontal);
-    seqFirst->setTextBoxStyle (Slider::TextBoxLeft, false, 32, 16);
-    seqFirst->setColour (Slider::thumbColourId, Colour (0xffc84242));
-    seqFirst->addListener (this);
+    clockPositionIndicator->setBounds (400, 24, 96, 8);
 
-    seqFirst->setBounds (399, 28, 150, 20);
+    loopLengthSlider.reset (new Slider (String()));
+    addAndMakeVisible (loopLengthSlider.get());
+    loopLengthSlider->setRange (1, 256, 1);
+    loopLengthSlider->setSliderStyle (Slider::LinearHorizontal);
+    loopLengthSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 48, 20);
+    loopLengthSlider->setColour (Slider::thumbColourId, Colour (0xfffa9400));
+    loopLengthSlider->addListener (this);
+
+    loopLengthSlider->setBounds (246, 28, 150, 16);
+
+    loopPositionIndicator.reset (new Slider (String()));
+    addAndMakeVisible (loopPositionIndicator.get());
+    loopPositionIndicator->setRange (1, 24, 1);
+    loopPositionIndicator->setSliderStyle (Slider::LinearBar);
+    loopPositionIndicator->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    loopPositionIndicator->setColour (Slider::backgroundColourId, Colour (0xff55cd32));
+    loopPositionIndicator->setColour (Slider::thumbColourId, Colour (0xffc84242));
+    loopPositionIndicator->setColour (Slider::trackColourId, Colour (0xffff4343));
+    loopPositionIndicator->setColour (Slider::rotarySliderFillColourId, Colour (0xff0eb7ff));
+    loopPositionIndicator->addListener (this);
+
+    loopPositionIndicator->setBounds (400, 36, 96, 8);
 
 
     //[UserPreSize]
-	seqFirst->setValue(0);
-	seqLength->setValue(16);
-	positionIndicator->setMinAndMaxValues(0, 128);
-	positionIndicator->setValue(0);
 	tempoSlider->setValue(60.0);
+	loopLengthSlider->setValue(16);
 	playButton->setClickingTogglesState(true);
 	syncButton->setClickingTogglesState(true);
+	timeLabel->setFont(labelFont);
     //[/UserPreSize]
 
-    setSize (600, 64);
+    setSize (600, 48);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -151,6 +172,8 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
 TwonkTitleBarComponent::~TwonkTitleBarComponent()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
+	setLookAndFeel(nullptr);
+	deleteAndZero(titleBarLookAndFeel);
     //[/Destructor_pre]
 
     settingsButton = nullptr;
@@ -160,9 +183,10 @@ TwonkTitleBarComponent::~TwonkTitleBarComponent()
     stopButton = nullptr;
     playButton = nullptr;
     tempoSlider = nullptr;
-    positionIndicator = nullptr;
-    seqLength = nullptr;
-    seqFirst = nullptr;
+    timeLabel = nullptr;
+    clockPositionIndicator = nullptr;
+    loopLengthSlider = nullptr;
+    loopPositionIndicator = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -177,6 +201,31 @@ void TwonkTitleBarComponent::paint (Graphics& g)
 
     g.fillAll (Colour (0xff323e44));
 
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0xffbcbcbc), fillColour2 = Colour (0xff464646);
+        Colour strokeColour1 = Colour (0x00000000), strokeColour2 = Colour (0x80000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       0.0f - 0.0f + x,
+                                       0.0f - 0.0f + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       static_cast<float> (getHeight()) - 0.0f + y,
+                                       false));
+        g.fillRect (x, y, width, height);
+        g.setGradientFill (ColourGradient (strokeColour1,
+                                       0.0f - 0.0f + x,
+                                       0.0f - 0.0f + y,
+                                       strokeColour2,
+                                       0.0f - 0.0f + x,
+                                       static_cast<float> (getHeight()) - 0.0f + y,
+                                       false));
+        g.drawRect (x, y, width, height, 1);
+
+    }
+
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
@@ -186,7 +235,6 @@ void TwonkTitleBarComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    positionIndicator->setBounds (0, 48, getWidth() - 0, 16);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -230,7 +278,7 @@ void TwonkTitleBarComponent::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == playButton.get())
     {
         //[UserButtonCode_playButton] -- add your button handler code here..
-		owner.toggleTransport(!playButton->getToggleState());
+		owner.play(playButton->getToggleState());
         //[/UserButtonCode_playButton]
     }
 
@@ -249,20 +297,22 @@ void TwonkTitleBarComponent::sliderValueChanged (Slider* sliderThatWasMoved)
 		owner.setTempo(tempoSlider->getValue());
         //[/UserSliderCode_tempoSlider]
     }
-    else if (sliderThatWasMoved == positionIndicator.get())
+    else if (sliderThatWasMoved == clockPositionIndicator.get())
     {
-        //[UserSliderCode_positionIndicator] -- add your slider handling code here..
-        //[/UserSliderCode_positionIndicator]
+        //[UserSliderCode_clockPositionIndicator] -- add your slider handling code here..
+        //[/UserSliderCode_clockPositionIndicator]
     }
-    else if (sliderThatWasMoved == seqLength.get())
+    else if (sliderThatWasMoved == loopLengthSlider.get())
     {
-        //[UserSliderCode_seqLength] -- add your slider handling code here..
-        //[/UserSliderCode_seqLength]
+        //[UserSliderCode_loopLengthSlider] -- add your slider handling code here..
+		owner.setLoopLength(loopLengthSlider->getValue());
+		loopPositionIndicator->setRange(24.0, (double)(loopLengthSlider->getValue() * 24.0));
+        //[/UserSliderCode_loopLengthSlider]
     }
-    else if (sliderThatWasMoved == seqFirst.get())
+    else if (sliderThatWasMoved == loopPositionIndicator.get())
     {
-        //[UserSliderCode_seqFirst] -- add your slider handling code here..
-        //[/UserSliderCode_seqFirst]
+        //[UserSliderCode_loopPositionIndicator] -- add your slider handling code here..
+        //[/UserSliderCode_loopPositionIndicator]
     }
 
     //[UsersliderValueChanged_Post]
@@ -272,10 +322,23 @@ void TwonkTitleBarComponent::sliderValueChanged (Slider* sliderThatWasMoved)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void TwonkTitleBarComponent::stepIncrement(int currentStep)
+void TwonkTitleBarComponent::positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo)
 {
-	DBG("TwonkTitleBarComponent::stepIncrement " + String(currentStep));
-	positionIndicator->setValue(currentStep);
+/*	//3600000 milliseconds in an hour
+	long hr = milli / 3600000;
+	milli = milli - 3600000 * hr;
+	//60000 milliseconds in a minute
+	long min = milli / 60000;
+	milli = milli - 60000 * min;
+
+	//1000 milliseconds in a second
+	long sec = milli / 1000;
+	milli = milli - 1000 * sec;
+
+	timeLabel->setText(
+		String::formatted("%02d:%02d:%02d:%03d", hr, min, sec, milli),
+		dontSendNotification
+	);*/
 }
 //[/MiscUserCode]
 
@@ -293,8 +356,11 @@ BEGIN_JUCER_METADATA
                  parentClasses="public Component, public TwonkClockListener" constructorParams="GraphDocumentComponent &amp;_owner"
                  variableInitialisers="owner(_owner)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
-                 initialHeight="64">
-  <BACKGROUND backgroundColour="ff323e44"/>
+                 initialHeight="48">
+  <BACKGROUND backgroundColour="ff323e44">
+    <RECT pos="0 0 0M 0M" fill="linear: 0 0, 0 0R, 0=ffbcbcbc, 1=ff464646"
+          hasStroke="1" stroke="1, mitered, butt" strokeColour="linear: 0 0, 0 0R, 0=0, 1=80000000"/>
+  </BACKGROUND>
   <IMAGEBUTTON name="new button" id="97401225f34bada3" memberName="settingsButton"
                virtualName="" explicitFocusOrder="0" pos="0 4 40 40" buttonText="new button"
                connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
@@ -303,7 +369,7 @@ BEGIN_JUCER_METADATA
                opacityOver="1.0" colourOver="0" resourceDown="BinaryData::iconfinder_Streamline75_185095_png"
                opacityDown="1.0" colourDown="0"/>
   <IMAGEBUTTON name="new button" id="c03949025f893e8d" memberName="midiKeysButton"
-               virtualName="" explicitFocusOrder="0" pos="40 4 40 40" buttonText="new button"
+               virtualName="" explicitFocusOrder="0" pos="48 4 40 40" buttonText="new button"
                connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
                resourceNormal="BinaryData::PianoKeyboard_svg_png" opacityNormal="1.0"
                colourNormal="0" resourceOver="BinaryData::PianoKeyboard_svg_png"
@@ -337,25 +403,31 @@ BEGIN_JUCER_METADATA
                colourNormal="0" resourceOver="BinaryData::iconfinder_iconplay_211876_png"
                opacityOver="1.0" colourOver="0" resourceDown="BinaryData::iconfinder_iconpause_211871_png"
                opacityDown="1.0" colourDown="0"/>
-  <SLIDER name="new slider" id="1b0eb9cd7e232c5f" memberName="tempoSlider"
-          virtualName="" explicitFocusOrder="0" pos="246 4 150 20" thumbcol="ff1afa00"
+  <SLIDER name="" id="1b0eb9cd7e232c5f" memberName="tempoSlider" virtualName=""
+          explicitFocusOrder="0" pos="246 4 150 16" thumbcol="ff1afa00"
           min="1.0" max="240.0" int="0.5" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="48" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
-  <SLIDER name="new slider" id="f61a56a7717aba4" memberName="positionIndicator"
-          virtualName="" explicitFocusOrder="0" pos="0 48 0M 16" min="0.0"
-          max="128.0" int="1.0" style="ThreeValueHorizontal" textBoxPos="NoTextBox"
+  <LABEL name="" id="eedeb92a13be3a7a" memberName="timeLabel" virtualName=""
+         explicitFocusOrder="0" pos="400 4 96 20" edTextCol="ff000000"
+         edBkgCol="0" labelText="00:00:00:000" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default monospaced font"
+         fontsize="12.0" kerning="0.0" bold="0" italic="0" justification="36"/>
+  <SLIDER name="" id="c4252987aa16bfc4" memberName="clockPositionIndicator"
+          virtualName="" explicitFocusOrder="0" pos="400 24 96 8" bkgcol="ff55cd32"
+          trackcol="ff43c7ff" rotarysliderfill="ff0eb7ff" min="1.0" max="24.0"
+          int="1.0" style="LinearBar" textBoxPos="NoTextBox" textBoxEditable="1"
+          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+  <SLIDER name="" id="1a1a1086301ec67" memberName="loopLengthSlider" virtualName=""
+          explicitFocusOrder="0" pos="246 28 150 16" thumbcol="fffa9400"
+          min="1.0" max="256.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
+          textBoxEditable="1" textBoxWidth="48" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
+  <SLIDER name="" id="1e520ada967b42f6" memberName="loopPositionIndicator"
+          virtualName="" explicitFocusOrder="0" pos="400 36 96 8" bkgcol="ff55cd32"
+          thumbcol="ffc84242" trackcol="ffff4343" rotarysliderfill="ff0eb7ff"
+          min="1.0" max="24.0" int="1.0" style="LinearBar" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="1"/>
-  <SLIDER name="new slider" id="85533c4edcae7d0c" memberName="seqLength"
-          virtualName="" explicitFocusOrder="0" pos="399 4 150 20" min="1.0"
-          max="128.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
-          textBoxEditable="1" textBoxWidth="32" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="1"/>
-  <SLIDER name="new slider" id="4b96b9a112dc951c" memberName="seqFirst"
-          virtualName="" explicitFocusOrder="0" pos="399 28 150 20" thumbcol="ffc84242"
-          min="1.0" max="128.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
-          textBoxEditable="1" textBoxWidth="32" textBoxHeight="16" skewFactor="1.0"
           needsCallback="1"/>
 </JUCER_COMPONENT>
 

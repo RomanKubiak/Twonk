@@ -36,7 +36,7 @@ TwonkBubbleComponentLabel::TwonkBubbleComponentLabel (TwonkBubbleComponent &_own
 
 
     //[UserPreSize]
-	glow.setGlowProperties(1.0f, Colours::white.withAlpha(0.5f));
+	glow.setGlowProperties(2.0f, Colours::white.withAlpha(0.25f));
 	setComponentEffect(&glow);
     //[/UserPreSize]
 

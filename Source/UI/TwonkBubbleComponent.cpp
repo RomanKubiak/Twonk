@@ -87,7 +87,7 @@ void TwonkBubbleComponent::paint (Graphics& g)
     //[/UserPrePaint]
 
     {
-        float x = static_cast<float> (proportionOfWidth (0.0000f)), y = static_cast<float> (proportionOfHeight (0.3300f)), width = static_cast<float> (proportionOfWidth (1.0000f)), height = static_cast<float> (proportionOfHeight (0.3300f));
+        float x = static_cast<float> (proportionOfWidth (0.0100f)), y = static_cast<float> (proportionOfHeight (0.3300f)), width = static_cast<float> (proportionOfWidth (0.9800f)), height = static_cast<float> (proportionOfHeight (0.3300f));
         Colour strokeColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -106,7 +106,7 @@ void TwonkBubbleComponent::resized()
 
     removeButton->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.0000f), proportionOfWidth (1.0000f), proportionOfHeight (0.3958f));
     bypassButton->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.6042f), proportionOfWidth (1.0000f), proportionOfHeight (0.3958f));
-    label->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.3300f), proportionOfWidth (1.0000f), proportionOfHeight (0.3300f));
+    label->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.3333f), proportionOfWidth (1.0000f), proportionOfHeight (0.3333f));
     //[UserResized] Add your own custom resize handling here..
 	//Font f = Typeface::createSystemTypefaceFor (BinaryData::_60sekuntia_ttf, BinaryData::_60sekuntia_ttfSize);
 	//f.setHeight(proportionOfHeight (0.15f));
@@ -183,7 +183,7 @@ BEGIN_JUCER_METADATA
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="128" initialHeight="96">
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0% 33% 100% 33%" cornerSize="10.0" fill="solid: 0" hasStroke="1"
+    <ROUNDRECT pos="1% 33% 98% 33%" cornerSize="10.0" fill="solid: 0" hasStroke="1"
                stroke="2, mitered, butt" strokeColour="solid: ffffffff"/>
   </BACKGROUND>
   <TEXTBUTTON name="new button" id="796884a9cba9bda" memberName="removeButton"

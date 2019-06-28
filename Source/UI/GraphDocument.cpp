@@ -264,9 +264,9 @@ void GraphDocumentComponent::stop()
 {
 	twonkPlayHead.stop();
 }
-void GraphDocumentComponent::toggleTransport(const bool shouldPlay)
+void GraphDocumentComponent::play(const bool isPlaying)
 {
-	twonkPlayHead.toggle(shouldPlay);
+	twonkPlayHead.play(isPlaying);
 }
 void GraphDocumentComponent::toggleSync(const bool shouldBeSynced)
 {
@@ -276,4 +276,9 @@ void GraphDocumentComponent::toggleSync(const bool shouldBeSynced)
 void GraphDocumentComponent::setTempo(const double bpm)
 {
 	twonkPlayHead.setTempo(bpm);
+}
+
+void GraphDocumentComponent::setLoopLength(const int _loopLength)
+{
+	twonkPlayHead.setLoopLength(_loopLength);
 }

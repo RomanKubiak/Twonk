@@ -23,6 +23,27 @@
 #include "../../JuceLibraryCode/JuceHeader.h"
 #include "../TwonkPlayHead.h"
 class GraphDocumentComponent;
+class TitleBarLookAndFeel : public LookAndFeel_V4
+{
+	public:
+		TitleBarLookAndFeel(Font _font) : font(_font)
+		{
+		}
+		Label* TitleBarLookAndFeel::createSliderTextBox (Slider& slider) override
+		{
+			auto* l = LookAndFeel_V2::createSliderTextBox (slider);
+			l->setFont(font);
+			if (getCurrentColourScheme() == LookAndFeel_V4::getGreyColourScheme() && (slider.getSliderStyle() == Slider::LinearBar
+				|| slider.getSliderStyle() == Slider::LinearBarVertical))
+			{
+
+				l->setColour (Label::textColourId, Colours::black.withAlpha (0.7f));
+			}
+
+			return l;
+		}
+		Font font;
+};
 //[/Headers]
 
 
@@ -59,7 +80,9 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
 	GraphDocumentComponent &owner;
-	void stepIncrement(int currentStep);
+	void positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo);
+	TitleBarLookAndFeel *titleBarLookAndFeel;
+	Font labelFont;
     //[/UserVariables]
 
     //==============================================================================
@@ -70,9 +93,10 @@ private:
     std::unique_ptr<ImageButton> stopButton;
     std::unique_ptr<ImageButton> playButton;
     std::unique_ptr<Slider> tempoSlider;
-    std::unique_ptr<Slider> positionIndicator;
-    std::unique_ptr<Slider> seqLength;
-    std::unique_ptr<Slider> seqFirst;
+    std::unique_ptr<Label> timeLabel;
+    std::unique_ptr<Slider> clockPositionIndicator;
+    std::unique_ptr<Slider> loopLengthSlider;
+    std::unique_ptr<Slider> loopPositionIndicator;
 
 
     //==============================================================================

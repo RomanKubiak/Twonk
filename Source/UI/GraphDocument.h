@@ -11,7 +11,7 @@
 #pragma once
 #include "../Filters/FilterGraph.h"
 #include "../UI/GraphEditorPanel.h"
-#define TITLEBAR_HEIGHT 64
+#define TITLEBAR_HEIGHT 48
 
 class TwonkPlayHead;
 class TwonkTitleBarComponent;
@@ -64,9 +64,10 @@ public:
 	MidiKeyboardState keyState;
 	void showMidiKeyboardComponent();
 	void stop();
-	void toggleTransport(const bool shouldPlay);
+	void play(const bool isPlaying);
 	void toggleSync(const bool shouldBeSynced);
 	void setTempo(const double bpm);
+	void setLoopLength(const int _loopLength);
 	//==============================================================================
 	void showSidePanel (bool isSettingsPanel);
 	void hideLastSidePanel();
