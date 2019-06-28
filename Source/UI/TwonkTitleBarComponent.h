@@ -29,7 +29,7 @@ class TitleBarLookAndFeel : public LookAndFeel_V4
 		TitleBarLookAndFeel(Font _font) : font(_font)
 		{
 		}
-		Label* TitleBarLookAndFeel::createSliderTextBox (Slider& slider) override
+		Label* createSliderTextBox (Slider& slider) override
 		{
 			auto* l = LookAndFeel_V2::createSliderTextBox (slider);
 			l->setFont(font);

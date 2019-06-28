@@ -14,7 +14,7 @@
 #include "MainHostWindow.h"
 #include "GraphDocument.h"
 #include "../TwonkPlayHead.h"
-#include "../UI/TwonkTitlebarComponent.h"
+#include "../UI/TwonkTitleBarComponent.h"
 
 //==============================================================================
 struct GraphDocumentComponent::PluginListBoxModel : public ListBoxModel,
