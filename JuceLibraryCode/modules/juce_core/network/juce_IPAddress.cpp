@@ -23,6 +23,19 @@
 namespace juce
 {
 
+/** Union used to split a 16-bit unsigned integer into 2 8-bit unsigned integers or vice-versa */
+union IPAddressByteUnion
+{
+    uint16 combined;
+    uint8 split[2];
+};
+
+static void zeroUnusedBytes (uint8* address) noexcept
+{
+    for (int i = 4; i < 16; ++i)
+        address[i] = 0;
+}
+
 IPAddress::IPAddress() noexcept
 {
     for (int i = 0; i < 16; ++i)
@@ -35,12 +48,12 @@ IPAddress::IPAddress (const uint8 bytes[], bool IPv6) noexcept : isIPv6 (IPv6)
         address[i] = bytes[i];
 
     if (! isIPv6)
-        zeroUnusedBytes();
+        zeroUnusedBytes (address);
 }
 
 IPAddress::IPAddress (const uint16 bytes[8]) noexcept : isIPv6 (true)
 {
-    ByteUnion temp;
+    IPAddressByteUnion temp;
 
     for (int i = 0; i < 8; ++i)
     {
@@ -56,7 +69,7 @@ IPAddress::IPAddress (uint8 a0, uint8 a1, uint8 a2, uint8 a3) noexcept : isIPv6 
     address[0] = a0;  address[1] = a1;
     address[2] = a2;  address[3] = a3;
 
-    zeroUnusedBytes();
+    zeroUnusedBytes (address);
 }
 
 IPAddress::IPAddress (uint16 a1, uint16 a2, uint16 a3, uint16 a4,
@@ -65,7 +78,7 @@ IPAddress::IPAddress (uint16 a1, uint16 a2, uint16 a3, uint16 a4,
 {
     uint16 array[8] = { a1, a2, a3, a4, a5, a6, a7, a8 };
 
-    ByteUnion temp;
+    IPAddressByteUnion temp;
 
     for (int i = 0; i < 8; ++i)
     {
@@ -82,7 +95,16 @@ IPAddress::IPAddress (uint32 n) noexcept : isIPv6 (false)
     address[2] = (n >> 8) & 255;
     address[3] = (n & 255);
 
-    zeroUnusedBytes();
+    zeroUnusedBytes (address);
+}
+
+bool IPAddress::isNull() const
+{
+    for (int i = 0; i < 16; ++i)
+        if (address[i] != 0)
+            return false;
+
+    return true;
 }
 
 static String removePort (const String& adr)
@@ -109,7 +131,7 @@ IPAddress::IPAddress (const String& adr)
         for (int i = 0; i < 4; ++i)
             address[i] = (uint8) tokens[i].getIntValue();
 
-        zeroUnusedBytes();
+        zeroUnusedBytes (address);
     }
     else
     {
@@ -143,7 +165,7 @@ IPAddress::IPAddress (const String& adr)
                 break;
             }
 
-            ByteUnion temp;
+            IPAddressByteUnion temp;
             temp.combined = (uint16) CharacterFunctions::HexParser<int>::parse (tokens[i].getCharPointer());
 
             address[i * 2]     = temp.split[0];
@@ -164,7 +186,7 @@ String IPAddress::toString() const
         return s;
     }
 
-    ByteUnion temp;
+    IPAddressByteUnion temp;
 
     temp.split[0] = address[0];
     temp.split[1] = address[1];
@@ -350,57 +372,94 @@ Array<IPAddress> IPAddress::getAllAddresses (bool includeIPv6)
     return addresses;
 }
 
-#if (! JUCE_WINDOWS) && (! JUCE_ANDROID)
-static void addAddress (const sockaddr_in* addr_in, Array<IPAddress>& result)
+//==============================================================================
+#if JUCE_UNIT_TESTS
+
+struct IPAddressTests : public UnitTest
 {
-    auto addr = addr_in->sin_addr.s_addr;
-
-    if (addr != INADDR_NONE)
-        result.addIfNotAlreadyThere (IPAddress (ntohl (addr)));
-}
-
-static void addAddress (const sockaddr_in6* addr_in, Array<IPAddress>& result)
-{
-    in6_addr addr = addr_in->sin6_addr;
-
-    union ByteUnion
+    IPAddressTests()
+        : UnitTest ("IPAddress", "Networking")
     {
-        uint16 combined;
-        uint8 split[2];
-    };
-
-    ByteUnion temp;
-    uint16 arr[8];
-
-    for (int i = 0; i < 8; ++i) // Swap bytes from network to host order
-    {
-        temp.split[0] = addr.s6_addr[i * 2 + 1];
-        temp.split[1] = addr.s6_addr[i * 2];
-
-        arr[i] = temp.combined;
     }
 
-    result.addIfNotAlreadyThere (IPAddress (arr));
-}
-
-void IPAddress::findAllAddresses (Array<IPAddress>& result, bool includeIPv6)
-{
-    struct ifaddrs* ifaddr = nullptr;
-
-    if (getifaddrs (&ifaddr) == -1)
-        return;
-
-    for (auto* ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next)
+    void runTest() override
     {
-        if (ifa->ifa_addr == nullptr)
-            continue;
-
-        if      (ifa->ifa_addr->sa_family == AF_INET)                 addAddress ((const sockaddr_in*)  ifa->ifa_addr, result);
-        else if (ifa->ifa_addr->sa_family == AF_INET6 && includeIPv6) addAddress ((const sockaddr_in6*) ifa->ifa_addr, result);
+        testConstructors();
+        testFindAllAddresses();
+        testFindBroadcastAddress();
     }
 
-    freeifaddrs (ifaddr);
-}
+    void testConstructors()
+    {
+        beginTest ("constructors");
+
+        // Default IPAdress should be null
+        IPAddress defaultConstructed;
+        expect (defaultConstructed.isNull());
+
+        auto local = IPAddress::local();
+        expect (! local.isNull());
+
+        IPAddress ipv4{1, 2, 3, 4};
+        expect (! ipv4.isNull());
+        expect (! ipv4.isIPv6);
+        expect (ipv4.toString() == "1.2.3.4");
+    }
+
+    void testFindAllAddresses()
+    {
+        beginTest ("find all addresses");
+
+        Array<IPAddress> ipv4Addresses;
+        Array<IPAddress> allAddresses;
+
+        IPAddress::findAllAddresses (ipv4Addresses, false);
+        IPAddress::findAllAddresses (allAddresses, true);
+
+        expect (allAddresses.size() >= ipv4Addresses.size());
+
+        for (auto& a : ipv4Addresses)
+        {
+            expect (! a.isNull());
+            expect (! a.isIPv6);
+        }
+
+        for (auto& a : allAddresses)
+        {
+            expect (! a.isNull());
+        }
+    }
+
+    void testFindBroadcastAddress()
+    {
+        beginTest ("broadcast addresses");
+
+        Array<IPAddress> addresses;
+
+        // Only IPv4 interfaces have broadcast
+        IPAddress::findAllAddresses (addresses, false);
+
+        for (auto& a : addresses)
+        {
+            expect (! a.isNull());
+
+            auto broadcastAddress = IPAddress::getInterfaceBroadcastAddress (a);
+
+            // If we retrieve an address, it should be an IPv4 address
+            if (! broadcastAddress.isNull())
+            {
+                expect (! a.isIPv6);
+            }
+        }
+
+        // Expect to fail to find a broadcast for this address
+        IPAddress address{1, 2, 3, 4};
+        expect (IPAddress::getInterfaceBroadcastAddress (address).isNull());
+    }
+};
+
+static IPAddressTests iPAddressTests;
+
 #endif
 
 } // namespace juce

@@ -20,7 +20,7 @@
 #include "Ping-Pong Delay/TwonkPPDelayProcessor.h"
 #include "Phaser/TwonkPhaserProcessor.h"
 #include "DebugInfo/TwonkDebugInfoProcessor.h"
-
+#include "SequencerLinear/SequencerLinearProcessor.h"
 void TwonkFilters::getAllTypes(OwnedArray<PluginDescription>& results)
 {
 	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Tremolo", false, true)));
@@ -34,6 +34,7 @@ void TwonkFilters::getAllTypes(OwnedArray<PluginDescription>& results)
 	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Ping-Pong Delay", false, true)));
 	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Phaser", false, true)));
 	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Debug Info", false, true)));
+	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Sequencer Linear", false, true)));
 }
 
 AudioPluginInstance* TwonkFilters::createInstance (const String& name)
@@ -49,5 +50,6 @@ AudioPluginInstance* TwonkFilters::createInstance (const String& name)
 	if (name == "Ping-Pong Delay")  return new PingPongDelayAudioProcessor(InternalPlugin::getPluginDescriptionForTwonk("Ping-Pong Delay", false, true));
 	if (name == "Phaser")  return new PhaserAudioProcessor(InternalPlugin::getPluginDescriptionForTwonk("Phaser", false, true));
 	if (name == "Debug Info")  return new DebugInfoProcessor(InternalPlugin::getPluginDescriptionForTwonk("Debug Info", false, true));
+	if (name == "Sequencer Linear")  return new SequencerLinearProcessor(InternalPlugin::getPluginDescriptionForTwonk("Sequencer Linear", false, true));
 	return nullptr;
 }

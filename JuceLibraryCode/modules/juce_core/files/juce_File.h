@@ -48,7 +48,7 @@ public:
 
         You can use its operator= method to point it at a proper file.
     */
-    File() noexcept  {}
+    File() = default;
 
     /** Creates a file from an absolute path.
 
@@ -66,7 +66,7 @@ public:
     File (const File&);
 
     /** Destructor. */
-    ~File() noexcept  {}
+    ~File() = default;
 
     /** Sets the file based on an absolute pathname.
 
@@ -114,7 +114,7 @@ public:
     bool isDirectory() const;
 
     /** Checks whether the path of this file represents the root of a file system,
-        irrespective of its existance.
+        irrespective of its existence.
 
         This will return true for "C:", "D:", etc on Windows and "/" on other
         platforms.
@@ -607,6 +607,17 @@ public:
     //==============================================================================
     /** Creates a stream to read from this file.
 
+        Note that this is an old method, and actually it's usually best to avoid it and
+        instead use an RAII pattern with an FileInputStream directly, e.g.
+        @code
+        FileInputStream input (fileToOpen);
+
+        if (input.openedOk())
+        {
+            input.read (etc...
+        }
+        @endcode
+
         @returns    a stream that will read from this file (initially positioned at the
                     start of the file), or nullptr if the file can't be opened for some reason
         @see createOutputStream, loadFileAsData
@@ -615,9 +626,30 @@ public:
 
     /** Creates a stream to write to this file.
 
+        Note that this is an old method, and actually it's usually best to avoid it and
+        instead use an RAII pattern with an FileOutputStream directly, e.g.
+        @code
+        FileOutputStream output (fileToOpen);
+
+        if (output.openedOk())
+        {
+            output.read etc...
+        }
+        @endcode
+
         If the file exists, the stream that is returned will be positioned ready for
-        writing at the end of the file, so you might want to use deleteFile() first
-        to write to an empty file.
+        writing at the end of the file. If you want to write to the start of the file,
+        replacing the existing content, then you can do the following:
+        @code
+        FileOutputStream output (fileToOverwrite);
+
+        if (output.openedOk())
+        {
+            output.setPosition (0);
+            output.truncate();
+            ...
+        }
+        @endcode
 
         @returns    a stream that will write to this file (initially positioned at the
                     end of the file), or nullptr if the file can't be opened for some reason

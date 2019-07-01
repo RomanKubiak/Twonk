@@ -125,9 +125,6 @@ MainHostWindow::MainHostWindow(bool _fullscreen, bool _opengl)
     Process::setPriority (Process::HighPriority);
     // setMenuBar (this, 32);
     getCommandManager().setFirstCommandTarget (this);
-
-	if (opengl)
-		openGLContext.attachTo (*getTopLevelComponent());
 }
 
 MainHostWindow::~MainHostWindow()
@@ -589,29 +586,5 @@ void MainHostWindow::filesDropped (const StringArray& files, int x, int y)
                     createPlugin (*desc, pos);
         }
     }
-}
-
-void MainHostWindow::updateRenderingEngine (int renderingEngineIndex)
-{
-	if (renderingEngineIndex == (renderingEngines.size() - 1))
-	{
-		if (isShowingHeavyweightDemo)
-			return;
-
-		openGLContext.attachTo (*getTopLevelComponent());
-	}
-	else
-	{
-		openGLContext.detach();
-		peer->setCurrentRenderingEngine (renderingEngineIndex);
-	}
-
-	currentRenderingEngineIdx = renderingEngineIndex;
-}
-
-void MainHostWindow::setRenderingEngine (int renderingEngineIndex)
-{
-	if (renderingEngineIndex != currentRenderingEngineIdx)
-		updateRenderingEngine (renderingEngineIndex);
 }
 

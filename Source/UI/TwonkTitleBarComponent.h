@@ -1,4 +1,4 @@
-13/*
+/*
   ==============================================================================
 
   This is an automatically generated GUI class created by the Projucer!
@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.2
+  Created with Projucer version: 5.4.3
 
   ------------------------------------------------------------------------------
 
@@ -22,7 +22,9 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "../../JuceLibraryCode/JuceHeader.h"
 #include "../TwonkPlayHead.h"
-class GraphDocumentComponent;t
+
+class GraphDocumentComponent;
+
 class TitleBarLookAndFeel : public LookAndFeel_V4
 {
 	public:
@@ -105,3 +107,4 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

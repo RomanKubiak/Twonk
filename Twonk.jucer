@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="NTe0XB0ij" name="Twonk" projectType="guiapp" version="1.0.0"
               juceFolder="../../../juce" vstFolderMac="~/SDKs/vstsdk2.4" vstFolderPC="c:\SDKs\vstsdk2.4"
-              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.3.2"
+              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.3"
               companyName="Instigator" displaySplashScreen="0" reportAppUsage="0"
               headerPath="..\..\vst3sdk">
   <EXPORTFORMATS>
@@ -26,7 +26,6 @@
         <MODULEPATH id="juce_audio_formats" path="../../modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../modules"/>
-        <MODULEPATH id="juce_opengl" path="../modules"/>
         <MODULEPATH id="juce_dsp" path="../modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
@@ -50,7 +49,6 @@
         <MODULEPATH id="juce_audio_formats" path="../../modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../modules"/>
-        <MODULEPATH id="juce_opengl" path="../modules"/>
         <MODULEPATH id="juce_dsp" path="../modules"/>
       </MODULEPATHS>
     </VS2017>
@@ -60,7 +58,6 @@
         <CONFIGURATION isDebug="0" name="Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_opengl" path="../modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../modules"/>
         <MODULEPATH id="juce_graphics" path="../../modules"/>
@@ -187,6 +184,16 @@
                 file="Source/FX/Robotization-Whisperization/TwonkRWProcessor.cpp"/>
           <FILE id="eA6MDv" name="TwonkRWProcessor.h" compile="0" resource="0"
                 file="Source/FX/Robotization-Whisperization/TwonkRWProcessor.h"/>
+        </GROUP>
+        <GROUP id="{41760642-0075-A9DA-02D1-3D08EFA3C54A}" name="SequencerLinear">
+          <FILE id="UnCMWA" name="SequencerLinearEditor.cpp" compile="1" resource="0"
+                file="Source/FX/SequencerLinear/SequencerLinearEditor.cpp"/>
+          <FILE id="TOF3PG" name="SequencerLinearEditor.h" compile="0" resource="0"
+                file="Source/FX/SequencerLinear/SequencerLinearEditor.h"/>
+          <FILE id="CgkzTW" name="SequencerLinearProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/SequencerLinear/SequencerLinearProcessor.cpp"/>
+          <FILE id="Fy7MgM" name="SequencerLinearProcessor.h" compile="0" resource="0"
+                file="Source/FX/SequencerLinear/SequencerLinearProcessor.h"/>
         </GROUP>
         <GROUP id="{A594AB27-A86E-A115-E651-E3CC62EDB688}" name="SineWaveSynth">
           <FILE id="qiD8bc" name="SineWaveSynth.cpp" compile="1" resource="0"
@@ -316,7 +323,6 @@
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
-    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
   </MODULES>
   <LIVE_SETTINGS>
     <OSX/>

@@ -86,8 +86,6 @@ public:
 
     void addPluginsToMenu (PopupMenu&) const;
     const PluginDescription* getChosenType (int menuID) const;
-	void updateRenderingEngine (int index);
-	void setRenderingEngine (int renderingEngineIndex);
     std::unique_ptr<GraphDocumentComponent> graphHolder;
 
 private:
@@ -101,7 +99,6 @@ private:
 
     class PluginListWindow;
     std::unique_ptr<PluginListWindow> pluginListWindow;
-	OpenGLContext openGLContext;
 	ComponentPeer* peer = nullptr;
 	StringArray renderingEngines;
 	int currentRenderingEngineIdx = -1;

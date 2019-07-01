@@ -27,7 +27,6 @@
 #include <juce_graphics/juce_graphics.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_gui_extra/juce_gui_extra.h>
-#include <juce_opengl/juce_opengl.h>
 
 #include "BinaryData.h"
 
@@ -41,6 +40,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "Twonk";
+    const char* const  companyName    = "Instigator";
     const char* const  versionString  = "1.0.0";
     const int          versionNumber  = 0x10000;
 }

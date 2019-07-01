@@ -133,7 +133,7 @@ struct Expression::Helpers
     class BinaryTerm  : public Term
     {
     public:
-        BinaryTerm (TermPtr l, TermPtr r) : left (static_cast<TermPtr&&> (l)), right (static_cast<TermPtr&&> (r))
+        BinaryTerm (TermPtr l, TermPtr r) : left (std::move (l)), right (std::move (r))
         {
             jassert (left != nullptr && right != nullptr);
         }
@@ -145,7 +145,7 @@ struct Expression::Helpers
 
         Type getType() const noexcept       { return operatorType; }
         int getNumInputs() const            { return 2; }
-        Term* getInput (int index) const    { return index == 0 ? left.get() : (index == 1 ? right.get() : 0); }
+        Term* getInput (int index) const    { return index == 0 ? left.get() : (index == 1 ? right.get() : nullptr); }
 
         virtual double performFunction (double left, double right) const = 0;
         virtual void writeOperator (String& dest) const = 0;
@@ -863,7 +863,7 @@ struct Expression::Helpers
                         return parseError ("Expected parameters after \"" + identifier + " (\"");
                     }
 
-                    f->parameters.add (Expression (param));
+                    f->parameters.add (Expression (param.get()));
 
                     while (readOperator (","))
                     {
@@ -872,7 +872,7 @@ struct Expression::Helpers
                         if (param == nullptr)
                             return parseError ("Expected expression after \",\"");
 
-                        f->parameters.add (Expression (param));
+                        f->parameters.add (Expression (param.get()));
                     }
 
                     if (readOperator (")"))
@@ -951,13 +951,13 @@ Expression& Expression::operator= (const Expression& other)
 }
 
 Expression::Expression (Expression&& other) noexcept
-    : term (static_cast<ReferenceCountedObjectPtr<Term>&&> (other.term))
+    : term (std::move (other.term))
 {
 }
 
 Expression& Expression::operator= (Expression&& other) noexcept
 {
-    term = static_cast<ReferenceCountedObjectPtr<Term>&&> (other.term);
+    term = std::move (other.term);
     return *this;
 }
 
@@ -972,7 +972,7 @@ Expression::Expression (const String& stringToParse, String& parseError)
 Expression Expression::parse (String::CharPointerType& stringToParse, String& parseError)
 {
     Helpers::Parser parser (stringToParse);
-    Expression e (parser.readUpToComma());
+    Expression e (parser.readUpToComma().get());
     parseError = parser.error;
     return e;
 }
@@ -1006,7 +1006,7 @@ Expression Expression::operator+ (const Expression& other) const  { return Expre
 Expression Expression::operator- (const Expression& other) const  { return Expression (new Helpers::Subtract (term, other.term)); }
 Expression Expression::operator* (const Expression& other) const  { return Expression (new Helpers::Multiply (term, other.term)); }
 Expression Expression::operator/ (const Expression& other) const  { return Expression (new Helpers::Divide (term, other.term)); }
-Expression Expression::operator-() const                          { return Expression (term->negated()); }
+Expression Expression::operator-() const                          { return Expression (term->negated().get()); }
 Expression Expression::symbol (const String& symbol)              { return Expression (new Helpers::SymbolTerm (symbol)); }
 
 Expression Expression::function (const String& functionName, const Array<Expression>& parameters)
@@ -1034,7 +1034,7 @@ Expression Expression::adjustedToGiveNewResult (const double targetValue, const 
     if (const Term* parent = Helpers::findDestinationFor (newTerm.get(), termToAdjust))
     {
         if (Helpers::TermPtr reverseTerm = parent->createTermToEvaluateInput (scope, termToAdjust, targetValue, newTerm.get()))
-            termToAdjust->value = Expression (reverseTerm).evaluate (scope);
+            termToAdjust->value = Expression (reverseTerm.get()).evaluate (scope);
         else
             return Expression (targetValue);
     }
