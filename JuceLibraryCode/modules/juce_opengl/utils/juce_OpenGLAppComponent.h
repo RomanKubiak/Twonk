@@ -44,7 +44,7 @@ public:
     OpenGLAppComponent();
 
     /** Destructor. */
-    ~OpenGLAppComponent() override;
+    ~OpenGLAppComponent();
 
     /** Returns the number of times that the render method has been called since
         the component started running.

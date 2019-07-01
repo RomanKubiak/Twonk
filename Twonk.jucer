@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="NTe0XB0ij" name="Twonk" projectType="guiapp" version="1.0.0"
               juceFolder="../../../juce" vstFolderMac="~/SDKs/vstsdk2.4" vstFolderPC="c:\SDKs\vstsdk2.4"
-              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.3"
+              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.3.2"
               companyName="Instigator" displaySplashScreen="0" reportAppUsage="0"
               headerPath="..\..\vst3sdk">
   <EXPORTFORMATS>

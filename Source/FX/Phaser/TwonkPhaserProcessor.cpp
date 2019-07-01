@@ -82,7 +82,7 @@ void PhaserAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
 
     lfoPhase = 0.0f;
     inverseSampleRate = 1.0f / (float)sampleRate;
-    twoPi = 2.0f * M_PI;
+    twoPi = (float)(2.0f * M_PI);
 }
 
 void PhaserAudioProcessor::releaseResources()

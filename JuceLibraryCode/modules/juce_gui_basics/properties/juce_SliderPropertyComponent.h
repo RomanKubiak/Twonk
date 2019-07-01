@@ -75,7 +75,7 @@ public:
                              bool symmetricSkew = false);
 
     /** Destructor. */
-    ~SliderPropertyComponent() override;
+    ~SliderPropertyComponent();
 
 
     //==============================================================================
@@ -92,7 +92,7 @@ public:
 
     //==============================================================================
     /** @internal */
-    void refresh() override;
+    void refresh();
 
 protected:
     /** The slider component being used in this component.

@@ -30,6 +30,7 @@
 #include "../FX/TwonkFilters.h"
 #include "../FX/SineWaveSynth/SineWaveSynth.h"
 #include "../TwonkPlayHead.h"
+#include "MidiPatternSequencer.h"
 //==============================================================================
 InternalPluginFormat::InternalPluginFormat(TwonkPlayHead &_twonkPlayHead) : twonkPlayHead(_twonkPlayHead)
 {
@@ -47,6 +48,12 @@ InternalPluginFormat::InternalPluginFormat(TwonkPlayHead &_twonkPlayHead) : twon
         AudioProcessorGraph::AudioGraphIOProcessor p (AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode);
         p.fillInPluginDescription (midiInDesc);
     }
+
+	{
+		// this was not part of the original JUCE audio plugin host.  It is a new MidiPatternSequencer that can send MIDI to other instruments.
+		MidiPatternSequencer m;
+		m.fillInPluginDescription (midiDesc);
+	}
 }
 
 AudioPluginInstance* InternalPluginFormat::createInstance (const String& name)
@@ -63,6 +70,8 @@ AudioPluginInstance* InternalPluginFormat::createInstance (const String& name)
 
     if (name == SineWaveSynth::getIdentifier())
 		return new SineWaveSynth (SineWaveSynth::getPluginDescription());
+
+	if (name == midiDesc.name) return new MidiPatternSequencer;
 	
 	return TwonkFilters::createInstance(name);
     return nullptr;
@@ -91,5 +100,6 @@ void InternalPluginFormat::getAllTypes (OwnedArray<PluginDescription>& results)
     results.add (new PluginDescription (audioOutDesc));
     results.add (new PluginDescription (midiInDesc));
     results.add (new PluginDescription (SineWaveSynth::getPluginDescription()));
+	results.add (new PluginDescription (midiDesc));
 	TwonkFilters::getAllTypes(results);
 }

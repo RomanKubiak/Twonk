@@ -68,10 +68,6 @@
 //==============================================================================
 // juce_audio_devices flags:
 
-#ifndef    JUCE_USE_WINRT_MIDI
- #define   JUCE_USE_WINRT_MIDI 1
-#endif
-
 #ifndef    JUCE_ASIO
  #define   JUCE_ASIO 0
 #endif
@@ -106,6 +102,10 @@
 
 #ifndef    JUCE_USE_ANDROID_OPENSLES
  #define   JUCE_USE_ANDROID_OPENSLES 0
+#endif
+
+#ifndef    JUCE_USE_WINRT_MIDI
+ #define   JUCE_USE_WINRT_MIDI 1
 #endif
 
 #ifndef    JUCE_DISABLE_AUDIO_MIXING_WITH_OTHER_APPS
@@ -280,10 +280,6 @@
  //#define JUCE_USE_XCURSOR 1
 #endif
 
-#ifndef    JUCE_WIN_PER_MONITOR_DPI_AWARE
- //#define JUCE_WIN_PER_MONITOR_DPI_AWARE 1
-#endif
-
 //==============================================================================
 // juce_gui_extra flags:
 
@@ -294,7 +290,6 @@
 #ifndef    JUCE_ENABLE_LIVE_CONSTANT_EDITOR
  //#define JUCE_ENABLE_LIVE_CONSTANT_EDITOR 0
 #endif
-
 //==============================================================================
 #ifndef    JUCE_STANDALONE_APPLICATION
  #if defined(JucePlugin_Name) && defined(JucePlugin_Build_Standalone)

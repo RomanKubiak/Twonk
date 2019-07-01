@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -42,9 +42,9 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     settingsButton->addListener (this);
 
     settingsButton->setImages (false, true, true,
-                               ImageCache::getFromMemory (BinaryData::iconfinder_Streamline75_185095_png, BinaryData::iconfinder_Streamline75_185095_pngSize), 1.000f, Colour (0x00000000),
-                               ImageCache::getFromMemory (BinaryData::iconfinder_Streamline75_185095_png, BinaryData::iconfinder_Streamline75_185095_pngSize), 1.000f, Colour (0x00000000),
-                               ImageCache::getFromMemory (BinaryData::iconfinder_Streamline75_185095_png, BinaryData::iconfinder_Streamline75_185095_pngSize), 1.000f, Colour (0x00000000));
+                               ImageCache::getFromMemory (BinaryData::iconfinder_Streamline75_185095_png, BinaryData::iconfinder_Streamline75_185095_pngSize), 1.0f, Colour (0x00000000),
+                               ImageCache::getFromMemory (BinaryData::iconfinder_Streamline75_185095_png, BinaryData::iconfinder_Streamline75_185095_pngSize), 1.0f, Colour (0x00000000),
+                               ImageCache::getFromMemory (BinaryData::iconfinder_Streamline75_185095_png, BinaryData::iconfinder_Streamline75_185095_pngSize), 1.0f, Colour (0x00000000));
     settingsButton->setBounds (0, 4, 40, 40);
 
     midiKeysButton.reset (new ImageButton ("new button"));
@@ -52,9 +52,9 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     midiKeysButton->addListener (this);
 
     midiKeysButton->setImages (false, true, true,
-                               ImageCache::getFromMemory (BinaryData::PianoKeyboard_svg_png, BinaryData::PianoKeyboard_svg_pngSize), 1.000f, Colour (0x00000000),
-                               ImageCache::getFromMemory (BinaryData::PianoKeyboard_svg_png, BinaryData::PianoKeyboard_svg_pngSize), 1.000f, Colour (0x00000000),
-                               ImageCache::getFromMemory (BinaryData::PianoKeyboard_svg_png, BinaryData::PianoKeyboard_svg_pngSize), 1.000f, Colour (0x00000000));
+                               ImageCache::getFromMemory (BinaryData::PianoKeyboard_svg_png, BinaryData::PianoKeyboard_svg_pngSize), 1.0f, Colour (0x00000000),
+                               ImageCache::getFromMemory (BinaryData::PianoKeyboard_svg_png, BinaryData::PianoKeyboard_svg_pngSize), 1.0f, Colour (0x00000000),
+                               ImageCache::getFromMemory (BinaryData::PianoKeyboard_svg_png, BinaryData::PianoKeyboard_svg_pngSize), 1.0f, Colour (0x00000000));
     midiKeysButton->setBounds (48, 4, 40, 40);
 
     pluginButton.reset (new ImageButton ("new button"));
@@ -62,9 +62,9 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     pluginButton->addListener (this);
 
     pluginButton->setImages (false, true, true,
-                             ImageCache::getFromMemory (BinaryData::iconfinder_plugin_3671838_png, BinaryData::iconfinder_plugin_3671838_pngSize), 1.000f, Colour (0x00000000),
-                             ImageCache::getFromMemory (BinaryData::iconfinder_plugin_3671838_png, BinaryData::iconfinder_plugin_3671838_pngSize), 1.000f, Colour (0x00000000),
-                             ImageCache::getFromMemory (BinaryData::iconfinder_plugin_3671838_png, BinaryData::iconfinder_plugin_3671838_pngSize), 1.000f, Colour (0x00000000));
+                             ImageCache::getFromMemory (BinaryData::iconfinder_plugin_3671838_png, BinaryData::iconfinder_plugin_3671838_pngSize), 1.0f, Colour (0x00000000),
+                             ImageCache::getFromMemory (BinaryData::iconfinder_plugin_3671838_png, BinaryData::iconfinder_plugin_3671838_pngSize), 1.0f, Colour (0x00000000),
+                             ImageCache::getFromMemory (BinaryData::iconfinder_plugin_3671838_png, BinaryData::iconfinder_plugin_3671838_pngSize), 1.0f, Colour (0x00000000));
     pluginButton->setBounds (552, 4, 40, 40);
 
     syncButton.reset (new ImageButton ("new button"));
@@ -72,9 +72,9 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     syncButton->addListener (this);
 
     syncButton->setImages (false, true, true,
-                           ImageCache::getFromMemory (BinaryData::sync_off_png, BinaryData::sync_off_pngSize), 1.000f, Colour (0x00000000),
-                           ImageCache::getFromMemory (BinaryData::sync_off_png, BinaryData::sync_off_pngSize), 1.000f, Colour (0x00000000),
-                           ImageCache::getFromMemory (BinaryData::sync_on_png, BinaryData::sync_on_pngSize), 1.000f, Colour (0x00000000));
+                           ImageCache::getFromMemory (BinaryData::sync_off_png, BinaryData::sync_off_pngSize), 1.0f, Colour (0x00000000),
+                           ImageCache::getFromMemory (BinaryData::sync_off_png, BinaryData::sync_off_pngSize), 1.0f, Colour (0x00000000),
+                           ImageCache::getFromMemory (BinaryData::sync_on_png, BinaryData::sync_on_pngSize), 1.0f, Colour (0x00000000));
     syncButton->setBounds (102, 4, 40, 40);
 
     stopButton.reset (new ImageButton ("new button"));
@@ -82,9 +82,9 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     stopButton->addListener (this);
 
     stopButton->setImages (false, true, true,
-                           ImageCache::getFromMemory (BinaryData::iconfinder_iconstop_211931_png, BinaryData::iconfinder_iconstop_211931_pngSize), 1.000f, Colour (0x00000000),
-                           ImageCache::getFromMemory (BinaryData::iconfinder_iconstop_211931_png, BinaryData::iconfinder_iconstop_211931_pngSize), 1.000f, Colour (0x00000000),
-                           ImageCache::getFromMemory (BinaryData::iconfinder_iconstop_211931_png, BinaryData::iconfinder_iconstop_211931_pngSize), 1.000f, Colour (0x00000000));
+                           ImageCache::getFromMemory (BinaryData::iconfinder_iconstop_211931_png, BinaryData::iconfinder_iconstop_211931_pngSize), 1.0f, Colour (0x00000000),
+                           ImageCache::getFromMemory (BinaryData::iconfinder_iconstop_211931_png, BinaryData::iconfinder_iconstop_211931_pngSize), 1.0f, Colour (0x00000000),
+                           ImageCache::getFromMemory (BinaryData::iconfinder_iconstop_211931_png, BinaryData::iconfinder_iconstop_211931_pngSize), 1.0f, Colour (0x00000000));
     stopButton->setBounds (158, 4, 40, 40);
 
     playButton.reset (new ImageButton ("new button"));
@@ -92,9 +92,9 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     playButton->addListener (this);
 
     playButton->setImages (false, true, true,
-                           ImageCache::getFromMemory (BinaryData::iconfinder_iconplay_211876_png, BinaryData::iconfinder_iconplay_211876_pngSize), 1.000f, Colour (0x00000000),
-                           ImageCache::getFromMemory (BinaryData::iconfinder_iconplay_211876_png, BinaryData::iconfinder_iconplay_211876_pngSize), 1.000f, Colour (0x00000000),
-                           ImageCache::getFromMemory (BinaryData::iconfinder_iconpause_211871_png, BinaryData::iconfinder_iconpause_211871_pngSize), 1.000f, Colour (0x00000000));
+                           ImageCache::getFromMemory (BinaryData::iconfinder_iconplay_211876_png, BinaryData::iconfinder_iconplay_211876_pngSize), 1.0f, Colour (0x00000000),
+                           ImageCache::getFromMemory (BinaryData::iconfinder_iconplay_211876_png, BinaryData::iconfinder_iconplay_211876_pngSize), 1.0f, Colour (0x00000000),
+                           ImageCache::getFromMemory (BinaryData::iconfinder_iconpause_211871_png, BinaryData::iconfinder_iconpause_211871_pngSize), 1.0f, Colour (0x00000000));
     playButton->setBounds (198, 4, 40, 40);
 
     tempoSlider.reset (new Slider (String()));
@@ -103,6 +103,7 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     tempoSlider->setSliderStyle (Slider::LinearHorizontal);
     tempoSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 48, 20);
     tempoSlider->setColour (Slider::thumbColourId, Colour (0xff1afa00));
+    tempoSlider->setColour (Slider::textBoxTextColourId, Colours::black);
     tempoSlider->addListener (this);
 
     tempoSlider->setBounds (246, 4, 150, 16);
@@ -110,9 +111,10 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     timeLabel.reset (new Label (String(),
                                 TRANS("00:00:00:000")));
     addAndMakeVisible (timeLabel.get());
-    timeLabel->setFont (Font (Font::getDefaultMonospacedFontName(), 12.00f, Font::plain).withTypefaceStyle ("Regular"));
+    timeLabel->setFont (Font (Font::getDefaultMonospacedFontName(), 12.0f, Font::plain).withTypefaceStyle ("Regular"));
     timeLabel->setJustificationType (Justification::centred);
     timeLabel->setEditable (false, false, false);
+    timeLabel->setColour (Label::textColourId, Colours::black);
     timeLabel->setColour (TextEditor::textColourId, Colours::black);
     timeLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
@@ -136,6 +138,7 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     loopLengthSlider->setSliderStyle (Slider::LinearHorizontal);
     loopLengthSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 48, 20);
     loopLengthSlider->setColour (Slider::thumbColourId, Colour (0xfffa9400));
+    loopLengthSlider->setColour (Slider::textBoxTextColourId, Colours::black);
     loopLengthSlider->addListener (this);
 
     loopLengthSlider->setBounds (246, 28, 150, 16);
@@ -324,12 +327,12 @@ void TwonkTitleBarComponent::sliderValueChanged (Slider* sliderThatWasMoved)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void TwonkTitleBarComponent::positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo)
 {
-/*	//3600000 milliseconds in an hour
-	long hr = milli / 3600000;
-	milli = milli - 3600000 * hr;
+	//3600000 milliseconds in an hour
+	long hr = millis / 3600000;
+	millis = millis - 3600000 * hr;
 	//60000 milliseconds in a minute
-	long min = milli / 60000;
-	milli = milli - 60000 * min;
+	long min = millis / 60000;
+	millis = millis - 60000 * min;
 
 	//1000 milliseconds in a second
 	long sec = milli / 1000;
@@ -338,7 +341,7 @@ void TwonkTitleBarComponent::positionChanged(const AudioPlayHead::CurrentPositio
 	timeLabel->setText(
 		String::formatted("%02d:%02d:%02d:%03d", hr, min, sec, milli),
 		dontSendNotification
-	);*/
+	);*
 }
 //[/MiscUserCode]
 
@@ -355,7 +358,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="TwonkTitleBarComponent" componentName=""
                  parentClasses="public Component, public TwonkClockListener" constructorParams="GraphDocumentComponent &amp;_owner"
                  variableInitialisers="owner(_owner)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
+                 snapShown="1" overlayOpacity="0.33" fixedSize="1" initialWidth="600"
                  initialHeight="48">
   <BACKGROUND backgroundColour="ff323e44">
     <RECT pos="0 0 0M 0M" fill="linear: 0 0, 0 0R, 0=ffbcbcbc, 1=ff464646"
@@ -405,11 +408,11 @@ BEGIN_JUCER_METADATA
                opacityDown="1.0" colourDown="0"/>
   <SLIDER name="" id="1b0eb9cd7e232c5f" memberName="tempoSlider" virtualName=""
           explicitFocusOrder="0" pos="246 4 150 16" thumbcol="ff1afa00"
-          min="1.0" max="240.0" int="0.5" style="LinearHorizontal" textBoxPos="TextBoxLeft"
-          textBoxEditable="1" textBoxWidth="48" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="1"/>
+          textboxtext="ff000000" min="1.0" max="240.0" int="0.5" style="LinearHorizontal"
+          textBoxPos="TextBoxLeft" textBoxEditable="1" textBoxWidth="48"
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <LABEL name="" id="eedeb92a13be3a7a" memberName="timeLabel" virtualName=""
-         explicitFocusOrder="0" pos="400 4 96 20" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="400 4 96 20" textCol="ff000000" edTextCol="ff000000"
          edBkgCol="0" labelText="00:00:00:000" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default monospaced font"
          fontsize="12.0" kerning="0.0" bold="0" italic="0" justification="36"/>
@@ -420,9 +423,9 @@ BEGIN_JUCER_METADATA
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="" id="1a1a1086301ec67" memberName="loopLengthSlider" virtualName=""
           explicitFocusOrder="0" pos="246 28 150 16" thumbcol="fffa9400"
-          min="1.0" max="256.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
-          textBoxEditable="1" textBoxWidth="48" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="1"/>
+          textboxtext="ff000000" min="1.0" max="256.0" int="1.0" style="LinearHorizontal"
+          textBoxPos="TextBoxLeft" textBoxEditable="1" textBoxWidth="48"
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="" id="1e520ada967b42f6" memberName="loopPositionIndicator"
           virtualName="" explicitFocusOrder="0" pos="400 36 96 8" bkgcol="ff55cd32"
           thumbcol="ffc84242" trackcol="ffff4343" rotarysliderfill="ff0eb7ff"
@@ -438,4 +441,3 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
-

@@ -44,7 +44,7 @@ class JUCE_API  ComponentListener
 {
 public:
     /** Destructor. */
-    virtual ~ComponentListener() = default;
+    virtual ~ComponentListener()  {}
 
     /** Called when the component's position or size changes.
 

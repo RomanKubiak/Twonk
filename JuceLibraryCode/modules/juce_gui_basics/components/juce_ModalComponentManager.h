@@ -57,10 +57,10 @@ public:
     {
     public:
         /** */
-        Callback() = default;
+        Callback() {}
 
         /** Destructor. */
-        virtual ~Callback() = default;
+        virtual ~Callback() {}
 
         /** Called to indicate that a modal component has been dismissed.
 
@@ -134,7 +134,7 @@ protected:
     ModalComponentManager();
 
     /** Destructor. */
-    ~ModalComponentManager() override;
+    ~ModalComponentManager();
 
     /** @internal */
     void handleAsyncUpdate() override;

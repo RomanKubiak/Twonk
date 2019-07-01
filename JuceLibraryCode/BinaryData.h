@@ -12,10 +12,10 @@ namespace BinaryData
     const int            _60sekuntia_ttfSize = 97264;
 
     extern const char*   iconfinder_iconpause_211871_png;
-    const int            iconfinder_iconpause_211871_pngSize = 537;
+    const int            iconfinder_iconpause_211871_pngSize = 3208;
 
     extern const char*   iconfinder_iconplay_211876_png;
-    const int            iconfinder_iconplay_211876_pngSize = 1303;
+    const int            iconfinder_iconplay_211876_pngSize = 5024;
 
     extern const char*   iconfinder_iconstop_211931_png;
     const int            iconfinder_iconstop_211931_pngSize = 472;

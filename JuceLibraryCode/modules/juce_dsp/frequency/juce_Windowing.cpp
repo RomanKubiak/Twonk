@@ -37,22 +37,22 @@ static inline FloatType ncos (size_t order, size_t i, size_t size) noexcept
 }
 
 template <typename FloatType>
-WindowingFunction<FloatType>::WindowingFunction (size_t size, WindowingMethod type, bool normalise, FloatType beta)
+WindowingFunction<FloatType>::WindowingFunction (size_t size, WindowingMethod type, bool normalize, FloatType beta)
 {
-    fillWindowingTables (size, type, normalise, beta);
+    fillWindowingTables (size, type, normalize, beta);
 }
 
 template <typename FloatType>
 void WindowingFunction<FloatType>::fillWindowingTables (size_t size, WindowingMethod type,
-                                                        bool normalise, FloatType beta) noexcept
+                                                        bool normalize, FloatType beta) noexcept
 {
     windowTable.resize (static_cast<int> (size));
-    fillWindowingTables (windowTable.getRawDataPointer(), size, type, normalise, beta);
+    fillWindowingTables (windowTable.getRawDataPointer(), size, type, normalize, beta);
 }
 
 template <typename FloatType>
 void WindowingFunction<FloatType>::fillWindowingTables (FloatType* samples, size_t size,
-                                                        WindowingMethod type, bool normalise,
+                                                        WindowingMethod type, bool normalize,
                                                         FloatType beta) noexcept
 {
     switch (type)
@@ -151,7 +151,7 @@ void WindowingFunction<FloatType>::fillWindowingTables (FloatType* samples, size
     }
 
     // DC frequency amplitude must be one
-    if (normalise)
+    if (normalize)
     {
         FloatType sum (0);
 
@@ -181,14 +181,14 @@ const char* WindowingFunction<FloatType>::getWindowingMethodName (WindowingMetho
         case hamming:           return "Hamming";
         case blackman:          return "Blackman";
         case blackmanHarris:    return "Blackman-Harris";
-        case flatTop:           return "Flat Top";
+        case flatTop:           return "FlatTop";
         case kaiser:            return "Kaiser";
         default: jassertfalse;  return "";
     }
 }
 
-template class WindowingFunction<float>;
-template class WindowingFunction<double>;
+template struct WindowingFunction<float>;
+template struct WindowingFunction<double>;
 
 } // namespace dsp
 } // namespace juce

@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ void TwonkBubbleComponentLabel::paint (Graphics& g)
 	g.setFont(f);
 	g.setColour(Colours::white);
 	g.drawFittedText(
-		text, 
+		text,
 		Rectangle<int>(
 			proportionOfWidth(0.1f),
 			proportionOfHeight(0.1f),
@@ -114,7 +114,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="TwonkBubbleComponentLabel"
                  componentName="" parentClasses="public Component" constructorParams="TwonkBubbleComponent &amp;_owner"
                  variableInitialisers="owner(_owner)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="128"
+                 snapShown="1" overlayOpacity="0.33" fixedSize="1" initialWidth="128"
                  initialHeight="48">
   <BACKGROUND backgroundColour="0"/>
 </JUCER_COMPONENT>
@@ -126,4 +126,3 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
-

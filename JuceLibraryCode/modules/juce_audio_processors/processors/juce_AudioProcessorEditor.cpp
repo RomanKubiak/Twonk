@@ -45,7 +45,7 @@ AudioProcessorEditor::~AudioProcessorEditor()
 
     // if this fails, then the wrapper hasn't called editorBeingDeleted() on the
     // filter for some reason..
-    jassert (processor.getActiveEditor() != this);
+ //    jassert (processor.getActiveEditor() != this);
     removeComponentListener (resizeListener.get());
 }
 
@@ -88,13 +88,18 @@ void AudioProcessorEditor::setResizable (const bool shouldBeResizable, const boo
     {
         resizable = shouldBeResizable;
 
-        if (! resizable && constrainer == &defaultConstrainer)
+        if (! resizable)
         {
-            auto width = getWidth();
-            auto height = getHeight();
+            setConstrainer (&defaultConstrainer);
 
-            if (width > 0 && height > 0)
-                defaultConstrainer.setSizeLimits (width, height, width, height);
+            if (auto w = getWidth())
+            {
+                if (auto h = getHeight())
+                {
+                    defaultConstrainer.setSizeLimits (w, h, w, h);
+                    resized();
+                }
+            }
         }
     }
 
@@ -141,10 +146,7 @@ void AudioProcessorEditor::setConstrainer (ComponentBoundsConstrainer* newConstr
 {
     if (constrainer != newConstrainer)
     {
-        if (newConstrainer != nullptr)
-            resizable = (newConstrainer->getMinimumWidth()  != newConstrainer->getMaximumWidth()
-                      || newConstrainer->getMinimumHeight() != newConstrainer->getMaximumHeight());
-
+        resizable = true;
         attachConstrainer (newConstrainer);
     }
 }

@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.3.2
 
   ------------------------------------------------------------------------------
 
@@ -87,12 +87,21 @@ void TwonkBubbleComponent::paint (Graphics& g)
     //[/UserPrePaint]
 
     {
-        float x = static_cast<float> (proportionOfWidth (0.0100f)), y = static_cast<float> (proportionOfHeight (0.3300f)), width = static_cast<float> (proportionOfWidth (0.9800f)), height = static_cast<float> (proportionOfHeight (0.3300f));
+        float x = static_cast<float> (proportionOfWidth (0.01f)), y = static_cast<float> (proportionOfHeight (0.33f)), width = static_cast<float> (proportionOfWidth (0.98f)), height = static_cast<float> (proportionOfHeight (0.33f));
+        Colour fillColour1 = Colour (0x00000000), fillColour2 = Colour (0x46000000);
         Colour strokeColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (proportionOfWidth (0.33f)) - static_cast<float> (proportionOfWidth (0.01f)) + x,
+                                       static_cast<float> (proportionOfHeight (0.33f)) - static_cast<float> (proportionOfHeight (0.33f)) + y,
+                                       fillColour2,
+                                       static_cast<float> (proportionOfWidth (0.3125f)) - static_cast<float> (proportionOfWidth (0.01f)) + x,
+                                       static_cast<float> (proportionOfHeight (0.66f)) - static_cast<float> (proportionOfHeight (0.33f)) + y,
+                                       false));
+        g.fillRoundedRectangle (x, y, width, height, 10.0f);
         g.setColour (strokeColour);
-        g.drawRoundedRectangle (x, y, width, height, 10.000f, 2.000f);
+        g.drawRoundedRectangle (x, y, width, height, 10.0f, 2.0f);
     }
 
     //[UserPaint] Add your own custom painting code here..
@@ -104,9 +113,9 @@ void TwonkBubbleComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    removeButton->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.0000f), proportionOfWidth (1.0000f), proportionOfHeight (0.3958f));
-    bypassButton->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.6042f), proportionOfWidth (1.0000f), proportionOfHeight (0.3958f));
-    label->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.3333f), proportionOfWidth (1.0000f), proportionOfHeight (0.3333f));
+    removeButton->setBounds (proportionOfWidth (0.0f), proportionOfHeight (0.0f), proportionOfWidth (1.0f), proportionOfHeight (0.3958f));
+    bypassButton->setBounds (proportionOfWidth (0.0f), proportionOfHeight (0.6042f), proportionOfWidth (1.0f), proportionOfHeight (0.3958f));
+    label->setBounds (proportionOfWidth (0.0f), proportionOfHeight (0.3333f), proportionOfWidth (1.0f), proportionOfHeight (0.3333f));
     //[UserResized] Add your own custom resize handling here..
 	//Font f = Typeface::createSystemTypefaceFor (BinaryData::_60sekuntia_ttf, BinaryData::_60sekuntia_ttfSize);
 	//f.setHeight(proportionOfHeight (0.15f));
@@ -180,11 +189,11 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="TwonkBubbleComponent" componentName=""
                  parentClasses="public Component" constructorParams="FilterGraph &amp;g, const AudioProcessorGraph::NodeID id"
                  variableInitialisers="graph(g), pluginID(id)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
+                 snapActive="1" snapShown="1" overlayOpacity="0.33" fixedSize="1"
                  initialWidth="128" initialHeight="96">
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="1% 33% 98% 33%" cornerSize="10.0" fill="solid: 0" hasStroke="1"
-               stroke="2, mitered, butt" strokeColour="solid: ffffffff"/>
+    <ROUNDRECT pos="1% 33% 98% 33%" cornerSize="10.0" fill="linear: 33% 33%, 31.25% 66%, 0=0, 1=46000000"
+               hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffffffff"/>
   </BACKGROUND>
   <TEXTBUTTON name="new button" id="796884a9cba9bda" memberName="removeButton"
               virtualName="" explicitFocusOrder="0" pos="0% 0% 100% 39.583%"
@@ -206,4 +215,3 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
-

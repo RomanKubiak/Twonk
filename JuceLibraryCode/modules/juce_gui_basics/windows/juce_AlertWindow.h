@@ -76,7 +76,7 @@ public:
                  Component* associatedComponent = nullptr);
 
     /** Destroys the AlertWindow */
-    ~AlertWindow() override;
+    ~AlertWindow();
 
     //==============================================================================
     /** Returns the type of alert icon that was specified when the window
@@ -423,7 +423,7 @@ public:
     */
     struct JUCE_API  LookAndFeelMethods
     {
-        virtual ~LookAndFeelMethods() = default;
+        virtual ~LookAndFeelMethods() {}
 
         virtual AlertWindow* createAlertWindow (const String& title, const String& message,
                                                 const String& button1,
