@@ -15,8 +15,8 @@ bool SequencerLinearProcessor::hasEditor() const { return true; }
 bool SequencerLinearProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const { return true; }
 const String SequencerLinearProcessor::getName() const { return "Sequencer Linear"; }
 bool SequencerLinearProcessor::acceptsMidi() const { return true; }
-bool SequencerLinearProcessor::producesMidi() const { return false; }
-bool SequencerLinearProcessor::isMidiEffect() const { return false; }
+bool SequencerLinearProcessor::producesMidi() const { return true; }
+bool SequencerLinearProcessor::isMidiEffect() const { return true; }
 double SequencerLinearProcessor::getTailLengthSeconds() const { return 0.0; }
 int SequencerLinearProcessor::getNumPrograms() { return 1; }
 int SequencerLinearProcessor::getCurrentProgram() { return 0; }
