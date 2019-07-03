@@ -5,9 +5,25 @@
 SequencerLinearProcessor::SequencerLinearProcessor(const PluginDescription& descr) : InternalPlugin (descr, true)
 {
 	lastPosInfo.resetToDefault();
+
+	for (int i = 0; i < 16; i++)
+	{
+		sequencerNotes.set(i, SeqNote());
+
+		AudioParameterInt *p = new AudioParameterInt(
+			String::formatted("step_%d", i),
+			String::formatted("Step %d", i),
+			0, 131, 100
+		);
+		addParameter(p);
+	}
 }
 SequencerLinearProcessor::~SequencerLinearProcessor() {}
-void SequencerLinearProcessor::prepareToPlay (double sampleRate, int samplesPerBlock) {}
+void SequencerLinearProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+{
+	currentSampleRate = sampleRate;
+}
+
 void SequencerLinearProcessor::releaseResources() {}
 void SequencerLinearProcessor::getStateInformation (MemoryBlock& destData) {}
 void SequencerLinearProcessor::setStateInformation (const void* data, int sizeInBytes) {}
@@ -32,22 +48,30 @@ void SequencerLinearProcessor::updateCurrentTimeInfoFromHost()
 
 		if (ph->getCurrentPosition (newTime))
 		{
-			lastPosInfo = newTime;  // Successfully got the current time from the host..
+			lastPosInfo = newTime;
 			return;
 		}
 	}
 
-
-	// If the host fails to provide the current time, we'll just reset our copy to a default..
 	lastPosInfo.resetToDefault();
 }
 
 void SequencerLinearProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
 	updateCurrentTimeInfoFromHost();
-	lastMidiBuffer.addEvents(midiMessages, 0, buffer.getNumSamples(), 0);
 }
 
+void SequencerLinearProcessor::setSequencerNoteNumber(const int index, double noteNumber)
+{
+	const ScopedLock sl (getCallbackLock());
+	sequencerNotes.getReference(index).number = noteNumber;
+}
+
+void SequencerLinearProcessor::setSequencerNoteState(const int index, SeqNoteState noteState)
+{
+	const ScopedLock sl (getCallbackLock());
+	sequencerNotes.getReference(index).state = noteState;
+}
 AudioProcessorEditor* SequencerLinearProcessor::createEditor()
 {
 	return new SequencerLinearEditor (*this);

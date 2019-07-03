@@ -13,6 +13,29 @@
 #include "../PluginParameter.h"
 #include "../../Filters/InternalFilters.h"
 
+// { RESET, SLIDE, OFF, JMP }
+
+enum SeqNoteState
+{
+	Off,
+	Rst,
+	Jmp,
+	Sld,
+	On,
+	numNoteStates
+};
+
+struct SeqNote
+{
+	SeqNote() {}
+	double durationInSamples = 0.0;
+	double startInSamples = 0.0;
+	int number = 63;
+	int channel = 0;
+	int velocity = 0;
+	SeqNoteState state = Off;
+};
+
 class SequencerLinearProcessor : public InternalPlugin
 {
 public:
@@ -45,8 +68,16 @@ public:
 	void changeProgramName (int index, const String& newName) override;
 	void updateCurrentTimeInfoFromHost();
 	AudioPlayHead::CurrentPositionInfo lastPosInfo;
-	MidiBuffer lastMidiBuffer;
+	const Array<SeqNote> &getSequencerNotes() { return (sequencerNotes); }
+	void setSequencerNote(const int index, SeqNote &note) {}
+	void setSequencerNoteNumber(const int index, double noteNumber);
+	void setSequencerNoteDuration(const int index, double durationInSamples) {}
+	void setSequencerNoteState(const int index, SeqNoteState noteState);
+	void setSequencerFirstNote(const int firstNoteIndex) {}
+	void setSequencerLastNote(const int lastNoteIndex) {}
+	double getCurrentSampleRate() { return (currentSampleRate); }
 private:
-
+	Array <SeqNote> sequencerNotes;
+	double currentSampleRate;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerLinearProcessor)
 };
