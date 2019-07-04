@@ -77,7 +77,7 @@ SequencerLinearEditor::SequencerLinearEditor (SequencerLinearProcessor &p)
 	lf = new SequencerLinearLook(*this);
 	setLookAndFeel(lf);
 	p.addListener(this);
-	const OwnedArray<AudioProcessorParameter> &params = getAudioProcessor()->getParameters();
+	
 	for (int positionIndicatorIndex = 0; positionIndicatorIndex < 16; positionIndicatorIndex++)
 	{
 		TextButton *positionIndicator = new TextButton (String(positionIndicatorIndex));
@@ -99,12 +99,6 @@ SequencerLinearEditor::SequencerLinearEditor (SequencerLinearProcessor &p)
 		slider->setColour (Slider::textBoxOutlineColourId, Colour (0x00000000));
 		slider->addListener (this);
 		slider->setBounds (24 + (sliderIndex * 36), 16 + 32, 36, 236);
-
-		if (params[sliderIndex])
-		{
-			slider->setValue((int)(params[sliderIndex]->getValue() * 200), dontSendNotification);
-		}
-
 		stepValues.set(sliderIndex, slider);
 	}
 
@@ -116,10 +110,7 @@ SequencerLinearEditor::SequencerLinearEditor (SequencerLinearProcessor &p)
 		buttonNoteState->addListener (this);
 		buttonNoteState->setBounds (24 + (buttonIndex * 36), 236 + 16 + 32, 36, 36);
 		stepStates.set(buttonIndex, buttonNoteState);
-		if (stepValues[buttonIndex]->getValue() < 10)
-			buttonNoteState->setToggleState(false, dontSendNotification);
-		else
-			buttonNoteState->setToggleState(true, dontSendNotification);
+		buttonNoteState->setToggleState(stepValues[buttonIndex]->getValue() > 10, dontSendNotification);
 	}
     //[/Constructor_pre]
 
@@ -203,13 +194,8 @@ void SequencerLinearEditor::resized()
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void SequencerLinearEditor::audioProcessorParameterChanged(AudioProcessor *processor, int parameterIndex, float newValue)
-{
-}
-
-void SequencerLinearEditor::audioProcessorChanged(AudioProcessor *processor)
-{
-}
+void SequencerLinearEditor::audioProcessorParameterChanged(AudioProcessor *processor, int parameterIndex, float newValue){}
+void SequencerLinearEditor::audioProcessorChanged(AudioProcessor *processor){}
 
 void SequencerLinearEditor::sliderValueChanged(Slider *slider)
 {
@@ -218,25 +204,18 @@ void SequencerLinearEditor::buttonClicked(Button *button)
 {
 }
 
-static String timeToTimecodeString (double seconds)
-{
-	auto millisecs = roundToInt (seconds * 1000.0);
-	auto absMillisecs = std::abs (millisecs);
-
-	return String::formatted ("%02d:%02d:%02d.%03d",
-		millisecs / 3600000,
-		(absMillisecs / 60000) % 60,
-		(absMillisecs / 1000) % 60,
-		absMillisecs % 1000);
-}
-
 void SequencerLinearEditor::timerCallback()
 {
 	AudioPlayHead::CurrentPositionInfo pos = processor.lastPosInfo;
 	auto sampleRate = processor.getCurrentSampleRate();
 
 	if (!pos.isPlaying)
+	{
+		previousBeat = 0;
+		previousNotePosition = -1;
+		notePosition = 0;
 		return;
+	}
 
 	double beatLengthInSamples = 60.0 / (pos.bpm * 4) * sampleRate;
 	int beatLengthMultiple = (int)pos.timeInSamples % (int)beatLengthInSamples;
@@ -245,7 +224,7 @@ void SequencerLinearEditor::timerCallback()
 	auto quarterNotesPerBar = (pos.timeSigNumerator * 4 / pos.timeSigDenominator);
 	auto beats = (fmod (quarterNotes, quarterNotesPerBar) / quarterNotesPerBar) * pos.timeSigNumerator;
 
-	auto bar = ((int)quarterNotes) / quarterNotesPerBar + 1;
+	auto bar = ((int)quarterNotes) / quarterNotesPerBar;
 	auto beat = ((int)beats);
 	auto ticks = ((int)(fmod (beats, 1.0) * 960.0 + 0.5));
 	positionLabel->setText(String::formatted("%02d:%02d:%f:%03d", bar, beat, pos.ppqPosition / quarterNotesPerBar, ticks), dontSendNotification);

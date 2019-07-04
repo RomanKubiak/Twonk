@@ -78,9 +78,9 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
 	SequencerLinearProcessor &processor;
 	SequencerLinearLook *lf;
-	Array <Slider *> stepValues;
-	Array <Button *> stepStates;
-	Array <Button *> positionIndicators;
+	OwnedArray <Slider> stepValues;
+	OwnedArray <Button> stepStates;
+	OwnedArray <Button> positionIndicators;
 	int notePosition;
 	int previousBeat;
 	int previousNotePosition;
