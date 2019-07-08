@@ -77,7 +77,7 @@ SequencerLinearEditor::SequencerLinearEditor (SequencerLinearProcessor &p)
 	lf = new SequencerLinearLook(*this);
 	setLookAndFeel(lf);
 	p.addListener(this);
-	
+
 	for (int positionIndicatorIndex = 0; positionIndicatorIndex < 16; positionIndicatorIndex++)
 	{
 		TextButton *positionIndicator = new TextButton (String(positionIndicatorIndex));

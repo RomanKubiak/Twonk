@@ -83,6 +83,7 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
 	GraphDocumentComponent &owner;
 	void positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo);
+	void transportStopped();
 	TitleBarLookAndFeel *titleBarLookAndFeel;
 	Font labelFont;
     //[/UserVariables]

@@ -232,27 +232,12 @@
               file="Source/Filters/FilterIOConfiguration.cpp"/>
         <FILE id="r9SuL8" name="FilterIOConfiguration.h" compile="0" resource="0"
               file="Source/Filters/FilterIOConfiguration.h"/>
-        <FILE id="m5TgyI" name="HostAudioProcessorPlayer.cpp" compile="1" resource="0"
-              file="Source/Filters/HostAudioProcessorPlayer.cpp"/>
-        <FILE id="grFDdc" name="HostAudioProcessorPlayer.h" compile="0" resource="0"
-              file="Source/Filters/HostAudioProcessorPlayer.h"/>
-        <FILE id="WUOw4b" name="HostPlayHead.cpp" compile="1" resource="0"
-              file="Source/Filters/HostPlayHead.cpp"/>
-        <FILE id="WWeJ5m" name="HostPlayHead.h" compile="0" resource="0" file="Source/Filters/HostPlayHead.h"/>
         <FILE id="UcOOog" name="InternalFilters.cpp" compile="1" resource="0"
               file="Source/Filters/InternalFilters.cpp"/>
         <FILE id="Bll6sn" name="InternalFilters.h" compile="0" resource="0"
               file="Source/Filters/InternalFilters.h"/>
-        <FILE id="LxKaDt" name="MidiPatternSequencer.cpp" compile="1" resource="0"
-              file="Source/Filters/MidiPatternSequencer.cpp"/>
-        <FILE id="qEShps" name="MidiPatternSequencer.h" compile="0" resource="0"
-              file="Source/Filters/MidiPatternSequencer.h"/>
       </GROUP>
       <GROUP id="{D892BFB2-FE85-B70F-10D3-450F407E2B3D}" name="UI">
-        <FILE id="YpU9RH" name="PlaybackComponent.cpp" compile="1" resource="0"
-              file="Source/UI/PlaybackComponent.cpp"/>
-        <FILE id="yfaJfi" name="PlaybackComponent.h" compile="0" resource="0"
-              file="Source/UI/PlaybackComponent.h"/>
         <FILE id="Lhw9Qp" name="TwonkTitleBarComponent.cpp" compile="1" resource="0"
               file="Source/UI/TwonkTitleBarComponent.cpp"/>
         <FILE id="N24pYf" name="TwonkTitleBarComponent.h" compile="0" resource="0"

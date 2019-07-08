@@ -104,6 +104,7 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     tempoSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 48, 20);
     tempoSlider->setColour (Slider::thumbColourId, Colour (0xff1afa00));
     tempoSlider->setColour (Slider::textBoxTextColourId, Colours::black);
+    tempoSlider->setColour (Slider::textBoxOutlineColourId, Colour (0x00ffffff));
     tempoSlider->addListener (this);
 
     tempoSlider->setBounds (246, 4, 150, 16);
@@ -139,6 +140,7 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
     loopLengthSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 48, 20);
     loopLengthSlider->setColour (Slider::thumbColourId, Colour (0xfffa9400));
     loopLengthSlider->setColour (Slider::textBoxTextColourId, Colours::black);
+    loopLengthSlider->setColour (Slider::textBoxOutlineColourId, Colour (0x00000000));
     loopLengthSlider->addListener (this);
 
     loopLengthSlider->setBounds (246, 28, 150, 16);
@@ -206,7 +208,7 @@ void TwonkTitleBarComponent::paint (Graphics& g)
 
     {
         int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        Colour fillColour1 = Colour (0xffbcbcbc), fillColour2 = Colour (0xff464646);
+        Colour fillColour1 = Colours::white, fillColour2 = Colour (0xffbfbfbf);
         Colour strokeColour1 = Colour (0x00000000), strokeColour2 = Colour (0x80000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -275,7 +277,7 @@ void TwonkTitleBarComponent::buttonClicked (Button* buttonThatWasClicked)
     {
         //[UserButtonCode_stopButton] -- add your button handler code here..
 		owner.stop();
-		playButton->setToggleState(false, NotificationType::sendNotification);
+		playButton->setToggleState(false, NotificationType::dontSendNotification);
         //[/UserButtonCode_stopButton]
     }
     else if (buttonThatWasClicked == playButton.get())
@@ -327,22 +329,17 @@ void TwonkTitleBarComponent::sliderValueChanged (Slider* sliderThatWasMoved)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void TwonkTitleBarComponent::positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo)
 {
-	double millis = Time::currentTimeMillis();
-	//3600000 milliseconds in an hour
-	long hr = millis / 3600000;
-	millis = millis - 3600000 * hr;
-	//60000 milliseconds in a minute
-	long min = millis / 60000;
-	millis = millis - 60000 * min;
+	if (!positionInfo.isPlaying)
+	{
+		timeLabel->setText("00:00:00:0.0", dontSendNotification);
+		return;
+	}
 
-	//1000 milliseconds in a second
-	long sec = millis / 1000;
-	millis = millis - 1000 * sec;
+	timeLabel->setText(String::formatted("00:00:00:%.1f", positionInfo.ppqPosition), dontSendNotification);
+}
 
-	timeLabel->setText(
-		String::formatted("%02d:%02d:%02d:%03d", hr, min, sec, millis),
-		dontSendNotification
-	);
+void TwonkTitleBarComponent::transportStopped()
+{
 }
 //[/MiscUserCode]
 
@@ -362,7 +359,7 @@ BEGIN_JUCER_METADATA
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
                  initialHeight="48">
   <BACKGROUND backgroundColour="ff323e44">
-    <RECT pos="0 0 0M 0M" fill="linear: 0 0, 0 0R, 0=ffbcbcbc, 1=ff464646"
+    <RECT pos="0 0 0M 0M" fill="linear: 0 0, 0 0R, 0=ffffffff, 1=ffbfbfbf"
           hasStroke="1" stroke="1, mitered, butt" strokeColour="linear: 0 0, 0 0R, 0=0, 1=80000000"/>
   </BACKGROUND>
   <IMAGEBUTTON name="new button" id="97401225f34bada3" memberName="settingsButton"
@@ -409,9 +406,9 @@ BEGIN_JUCER_METADATA
                opacityDown="1.0" colourDown="0"/>
   <SLIDER name="" id="1b0eb9cd7e232c5f" memberName="tempoSlider" virtualName=""
           explicitFocusOrder="0" pos="246 4 150 16" thumbcol="ff1afa00"
-          textboxtext="ff000000" min="1.0" max="240.0" int="0.5" style="LinearHorizontal"
-          textBoxPos="TextBoxLeft" textBoxEditable="1" textBoxWidth="48"
-          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          textboxtext="ff000000" textboxoutline="ffffff" min="1.0" max="240.0"
+          int="0.5" style="LinearHorizontal" textBoxPos="TextBoxLeft" textBoxEditable="1"
+          textBoxWidth="48" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <LABEL name="" id="eedeb92a13be3a7a" memberName="timeLabel" virtualName=""
          explicitFocusOrder="0" pos="400 4 96 20" textCol="ff000000" edTextCol="ff000000"
          edBkgCol="0" labelText="00:00:00:000" editableSingleClick="0"
@@ -424,9 +421,9 @@ BEGIN_JUCER_METADATA
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="" id="1a1a1086301ec67" memberName="loopLengthSlider" virtualName=""
           explicitFocusOrder="0" pos="246 28 150 16" thumbcol="fffa9400"
-          textboxtext="ff000000" min="1.0" max="256.0" int="1.0" style="LinearHorizontal"
-          textBoxPos="TextBoxLeft" textBoxEditable="1" textBoxWidth="48"
-          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          textboxtext="ff000000" textboxoutline="0" min="1.0" max="256.0"
+          int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft" textBoxEditable="1"
+          textBoxWidth="48" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="" id="1e520ada967b42f6" memberName="loopPositionIndicator"
           virtualName="" explicitFocusOrder="0" pos="400 36 96 8" bkgcol="ff55cd32"
           thumbcol="ffc84242" trackcol="ffff4343" rotarysliderfill="ff0eb7ff"

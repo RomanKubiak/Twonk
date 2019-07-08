@@ -556,20 +556,8 @@
     <ClCompile Include="..\..\Source\Filters\FilterIOConfiguration.cpp">
       <Filter>Twonk\Source\Filters</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Filters\HostAudioProcessorPlayer.cpp">
-      <Filter>Twonk\Source\Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Filters\HostPlayHead.cpp">
-      <Filter>Twonk\Source\Filters</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Filters\InternalFilters.cpp">
       <Filter>Twonk\Source\Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Filters\MidiPatternSequencer.cpp">
-      <Filter>Twonk\Source\Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\PlaybackComponent.cpp">
-      <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkTitleBarComponent.cpp">
       <Filter>Twonk\Source\UI</Filter>
@@ -2631,20 +2619,8 @@
     <ClInclude Include="..\..\Source\Filters\FilterIOConfiguration.h">
       <Filter>Twonk\Source\Filters</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Filters\HostAudioProcessorPlayer.h">
-      <Filter>Twonk\Source\Filters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Filters\HostPlayHead.h">
-      <Filter>Twonk\Source\Filters</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Filters\InternalFilters.h">
       <Filter>Twonk\Source\Filters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Filters\MidiPatternSequencer.h">
-      <Filter>Twonk\Source\Filters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\PlaybackComponent.h">
-      <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkTitleBarComponent.h">
       <Filter>Twonk\Source\UI</Filter>

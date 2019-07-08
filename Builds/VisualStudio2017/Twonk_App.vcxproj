@@ -169,11 +169,7 @@
     <ClCompile Include="..\..\Source\FX\TwonkFilters.cpp"/>
     <ClCompile Include="..\..\Source\Filters\FilterGraph.cpp"/>
     <ClCompile Include="..\..\Source\Filters\FilterIOConfiguration.cpp"/>
-    <ClCompile Include="..\..\Source\Filters\HostAudioProcessorPlayer.cpp"/>
-    <ClCompile Include="..\..\Source\Filters\HostPlayHead.cpp"/>
     <ClCompile Include="..\..\Source\Filters\InternalFilters.cpp"/>
-    <ClCompile Include="..\..\Source\Filters\MidiPatternSequencer.cpp"/>
-    <ClCompile Include="..\..\Source\UI\PlaybackComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkTitleBarComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkBubbleComponentLabel.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkFilterPropertiesEditor.cpp"/>
@@ -2003,11 +1999,7 @@
     <ClInclude Include="..\..\Source\FX\TwonkFilters.h"/>
     <ClInclude Include="..\..\Source\Filters\FilterGraph.h"/>
     <ClInclude Include="..\..\Source\Filters\FilterIOConfiguration.h"/>
-    <ClInclude Include="..\..\Source\Filters\HostAudioProcessorPlayer.h"/>
-    <ClInclude Include="..\..\Source\Filters\HostPlayHead.h"/>
     <ClInclude Include="..\..\Source\Filters\InternalFilters.h"/>
-    <ClInclude Include="..\..\Source\Filters\MidiPatternSequencer.h"/>
-    <ClInclude Include="..\..\Source\UI\PlaybackComponent.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkTitleBarComponent.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkBubbleComponentLabel.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkFilterPropertiesEditor.h"/>
