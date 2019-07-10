@@ -89,6 +89,9 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkRWProcessor_596b491c.o \
   $(JUCE_OBJDIR)/SequencerLinearEditor_86a75e96.o \
   $(JUCE_OBJDIR)/SequencerLinearProcessor_b288b8d3.o \
+  $(JUCE_OBJDIR)/SamplerSoundEditor_1476a24b.o \
+  $(JUCE_OBJDIR)/SimpleSamplerEditor_8fe5c516.o \
+  $(JUCE_OBJDIR)/SimpleSamplerProcessor_6722c253.o \
   $(JUCE_OBJDIR)/SineWaveSynth_5dad0889.o \
   $(JUCE_OBJDIR)/TwonkTremoloProcessor_36282d78.o \
   $(JUCE_OBJDIR)/TwonkTremoloEditor_63b411.o \
@@ -241,6 +244,21 @@ $(JUCE_OBJDIR)/SequencerLinearEditor_86a75e96.o: ../../Source/FX/SequencerLinear
 $(JUCE_OBJDIR)/SequencerLinearProcessor_b288b8d3.o: ../../Source/FX/SequencerLinear/SequencerLinearProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling SequencerLinearProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SamplerSoundEditor_1476a24b.o: ../../Source/FX/SimpleSampler/SamplerSoundEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SamplerSoundEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SimpleSamplerEditor_8fe5c516.o: ../../Source/FX/SimpleSampler/SimpleSamplerEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SimpleSamplerEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SimpleSamplerProcessor_6722c253.o: ../../Source/FX/SimpleSampler/SimpleSamplerProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SimpleSamplerProcessor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/SineWaveSynth_5dad0889.o: ../../Source/FX/SineWaveSynth/SineWaveSynth.cpp

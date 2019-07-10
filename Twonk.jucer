@@ -77,7 +77,6 @@
   <MAINGROUP id="YdWL7hi7p" name="Twonk">
     <GROUP id="{CFED5B3D-D1D8-0F3F-4D67-B2A810D057EF}" name="Source">
       <GROUP id="{2A443038-39E2-452E-37A0-3AD92CBC82C3}" name="Resources">
-        <FILE id="IJis9L" name="60sekuntia.ttf" compile="0" resource="1" file="Source/Resources/60sekuntia.ttf"/>
         <FILE id="YUpw5f" name="iconfinder_icon-pause_211871.png" compile="0"
               resource="1" file="Source/Resources/iconfinder_icon-pause_211871.png"/>
         <FILE id="UUivlw" name="iconfinder_icon-play_211876.png" compile="0"
@@ -194,6 +193,20 @@
                 file="Source/FX/SequencerLinear/SequencerLinearProcessor.cpp"/>
           <FILE id="Fy7MgM" name="SequencerLinearProcessor.h" compile="0" resource="0"
                 file="Source/FX/SequencerLinear/SequencerLinearProcessor.h"/>
+        </GROUP>
+        <GROUP id="{841D69E6-8A33-E6FD-94BB-9922671FE734}" name="SimpleSampler">
+          <FILE id="Nq9Zjd" name="SamplerSoundEditor.cpp" compile="1" resource="0"
+                file="Source/FX/SimpleSampler/SamplerSoundEditor.cpp"/>
+          <FILE id="N8Tekw" name="SamplerSoundEditor.h" compile="0" resource="0"
+                file="Source/FX/SimpleSampler/SamplerSoundEditor.h"/>
+          <FILE id="bTYyua" name="SimpleSamplerEditor.cpp" compile="1" resource="0"
+                file="Source/FX/SimpleSampler/SimpleSamplerEditor.cpp"/>
+          <FILE id="RCOAwt" name="SimpleSamplerEditor.h" compile="0" resource="0"
+                file="Source/FX/SimpleSampler/SimpleSamplerEditor.h"/>
+          <FILE id="NDuWZ3" name="SimpleSamplerProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/SimpleSampler/SimpleSamplerProcessor.cpp"/>
+          <FILE id="LPnktW" name="SimpleSamplerProcessor.h" compile="0" resource="0"
+                file="Source/FX/SimpleSampler/SimpleSamplerProcessor.h"/>
         </GROUP>
         <GROUP id="{A594AB27-A86E-A115-E651-E3CC62EDB688}" name="SineWaveSynth">
           <FILE id="qiD8bc" name="SineWaveSynth.cpp" compile="1" resource="0"

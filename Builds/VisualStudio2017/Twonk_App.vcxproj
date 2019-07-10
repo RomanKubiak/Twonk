@@ -161,6 +161,9 @@
     <ClCompile Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\SequencerLinear\SequencerLinearEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\SequencerLinear\SequencerLinearProcessor.cpp"/>
+    <ClCompile Include="..\..\Source\FX\SimpleSampler\SamplerSoundEditor.cpp"/>
+    <ClCompile Include="..\..\Source\FX\SimpleSampler\SimpleSamplerEditor.cpp"/>
+    <ClCompile Include="..\..\Source\FX\SimpleSampler\SimpleSamplerProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.cpp"/>
     <ClCompile Include="..\..\Source\FX\Tremolo\TwonkTremoloProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Tremolo\TwonkTremoloEditor.cpp"/>
@@ -1990,6 +1993,9 @@
     <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\SequencerLinear\SequencerLinearEditor.h"/>
     <ClInclude Include="..\..\Source\FX\SequencerLinear\SequencerLinearProcessor.h"/>
+    <ClInclude Include="..\..\Source\FX\SimpleSampler\SamplerSoundEditor.h"/>
+    <ClInclude Include="..\..\Source\FX\SimpleSampler\SimpleSamplerEditor.h"/>
+    <ClInclude Include="..\..\Source\FX\SimpleSampler\SimpleSamplerProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.h"/>
     <ClInclude Include="..\..\Source\FX\Tremolo\TwonkTremoloEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Tremolo\TwonkTremoloProcessor.h"/>
@@ -2725,7 +2731,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Source\Resources\60sekuntia.ttf"/>
     <None Include="..\..\Source\Resources\iconfinder_icon-pause_211871.png"/>
     <None Include="..\..\Source\Resources\iconfinder_icon-play_211876.png"/>
     <None Include="..\..\Source\Resources\iconfinder_icon-stop_211931.png"/>

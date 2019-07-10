@@ -102,12 +102,6 @@
       <Add option="-Wno-strict-overflow"/>
     </Compiler>
     <Linker/>
-    <Unit filename="../../Source/Resources/60sekuntia.ttf">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/Resources/iconfinder_icon-pause_211871.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -373,6 +367,36 @@
       <Option target="App | Release"/>
     </Unit>
     <Unit filename="../../Source/FX/SequencerLinear/SequencerLinearProcessor.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SimpleSampler/SamplerSoundEditor.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SimpleSampler/SamplerSoundEditor.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SimpleSampler/SimpleSamplerEditor.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SimpleSampler/SimpleSamplerEditor.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SimpleSampler/SimpleSamplerProcessor.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SimpleSampler/SimpleSamplerProcessor.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>

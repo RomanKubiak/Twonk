@@ -35,6 +35,9 @@
     <Filter Include="Twonk\Source\FX\SequencerLinear">
       <UniqueIdentifier>{E8F4A566-A874-FC8F-90EA-604288A236AD}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Twonk\Source\FX\SimpleSampler">
+      <UniqueIdentifier>{430529DF-52FC-988A-5B64-AF9EE3900007}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Twonk\Source\FX\SineWaveSynth">
       <UniqueIdentifier>{449558DF-FAA4-03F3-15AD-EF7C4D070B37}</UniqueIdentifier>
     </Filter>
@@ -531,6 +534,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\SequencerLinear\SequencerLinearProcessor.cpp">
       <Filter>Twonk\Source\FX\SequencerLinear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\SimpleSampler\SamplerSoundEditor.cpp">
+      <Filter>Twonk\Source\FX\SimpleSampler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\SimpleSampler\SimpleSamplerEditor.cpp">
+      <Filter>Twonk\Source\FX\SimpleSampler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\SimpleSampler\SimpleSamplerProcessor.cpp">
+      <Filter>Twonk\Source\FX\SimpleSampler</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.cpp">
       <Filter>Twonk\Source\FX\SineWaveSynth</Filter>
@@ -2591,6 +2603,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\SequencerLinear\SequencerLinearProcessor.h">
       <Filter>Twonk\Source\FX\SequencerLinear</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\SimpleSampler\SamplerSoundEditor.h">
+      <Filter>Twonk\Source\FX\SimpleSampler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\SimpleSampler\SimpleSamplerEditor.h">
+      <Filter>Twonk\Source\FX\SimpleSampler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\SimpleSampler\SimpleSamplerProcessor.h">
+      <Filter>Twonk\Source\FX\SimpleSampler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.h">
       <Filter>Twonk\Source\FX\SineWaveSynth</Filter>
@@ -4793,9 +4814,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Source\Resources\60sekuntia.ttf">
-      <Filter>Twonk\Source\Resources</Filter>
-    </None>
     <None Include="..\..\Source\Resources\iconfinder_icon-pause_211871.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
