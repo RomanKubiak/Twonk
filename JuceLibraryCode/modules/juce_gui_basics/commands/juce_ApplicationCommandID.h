@@ -35,7 +35,7 @@ namespace juce
     @see ApplicationCommandInfo, ApplicationCommandManager,
          ApplicationCommandTarget, KeyPressMappingSet
 */
-using CommandID = int;
+typedef int CommandID;
 
 
 //==============================================================================

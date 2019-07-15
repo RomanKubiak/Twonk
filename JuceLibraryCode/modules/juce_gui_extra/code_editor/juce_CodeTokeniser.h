@@ -39,8 +39,8 @@ namespace juce
 class JUCE_API  CodeTokeniser
 {
 public:
-    CodeTokeniser() = default;
-    virtual ~CodeTokeniser() = default;
+    CodeTokeniser()                 {}
+    virtual ~CodeTokeniser()        {}
 
     //==============================================================================
     /** Reads the next token from the source and returns its token type.

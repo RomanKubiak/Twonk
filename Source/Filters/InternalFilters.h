@@ -43,7 +43,7 @@ protected:
 		jassert (channelSetToUse.size() == descr.numOutputChannels);
 		weHaveOurEditor = _weHaveOurEditor;
 	}
-
+	
 public:
 	//==============================================================================
 	const String getName() const override { return name; }

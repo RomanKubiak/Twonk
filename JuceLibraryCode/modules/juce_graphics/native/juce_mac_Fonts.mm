@@ -239,7 +239,7 @@ namespace CoreTextTypeLayout
                 {
                     extraKerning *= attr.font.getHeight();
 
-                    auto numberRef = CFNumberCreate (nullptr, kCFNumberFloatType, &extraKerning);
+                    auto numberRef = CFNumberCreate (0, kCFNumberFloatType, &extraKerning);
                     CFAttributedStringSetAttribute (attribString, range, kCTKernAttributeName, numberRef);
                     CFRelease (numberRef);
                 }
@@ -503,8 +503,7 @@ public:
         if (fontRef != nullptr)
         {
            #if JUCE_MAC && defined (MAC_OS_X_VERSION_10_8) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_8
-            if (SystemStats::getOperatingSystemType() >= SystemStats::OperatingSystemType::MacOSX_10_11)
-                canBeUsedForLayout = CTFontManagerRegisterGraphicsFont (fontRef, nullptr);
+            canBeUsedForLayout = CTFontManagerRegisterGraphicsFont (fontRef, nullptr);
            #endif
 
             ctFontRef = CTFontCreateWithGraphicsFont (fontRef, referenceFontSize, nullptr, nullptr);
@@ -541,7 +540,7 @@ public:
         fontHeightToPointsFactor = referenceFontSize / ctTotalHeight;
 
         const short zero = 0;
-        auto numberRef = CFNumberCreate (nullptr, kCFNumberShortType, &zero);
+        auto numberRef = CFNumberCreate (0, kCFNumberShortType, &zero);
 
         CFStringRef keys[] = { kCTFontAttributeName, kCTLigatureAttributeName };
         CFTypeRef values[] = { ctFontRef, numberRef };
@@ -551,7 +550,7 @@ public:
         CFRelease (numberRef);
     }
 
-    ~OSXTypeface() override
+    ~OSXTypeface()
     {
         if (attributedStringAtts != nullptr)
             CFRelease (attributedStringAtts);

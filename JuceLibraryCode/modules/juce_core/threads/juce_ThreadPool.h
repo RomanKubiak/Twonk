@@ -134,7 +134,7 @@ private:
     friend class ThreadPool;
     String jobName;
     ThreadPool* pool = nullptr;
-    std::atomic<bool> shouldStop { false }, isActive { false }, shouldBeDeleted { false };
+    bool shouldStop = false, isActive = false, shouldBeDeleted = false;
     ListenerList<Thread::Listener, Array<Thread::Listener*, CriticalSection>> listeners;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThreadPoolJob)
@@ -191,7 +191,7 @@ public:
     class JUCE_API  JobSelector
     {
     public:
-        virtual ~JobSelector() = default;
+        virtual ~JobSelector() {}
 
         /** Should return true if the specified thread matches your criteria for whatever
             operation that this object is being used for.

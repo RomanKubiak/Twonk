@@ -74,7 +74,7 @@ struct ReportingThreadContainer  : public ChangeListener,
                                    public DeletedAtShutdown
 {
     ReportingThreadContainer() {}
-    ~ReportingThreadContainer() override  { clearSingletonInstance(); }
+    ~ReportingThreadContainer() { clearSingletonInstance(); }
 
     void sendReport (String, String&, StringPairArray&);
     void changeListenerCallback (ChangeBroadcaster*) override;
@@ -109,7 +109,7 @@ struct ReportingThread  : public Thread,
         addChangeListener (&threadContainer);
     }
 
-    ~ReportingThread() override
+    ~ReportingThread()
     {
         removeChangeListener (&threadContainer);
 
@@ -294,8 +294,7 @@ std::unique_ptr<Drawable> JUCESplashScreen::getSplashScreenLogo()
     </svg>
     )JUCESPLASHSCREEN";
 
-    auto svgXml = parseXML (svgData);
-    jassert (svgXml != nullptr);
+    std::unique_ptr<XmlElement> svgXml (XmlDocument::parse (svgData));
     return std::unique_ptr<Drawable> (Drawable::createFromSVG (*svgXml));
 }
 

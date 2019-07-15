@@ -42,8 +42,8 @@ namespace juce
 class JUCE_API  CachedComponentImage
 {
 public:
-    CachedComponentImage() = default;
-    virtual ~CachedComponentImage() = default;
+    CachedComponentImage() noexcept {}
+    virtual ~CachedComponentImage() {}
 
     //==============================================================================
     /** Called as part of the parent component's paint method, this must draw

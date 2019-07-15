@@ -2,9 +2,9 @@
 
 <JUCERPROJECT id="NTe0XB0ij" name="Twonk" projectType="guiapp" version="1.0.0"
               juceFolder="../../../juce" vstFolderMac="~/SDKs/vstsdk2.4" vstFolderPC="c:\SDKs\vstsdk2.4"
-              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.3"
+              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.3.2"
               companyName="Instigator" displaySplashScreen="0" reportAppUsage="0"
-              headerPath="..\..\vst3sdk">
+              headerPath="../../vst3sdk&#10;../../Source/FX/SFZ/SFZero">
   <EXPORTFORMATS>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" vstFolder="" vst3Folder=""
                 smallIcon="c97aUr" bigIcon="c97aUr">
@@ -208,20 +208,6 @@
           <FILE id="qhMj9N" name="SFZeroEditor.cpp" compile="1" resource="0"
                 file="Source/FX/SFZ/SFZeroEditor.cpp"/>
           <FILE id="YcquNI" name="SFZeroEditor.h" compile="0" resource="0" file="Source/FX/SFZ/SFZeroEditor.h"/>
-        </GROUP>
-        <GROUP id="{841D69E6-8A33-E6FD-94BB-9922671FE734}" name="SimpleSampler">
-          <FILE id="Nq9Zjd" name="SamplerSoundEditor.cpp" compile="1" resource="0"
-                file="Source/FX/SimpleSampler/SamplerSoundEditor.cpp"/>
-          <FILE id="N8Tekw" name="SamplerSoundEditor.h" compile="0" resource="0"
-                file="Source/FX/SimpleSampler/SamplerSoundEditor.h"/>
-          <FILE id="bTYyua" name="SimpleSamplerEditor.cpp" compile="1" resource="0"
-                file="Source/FX/SimpleSampler/SimpleSamplerEditor.cpp"/>
-          <FILE id="RCOAwt" name="SimpleSamplerEditor.h" compile="0" resource="0"
-                file="Source/FX/SimpleSampler/SimpleSamplerEditor.h"/>
-          <FILE id="NDuWZ3" name="SimpleSamplerProcessor.cpp" compile="1" resource="0"
-                file="Source/FX/SimpleSampler/SimpleSamplerProcessor.cpp"/>
-          <FILE id="LPnktW" name="SimpleSamplerProcessor.h" compile="0" resource="0"
-                file="Source/FX/SimpleSampler/SimpleSamplerProcessor.h"/>
         </GROUP>
         <GROUP id="{A594AB27-A86E-A115-E651-E3CC62EDB688}" name="SineWaveSynth">
           <FILE id="qiD8bc" name="SineWaveSynth.cpp" compile="1" resource="0"

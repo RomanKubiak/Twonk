@@ -32,7 +32,7 @@
 
   ID:               juce_core
   vendor:           juce
-  version:          5.4.3
+  version:          5.3.2
   name:             JUCE core classes
   description:      The essential set of basic JUCE classes, as required by all the other JUCE modules. Includes text, container, memory, threading and i/o functionality.
   website:          http://www.juce.com/juce
@@ -255,7 +255,6 @@ namespace juce
 #include "maths/juce_StatisticsAccumulator.h"
 #include "containers/juce_ElementComparator.h"
 #include "containers/juce_ArrayAllocationBase.h"
-#include "containers/juce_ArrayBase.h"
 #include "containers/juce_Array.h"
 #include "containers/juce_LinkedListPointer.h"
 #include "containers/juce_ListenerList.h"
@@ -275,13 +274,10 @@ namespace juce
 #include "text/juce_Base64.h"
 #include "misc/juce_Result.h"
 #include "misc/juce_Uuid.h"
-#include "misc/juce_ConsoleApplication.h"
 #include "containers/juce_Variant.h"
 #include "containers/juce_NamedValueSet.h"
 #include "containers/juce_DynamicObject.h"
 #include "containers/juce_HashMap.h"
-#include "system/juce_SystemStats.h"
-#include "memory/juce_HeavyweightLeakedObjectDetector.h"
 #include "time/juce_RelativeTime.h"
 #include "time/juce_Time.h"
 #include "streams/juce_InputStream.h"
@@ -330,6 +326,7 @@ namespace juce
 #include "network/juce_URL.h"
 #include "network/juce_WebInputStream.h"
 #include "streams/juce_URLInputSource.h"
+#include "system/juce_SystemStats.h"
 #include "time/juce_PerformanceCounter.h"
 #include "unit_tests/juce_UnitTest.h"
 #include "xml/juce_XmlDocument.h"

@@ -44,7 +44,7 @@ template <typename FloatType>
 class Bias
 {
 public:
-    Bias() noexcept = default;
+    Bias() noexcept {}
 
     //==============================================================================
     /** Sets the DC bias
@@ -53,7 +53,7 @@ public:
     void setBias (FloatType newBias) noexcept
     {
         jassert (newBias >= static_cast<FloatType> (-1) && newBias <= static_cast<FloatType> (1));
-        bias.setTargetValue (newBias);
+        bias.setValue(newBias);
     }
 
     //==============================================================================
@@ -144,7 +144,7 @@ public:
 
 private:
     //==============================================================================
-    SmoothedValue<FloatType> bias;
+    LinearSmoothedValue<FloatType> bias;
     double sampleRate = 0, rampDurationSeconds = 0;
 
     void updateRamp() noexcept

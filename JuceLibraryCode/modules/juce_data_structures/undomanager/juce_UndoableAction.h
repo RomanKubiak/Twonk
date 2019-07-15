@@ -40,11 +40,11 @@ class JUCE_API  UndoableAction
 {
 protected:
     /** Creates an action. */
-    UndoableAction() = default;
+    UndoableAction() noexcept   {}
 
 public:
     /** Destructor. */
-    virtual ~UndoableAction() = default;
+    virtual ~UndoableAction()   {}
 
     //==============================================================================
     /** Overridden by a subclass to perform the action.

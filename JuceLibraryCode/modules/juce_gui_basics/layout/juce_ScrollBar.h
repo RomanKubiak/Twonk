@@ -61,7 +61,7 @@ public:
     ScrollBar (bool isVertical);
 
     /** Destructor. */
-    ~ScrollBar() override;
+    ~ScrollBar();
 
     //==============================================================================
     /** Returns true if the scrollbar is vertical, false if it's horizontal. */
@@ -305,7 +305,7 @@ public:
     {
     public:
         /** Destructor. */
-        virtual ~Listener() = default;
+        virtual ~Listener() {}
 
         /** Called when a ScrollBar is moved.
 
@@ -328,7 +328,7 @@ public:
     */
     struct JUCE_API  LookAndFeelMethods
     {
-        virtual ~LookAndFeelMethods() = default;
+        virtual ~LookAndFeelMethods() {}
 
         virtual bool areScrollbarButtonsVisible() = 0;
 

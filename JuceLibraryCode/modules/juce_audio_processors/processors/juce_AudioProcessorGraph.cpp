@@ -191,13 +191,13 @@ private:
     {
         struct LambdaOp  : public RenderingOp
         {
-            LambdaOp (LambdaType&& f) : function (std::move (f)) {}
+            LambdaOp (LambdaType&& f) : function (static_cast<LambdaType&&> (f)) {}
             void perform (const Context& c) override    { function (c); }
 
             LambdaType function;
         };
 
-        renderOps.add (new LambdaOp (std::move (fn)));
+        renderOps.add (new LambdaOp (static_cast<LambdaType&&> (fn)));
     }
 
     //==============================================================================
@@ -893,8 +893,6 @@ void AudioProcessorGraph::topologyChanged()
 
 void AudioProcessorGraph::clear()
 {
-    const ScopedLock sl (getCallbackLock());
-
     if (nodes.isEmpty())
         return;
 
@@ -1241,15 +1239,16 @@ void AudioProcessorGraph::handleAsyncUpdate()
 }
 
 //==============================================================================
-void AudioProcessorGraph::prepareToPlay (double sampleRate, int estimatedSamplesPerBlock)
+void AudioProcessorGraph::prepareToPlay (double /*sampleRate*/, int estimatedSamplesPerBlock)
 {
-    setRateAndBufferSizeDetails (sampleRate, estimatedSamplesPerBlock);
-    clearRenderingSequence();
+    if (renderSequenceFloat != nullptr)
+        renderSequenceFloat->prepareBuffers (estimatedSamplesPerBlock);
 
-    if (isNonRealtime() && MessageManager::getInstance()->isThisTheMessageThread())
-        handleAsyncUpdate();
-    else
-        triggerAsyncUpdate();
+    if (renderSequenceDouble != nullptr)
+        renderSequenceDouble->prepareBuffers (estimatedSamplesPerBlock);
+
+    clearRenderingSequence();
+    triggerAsyncUpdate();
 }
 
 bool AudioProcessorGraph::supportsDoublePrecisionProcessing() const
@@ -1259,8 +1258,6 @@ bool AudioProcessorGraph::supportsDoublePrecisionProcessing() const
 
 void AudioProcessorGraph::releaseResources()
 {
-    const ScopedLock sl (getCallbackLock());
-
     isPrepared = 0;
 
     for (auto* n : nodes)

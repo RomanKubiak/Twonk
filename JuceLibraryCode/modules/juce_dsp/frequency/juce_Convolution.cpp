@@ -61,7 +61,7 @@ struct ConvolutionEngine
 
         bool wantsStereo = true;
         bool wantsTrimming = true;
-        bool wantsNormalisation = true;
+        bool wantsNormalization = true;
         int64 wantedSize = 0;
         int finalSize = 0;
 
@@ -104,7 +104,6 @@ struct ConvolutionEngine
 
         buffersInputSegments.clear();
         buffersImpulseSegments.clear();
-        bufferOutput.clear();
 
         for (size_t i = 0; i < numInputSegments; ++i)
         {
@@ -345,7 +344,7 @@ struct Convolution::Pimpl  : private Thread
         changeImpulseResponseSize,
         changeStereo,
         changeTrimming,
-        changeNormalisation,
+        changeNormalization,
         changeIgnore,
         numChangeRequestTypes
     };
@@ -395,10 +394,6 @@ struct Convolution::Pimpl  : private Thread
         int start1, size1, start2, size2;
         abstractFifo.prepareToWrite (1, start1, size1, start2, size2);
 
-        // If you hit this assertion then you have requested more impulse response
-        // changes than the Convolution class can handle.
-        jassert (size1 + size2 > 0);
-
         if (size1 > 0)
         {
             fifoRequestsType.setUnchecked (start1, type);
@@ -419,10 +414,6 @@ struct Convolution::Pimpl  : private Thread
     {
         int start1, size1, start2, size2;
         abstractFifo.prepareToWrite (numEntries, start1, size1, start2, size2);
-
-        // If you hit this assertion then you have requested more impulse response
-        // changes than the Convolution class can handle.
-        jassert (numEntries > 0 && size1 + size2 > 0);
 
         if (size1 > 0)
         {
@@ -445,7 +436,7 @@ struct Convolution::Pimpl  : private Thread
         abstractFifo.finishedWrite (size1 + size2);
     }
 
-    /** Reads requests from the fifo. */
+    /** Reads requests from the fifo */
     void readFromFifo (ChangeRequest& type, juce::var& parameter)
     {
         int start1, size1, start2, size2;
@@ -466,7 +457,7 @@ struct Convolution::Pimpl  : private Thread
         abstractFifo.finishedRead (size1 + size2);
     }
 
-    /** Returns the number of requests that still need to be processed. */
+    /** Returns the number of requests that still need to be processed */
     int getNumRemainingEntries() const noexcept
     {
         return abstractFifo.getNumReady();
@@ -487,7 +478,7 @@ struct Convolution::Pimpl  : private Thread
         auto numRequests = 0;
 
         // retrieve the information from the FIFO for processing
-        while (getNumRemainingEntries() > 0 && numRequests < fifoSize)
+        while (getNumRemainingEntries() > 0)
         {
             ChangeRequest type = ChangeRequest::changeEngine;
             juce::var parameter;
@@ -632,14 +623,14 @@ struct Convolution::Pimpl  : private Thread
                 }
                 break;
 
-                case ChangeRequest::changeNormalisation:
+                case ChangeRequest::changeNormalization:
                 {
-                    bool newWantsNormalisation = requestsParameter[n];
+                    bool newWantsNormalization = requestsParameter[n];
 
-                    if (currentInfo.wantsNormalisation != newWantsNormalisation)
+                    if (currentInfo.wantsNormalization != newWantsNormalization)
                         changeLevel = jmax (1, changeLevel);
 
-                    currentInfo.wantsNormalisation = newWantsNormalisation;
+                    currentInfo.wantsNormalization = newWantsNormalization;
                 }
                 break;
 
@@ -709,10 +700,6 @@ struct Convolution::Pimpl  : private Thread
     {
         for (auto* e : engines)
             e->reset();
-
-        mustInterpolate = false;
-
-        processFifo();
     }
 
     /** Convolution processing handling interpolation between previous and new states
@@ -826,16 +813,16 @@ private:
         if (isThreadRunning() && threadShouldExit())
             return;
 
-        if (currentInfo.wantsNormalisation)
+        if (currentInfo.wantsNormalization)
         {
             if (currentInfo.originalNumChannels > 1)
             {
-                normaliseImpulseResponse (currentInfo.buffer->getWritePointer (0), (int) currentInfo.finalSize, 1.0);
-                normaliseImpulseResponse (currentInfo.buffer->getWritePointer (1), (int) currentInfo.finalSize, 1.0);
+                normalizeImpulseResponse (currentInfo.buffer->getWritePointer (0), (int) currentInfo.finalSize, 1.0);
+                normalizeImpulseResponse (currentInfo.buffer->getWritePointer (1), (int) currentInfo.finalSize, 1.0);
             }
             else
             {
-                normaliseImpulseResponse (currentInfo.buffer->getWritePointer (0), (int) currentInfo.finalSize, 1.0);
+                normalizeImpulseResponse (currentInfo.buffer->getWritePointer (0), (int) currentInfo.finalSize, 1.0);
             }
         }
 
@@ -963,8 +950,8 @@ private:
             impulseResponse.copyFrom (1, 0, impulseResponse, 0, 0, (int) currentInfo.finalSize);
     }
 
-    /** Normalisation of the impulse response based on its energy. */
-    void normaliseImpulseResponse (float* samples, int numSamples, double factorResampling) const
+    /** Normalization of the impulse response based on its energy. */
+    void normalizeImpulseResponse (float* samples, int numSamples, double factorResampling) const
     {
         auto magnitude = 0.0f;
 
@@ -1006,13 +993,13 @@ private:
 
             for (auto i = 0; i < 2; ++i)
             {
-                changeVolumes[i].setTargetValue (1.0f);
+                changeVolumes[i].setValue (1.0f);
                 changeVolumes[i].reset (currentInfo.sampleRate, 0.05);
-                changeVolumes[i].setTargetValue (0.0f);
+                changeVolumes[i].setValue (0.0f);
 
-                changeVolumes[i + 2].setTargetValue (0.0f);
+                changeVolumes[i + 2].setValue (0.0f);
                 changeVolumes[i + 2].reset (currentInfo.sampleRate, 0.05);
-                changeVolumes[i + 2].setTargetValue (1.0f);
+                changeVolumes[i + 2].setValue (1.0f);
 
             }
 
@@ -1022,7 +1009,7 @@ private:
 
 
     //==============================================================================
-    static constexpr int fifoSize = 1024;           // the size of the fifo which handles all the change requests
+    static constexpr int fifoSize = 256;            // the size of the fifo which handles all the change requests
     AbstractFifo abstractFifo;                      // the abstract fifo
 
     Array<ChangeRequest> fifoRequestsType;          // an array of ChangeRequest
@@ -1040,13 +1027,13 @@ private:
     SpinLock processLock;                           // a necessary lock to use with this temporary buffer
 
     AudioBuffer<float> impulseResponseOriginal;     // a buffer with the original impulse response
-    AudioBuffer<float> impulseResponse;             // a buffer with the impulse response trimmed, resampled, resized and normalised
+    AudioBuffer<float> impulseResponse;             // a buffer with the impulse response trimmed, resampled, resized and normalized
 
     //==============================================================================
     OwnedArray<ConvolutionEngine> engines;          // the 4 convolution engines being used
 
     AudioBuffer<float> interpolationBuffer;         // a buffer to do the interpolation between the convolution engines 0-1 and 2-3
-    LogRampedValue<float> changeVolumes[4];         // the volumes for each convolution engine during interpolation
+    LinearSmoothedValue<float> changeVolumes[4];    // the volumes for each convolution engine during interpolation
 
     bool mustInterpolate = false;                   // tells if the convolution engines outputs must be currently interpolated
 
@@ -1068,7 +1055,7 @@ Convolution::~Convolution()
 
 void Convolution::loadImpulseResponse (const void* sourceData, size_t sourceDataSize,
                                        bool wantsStereo, bool wantsTrimming, size_t size,
-                                       bool wantsNormalisation)
+                                       bool wantsNormalization)
 {
     if (sourceData == nullptr)
         return;
@@ -1080,7 +1067,7 @@ void Convolution::loadImpulseResponse (const void* sourceData, size_t sourceData
                                      Pimpl::ChangeRequest::changeImpulseResponseSize,
                                      Pimpl::ChangeRequest::changeStereo,
                                      Pimpl::ChangeRequest::changeTrimming,
-                                     Pimpl::ChangeRequest::changeNormalisation };
+                                     Pimpl::ChangeRequest::changeNormalization };
 
     Array<juce::var> sourceParameter;
 
@@ -1091,13 +1078,13 @@ void Convolution::loadImpulseResponse (const void* sourceData, size_t sourceData
                                juce::var (static_cast<int64> (wantedSize)),
                                juce::var (wantsStereo),
                                juce::var (wantsTrimming),
-                               juce::var (wantsNormalisation) };
+                               juce::var (wantsNormalization) };
 
     pimpl->addToFifo (types, parameters, 5);
 }
 
 void Convolution::loadImpulseResponse (const File& fileImpulseResponse, bool wantsStereo,
-                                       bool wantsTrimming, size_t size, bool wantsNormalisation)
+                                       bool wantsTrimming, size_t size, bool wantsNormalization)
 {
     if (! fileImpulseResponse.existsAsFile())
         return;
@@ -1109,7 +1096,7 @@ void Convolution::loadImpulseResponse (const File& fileImpulseResponse, bool wan
                                      Pimpl::ChangeRequest::changeImpulseResponseSize,
                                      Pimpl::ChangeRequest::changeStereo,
                                      Pimpl::ChangeRequest::changeTrimming,
-                                     Pimpl::ChangeRequest::changeNormalisation };
+                                     Pimpl::ChangeRequest::changeNormalization };
 
     Array<juce::var> sourceParameter;
 
@@ -1120,20 +1107,20 @@ void Convolution::loadImpulseResponse (const File& fileImpulseResponse, bool wan
                                juce::var (static_cast<int64> (wantedSize)),
                                juce::var (wantsStereo),
                                juce::var (wantsTrimming),
-                               juce::var (wantsNormalisation) };
+                               juce::var (wantsNormalization) };
 
     pimpl->addToFifo (types, parameters, 5);
 }
 
 void Convolution::copyAndLoadImpulseResponseFromBuffer (AudioBuffer<float>& buffer,
-                                                        double bufferSampleRate, bool wantsStereo, bool wantsTrimming, bool wantsNormalisation, size_t size)
+                                                        double bufferSampleRate, bool wantsStereo, bool wantsTrimming, bool wantsNormalization, size_t size)
 {
     copyAndLoadImpulseResponseFromBlock (AudioBlock<float> (buffer), bufferSampleRate,
-        wantsStereo, wantsTrimming, wantsNormalisation, size);
+        wantsStereo, wantsTrimming, wantsNormalization, size);
 }
 
 void Convolution::copyAndLoadImpulseResponseFromBlock (AudioBlock<float> block, double bufferSampleRate,
-                                                       bool wantsStereo, bool wantsTrimming, bool wantsNormalisation, size_t size)
+                                                       bool wantsStereo, bool wantsTrimming, bool wantsNormalization, size_t size)
 {
     jassert (bufferSampleRate > 0);
 
@@ -1149,7 +1136,7 @@ void Convolution::copyAndLoadImpulseResponseFromBlock (AudioBlock<float> block, 
                                      Pimpl::ChangeRequest::changeImpulseResponseSize,
                                      Pimpl::ChangeRequest::changeStereo,
                                      Pimpl::ChangeRequest::changeTrimming,
-                                     Pimpl::ChangeRequest::changeNormalisation };
+                                     Pimpl::ChangeRequest::changeNormalization };
 
     Array<juce::var> sourceParameter;
     sourceParameter.add (juce::var ((int) ConvolutionEngine::ProcessingInformation::SourceType::sourceAudioBuffer));
@@ -1159,7 +1146,7 @@ void Convolution::copyAndLoadImpulseResponseFromBlock (AudioBlock<float> block, 
                                juce::var (static_cast<int64> (wantedSize)),
                                juce::var (wantsStereo),
                                juce::var (wantsTrimming),
-                               juce::var (wantsNormalisation) };
+                               juce::var (wantsNormalization) };
 
     pimpl->addToFifo (types, parameters, 5);
 }
@@ -1235,13 +1222,13 @@ void Convolution::processSamples (const AudioBlock<float>& input, AudioBlock<flo
 
             for (size_t channel = 0; channel < numChannels; ++channel)
             {
-                volumeDry[channel].setTargetValue (isBypassed ? 0.0f : 1.0f);
+                volumeDry[channel].setValue (isBypassed ? 0.0f : 1.0f);
                 volumeDry[channel].reset (sampleRate, 0.05);
-                volumeDry[channel].setTargetValue (isBypassed ? 1.0f : 0.0f);
+                volumeDry[channel].setValue (isBypassed ? 1.0f : 0.0f);
 
-                volumeWet[channel].setTargetValue (isBypassed ? 1.0f : 0.0f);
+                volumeWet[channel].setValue (isBypassed ? 1.0f : 0.0f);
                 volumeWet[channel].reset (sampleRate, 0.05);
-                volumeWet[channel].setTargetValue (isBypassed ? 0.0f : 1.0f);
+                volumeWet[channel].setValue (isBypassed ? 0.0f : 1.0f);
             }
         }
     }

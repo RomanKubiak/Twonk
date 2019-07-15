@@ -33,12 +33,12 @@ StringArray::StringArray (const StringArray& other)
 }
 
 StringArray::StringArray (StringArray&& other) noexcept
-    : strings (std::move (other.strings))
+    : strings (static_cast<Array<String>&&> (other.strings))
 {
 }
 
 StringArray::StringArray (Array<String>&& other) noexcept
-    : strings (std::move (other))
+    : strings (static_cast<Array<String>&&> (other))
 {
 }
 
@@ -85,7 +85,7 @@ StringArray& StringArray::operator= (const StringArray& other)
 
 StringArray& StringArray::operator= (StringArray&& other) noexcept
 {
-    strings = std::move (other.strings);
+    strings = static_cast<Array<String>&&> (other.strings);
     return *this;
 }
 
@@ -132,18 +132,19 @@ String& StringArray::getReference (int index) noexcept
     return strings.getReference (index);
 }
 
-void StringArray::add (String newString)
+void StringArray::add (const String& newString)
 {
-    // NB: the local temp copy is to avoid a dangling pointer if the
-    // argument being passed-in is a reference into this array.
-    strings.add (std::move (newString));
+    strings.add (newString);
 }
 
-void StringArray::insert (int index, String newString)
+void StringArray::add (String&& stringToAdd)
 {
-    // NB: the local temp copy is to avoid a dangling pointer if the
-    // argument being passed-in is a reference into this array.
-    strings.insert (index, std::move (newString));
+    strings.add (static_cast<String&&> (stringToAdd));
+}
+
+void StringArray::insert (int index, const String& newString)
+{
+    strings.insert (index, newString);
 }
 
 bool StringArray::addIfNotAlreadyThere (const String& newString, bool ignoreCase)
@@ -157,8 +158,6 @@ bool StringArray::addIfNotAlreadyThere (const String& newString, bool ignoreCase
 
 void StringArray::addArray (const StringArray& otherArray, int startIndex, int numElementsToAdd)
 {
-    jassert (this != &otherArray); // can't add from our own elements!
-
     if (startIndex < 0)
     {
         jassertfalse;
@@ -174,15 +173,13 @@ void StringArray::addArray (const StringArray& otherArray, int startIndex, int n
 
 void StringArray::mergeArray (const StringArray& otherArray, bool ignoreCase)
 {
-    jassert (this != &otherArray); // can't add from our own elements!
-
     for (auto& s : otherArray)
         addIfNotAlreadyThere (s, ignoreCase);
 }
 
-void StringArray::set (int index, String newString)
+void StringArray::set (int index, const String& newString)
 {
-    strings.set (index, std::move (newString));
+    strings.set (index, newString);
 }
 
 bool StringArray::contains (StringRef stringToLookFor, bool ignoreCase) const

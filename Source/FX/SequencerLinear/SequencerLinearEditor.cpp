@@ -223,11 +223,11 @@ void SequencerLinearEditor::timerCallback()
 	auto quarterNotes = pos.ppqPosition;
 	auto quarterNotesPerBar = (pos.timeSigNumerator * 4 / pos.timeSigDenominator);
 	auto beats = (fmod (quarterNotes, quarterNotesPerBar) / quarterNotesPerBar) * pos.timeSigNumerator;
-
+	auto eighthNotes = (int)(fmod (beats, 1.0));
 	auto bar = ((int)quarterNotes) / quarterNotesPerBar;
 	auto beat = ((int)beats);
 	auto ticks = ((int)(fmod (beats, 1.0) * 960.0 + 0.5));
-	positionLabel->setText(String::formatted("%02d:%02d:%f:%03d", bar, beat, pos.ppqPosition / quarterNotesPerBar, ticks), dontSendNotification);
+	positionLabel->setText(String::formatted("%02f:%02f", bar, beat), dontSendNotification);
 	if (beat != previousBeat)
 	{
 		// increment one beat

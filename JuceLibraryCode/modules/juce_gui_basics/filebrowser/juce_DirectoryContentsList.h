@@ -66,7 +66,7 @@ public:
                            TimeSliceThread& threadToUse);
 
     /** Destructor. */
-    ~DirectoryContentsList() override;
+    ~DirectoryContentsList();
 
 
     //==============================================================================
@@ -201,17 +201,15 @@ public:
 
 private:
     File root;
-    const FileFilter* fileFilter = nullptr;
+    const FileFilter* fileFilter;
     TimeSliceThread& thread;
-    int fileTypeFlags = File::ignoreHiddenFiles | File::findFiles;
+    int fileTypeFlags;
 
     CriticalSection fileListLock;
     OwnedArray<FileInfo> files;
 
     std::unique_ptr<DirectoryIterator> fileFindHandle;
     std::atomic<bool> shouldStop { true };
-
-    bool wasEmpty = true;
 
     int useTimeSlice() override;
     void stopSearching();

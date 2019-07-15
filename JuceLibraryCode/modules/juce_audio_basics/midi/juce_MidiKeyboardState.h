@@ -38,8 +38,8 @@ class JUCE_API  MidiKeyboardStateListener
 {
 public:
     //==============================================================================
-    MidiKeyboardStateListener() = default;
-    virtual ~MidiKeyboardStateListener() = default;
+    MidiKeyboardStateListener() noexcept        {}
+    virtual ~MidiKeyboardStateListener()        {}
 
     //==============================================================================
     /** Called when one of the MidiKeyboardState's keys is pressed.
