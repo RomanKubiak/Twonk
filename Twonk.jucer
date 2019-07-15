@@ -195,12 +195,14 @@
                 file="Source/FX/SequencerLinear/SequencerLinearProcessor.h"/>
         </GROUP>
         <GROUP id="{1AD867F2-544A-C89A-BF57-3A924566D7B0}" name="SFZ">
+          <GROUP id="{BE3691EB-E0DC-B47E-A964-369C3699B267}" name="SFZero">
+            <FILE id="St2DJH" name="SFZero.cpp" compile="1" resource="0" file="Source/FX/SFZ/SFZero/SFZero.cpp"/>
+            <FILE id="ANbvU9" name="SFZero.h" compile="0" resource="0" file="Source/FX/SFZ/SFZero/SFZero.h"/>
+          </GROUP>
           <FILE id="nvgYho" name="ClickableLabel.cpp" compile="1" resource="0"
                 file="Source/FX/SFZ/ClickableLabel.cpp"/>
           <FILE id="R1MA8D" name="ClickableLabel.h" compile="0" resource="0"
                 file="Source/FX/SFZ/ClickableLabel.h"/>
-          <FILE id="QVESWp" name="SFZero.cpp" compile="1" resource="0" file="Source/FX/SFZ/SFZero/SFZero.cpp"/>
-          <FILE id="sTXMqP" name="SFZero.h" compile="0" resource="0" file="Source/FX/SFZ/SFZero/SFZero.h"/>
           <FILE id="Mcs6uc" name="SFZeroAudioProcessor.cpp" compile="1" resource="0"
                 file="Source/FX/SFZ/SFZeroAudioProcessor.cpp"/>
           <FILE id="q7iI17" name="SFZeroAudioProcessor.h" compile="0" resource="0"

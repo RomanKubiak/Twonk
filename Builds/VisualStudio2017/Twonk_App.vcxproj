@@ -171,8 +171,8 @@
     <ClCompile Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\SequencerLinear\SequencerLinearEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\SequencerLinear\SequencerLinearProcessor.cpp"/>
-    <ClCompile Include="..\..\Source\FX\SFZ\ClickableLabel.cpp"/>
     <ClCompile Include="..\..\Source\FX\SFZ\SFZero\SFZero.cpp"/>
+    <ClCompile Include="..\..\Source\FX\SFZ\ClickableLabel.cpp"/>
     <ClCompile Include="..\..\Source\FX\SFZ\SFZeroAudioProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\SFZ\SFZeroEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.cpp"/>
@@ -1965,8 +1965,8 @@
     <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\SequencerLinear\SequencerLinearEditor.h"/>
     <ClInclude Include="..\..\Source\FX\SequencerLinear\SequencerLinearProcessor.h"/>
-    <ClInclude Include="..\..\Source\FX\SFZ\ClickableLabel.h"/>
     <ClInclude Include="..\..\Source\FX\SFZ\SFZero\SFZero.h"/>
+    <ClInclude Include="..\..\Source\FX\SFZ\ClickableLabel.h"/>
     <ClInclude Include="..\..\Source\FX\SFZ\SFZeroAudioProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\SFZ\SFZeroEditor.h"/>
     <ClInclude Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.h"/>
