@@ -89,6 +89,10 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkRWProcessor_596b491c.o \
   $(JUCE_OBJDIR)/SequencerLinearEditor_86a75e96.o \
   $(JUCE_OBJDIR)/SequencerLinearProcessor_b288b8d3.o \
+  $(JUCE_OBJDIR)/ClickableLabel_9159dc58.o \
+  $(JUCE_OBJDIR)/SFZero_844de053.o \
+  $(JUCE_OBJDIR)/SFZeroAudioProcessor_d66bcd9d.o \
+  $(JUCE_OBJDIR)/SFZeroEditor_c14f092e.o \
   $(JUCE_OBJDIR)/SamplerSoundEditor_1476a24b.o \
   $(JUCE_OBJDIR)/SimpleSamplerEditor_8fe5c516.o \
   $(JUCE_OBJDIR)/SimpleSamplerProcessor_6722c253.o \
@@ -244,6 +248,26 @@ $(JUCE_OBJDIR)/SequencerLinearEditor_86a75e96.o: ../../Source/FX/SequencerLinear
 $(JUCE_OBJDIR)/SequencerLinearProcessor_b288b8d3.o: ../../Source/FX/SequencerLinear/SequencerLinearProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling SequencerLinearProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/ClickableLabel_9159dc58.o: ../../Source/FX/SFZ/ClickableLabel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ClickableLabel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SFZero_844de053.o: ../../Source/FX/SFZ/SFZero/SFZero.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SFZero.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SFZeroAudioProcessor_d66bcd9d.o: ../../Source/FX/SFZ/SFZeroAudioProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SFZeroAudioProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SFZeroEditor_c14f092e.o: ../../Source/FX/SFZ/SFZeroEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SFZeroEditor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/SamplerSoundEditor_1476a24b.o: ../../Source/FX/SimpleSampler/SamplerSoundEditor.cpp

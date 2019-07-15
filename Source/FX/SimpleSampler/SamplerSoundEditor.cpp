@@ -148,11 +148,6 @@ void SamplerSoundEditor::buttonClicked (Button* buttonThatWasClicked)
 			Colours::lightgrey);
 		if (dialogBox.show())
 		{
-			File selectedFile = browser.getSelectedFile (0);
-			if (selectedFile.existsAsFile())
-			{
-				p.setFileForSound(index - 1, selectedFile);
-			}
 		}
         //[/UserButtonCode_textButton]
     }

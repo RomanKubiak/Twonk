@@ -35,6 +35,9 @@
     <Filter Include="Twonk\Source\FX\SequencerLinear">
       <UniqueIdentifier>{E8F4A566-A874-FC8F-90EA-604288A236AD}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Twonk\Source\FX\SFZ">
+      <UniqueIdentifier>{C16F7C68-42D6-3033-A2E3-CF34FC7FBD69}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Twonk\Source\FX\SimpleSampler">
       <UniqueIdentifier>{430529DF-52FC-988A-5B64-AF9EE3900007}</UniqueIdentifier>
     </Filter>
@@ -534,6 +537,18 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\SequencerLinear\SequencerLinearProcessor.cpp">
       <Filter>Twonk\Source\FX\SequencerLinear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\SFZ\ClickableLabel.cpp">
+      <Filter>Twonk\Source\FX\SFZ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\SFZ\SFZero\SFZero.cpp">
+      <Filter>Twonk\Source\FX\SFZ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\SFZ\SFZeroAudioProcessor.cpp">
+      <Filter>Twonk\Source\FX\SFZ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\SFZ\SFZeroEditor.cpp">
+      <Filter>Twonk\Source\FX\SFZ</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\SimpleSampler\SamplerSoundEditor.cpp">
       <Filter>Twonk\Source\FX\SimpleSampler</Filter>
@@ -2603,6 +2618,18 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\SequencerLinear\SequencerLinearProcessor.h">
       <Filter>Twonk\Source\FX\SequencerLinear</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\SFZ\ClickableLabel.h">
+      <Filter>Twonk\Source\FX\SFZ</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\SFZ\SFZero\SFZero.h">
+      <Filter>Twonk\Source\FX\SFZ</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\SFZ\SFZeroAudioProcessor.h">
+      <Filter>Twonk\Source\FX\SFZ</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\SFZ\SFZeroEditor.h">
+      <Filter>Twonk\Source\FX\SFZ</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\SimpleSampler\SamplerSoundEditor.h">
       <Filter>Twonk\Source\FX\SimpleSampler</Filter>

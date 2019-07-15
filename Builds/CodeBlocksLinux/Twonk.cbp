@@ -372,6 +372,46 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/FX/SFZ/ClickableLabel.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SFZ/ClickableLabel.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SFZ/SFZero/SFZero.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SFZ/SFZero/SFZero.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SFZ/SFZeroAudioProcessor.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SFZ/SFZeroAudioProcessor.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SFZ/SFZeroEditor.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/SFZ/SFZeroEditor.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/FX/SimpleSampler/SamplerSoundEditor.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
