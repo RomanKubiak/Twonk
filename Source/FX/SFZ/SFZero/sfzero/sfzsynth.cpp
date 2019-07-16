@@ -21,8 +21,7 @@ void sfzero::Synth::noteOn(int midiChannel, int midiNoteNumber, float velocity)
   // First, stop any currently-playing sounds in the group.
   //*** Currently, this only pays attention to the first matching region.
   int group = 0;
-  juce::SynthesiserSound::Ptr p = getSound(0);
-  sfzero::Sound *sound = dynamic_cast<sfzero::Sound *>(p.get());
+  sfzero::Sound *sound = dynamic_cast<sfzero::Sound *>(getSound(0));
 
   if (sound)
   {
@@ -108,7 +107,7 @@ void sfzero::Synth::noteOff(int midiChannel, int midiNoteNumber, float velocity,
   Synthesiser::noteOff(midiChannel, midiNoteNumber, velocity, allowTailOff);
 
   // Start release region.
-  sfzero::Sound *sound = dynamic_cast<sfzero::Sound *>(getSound(0).get());
+  sfzero::Sound *sound = dynamic_cast<sfzero::Sound *>(getSound(0));
   if (sound)
   {
     sfzero::Region *region = sound->getRegionFor(midiNoteNumber, noteVelocities_[midiNoteNumber], sfzero::Region::release);
