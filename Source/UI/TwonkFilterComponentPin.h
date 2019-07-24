@@ -11,9 +11,8 @@
 #pragma once
 #include "../Filters/FilterGraph.h"
 #include "GraphEditorPanel.h"
-#include "TwonkBubbleNodeComponent.h"
 
-class TwonkFilterComponentPin : public TwonkBubbleNodeComponent, public SettableTooltipClient
+class TwonkFilterComponentPin : public Component, public SettableTooltipClient
 {
 	public:
 		TwonkFilterComponentPin (GraphEditorPanel& p, AudioProcessorGraph::NodeAndChannel pinToUse, bool isIn);
@@ -21,11 +20,13 @@ class TwonkFilterComponentPin : public TwonkBubbleNodeComponent, public Settable
 		void mouseDown (const MouseEvent& e) override;
 		void mouseDrag (const MouseEvent& e) override;
 		void mouseUp (const MouseEvent& e) override;
+		void paint(Graphics &g);
 		GraphEditorPanel& panel;
 		FilterGraph& graph;
 		AudioProcessorGraph::NodeAndChannel pin;
 		const bool isInput;
 		int busIdx = 0;
+		Colour currentColour;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkFilterComponentPin)
 };

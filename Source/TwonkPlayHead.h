@@ -9,9 +9,10 @@
 */
 
 #pragma once
+#include "Twonk.h"
 #include "Filters/FilterGraph.h"
 #include "Filters/InternalFilters.h"
-#define DEFAULT_PPQN 960.0
+
 
 class TwonkClockListener
 {

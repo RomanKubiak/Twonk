@@ -98,8 +98,6 @@ private:
     std::unique_ptr<Slider> tempoSlider;
     std::unique_ptr<Label> timeLabel;
     std::unique_ptr<Slider> clockPositionIndicator;
-    std::unique_ptr<Slider> loopLengthSlider;
-    std::unique_ptr<Slider> loopPositionIndicator;
 
 
     //==============================================================================

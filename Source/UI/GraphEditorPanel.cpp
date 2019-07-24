@@ -35,7 +35,7 @@
 GraphEditorPanel::GraphEditorPanel (FilterGraph& g)  : graph (g)
 {
     graph.addChangeListener (this);
-    setOpaque (true);
+    setOpaque (false);
 }
 
 GraphEditorPanel::~GraphEditorPanel()
@@ -48,7 +48,7 @@ GraphEditorPanel::~GraphEditorPanel()
 
 void GraphEditorPanel::paint (Graphics& g)
 {
-	g.fillAll(Colour (0xff464646));
+	g.fillAll(Colours::transparentBlack);
 }
 
 void GraphEditorPanel::mouseDown (const MouseEvent& e)
@@ -82,6 +82,7 @@ void GraphEditorPanel::mouseDrag (const MouseEvent& e)
 {
     if (isOnTouchDevice() && e.getDistanceFromDragStart() > 5)
         stopTimer();
+
 }
 
 void GraphEditorPanel::createNewPlugin (const PluginDescription& desc, Point<int> position)

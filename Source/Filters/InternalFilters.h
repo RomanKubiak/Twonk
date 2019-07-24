@@ -116,6 +116,7 @@ public:
 
 		return descr;
 	}
+
 private:
 	static BusesProperties getBusProperties (bool registerAsGenerator,
 		const AudioChannelSet& channelSetToUse)

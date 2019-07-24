@@ -87,6 +87,7 @@ GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm, Au
 		twonkPlayHead(_twonkPlayHead)
 {
 	init();
+	bg = ImageCache::getFromMemory(BinaryData::hexagon_png, BinaryData::hexagon_pngSize);
 
 	deviceManager.addChangeListener (graphPanel.get());
 	deviceManager.addAudioCallback (&graphPlayer);
@@ -158,7 +159,7 @@ void GraphDocumentComponent::resized()
 {
 	auto r = getLocalBounds();
 	const int titleBarHeight = TITLEBAR_HEIGHT;
-	const int keysHeight = keyboardComp->isVisible() ? 100 : 0;
+	const int keysHeight = keyboardComp->isVisible() ? MIDI_KEYBOARD_HEIGHT : 0;
 
 	if (isOnTouchDevice())
 		titleBarComponent->setBounds (r.removeFromTop(titleBarHeight));
@@ -281,4 +282,9 @@ void GraphDocumentComponent::setTempo(const double bpm)
 void GraphDocumentComponent::setLoopLength(const int _loopLength)
 {
 	twonkPlayHead.setLoopLength(_loopLength);
+}
+
+void GraphDocumentComponent::paint (Graphics& g)
+{
+	g.drawImageWithin(bg, 0, 0, getWidth(), getHeight(), RectanglePlacement::fillDestination, false);
 }

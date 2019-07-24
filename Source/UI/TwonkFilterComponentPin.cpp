@@ -9,12 +9,12 @@
 */
 
 #include "TwonkFilterComponentPin.h"
-
+#include "Twonk.h"
 //==============================================================================
 TwonkFilterComponentPin::TwonkFilterComponentPin (GraphEditorPanel& p, AudioProcessorGraph::NodeAndChannel pinToUse, bool isIn)
 	: panel (p), graph (p.graph), pin (pinToUse), isInput (isIn)
 {
-	pin.isMIDI() ? setFillColour(Colours::red) : setFillColour(Colours::green);
+	pin.isMIDI() ? currentColour = Colours::red : currentColour = Colours::green;
 
 	if (auto node = graph.graph.getNodeForId (pin.nodeID))
 	{
@@ -39,24 +39,19 @@ TwonkFilterComponentPin::TwonkFilterComponentPin (GraphEditorPanel& p, AudioProc
 
 		setTooltip (tip);
 	}
-
+	setComponentEffect(nullptr);
 	setSize (24, 24);
 }
 
-/*void TwonkFilterComponentPin::paint (Graphics& g)
+void TwonkFilterComponentPin::paint (Graphics& g)
 {
-	auto w = (float)getWidth();
-	auto h = (float)getHeight();
-
-	Path p;
-	p.addEllipse (w * 0.25f, h * 0.25f, w * 0.5f, h * 0.5f);
-	p.addRectangle (w * 0.4f, isInput ? (0.5f * h) : 0.0f, w * 0.2f, h * 0.5f);
-
-	auto colour = (pin.isMIDI() ? Colours::red : Colours::green);
-
-	g.setColour (colour.withRotatedHue (busIdx / 5.0f));
-	g.fillPath (p);
-}*/
+	Path hexagon;
+	hexagon.addPolygon(getLocalBounds().getCentre().toFloat(), 6, getWidth() * 0.45f, float_Pi*0.5f);
+	g.setColour(currentColour.withAlpha(0.06f));
+	g.fillPath(hexagon);
+	g.setColour(currentColour);
+	g.strokePath(hexagon, PathStrokeType(NODE_SIZE * 0.2f));
+}
 
 void TwonkFilterComponentPin::mouseDown (const MouseEvent& e)
 {

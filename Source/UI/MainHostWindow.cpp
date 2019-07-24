@@ -90,7 +90,7 @@ MainHostWindow::MainHostWindow(bool _fullscreen, bool _opengl)
    {
 	   setResizable (true, false);
 	   setResizeLimits (500, 400, 10000, 10000);
-	   centreWithSize (600, 1024);
+	   centreWithSize (1024, 600);
    }
 	deviceManager.initialise(2, 2, getAppProperties().getUserSettings()->getXmlValue("audioDeviceState"), true);
     graphHolder.reset (new GraphDocumentComponent (formatManager, deviceManager, knownPluginList, *twonkPlayHead));

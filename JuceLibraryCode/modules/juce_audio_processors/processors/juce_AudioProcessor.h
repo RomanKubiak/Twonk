@@ -412,8 +412,8 @@ public:
             @param currentLayout If non-null, pretend that the current layout of the AudioProcessor is
                                  currentLayout. On exit, currentLayout will be modified to
                                  to represent the buses layouts of the AudioProcessor as if the layout
-                                 of the reciever had been succesfully changed. This is useful as changing
-                                 the layout of the reciever may change the bus layout of other buses.
+                                 of the receiver had been successfully changed. This is useful as changing
+                                 the layout of the receiver may change the bus layout of other buses.
 
             @see AudioChannelSet
         */
@@ -898,7 +898,7 @@ public:
     /** Returns the parameter that controls the AudioProcessor's bypass state.
 
         If this method returns a nullptr then you can still control the bypass by
-        calling processBlockBypassed instaed of processBlock. On the other hand,
+        calling processBlockBypassed instead of processBlock. On the other hand,
         if this method returns a non-null value, you should never call
         processBlockBypassed but use the returned parameter to conrol the bypass
         state instead.
@@ -1205,11 +1205,24 @@ public:
     void updateHostDisplay();
 
     //==============================================================================
-    /** Adds a parameter to the list.
-        The parameter object will be managed and deleted automatically by the list
-        when no longer needed.
+    /** Adds a parameter to the AudioProcessor.
+
+        The parameter object will be managed and deleted automatically by the
+        AudioProcessor when no longer needed.
     */
     void addParameter (AudioProcessorParameter*);
+
+    /** Adds a group of parameters to the AudioProcessor.
+
+        All the parameter objects contained within the group will be managed and
+        deleted automatically by the AudioProcessor when no longer needed.
+
+        @see addParameter
+     */
+    void addParameterGroup (std::unique_ptr<AudioProcessorParameterGroup>);
+
+    /** Returns the group of parameters managed by this AudioProcessor. */
+    const AudioProcessorParameterGroup& getParameterTree();
 
     /** Returns the current list of parameters. */
     const OwnedArray<AudioProcessorParameter>& getParameters() const noexcept;
@@ -1559,7 +1572,7 @@ protected:
 
         When adding a bus, isAddingBuses will be true and the plug-in is
         expected to fill out outNewBusProperties with the properties of the
-        bus which will be created just after the succesful return of this callback.
+        bus which will be created just after the successful return of this callback.
 
         Implementations of AudioProcessor will rarely need to override this
         method. Only override this method if your processor supports adding
@@ -1585,21 +1598,22 @@ protected:
 
 private:
     //==============================================================================
+    void addParameterInternal (AudioProcessorParameter*);
+
+    //==============================================================================
     struct InOutChannelPair
     {
-        int16 inChannels = 0, outChannels = 0;
+        InOutChannelPair() = default;
 
-        InOutChannelPair() noexcept {}
-        InOutChannelPair (const InOutChannelPair& o) noexcept  : inChannels (o.inChannels), outChannels (o.outChannels) {}
         InOutChannelPair (int16 inCh, int16 outCh) noexcept    : inChannels (inCh), outChannels (outCh) {}
         InOutChannelPair (const int16 (&config)[2]) noexcept   : inChannels (config[0]), outChannels (config[1]) {}
-
-        InOutChannelPair& operator= (const InOutChannelPair& o) noexcept    { inChannels = o.inChannels; outChannels = o.outChannels; return *this; }
 
         bool operator== (const InOutChannelPair& other) const noexcept
         {
             return other.inChannels == inChannels && other.outChannels == outChannels;
         }
+
+        int16 inChannels = 0, outChannels = 0;
     };
 
     template <int numLayouts>
@@ -1650,6 +1664,8 @@ private:
     OwnedArray<AudioProcessorParameter> managedParameters;
     AudioProcessorParameter* getParamChecked (int) const noexcept;
 
+    AudioProcessorParameterGroup parameterTree { {}, {}, {} };
+
    #if JUCE_DEBUG && ! JUCE_DISABLE_AUDIOPROCESSOR_BEGIN_END_GESTURE_CHECKING
     BigInteger changingParams;
    #endif
@@ -1673,6 +1689,7 @@ private:
 
     friend class JuceVST3EditController;
     friend class JuceVST3Component;
+    friend class VST3PluginInstance;
     friend class AudioUnitPluginInstance;
     friend class LADSPAPluginInstance;
 

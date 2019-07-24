@@ -133,35 +133,9 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphDocumentComponent &_owner)
 
     clockPositionIndicator->setBounds (400, 24, 96, 8);
 
-    loopLengthSlider.reset (new Slider (String()));
-    addAndMakeVisible (loopLengthSlider.get());
-    loopLengthSlider->setRange (1, 256, 1);
-    loopLengthSlider->setSliderStyle (Slider::LinearHorizontal);
-    loopLengthSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 48, 20);
-    loopLengthSlider->setColour (Slider::thumbColourId, Colour (0xfffa9400));
-    loopLengthSlider->setColour (Slider::textBoxTextColourId, Colours::black);
-    loopLengthSlider->setColour (Slider::textBoxOutlineColourId, Colour (0x00000000));
-    loopLengthSlider->addListener (this);
-
-    loopLengthSlider->setBounds (246, 28, 150, 16);
-
-    loopPositionIndicator.reset (new Slider (String()));
-    addAndMakeVisible (loopPositionIndicator.get());
-    loopPositionIndicator->setRange (1, 24, 1);
-    loopPositionIndicator->setSliderStyle (Slider::LinearBar);
-    loopPositionIndicator->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
-    loopPositionIndicator->setColour (Slider::backgroundColourId, Colour (0xff55cd32));
-    loopPositionIndicator->setColour (Slider::thumbColourId, Colour (0xffc84242));
-    loopPositionIndicator->setColour (Slider::trackColourId, Colour (0xffff4343));
-    loopPositionIndicator->setColour (Slider::rotarySliderFillColourId, Colour (0xff0eb7ff));
-    loopPositionIndicator->addListener (this);
-
-    loopPositionIndicator->setBounds (400, 36, 96, 8);
-
 
     //[UserPreSize]
 	tempoSlider->setValue(60.0);
-	loopLengthSlider->setValue(16);
 	playButton->setClickingTogglesState(true);
 	syncButton->setClickingTogglesState(true);
 	timeLabel->setFont(labelFont);
@@ -190,8 +164,6 @@ TwonkTitleBarComponent::~TwonkTitleBarComponent()
     tempoSlider = nullptr;
     timeLabel = nullptr;
     clockPositionIndicator = nullptr;
-    loopLengthSlider = nullptr;
-    loopPositionIndicator = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -204,32 +176,7 @@ void TwonkTitleBarComponent::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (Colour (0xff323e44));
-
-    {
-        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        Colour fillColour1 = Colours::white, fillColour2 = Colour (0xffbfbfbf);
-        Colour strokeColour1 = Colour (0x00000000), strokeColour2 = Colour (0x80000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       0.0f - 0.0f + x,
-                                       0.0f - 0.0f + y,
-                                       fillColour2,
-                                       0.0f - 0.0f + x,
-                                       static_cast<float> (getHeight()) - 0.0f + y,
-                                       false));
-        g.fillRect (x, y, width, height);
-        g.setGradientFill (ColourGradient (strokeColour1,
-                                       0.0f - 0.0f + x,
-                                       0.0f - 0.0f + y,
-                                       strokeColour2,
-                                       0.0f - 0.0f + x,
-                                       static_cast<float> (getHeight()) - 0.0f + y,
-                                       false));
-        g.drawRect (x, y, width, height, 1);
-
-    }
+    g.fillAll (Colour (0x07ffffff));
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -307,18 +254,6 @@ void TwonkTitleBarComponent::sliderValueChanged (Slider* sliderThatWasMoved)
         //[UserSliderCode_clockPositionIndicator] -- add your slider handling code here..
         //[/UserSliderCode_clockPositionIndicator]
     }
-    else if (sliderThatWasMoved == loopLengthSlider.get())
-    {
-        //[UserSliderCode_loopLengthSlider] -- add your slider handling code here..
-		owner.setLoopLength(loopLengthSlider->getValue());
-		loopPositionIndicator->setRange(24.0, (double)(loopLengthSlider->getValue() * 24.0));
-        //[/UserSliderCode_loopLengthSlider]
-    }
-    else if (sliderThatWasMoved == loopPositionIndicator.get())
-    {
-        //[UserSliderCode_loopPositionIndicator] -- add your slider handling code here..
-        //[/UserSliderCode_loopPositionIndicator]
-    }
 
     //[UsersliderValueChanged_Post]
     //[/UsersliderValueChanged_Post]
@@ -358,10 +293,7 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="owner(_owner)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
                  initialHeight="48">
-  <BACKGROUND backgroundColour="ff323e44">
-    <RECT pos="0 0 0M 0M" fill="linear: 0 0, 0 0R, 0=ffffffff, 1=ffbfbfbf"
-          hasStroke="1" stroke="1, mitered, butt" strokeColour="linear: 0 0, 0 0R, 0=0, 1=80000000"/>
-  </BACKGROUND>
+  <BACKGROUND backgroundColour="7ffffff"/>
   <IMAGEBUTTON name="new button" id="97401225f34bada3" memberName="settingsButton"
                virtualName="" explicitFocusOrder="0" pos="0 4 40 40" buttonText="new button"
                connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
@@ -419,17 +351,6 @@ BEGIN_JUCER_METADATA
           trackcol="ff43c7ff" rotarysliderfill="ff0eb7ff" min="1.0" max="24.0"
           int="1.0" style="LinearBar" textBoxPos="NoTextBox" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
-  <SLIDER name="" id="1a1a1086301ec67" memberName="loopLengthSlider" virtualName=""
-          explicitFocusOrder="0" pos="246 28 150 16" thumbcol="fffa9400"
-          textboxtext="ff000000" textboxoutline="0" min="1.0" max="256.0"
-          int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft" textBoxEditable="1"
-          textBoxWidth="48" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
-  <SLIDER name="" id="1e520ada967b42f6" memberName="loopPositionIndicator"
-          virtualName="" explicitFocusOrder="0" pos="400 36 96 8" bkgcol="ff55cd32"
-          thumbcol="ffc84242" trackcol="ffff4343" rotarysliderfill="ff0eb7ff"
-          min="1.0" max="24.0" int="1.0" style="LinearBar" textBoxPos="NoTextBox"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

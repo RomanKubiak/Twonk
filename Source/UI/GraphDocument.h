@@ -9,20 +9,27 @@
 */
 
 #pragma once
+#include "Twonk.h"
 #include "../Filters/FilterGraph.h"
 #include "../UI/GraphEditorPanel.h"
-#define TITLEBAR_HEIGHT 48
+
 
 class TwonkPlayHead;
 class TwonkTitleBarComponent;
 
 class SidePanelLookAndFeel : public LookAndFeel_V4
 {
-public:
-	Font getSidePanelTitleFont(SidePanel &)
-	{
-		return (Font("Liberation Sans", 20.0f, Font::plain));
-	}
+	public:
+		SidePanelLookAndFeel()
+		{
+			font = Font(TWONK_DEFAULT_TYPEFACE, 16.0f, Font::plain);
+		}
+		Font getSidePanelTitleFont(SidePanel &)
+		{
+			return (font);
+		}
+	private:
+		Font font;
 };
 
 //==============================================================================
@@ -53,7 +60,7 @@ public:
 	void resized() override;
 	void unfocusKeyboardComponent();
 	void releaseGraph();
-
+	void paint (Graphics& g);
 	//==============================================================================
 	bool isInterestedInDragSource (const SourceDetails&) override;
 	void itemDropped (const SourceDetails&) override;
@@ -89,7 +96,7 @@ private:
 	std::unique_ptr<PluginListBoxModel> pluginListBoxModel;
 	std::unique_ptr<AudioDeviceSelectorComponent> audioSettingsComponent;
 	ListBox pluginListBox;
-	Image bgImage;
+	Image bg;
 	SidePanel mobileSettingsSidePanel{ "Settings", 300, true };
 	SidePanel pluginListSidePanel{ "Plugins", 300, false };
 	std::unique_ptr<TabbedComponent> settingsTab;

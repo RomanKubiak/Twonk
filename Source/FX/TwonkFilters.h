@@ -11,6 +11,12 @@
 #pragma once
 #include "../Filters/InternalFilters.h"
 
+class TwonkFilter
+{
+	public:
+		virtual Component *getComponentForPanel() { return nullptr; }
+};
+
 class TwonkFilters
 {
 	public:
