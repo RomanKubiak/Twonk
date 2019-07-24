@@ -52,7 +52,7 @@ public:
     MouseInactivityDetector (Component& target);
 
     /** Destructor. */
-    ~MouseInactivityDetector() override;
+    ~MouseInactivityDetector();
 
     /** Sets the time for which the mouse must be still before the callback
         is triggered.
@@ -71,7 +71,7 @@ public:
     class Listener
     {
     public:
-        virtual ~Listener() = default;
+        virtual ~Listener() {}
 
         /** Called when the mouse is moved or clicked for the first time
             after a period of inactivity. */

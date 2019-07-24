@@ -39,10 +39,10 @@ class JUCE_API  AudioPlayHead
 {
 protected:
     //==============================================================================
-    AudioPlayHead() = default;
+    AudioPlayHead() {}
 
 public:
-    virtual ~AudioPlayHead() = default;
+    virtual ~AudioPlayHead() {}
 
     //==============================================================================
     /** Frame rate types. */

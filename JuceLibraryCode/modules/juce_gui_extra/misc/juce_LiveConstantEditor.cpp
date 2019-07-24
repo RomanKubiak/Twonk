@@ -38,7 +38,7 @@ class AllComponentRepainter  : private Timer,
 {
 public:
     AllComponentRepainter()  {}
-    ~AllComponentRepainter() override  { clearSingletonInstance(); }
+    ~AllComponentRepainter() { clearSingletonInstance(); }
 
     JUCE_DECLARE_SINGLETON (AllComponentRepainter, false)
 
@@ -280,7 +280,7 @@ public:
 
     void resized() override
     {
-        auto r = getLocalBounds().reduced (2, 0);
+        Rectangle<int> r (getLocalBounds().reduced (2, 0));
 
         for (int i = 0; i < editors.size(); ++i)
             editors.getUnchecked(i)->setBounds (r.removeFromTop (itemHeight));
@@ -314,7 +314,7 @@ public:
         setVisible (true);
     }
 
-    ~EditorWindow() override
+    ~EditorWindow()
     {
         setLookAndFeel (nullptr);
     }

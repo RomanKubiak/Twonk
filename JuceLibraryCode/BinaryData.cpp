@@ -12781,8 +12781,7 @@ const char* terminess_ttf = (const char*) temp_binary_data_9;
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 {
     unsigned int hash = 0;
-
-    if (resourceNameUTF8 != nullptr)
+    if (resourceNameUTF8 != 0)
         while (*resourceNameUTF8 != 0)
             hash = 31 * hash + (unsigned int) *resourceNameUTF8++;
 

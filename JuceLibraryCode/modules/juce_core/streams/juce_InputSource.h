@@ -38,10 +38,10 @@ class JUCE_API  InputSource
 {
 public:
     //==============================================================================
-    InputSource() = default;
+    InputSource() noexcept      {}
 
     /** Destructor. */
-    virtual ~InputSource() = default;
+    virtual ~InputSource()      {}
 
     //==============================================================================
     /** Returns a new InputStream to read this item.

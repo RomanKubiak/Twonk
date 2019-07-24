@@ -44,7 +44,10 @@ public:
     {
     }
 
-    inline CharPointer_ASCII (const CharPointer_ASCII& other) = default;
+    inline CharPointer_ASCII (const CharPointer_ASCII& other) noexcept
+        : data (other.data)
+    {
+    }
 
     inline CharPointer_ASCII operator= (const CharPointer_ASCII other) noexcept
     {

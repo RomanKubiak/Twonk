@@ -318,7 +318,7 @@ namespace XRender
     static bool hasCompositingWindowManager (::Display* display) noexcept
     {
         return display != nullptr
-                && XGetSelectionOwner (display, Atoms::getCreating (display, "_NET_WM_CM_S0")) != 0;
+                && XGetSelectionOwner (display, Atoms::getCreating ("_NET_WM_CM_S0")) != 0;
     }
 
     static XRenderPictFormat* findPictureFormat (::Display* display)
@@ -326,7 +326,7 @@ namespace XRender
         ScopedXLock xlock (display);
         XRenderPictFormat* pictFormat = nullptr;
 
-        if (isAvailable (display))
+        if (isAvailable())
         {
             pictFormat = xRenderFindStandardFormat (display, PictStandardARGB32);
 
@@ -739,231 +739,604 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (XBitmapImage)
 };
 
-//==============================================================================
-#if JUCE_USE_XINERAMA
-static Array<XineramaScreenInfo> XineramaQueryDisplays (::Display* display)
-{
-    typedef Bool (*tXineramaIsActive) (::Display*);
-    typedef XineramaScreenInfo* (*tXineramaQueryScreens) (::Display*, int*);
+//================================ X11 - DisplayGeometry =======================
 
-    int major_opcode, first_event, first_error;
-
-    if (XQueryExtension (display, "XINERAMA", &major_opcode, &first_event, &first_error))
-    {
-        static void* libXinerama = nullptr;
-        static tXineramaIsActive isActiveFuncPtr = nullptr;
-        static tXineramaQueryScreens xineramaQueryScreens = nullptr;
-
-        if (libXinerama == nullptr)
-        {
-            libXinerama = dlopen ("libXinerama.so", RTLD_GLOBAL | RTLD_NOW);
-
-            if (libXinerama == nullptr)
-                libXinerama = dlopen ("libXinerama.so.1", RTLD_GLOBAL | RTLD_NOW);
-
-            if (libXinerama != nullptr)
-            {
-                isActiveFuncPtr = (tXineramaIsActive) dlsym (libXinerama, "XineramaIsActive");
-                xineramaQueryScreens = (tXineramaQueryScreens) dlsym (libXinerama, "XineramaQueryScreens");
-            }
-        }
-
-        if (isActiveFuncPtr != nullptr && xineramaQueryScreens != nullptr && isActiveFuncPtr (display) != 0)
-        {
-            int numScreens;
-
-            if (auto* xinfo = xineramaQueryScreens (display, &numScreens))
-            {
-                Array<XineramaScreenInfo> infos (xinfo, numScreens);
-                XFree (xinfo);
-
-                return infos;
-            }
-        }
-    }
-
-    return {};
-}
-#endif
-
-//==============================================================================
-#if JUCE_USE_XRANDR
-class XRandrWrapper
+class DisplayGeometry
 {
 private:
-    XRandrWrapper()
+    //==============================================================================
+    DisplayGeometry (::Display* display, double masterScale)
     {
-        if (libXrandr == nullptr)
-        {
-            libXrandr = dlopen ("libXrandr.so", RTLD_GLOBAL | RTLD_NOW);
+        jassert (instance == nullptr);
+        instance = this;
 
-            if (libXrandr == nullptr)
-                libXrandr = dlopen ("libXrandr.so.2", RTLD_GLOBAL | RTLD_NOW);
-
-            if (libXrandr != nullptr)
-            {
-                getScreenResourcesPtr  = (tXRRGetScreenResources)  dlsym (libXrandr, "XRRGetScreenResources");
-                freeScreenResourcesPtr = (tXRRFreeScreenResources) dlsym (libXrandr, "XRRFreeScreenResources");
-                getOutputInfoPtr       = (tXRRGetOutputInfo)       dlsym (libXrandr, "XRRGetOutputInfo");
-                freeOutputInfoPtr      = (tXRRFreeOutputInfo)      dlsym (libXrandr, "XRRFreeOutputInfo");
-                getCrtcInfoPtr         = (tXRRGetCrtcInfo)         dlsym (libXrandr, "XRRGetCrtcInfo");
-                freeCrtcInfoPtr        = (tXRRFreeCrtcInfo)        dlsym (libXrandr, "XRRFreeCrtcInfo");
-                getOutputPrimaryPtr    = (tXRRGetOutputPrimary)    dlsym (libXrandr, "XRRGetOutputPrimary");
-            }
-        }
+        queryDisplayInfos (display, masterScale);
+        updatePositions();
     }
 
 public:
     //==============================================================================
-    static XRandrWrapper& getInstance()
+    struct ExtendedInfo
     {
-        static XRandrWrapper xrandr;
-        return xrandr;
+        // Unlike Desktop::Displays::Display, the following is in
+        // physical pixels, i.e. the area is not scaled
+        Rectangle<int> totalBounds;
+        // Usable bounds is the usable area in local coordinates
+        // with respect to the above totalBounds
+        Rectangle<int> usableBounds;
+        // top-left point of display in scaled coordinates. This
+        // is different from totalBounds.getTopLeft() / scale,
+        // because the neighbouring display may have a different
+        // scale factor
+        Point<int> topLeftScaled;
+        double dpi, scale;
+        bool isMain;
+    };
+
+    Array<ExtendedInfo> infos;
+
+    //==============================================================================
+    ExtendedInfo& findDisplayForRect (Rectangle<int> bounds, bool isScaledBounds)
+    {
+        int maxArea = -1;
+        ExtendedInfo* retval = nullptr;
+
+        for (int i = 0; i < infos.size(); ++i)
+        {
+            auto& dpy = infos.getReference (i);
+
+            auto displayBounds = dpy.totalBounds;
+
+            if (isScaledBounds)
+                displayBounds = (displayBounds.withZeroOrigin() / dpy.scale) + dpy.topLeftScaled;
+
+            displayBounds = displayBounds.getIntersection (bounds);
+            int area = displayBounds.getWidth() * displayBounds.getHeight();
+
+            if (area >= maxArea)
+            {
+                maxArea = area;
+                retval = &dpy;
+            }
+        }
+
+        return *retval;
+    }
+
+    ExtendedInfo& findDisplayForPoint (Point<int> pt, bool isScaledPoint)
+    {
+        int minDistance = (int) ((((unsigned int)(-1)) >> 1) - 1);
+        ExtendedInfo* retval = nullptr;
+
+        for (int i = 0; i < infos.size(); ++i)
+        {
+            auto& dpy = infos.getReference (i);
+
+            auto displayBounds = dpy.totalBounds;
+
+            if (isScaledPoint)
+                displayBounds = (displayBounds.withZeroOrigin() / dpy.scale) + dpy.topLeftScaled;
+
+            if (displayBounds.contains (pt))
+                return dpy;
+
+            int distance = displayBounds.getCentre().getDistanceFrom (pt);
+            if (distance <= minDistance)
+            {
+                minDistance = distance;
+                retval = &dpy;
+            }
+        }
+
+        return *retval;
     }
 
     //==============================================================================
-    XRRScreenResources* getScreenResources (::Display* display, ::Window window)
+    static Rectangle<int> physicalToScaled (Rectangle<int> physicalBounds)
     {
-        if (getScreenResourcesPtr != nullptr)
-            return getScreenResourcesPtr (display, window);
+        // first find with which display physicalBounds has the most overlap
+        auto& dpy = getInstance().findDisplayForRect (physicalBounds, false);
 
-        return nullptr;
+        // convert to local screen bounds
+        physicalBounds -= dpy.totalBounds.getTopLeft();
+
+        // now we can safely scale the coordinates and convert to global again
+        return (physicalBounds / dpy.scale) + dpy.topLeftScaled;
     }
 
-    XRROutputInfo* getOutputInfo (::Display* display, XRRScreenResources* resources, RROutput output)
+    static Rectangle<int> scaledToPhysical (Rectangle<int> scaledBounds)
     {
-        if (getOutputInfoPtr != nullptr)
-            return getOutputInfoPtr (display, resources, output);
+        // first find with which display physicalBounds has the most overlap
+        auto& dpy = getInstance().findDisplayForRect (scaledBounds, true);
 
-        return nullptr;
-    }
+        // convert to local screen bounds
+        scaledBounds -= dpy.topLeftScaled;
 
-    XRRCrtcInfo* getCrtcInfo (::Display* display, XRRScreenResources* resources, RRCrtc crtc)
-    {
-        if (getCrtcInfoPtr != nullptr)
-            return getCrtcInfoPtr (display, resources, crtc);
-
-        return nullptr;
-    }
-
-    RROutput getOutputPrimary (::Display* display, ::Window window)
-    {
-        if (getOutputPrimaryPtr != nullptr)
-            return getOutputPrimaryPtr (display, window);
-
-        return 0;
+        // now we can safely scale the coordinates and convert to global again
+        return (scaledBounds * dpy.scale) + dpy.totalBounds.getTopLeft();
     }
 
     //==============================================================================
-    void freeScreenResources (XRRScreenResources* ptr)
+    template <typename ValueType>
+    static Point<ValueType> physicalToScaled (Point<ValueType> physicalPoint)
     {
-        if (freeScreenResourcesPtr != nullptr)
-            freeScreenResourcesPtr (ptr);
+        auto& dpy = getInstance().findDisplayForPoint (physicalPoint.roundToInt(), false);
+
+        Point<ValueType> scaledTopLeft   (dpy.topLeftScaled.getX(), dpy.topLeftScaled.getY());
+        Point<ValueType> physicalTopLeft (dpy.totalBounds.getX(), dpy.totalBounds.getY());
+
+        return ((physicalPoint - physicalTopLeft) / dpy.scale) + scaledTopLeft;
     }
 
-    void freeOutputInfo (XRROutputInfo* ptr)
+    template <typename ValueType>
+    static Point<ValueType> scaledToPhysical (const Point<ValueType>& scaledPoint)
     {
-        if (freeOutputInfoPtr != nullptr)
-            freeOutputInfoPtr (ptr);
+        auto& dpy = getInstance().findDisplayForPoint (scaledPoint.roundToInt(), true);
+
+        Point<ValueType> scaledTopLeft   (dpy.topLeftScaled.getX(), dpy.topLeftScaled.getY());
+        Point<ValueType> physicalTopLeft (dpy.totalBounds.getX(), dpy.totalBounds.getY());
+
+        return ((scaledPoint - scaledTopLeft) * dpy.scale) + physicalTopLeft;
     }
 
-    void freeCrtcInfo (XRRCrtcInfo* ptr)
+    //==============================================================================
+    static DisplayGeometry& getInstance()
     {
-        if (freeCrtcInfoPtr != nullptr)
-            freeCrtcInfoPtr (ptr);
+        jassert (instance != nullptr);
+        return *instance;
+    }
+
+    static DisplayGeometry& getOrCreateInstance (::Display* display, double masterScale)
+    {
+        if (instance == nullptr)
+            new DisplayGeometry (display, masterScale);
+
+        return getInstance();
     }
 
 private:
-    using tXRRGetScreenResources   = XRRScreenResources* (*) (::Display*, ::Window);
-    using tXRRFreeScreenResources  = void (*) (XRRScreenResources*);
-    using tXRRGetOutputInfo        = XRROutputInfo* (*) (::Display*, XRRScreenResources*, RROutput);
-    using tXRRFreeOutputInfo       = void (*) (XRROutputInfo*);
-    using tXRRGetCrtcInfo          = XRRCrtcInfo* (*) (::Display*, XRRScreenResources*, RRCrtc);
-    using tXRRFreeCrtcInfo         = void (*) (XRRCrtcInfo*);
-    using tXRRGetOutputPrimary     = RROutput (*) (::Display*, ::Window);
+    //==============================================================================
+    static DisplayGeometry* instance;
 
-    void* libXrandr = nullptr;
-    tXRRGetScreenResources getScreenResourcesPtr = nullptr;
-    tXRRFreeScreenResources freeScreenResourcesPtr = nullptr;
-    tXRRGetOutputInfo getOutputInfoPtr = nullptr;
-    tXRRFreeOutputInfo freeOutputInfoPtr = nullptr;
-    tXRRGetCrtcInfo getCrtcInfoPtr = nullptr;
-    tXRRFreeCrtcInfo freeCrtcInfoPtr = nullptr;
-    tXRRGetOutputPrimary getOutputPrimaryPtr = nullptr;
-};
-#endif
-
-
-static double getDisplayDPI (::Display* display, int index)
-{
-    double dpiX = (DisplayWidth  (display, index) * 25.4) / DisplayWidthMM  (display, index);
-    double dpiY = (DisplayHeight (display, index) * 25.4) / DisplayHeightMM (display, index);
-    return (dpiX + dpiY) / 2.0;
-}
-
-static double getScaleForDisplay (const String& name, double dpi)
-{
-    if (name.isNotEmpty())
+    //==============================================================================
+   #if JUCE_USE_XINERAMA
+    static Array<XineramaScreenInfo> XineramaQueryDisplays (::Display* display)
     {
-        // Ubuntu and derived distributions now save a per-display scale factor as a configuration
-        // variable. This can be changed in the Monitor system settings panel.
-        ChildProcess dconf;
+        typedef Bool (*tXineramaIsActive) (::Display*);
+        typedef XineramaScreenInfo* (*tXineramaQueryScreens) (::Display*, int*);
 
-        if (File ("/usr/bin/dconf").existsAsFile()
-            && dconf.start ("/usr/bin/dconf read /com/ubuntu/user-interface/scale-factor", ChildProcess::wantStdOut))
+        int major_opcode, first_event, first_error;
+
+        if (XQueryExtension (display, "XINERAMA", &major_opcode, &first_event, &first_error))
         {
-            if (dconf.waitForProcessToFinish (200))
+            static void* libXinerama = nullptr;
+            static tXineramaIsActive isActiveFuncPtr = nullptr;
+            static tXineramaQueryScreens xineramaQueryScreens = nullptr;
+
+            if (libXinerama == nullptr)
             {
-                auto jsonOutput = dconf.readAllProcessOutput().replaceCharacter ('\'', '"');
+                libXinerama = dlopen ("libXinerama.so", RTLD_GLOBAL | RTLD_NOW);
 
-                if (dconf.getExitCode() == 0 && jsonOutput.isNotEmpty())
+                if (libXinerama == nullptr)
+                    libXinerama = dlopen ("libXinerama.so.1", RTLD_GLOBAL | RTLD_NOW);
+
+                if (libXinerama != nullptr)
                 {
-                    auto jsonVar = JSON::parse (jsonOutput);
+                    isActiveFuncPtr = (tXineramaIsActive) dlsym (libXinerama, "XineramaIsActive");
+                    xineramaQueryScreens = (tXineramaQueryScreens) dlsym (libXinerama, "XineramaQueryScreens");
+                }
+            }
 
-                    if (auto* object = jsonVar.getDynamicObject())
+            if (isActiveFuncPtr != nullptr && xineramaQueryScreens != nullptr && isActiveFuncPtr (display) != 0)
+            {
+                int numScreens;
+
+                if (auto* xinfo = xineramaQueryScreens (display, &numScreens))
+                {
+                    Array<XineramaScreenInfo> infos (xinfo, numScreens);
+                    XFree (xinfo);
+
+                    return infos;
+                }
+            }
+        }
+
+        return {};
+    }
+   #endif
+
+    //==============================================================================
+   #if JUCE_USE_XRANDR
+    class XRandrWrapper
+    {
+    private:
+        XRandrWrapper()
+        {
+            if (libXrandr == nullptr)
+            {
+                libXrandr = dlopen ("libXrandr.so", RTLD_GLOBAL | RTLD_NOW);
+
+                if (libXrandr == nullptr)
+                    libXrandr = dlopen ("libXrandr.so.2", RTLD_GLOBAL | RTLD_NOW);
+
+                if (libXrandr != nullptr)
+                {
+                    getScreenResourcesPtr  = (tXRRGetScreenResources)  dlsym (libXrandr, "XRRGetScreenResources");
+                    freeScreenResourcesPtr = (tXRRFreeScreenResources) dlsym (libXrandr, "XRRFreeScreenResources");
+                    getOutputInfoPtr       = (tXRRGetOutputInfo)       dlsym (libXrandr, "XRRGetOutputInfo");
+                    freeOutputInfoPtr      = (tXRRFreeOutputInfo)      dlsym (libXrandr, "XRRFreeOutputInfo");
+                    getCrtcInfoPtr         = (tXRRGetCrtcInfo)         dlsym (libXrandr, "XRRGetCrtcInfo");
+                    freeCrtcInfoPtr        = (tXRRFreeCrtcInfo)        dlsym (libXrandr, "XRRFreeCrtcInfo");
+                    getOutputPrimaryPtr    = (tXRRGetOutputPrimary)    dlsym (libXrandr, "XRRGetOutputPrimary");
+                }
+            }
+
+            instance = this;
+        }
+
+    public:
+        //==============================================================================
+        static XRandrWrapper& getInstance()
+        {
+            if (instance == nullptr)
+                instance = new XRandrWrapper();
+
+            return *instance;
+        }
+
+        //==============================================================================
+        XRRScreenResources* getScreenResources (::Display* display, ::Window window)
+        {
+            if (getScreenResourcesPtr != nullptr)
+                return getScreenResourcesPtr (display, window);
+
+            return nullptr;
+        }
+
+        XRROutputInfo* getOutputInfo (::Display* display, XRRScreenResources* resources, RROutput output)
+        {
+            if (getOutputInfoPtr != nullptr)
+                return getOutputInfoPtr (display, resources, output);
+
+            return nullptr;
+        }
+
+        XRRCrtcInfo* getCrtcInfo (::Display* display, XRRScreenResources* resources, RRCrtc crtc)
+        {
+            if (getCrtcInfoPtr != nullptr)
+                return getCrtcInfoPtr (display, resources, crtc);
+
+            return nullptr;
+        }
+
+        RROutput getOutputPrimary (::Display* display, ::Window window)
+        {
+            if (getOutputPrimaryPtr != nullptr)
+                return getOutputPrimaryPtr (display, window);
+
+            return 0;
+        }
+
+        //==============================================================================
+        void freeScreenResources (XRRScreenResources* ptr)
+        {
+            if (freeScreenResourcesPtr != nullptr)
+                freeScreenResourcesPtr (ptr);
+        }
+
+        void freeOutputInfo (XRROutputInfo* ptr)
+        {
+            if (freeOutputInfoPtr != nullptr)
+                freeOutputInfoPtr (ptr);
+        }
+
+        void freeCrtcInfo (XRRCrtcInfo* ptr)
+        {
+            if (freeCrtcInfoPtr != nullptr)
+                freeCrtcInfoPtr (ptr);
+        }
+
+    private:
+        static XRandrWrapper* instance;
+
+        using tXRRGetScreenResources   = XRRScreenResources* (*) (::Display*, ::Window);
+        using tXRRFreeScreenResources  = void (*) (XRRScreenResources*);
+        using tXRRGetOutputInfo        = XRROutputInfo* (*) (::Display*, XRRScreenResources*, RROutput);
+        using tXRRFreeOutputInfo       = void (*) (XRROutputInfo*);
+        using tXRRGetCrtcInfo          = XRRCrtcInfo* (*) (::Display*, XRRScreenResources*, RRCrtc);
+        using tXRRFreeCrtcInfo         = void (*) (XRRCrtcInfo*);
+        using tXRRGetOutputPrimary     = RROutput (*) (::Display*, ::Window);
+
+        void* libXrandr = nullptr;
+        tXRRGetScreenResources getScreenResourcesPtr = nullptr;
+        tXRRFreeScreenResources freeScreenResourcesPtr = nullptr;
+        tXRRGetOutputInfo getOutputInfoPtr = nullptr;
+        tXRRFreeOutputInfo freeOutputInfoPtr = nullptr;
+        tXRRGetCrtcInfo getCrtcInfoPtr = nullptr;
+        tXRRFreeCrtcInfo freeCrtcInfoPtr = nullptr;
+        tXRRGetOutputPrimary getOutputPrimaryPtr = nullptr;
+    };
+   #endif
+
+
+    static double getDisplayDPI (::Display* display, int index)
+    {
+        double dpiX = (DisplayWidth  (display, index) * 25.4) / DisplayWidthMM  (display, index);
+        double dpiY = (DisplayHeight (display, index) * 25.4) / DisplayHeightMM (display, index);
+        return (dpiX + dpiY) / 2.0;
+    }
+
+    static double getScaleForDisplay (const String& name, const ExtendedInfo& info)
+    {
+        if (name.isNotEmpty())
+        {
+            // Ubuntu and derived distributions now save a per-display scale factor as a configuration
+            // variable. This can be changed in the Monitor system settings panel.
+            ChildProcess dconf;
+
+            if (File ("/usr/bin/dconf").existsAsFile()
+                 && dconf.start ("/usr/bin/dconf read /com/ubuntu/user-interface/scale-factor", ChildProcess::wantStdOut))
+            {
+                if (dconf.waitForProcessToFinish (200))
+                {
+                    auto jsonOutput = dconf.readAllProcessOutput().replaceCharacter ('\'', '"');
+
+                    if (dconf.getExitCode() == 0 && jsonOutput.isNotEmpty())
                     {
-                        auto scaleFactorVar = object->getProperty (name);
+                        auto jsonVar = JSON::parse (jsonOutput);
 
-                        if (! scaleFactorVar.isVoid())
+                        if (auto* object = jsonVar.getDynamicObject())
                         {
-                            auto scaleFactor = ((double) scaleFactorVar) / 8.0;
+                            auto scaleFactorVar = object->getProperty (name);
 
-                            if (scaleFactor > 0.0)
-                                return scaleFactor;
+                            if (! scaleFactorVar.isVoid())
+                            {
+                                auto scaleFactor = ((double) scaleFactorVar) / 8.0;
+
+                                if (scaleFactor > 0.0)
+                                    return scaleFactor;
+                            }
                         }
                     }
                 }
             }
         }
+
+        {
+            // Other gnome based distros now use gsettings for a global scale factor
+            ChildProcess gsettings;
+
+            if (File ("/usr/bin/gsettings").existsAsFile()
+                 && gsettings.start ("/usr/bin/gsettings get org.gnome.desktop.interface scaling-factor", ChildProcess::wantStdOut))
+            {
+                if (gsettings.waitForProcessToFinish (200))
+                {
+                    auto gsettingsOutput = StringArray::fromTokens (gsettings.readAllProcessOutput(), true);
+
+                    if (gsettingsOutput.size() >= 2 && gsettingsOutput[1].length() > 0)
+                    {
+                        auto scaleFactor = gsettingsOutput[1].getDoubleValue();
+
+                        if (scaleFactor > 0.0)
+                            return scaleFactor;
+                    }
+                }
+            }
+        }
+
+        // If no scale factor is set by GNOME or Ubuntu then calculate from monitor dpi
+        // We use the same approach as chromium which simply divides the dpi by 96
+        // and then rounds the result
+        return round (info.dpi / 150.0);
     }
 
+    //==============================================================================
+    void queryDisplayInfos (::Display* display, double masterScale) noexcept
     {
-        // Other gnome based distros now use gsettings for a global scale factor
-        ChildProcess gsettings;
+        ScopedXLock xlock (display);
 
-        if (File ("/usr/bin/gsettings").existsAsFile()
-            && gsettings.start ("/usr/bin/gsettings get org.gnome.desktop.interface scaling-factor", ChildProcess::wantStdOut))
+       #if JUCE_USE_XRANDR
         {
-            if (gsettings.waitForProcessToFinish (200))
+            int major_opcode, first_event, first_error;
+
+            if (XQueryExtension (display, "RANDR", &major_opcode, &first_event, &first_error))
             {
-                auto gsettingsOutput = StringArray::fromTokens (gsettings.readAllProcessOutput(), true);
+                auto& xrandr = XRandrWrapper::getInstance();
 
-                if (gsettingsOutput.size() >= 2 && gsettingsOutput[1].length() > 0)
+                auto numMonitors = ScreenCount (display);
+                auto mainDisplay = xrandr.getOutputPrimary (display, RootWindow (display, 0));
+
+                for (int i = 0; i < numMonitors; ++i)
                 {
-                    auto scaleFactor = gsettingsOutput[1].getDoubleValue();
+                    if (auto* screens = xrandr.getScreenResources (display, RootWindow (display, i)))
+                    {
+                        for (int j = 0; j < screens->noutput; ++j)
+                        {
+                            if (screens->outputs[j])
+                            {
+                                // Xrandr on the raspberry pi fails to determine the main display (mainDisplay == 0)!
+                                // Detect this edge case and make the first found display the main display
+                                if (! mainDisplay)
+                                    mainDisplay = screens->outputs[j];
 
-                    if (scaleFactor > 0.0)
-                        return scaleFactor;
+                                if (auto* output = xrandr.getOutputInfo (display, screens, screens->outputs[j]))
+                                {
+                                    if (output->crtc)
+                                    {
+                                        if (auto* crtc = xrandr.getCrtcInfo (display, screens, output->crtc))
+                                        {
+                                            ExtendedInfo e;
+                                            e.totalBounds = Rectangle<int> (crtc->x, crtc->y,
+                                                                            (int) crtc->width, (int) crtc->height);
+                                            e.usableBounds = e.totalBounds.withZeroOrigin(); // Support for usable area is not implemented in JUCE yet
+                                            e.topLeftScaled = e.totalBounds.getTopLeft();
+                                            e.isMain = (mainDisplay == screens->outputs[j]) && (i == 0);
+                                            e.dpi = getDisplayDPI (display, 0);
+
+                                            // The raspberry pi returns a zero sized display, so we need to guard for divide-by-zero
+                                            if (output->mm_width > 0 && output->mm_height > 0)
+                                                e.dpi = ((static_cast<double> (crtc->width) * 25.4 * 0.5) / static_cast<double> (output->mm_width))
+                                                    + ((static_cast<double> (crtc->height) * 25.4 * 0.5) / static_cast<double> (output->mm_height));
+
+                                            double scale = getScaleForDisplay (output->name, e);
+                                            scale = (scale <= 0.1 ? 1.0 : scale);
+
+                                            e.scale = masterScale * scale;
+
+                                            infos.add (e);
+
+                                            xrandr.freeCrtcInfo (crtc);
+                                        }
+                                    }
+
+                                    xrandr.freeOutputInfo (output);
+                                }
+                            }
+                        }
+
+                        xrandr.freeScreenResources (screens);
+                    }
+                }
+            }
+        }
+
+        if (infos.isEmpty())
+       #endif
+       #if JUCE_USE_XINERAMA
+        {
+            auto screens = XineramaQueryDisplays (display);
+            int numMonitors = screens.size();
+
+            for (int index = 0; index < numMonitors; ++index)
+            {
+                for (int j = numMonitors; --j >= 0;)
+                {
+                    if (screens[j].screen_number == index)
+                    {
+                        ExtendedInfo e;
+                        e.totalBounds = Rectangle<int> (screens[j].x_org,
+                                                        screens[j].y_org,
+                                                        screens[j].width,
+                                                        screens[j].height);
+                        e.usableBounds = e.totalBounds.withZeroOrigin(); // Support for usable area is not implemented in JUCE yet
+                        e.topLeftScaled = e.totalBounds.getTopLeft(); // this will be overwritten by updatePositions later
+                        e.isMain = (index == 0);
+                        e.scale = masterScale;
+                        e.dpi = getDisplayDPI (display, 0); // (all screens share the same DPI)
+
+                        infos.add (e);
+                    }
+                }
+            }
+        }
+
+        if (infos.isEmpty())
+       #endif
+        {
+            Atom hints = Atoms::getIfExists (display, "_NET_WORKAREA");
+
+            if (hints != None)
+            {
+                auto numMonitors = ScreenCount (display);
+
+                for (int i = 0; i < numMonitors; ++i)
+                {
+                    GetXProperty prop (display, RootWindow (display, i), hints, 0, 4, false, XA_CARDINAL);
+
+                    if (prop.success && prop.actualType == XA_CARDINAL && prop.actualFormat == 32 && prop.numItems == 4)
+                    {
+                        auto position = (const long*) prop.data;
+
+                        ExtendedInfo e;
+                        e.totalBounds = Rectangle<int> ((int) position[0], (int) position[1],
+                                                        (int) position[2], (int) position[3]);
+                        e.usableBounds = e.totalBounds.withZeroOrigin(); // Support for usable area is not implemented in JUCE yet
+                        e.topLeftScaled = e.totalBounds.getTopLeft(); // this will be overwritten by updatePositions later
+                        e.isMain = infos.isEmpty();
+                        e.scale = masterScale;
+                        e.dpi = getDisplayDPI (display, i);
+
+                        infos.add (e);
+                    }
+                }
+            }
+
+            if (infos.isEmpty())
+            {
+                ExtendedInfo e;
+                e.totalBounds = Rectangle<int> (DisplayWidth  (display, DefaultScreen (display)),
+                                                DisplayHeight (display, DefaultScreen (display)));
+                e.usableBounds = e.totalBounds; // Support for usable area is not implemented in JUCE yet
+                e.topLeftScaled = e.totalBounds.getTopLeft(); // this will be overwritten by updatePositions later
+                e.isMain = true;
+                e.scale = masterScale;
+                e.dpi = getDisplayDPI (display, 0);
+
+                infos.add (e);
+            }
+        }
+    }
+
+    //==============================================================================
+    void updateScaledDisplayCoordinate (bool updateYCoordinates)
+    {
+        if (infos.size() < 2)
+            return;
+
+        Array<ExtendedInfo*> copy;
+
+        for (auto& i : infos)
+            copy.add (&i);
+
+        std::sort (copy.begin(), copy.end(), [updateYCoordinates] (const ExtendedInfo* a, const ExtendedInfo* b)
+        {
+            if (updateYCoordinates)
+                return a->totalBounds.getY() < b->totalBounds.getY();
+
+            return a->totalBounds.getX() < b->totalBounds.getX();
+        });
+
+        for (int i = 1; i < copy.size(); ++i)
+        {
+            auto& current = *copy[i];
+
+            // Is this screen's position aligned to any other previous display?
+            for (int j = i - 1; j >= 0; --j)
+            {
+                auto& other = *copy[j];
+                auto prevCoordinate = updateYCoordinates ? other.totalBounds.getBottom() : other.totalBounds.getRight();
+                auto curCoordinate  = updateYCoordinates ? current.totalBounds.getY() : current.totalBounds.getX();
+
+                if (prevCoordinate == curCoordinate)
+                {
+                    // both displays are aligned! As "other" comes before "current" in the array, it must already
+                    // have a valid topLeftScaled which we can use
+                    auto topLeftScaled = other.topLeftScaled;
+                    topLeftScaled += Point<int> (other.totalBounds.getWidth(), other.totalBounds.getHeight()) / other.scale;
+
+                    if (updateYCoordinates)
+                        current.topLeftScaled.setY (topLeftScaled.getY());
+                    else
+                        current.topLeftScaled.setX (topLeftScaled.getX());
+
+                    break;
                 }
             }
         }
     }
 
-    // If no scale factor is set by GNOME or Ubuntu then calculate from monitor dpi
-    // We use the same approach as chromium which simply divides the dpi by 96
-    // and then rounds the result
-    return round (dpi / 150.0);
-}
+    void updatePositions()
+    {
+        updateScaledDisplayCoordinate (false);
+        updateScaledDisplayCoordinate (true);
+    }
+};
+
+DisplayGeometry* DisplayGeometry::instance = nullptr;
+
+#if JUCE_USE_XRANDR
+DisplayGeometry::XRandrWrapper* DisplayGeometry::XRandrWrapper::instance = nullptr;
+#endif
 
 //=============================== X11 - Pixmap =================================
 
@@ -1051,7 +1424,7 @@ public:
           isAlwaysOnTop (comp.isAlwaysOnTop())
     {
         // it's dangerous to create a window on a thread other than the message thread..
-        JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
+        jassert (MessageManager::getInstance()->currentThreadHasLockedMessageManager());
 
         display = XWindowSystem::getInstance()->displayRef();
 
@@ -1097,7 +1470,7 @@ public:
     ~LinuxComponentPeer()
     {
         // it's dangerous to delete a window on a thread other than the message thread..
-        JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
+        jassert (MessageManager::getInstance()->currentThreadHasLockedMessageManager());
 
        #if JUCE_X11_SUPPORTS_XEMBED
         juce_handleXEmbedEvent (this, nullptr);
@@ -1200,16 +1573,9 @@ public:
             bounds = newBounds.withSize (jmax (1, newBounds.getWidth()),
                                          jmax (1, newBounds.getHeight()));
 
-            auto& displays = Desktop::getInstance().getDisplays();
+            currentScaleFactor = DisplayGeometry::getInstance().findDisplayForRect (bounds, true).scale;
 
-            auto newScaleFactor = displays.findDisplayForRect (bounds, true).scale;
-            if (! approximatelyEqual (newScaleFactor, currentScaleFactor))
-            {
-                currentScaleFactor = newScaleFactor;
-                scaleFactorListeners.call ([&] (ScaleFactorListener& l) { l.nativeScaleFactorChanged (currentScaleFactor); });
-            }
-
-            auto physicalBounds = displays.logicalToPhysical (bounds);
+            auto physicalBounds = DisplayGeometry::scaledToPhysical (bounds);
 
             WeakReference<Component> deletionChecker (&component);
             ScopedXLock xlock (display);
@@ -2105,15 +2471,15 @@ public:
         }
     }
 
-    bool externalDragTextInit (const String& text, std::function<void()> cb)
+    bool externalDragTextInit (const String& text)
     {
         if (dragState->dragging)
             return false;
 
-        return externalDragInit (true, text, cb);
+        return externalDragInit (true, text);
     }
 
-    bool externalDragFileInit (const StringArray& files, bool /*canMoveFiles*/, std::function<void()> cb)
+    bool externalDragFileInit (const StringArray& files, bool /*canMoveFiles*/)
     {
         if (dragState->dragging)
             return false;
@@ -2128,7 +2494,7 @@ public:
                 uriList.add ("file://" + f);
         }
 
-        return externalDragInit (false, uriList.joinIntoString ("\r\n"), cb);
+        return externalDragInit (false, uriList.joinIntoString ("\r\n"));
     }
 
     //==============================================================================
@@ -2139,7 +2505,7 @@ public:
     }
 
     //==============================================================================
-    double getPlatformScaleFactor() const noexcept override
+    double getCurrentScale() noexcept
     {
         return currentScaleFactor;
     }
@@ -2459,17 +2825,12 @@ private:
 
         if (auto* mapping = XGetModifierMapping (display))
         {
-            for (int modifierIdx = 0; modifierIdx < 8; ++modifierIdx)
+            for (int i = 0; i < 8; i++)
             {
-                for (int keyIndex = 0; keyIndex < mapping->max_keypermod; ++keyIndex)
-                {
-                    auto key = mapping->modifiermap[(modifierIdx * mapping->max_keypermod) + keyIndex];
-
-                    if (key == altLeftCode)
-                        Keys::AltMask = 1 << modifierIdx;
-                    else if (key == numLockCode)
-                        Keys::NumLockMask = 1 << modifierIdx;
-                }
+                if (mapping->modifiermap [i << 1] == altLeftCode)
+                    Keys::AltMask = 1 << i;
+                else if (mapping->modifiermap [i << 1] == numLockCode)
+                    Keys::NumLockMask = 1 << i;
             }
 
             XFreeModifiermap (mapping);
@@ -2794,16 +3155,11 @@ private:
                     wx = wy = 0;
 
             Rectangle<int> physicalBounds (wx, wy, (int) ww, (int) wh);
-            auto& displays = Desktop::getInstance().getDisplays();
 
-            auto newScaleFactor = displays.findDisplayForRect (physicalBounds, true).scale;
-            if (! approximatelyEqual (newScaleFactor, currentScaleFactor))
-            {
-                currentScaleFactor = newScaleFactor;
-                scaleFactorListeners.call ([&] (ScaleFactorListener& l) { l.nativeScaleFactorChanged (currentScaleFactor); });
-            }
+            currentScaleFactor =
+                DisplayGeometry::getInstance().findDisplayForRect (physicalBounds, false).scale;
 
-            bounds = displays.physicalToLogical (physicalBounds);
+            bounds = DisplayGeometry::physicalToScaled (physicalBounds);
         }
     }
 
@@ -2827,7 +3183,6 @@ private:
         Rectangle<int> silentRect;
         String textOrFiles;
         Array<Atom> allowedTypes;
-        std::function<void()> completionCallback;
     };
 
     //==============================================================================
@@ -2907,9 +3262,7 @@ private:
         if (dragState->silentRect.contains (mousePos)) // we've been asked to keep silent
             return;
 
-        auto& displays = Desktop::getInstance().getDisplays();
-
-        mousePos = displays.logicalToPhysical (mousePos);
+        mousePos = DisplayGeometry::scaledToPhysical (mousePos);
         msg.data.l[1] = 0;
         msg.data.l[2] = (mousePos.x << 16) | mousePos.y;
         msg.data.l[3] = CurrentTime;
@@ -3271,7 +3624,7 @@ private:
         return externalFindDragTargetWindow (child);
     }
 
-    bool externalDragInit (bool isText, const String& textOrFiles, std::function<void()> cb)
+    bool externalDragInit (bool isText, const String& textOrFiles)
     {
         ScopedXLock xlock (display);
 
@@ -3279,7 +3632,6 @@ private:
         dragState->isText = isText;
         dragState->textOrFiles = textOrFiles;
         dragState->targetWindow = windowH;
-        dragState->completionCallback = cb;
 
         const int pointerGrabMask = Button1MotionMask | ButtonReleaseMask;
 
@@ -3311,9 +3663,6 @@ private:
             ScopedXLock xlock (display);
             XUngrabPointer (display, CurrentTime);
         }
-
-        if (dragState->completionCallback != nullptr)
-            dragState->completionCallback();
 
         resetExternalDragState();
     }
@@ -3425,152 +3774,60 @@ ComponentPeer* Component::createNewPeer (int styleFlags, void* nativeWindowToAtt
 }
 
 //==============================================================================
-void Displays::findDisplays (float masterScale)
+void Desktop::Displays::findDisplays (float masterScale)
 {
     ScopedXDisplay xDisplay;
 
     if (auto display = xDisplay.display)
     {
-       #if JUCE_USE_XRANDR
+        auto& geometry = DisplayGeometry::getOrCreateInstance (display, masterScale);
+
+        // add the main display first
+        int mainDisplayIdx;
+
+        for (mainDisplayIdx = 0; mainDisplayIdx < geometry.infos.size(); ++mainDisplayIdx)
         {
-            int major_opcode, first_event, first_error;
+            auto& info = geometry.infos.getReference (mainDisplayIdx);
 
-            if (XQueryExtension (display, "RANDR", &major_opcode, &first_event, &first_error))
-            {
-                auto& xrandr = XRandrWrapper::getInstance();
-
-                auto numMonitors = ScreenCount (display);
-                auto mainDisplay = xrandr.getOutputPrimary (display, RootWindow (display, 0));
-
-                for (int i = 0; i < numMonitors; ++i)
-                {
-                    if (auto* screens = xrandr.getScreenResources (display, RootWindow (display, i)))
-                    {
-                        for (int j = 0; j < screens->noutput; ++j)
-                        {
-                            if (screens->outputs[j])
-                            {
-                                // Xrandr on the raspberry pi fails to determine the main display (mainDisplay == 0)!
-                                // Detect this edge case and make the first found display the main display
-                                if (! mainDisplay)
-                                    mainDisplay = screens->outputs[j];
-
-                                if (auto* output = xrandr.getOutputInfo (display, screens, screens->outputs[j]))
-                                {
-                                    if (output->crtc)
-                                    {
-                                        if (auto* crtc = xrandr.getCrtcInfo (display, screens, output->crtc))
-                                        {
-                                            Display d;
-                                            d.totalArea = Rectangle<int> (crtc->x, crtc->y,
-                                                                          (int) crtc->width, (int) crtc->height);
-                                            d.isMain = (mainDisplay == screens->outputs[j]) && (i == 0);
-                                            d.dpi = getDisplayDPI (display, 0);
-
-                                            // The raspberry pi returns a zero sized display, so we need to guard for divide-by-zero
-                                            if (output->mm_width > 0 && output->mm_height > 0)
-                                                d.dpi = ((static_cast<double> (crtc->width)  * 25.4 * 0.5) / static_cast<double> (output->mm_width))
-                                                      + ((static_cast<double> (crtc->height) * 25.4 * 0.5) / static_cast<double> (output->mm_height));
-
-                                            double scale = getScaleForDisplay (output->name, d.dpi);
-                                            scale = (scale <= 0.1 ? 1.0 : scale);
-
-                                            d.scale = masterScale * scale;
-
-                                            if (d.isMain)
-                                                displays.insert (0, d);
-                                            else
-                                                displays.add (d);
-
-                                            xrandr.freeCrtcInfo (crtc);
-                                        }
-                                    }
-
-                                    xrandr.freeOutputInfo (output);
-                                }
-                            }
-                        }
-
-                        xrandr.freeScreenResources (screens);
-                    }
-                }
-            }
+            if (info.isMain)
+                break;
         }
 
-        if (displays.isEmpty())
-       #endif
-       #if JUCE_USE_XINERAMA
+        // no main display found then use the first
+        if (mainDisplayIdx >= geometry.infos.size())
+            mainDisplayIdx = 0;
+
+        // add the main display
         {
-            auto screens = XineramaQueryDisplays (display);
-            int numMonitors = screens.size();
+            auto& info = geometry.infos.getReference (mainDisplayIdx);
 
-            for (int index = 0; index < numMonitors; ++index)
-            {
-                for (int j = numMonitors; --j >= 0;)
-                {
-                    if (screens[j].screen_number == index)
-                    {
-                        Display d;
-                        d.totalArea = Rectangle<int> (screens[j].x_org,
-                                                      screens[j].y_org,
-                                                      screens[j].width,
-                                                      screens[j].height);
-                        d.isMain = (index == 0);
-                        d.scale = masterScale;
-                        d.dpi = getDisplayDPI (display, 0); // (all screens share the same DPI)
+            Desktop::Displays::Display d;
+            d.isMain = true;
+            d.scale = masterScale * info.scale;
+            d.dpi = info.dpi;
+            d.totalArea = DisplayGeometry::physicalToScaled (info.totalBounds);
+            d.userArea = (info.usableBounds / d.scale) + info.topLeftScaled;
 
-                        displays.add (d);
-                    }
-                }
-            }
+            displays.add (d);
         }
 
-        if (displays.isEmpty())
-       #endif
+        for (int i = 0; i < geometry.infos.size(); ++i)
         {
-            Atom hints = Atoms::getIfExists (display, "_NET_WORKAREA");
+            // don't add the main display a second time
+            if (i == mainDisplayIdx)
+                continue;
 
-            if (hints != None)
-            {
-                auto numMonitors = ScreenCount (display);
+            auto& info = geometry.infos.getReference (i);
 
-                for (int i = 0; i < numMonitors; ++i)
-                {
-                    GetXProperty prop (display, RootWindow (display, i), hints, 0, 4, false, XA_CARDINAL);
+            Desktop::Displays::Display d;
+            d.isMain = false;
+            d.scale = masterScale * info.scale;
+            d.dpi = info.dpi;
+            d.totalArea = DisplayGeometry::physicalToScaled (info.totalBounds);
+            d.userArea = (info.usableBounds / d.scale) + info.topLeftScaled;
 
-                    if (prop.success && prop.actualType == XA_CARDINAL && prop.actualFormat == 32 && prop.numItems == 4)
-                    {
-                        auto position = (const long*) prop.data;
-
-                        Display d;
-                        d.totalArea = Rectangle<int> ((int) position[0], (int) position[1],
-                                                      (int) position[2], (int) position[3]);
-                        d.isMain = displays.isEmpty();
-                        d.scale = masterScale;
-                        d.dpi = getDisplayDPI (display, i);
-
-                        displays.add (d);
-                    }
-                }
-            }
-
-            if (displays.isEmpty())
-            {
-                Display d;
-                d.totalArea = Rectangle<int> (DisplayWidth  (display, DefaultScreen (display)),
-                                              DisplayHeight (display, DefaultScreen (display)));
-                d.isMain = true;
-                d.scale = masterScale;
-                d.dpi = getDisplayDPI (display, 0);
-
-                displays.add (d);
-            }
+            displays.add (d);
         }
-
-        for (auto& d : displays)
-            d.userArea = d.totalArea; // JUCE currently does not support requesting the user area on Linux
-
-        updateToLogical();
     }
 }
 
@@ -3594,14 +3851,12 @@ bool MouseInputSource::SourceList::canUseTouch()
 bool Desktop::canUseSemiTransparentWindows() noexcept
 {
    #if JUCE_USE_XRENDER
-    auto display = XWindowSystem::getInstance()->displayRef();
-
-    if (XRender::hasCompositingWindowManager (display))
+    if (XRender::hasCompositingWindowManager())
     {
         int matchedDepth = 0, desiredDepth = 32;
 
         return Visuals::findVisualFormat (display, desiredDepth, matchedDepth) != 0
-                && matchedDepth == desiredDepth;
+                 && matchedDepth == desiredDepth;
     }
    #endif
 
@@ -3631,7 +3886,7 @@ Point<float> MouseInputSource::getCurrentRawMousePosition()
         x = y = -1;
     }
 
-    return Desktop::getInstance().getDisplays().physicalToLogical (Point<float> ((float) x, (float) y));
+    return DisplayGeometry::physicalToScaled (Point<float> ((float) x, (float) y));
 }
 
 void MouseInputSource::setRawMousePosition (Point<float> newPosition)
@@ -3642,7 +3897,7 @@ void MouseInputSource::setRawMousePosition (Point<float> newPosition)
     {
         ScopedXLock xlock (display);
         Window root = RootWindow (display, DefaultScreen (display));
-        newPosition = Desktop::getInstance().getDisplays().logicalToPhysical (newPosition);
+        newPosition = DisplayGeometry::scaledToPhysical (newPosition);
         XWarpPointer (display, None, root, 0, 0, 0, 0, roundToInt (newPosition.getX()), roundToInt (newPosition.getY()));
     }
 }
@@ -3705,7 +3960,7 @@ void LookAndFeel::playAlertSound()
 Rectangle<int> juce_LinuxScaledToPhysicalBounds (ComponentPeer* peer, Rectangle<int> bounds)
 {
     if (auto* linuxPeer = dynamic_cast<LinuxComponentPeer*> (peer))
-        bounds *= linuxPeer->getPlatformScaleFactor();
+        bounds *= linuxPeer->getCurrentScale();
 
     return bounds;
 }
@@ -3985,6 +4240,12 @@ void MouseCursor::showInWindow (ComponentPeer* peer) const
         lp->showMouseCursor ((Cursor) getHandle());
 }
 
+void MouseCursor::showInAllWindows() const
+{
+    for (int i = ComponentPeer::getNumPeers(); --i >= 0;)
+        showInWindow (ComponentPeer::getPeer (i));
+}
+
 //=================================== X11 - DND ================================
 static LinuxComponentPeer* getPeerForDragEvent (Component* sourceComp)
 {
@@ -4001,27 +4262,26 @@ static LinuxComponentPeer* getPeerForDragEvent (Component* sourceComp)
 }
 
 bool DragAndDropContainer::performExternalDragDropOfFiles (const StringArray& files, bool canMoveFiles,
-                                                           Component* sourceComp, std::function<void()> callback)
+                                                           Component* sourceComp)
 {
     if (files.isEmpty())
         return false;
 
     if (auto* lp = getPeerForDragEvent (sourceComp))
-        return lp->externalDragFileInit (files, canMoveFiles, callback);
+        return lp->externalDragFileInit (files, canMoveFiles);
 
     // This method must be called in response to a component's mouseDown or mouseDrag event!
     jassertfalse;
     return false;
 }
 
-bool DragAndDropContainer::performExternalDragDropOfText (const String& text, Component* sourceComp,
-                                                          std::function<void()> callback)
+bool DragAndDropContainer::performExternalDragDropOfText (const String& text, Component* sourceComp)
 {
     if (text.isEmpty())
         return false;
 
     if (auto* lp = getPeerForDragEvent (sourceComp))
-        return lp->externalDragTextInit (text, callback);
+        return lp->externalDragTextInit (text);
 
     // This method must be called in response to a component's mouseDown or mouseDrag event!
     jassertfalse;

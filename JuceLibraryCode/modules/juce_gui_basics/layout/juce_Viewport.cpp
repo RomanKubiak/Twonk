@@ -37,7 +37,10 @@ Viewport::Viewport (const String& name)  : Component (name)
 
     setInterceptsMouseClicks (false, true);
     setWantsKeyboardFocus (true);
-    setScrollOnDragEnabled (Desktop::getInstance().getMainMouseSource().isTouch());
+
+  #if JUCE_ANDROID || JUCE_IOS
+    setScrollOnDragEnabled (true);
+  #endif
 
     recreateScrollbars();
 }
@@ -63,7 +66,7 @@ void Viewport::deleteOrRemoveContentComp()
         {
             // This sets the content comp to a null pointer before deleting the old one, in case
             // anything tries to use the old one while it's in mid-deletion..
-            std::unique_ptr<Component> oldCompDeleter (contentComp.get());
+            std::unique_ptr<Component> oldCompDeleter (contentComp);
             contentComp = nullptr;
         }
         else
@@ -121,7 +124,7 @@ Point<int> Viewport::viewportPosToCompPos (Point<int> pos) const
 {
     jassert (contentComp != nullptr);
 
-    auto contentBounds = contentHolder.getLocalArea (contentComp.get(), contentComp->getLocalBounds());
+    auto contentBounds = contentHolder.getLocalArea (contentComp, contentComp->getLocalBounds());
 
     Point<int> p (jmax (jmin (0, contentHolder.getWidth()  - contentBounds.getWidth()),  jmin (0, -(pos.x))),
                   jmax (jmin (0, contentHolder.getHeight() - contentBounds.getHeight()), jmin (0, -(pos.y))));
@@ -211,7 +214,7 @@ struct Viewport::DragToScrollListener   : private MouseListener,
         offsetY.behaviour.setMinimumVelocity (60);
     }
 
-    ~DragToScrollListener() override
+    ~DragToScrollListener()
     {
         viewport.contentHolder.removeMouseListener (this);
         Desktop::getInstance().removeGlobalMouseListener (this);
@@ -395,9 +398,8 @@ void Viewport::updateVisibleArea()
     }
 
     Rectangle<int> contentBounds;
-
-    if (auto cc = contentComp.get())
-        contentBounds = contentHolder.getLocalArea (cc, cc->getLocalBounds());
+    if (contentComp != nullptr)
+        contentBounds = contentHolder.getLocalArea (contentComp, contentComp->getLocalBounds());
 
     auto visibleOrigin = -contentBounds.getPosition();
 

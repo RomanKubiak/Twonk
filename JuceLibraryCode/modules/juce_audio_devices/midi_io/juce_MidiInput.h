@@ -41,7 +41,7 @@ class JUCE_API  MidiInputCallback
 {
 public:
     /** Destructor. */
-    virtual ~MidiInputCallback()  = default;
+    virtual ~MidiInputCallback()  {}
 
 
     /** Receives an incoming message.
@@ -89,7 +89,7 @@ public:
 
     @tags{Audio}
 */
-class JUCE_API  MidiInput  final
+class JUCE_API  MidiInput
 {
 public:
     //==============================================================================

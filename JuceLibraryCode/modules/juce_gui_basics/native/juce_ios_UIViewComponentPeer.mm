@@ -390,13 +390,6 @@ MultiTouchMapper<UITouch*> UIViewComponentPeer::currentTouches;
     return isKioskModeView (self);
 }
 
-#if defined (__IPHONE_11_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_11_0
- - (BOOL) prefersHomeIndicatorAutoHidden
- {
-     return isKioskModeView (self);
- }
-#endif
-
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
     return UIStatusBarStyleDefault;
@@ -724,7 +717,7 @@ void UIViewComponentPeer::updateTransformAndScreenBounds()
     const Rectangle<int> oldArea (component.getBounds());
     const Rectangle<int> oldDesktop (desktop.getDisplays().getMainDisplay().userArea);
 
-    const_cast<Displays&> (desktop.getDisplays()).refresh();
+    const_cast<Desktop::Displays&> (desktop.getDisplays()).refresh();
 
     window.transform = Orientations::getCGTransformFor (desktop.getCurrentOrientation());
     view.transform = CGAffineTransformIdentity;

@@ -36,7 +36,7 @@ struct SimpleDeviceManagerInputLevelMeter  : public Component,
         inputLevelGetter = manager.getInputLevelGetter();
     }
 
-    ~SimpleDeviceManagerInputLevelMeter() override
+    ~SimpleDeviceManagerInputLevelMeter()
     {
     }
 
@@ -60,9 +60,8 @@ struct SimpleDeviceManagerInputLevelMeter  : public Component,
 
     void paint (Graphics& g) override
     {
-        // (add a bit of a skew to make the level more obvious)
         getLookAndFeel().drawLevelMeter (g, getWidth(), getHeight(),
-                                         (float) std::exp (std::log (level) / 3.0));
+                                         (float) std::exp (std::log (level) / 3.0)); // (add a bit of a skew to make the level more obvious)
     }
 
     AudioDeviceManager& manager;
@@ -146,7 +145,7 @@ public:
         if (items.isEmpty())
         {
             g.setColour (Colours::grey);
-            g.setFont (0.5f * getRowHeight());
+            g.setFont (13.0f);
             g.drawText (noItemsMessage,
                         0, 0, getWidth(), getHeight() / 2,
                         Justification::centred, true);
@@ -218,7 +217,7 @@ public:
         setup.manager->addChangeListener (this);
     }
 
-    ~AudioDeviceSettingsPanel() override
+    ~AudioDeviceSettingsPanel()
     {
         setup.manager->removeChangeListener (this);
     }
@@ -260,7 +259,6 @@ public:
 
             if (outputChanList != nullptr)
             {
-                outputChanList->setRowHeight (jmin (22, h));
                 outputChanList->setBounds (r.removeFromTop (outputChanList->getBestHeight (maxListBoxHeight)));
                 outputChanLabel->setBounds (0, outputChanList->getBounds().getCentreY() - h / 2, r.getX(), h);
                 r.removeFromTop (space);
@@ -268,7 +266,6 @@ public:
 
             if (inputChanList != nullptr)
             {
-                inputChanList->setRowHeight (jmin (22, h));
                 inputChanList->setBounds (r.removeFromTop (inputChanList->getBestHeight (maxListBoxHeight)));
                 inputChanLabel->setBounds (0, inputChanList->getBounds().getCentreY() - h / 2, r.getX(), h);
                 r.removeFromTop (space);
@@ -333,7 +330,8 @@ public:
 
     void updateConfig (bool updateOutputDevice, bool updateInputDevice, bool updateSampleRate, bool updateBufferSize)
     {
-        auto config = setup.manager->getAudioDeviceSetup();
+        AudioDeviceManager::AudioDeviceSetup config;
+        setup.manager->getAudioDeviceSetup (config);
         String error;
 
         if (updateOutputDevice || updateInputDevice)
@@ -771,7 +769,9 @@ public:
 
                 auto item = items[row];
                 bool enabled = false;
-                auto config = setup.manager->getAudioDeviceSetup();
+
+                AudioDeviceManager::AudioDeviceSetup config;
+                setup.manager->getAudioDeviceSetup (config);
 
                 if (setup.useStereoPairs)
                 {
@@ -825,7 +825,7 @@ public:
             if (items.isEmpty())
             {
                 g.setColour (Colours::grey);
-                g.setFont (0.5f * getRowHeight());
+                g.setFont (13.0f);
                 g.drawText (noItemsMessage,
                             0, 0, getWidth(), getHeight() / 2,
                             Justification::centred, true);
@@ -868,7 +868,8 @@ public:
 
             if (isPositiveAndBelow (row, items.size()))
             {
-                auto config = setup.manager->getAudioDeviceSetup();
+                AudioDeviceManager::AudioDeviceSetup config;
+                setup.manager->getAudioDeviceSetup (config);
 
                 if (setup.useStereoPairs)
                 {
@@ -907,7 +908,12 @@ public:
                     }
                 }
 
-                setup.manager->setAudioDeviceSetup (config, true);
+                auto error = setup.manager->setAudioDeviceSetup (config, true);
+
+                if (error.isNotEmpty())
+                {
+                    //xxx
+                }
             }
         }
 
@@ -1062,7 +1068,6 @@ void AudioDeviceSelectorComponent::resized()
 
     if (midiInputsList != nullptr)
     {
-        midiInputsList->setRowHeight (jmin (22, itemHeight));
         midiInputsList->setBounds (r.removeFromTop (midiInputsList->getBestHeight (jmin (itemHeight * 8,
                                                                                          getHeight() - r.getY() - space - itemHeight))));
         r.removeFromTop (space);

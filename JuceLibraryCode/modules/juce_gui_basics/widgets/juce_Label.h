@@ -51,7 +51,7 @@ public:
            const String& labelText = String());
 
     /** Destructor. */
-    ~Label() override;
+    ~Label();
 
     //==============================================================================
     /** Changes the label text.
@@ -184,7 +184,7 @@ public:
     {
     public:
         /** Destructor. */
-        virtual ~Listener() = default;
+        virtual ~Listener() {}
 
         /** Called when a Label's text has changed. */
         virtual void labelTextChanged (Label* labelThatHasChanged) = 0;
@@ -276,11 +276,10 @@ public:
     */
     struct JUCE_API  LookAndFeelMethods
     {
-        virtual ~LookAndFeelMethods() = default;
+        virtual ~LookAndFeelMethods() {}
 
         virtual void drawLabel (Graphics&, Label&) = 0;
         virtual Font getLabelFont (Label&) = 0;
-        virtual BorderSize<int> getLabelBorderSize (Label&) = 0;
     };
 
 protected:

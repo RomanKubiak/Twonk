@@ -133,8 +133,8 @@ private:
 class JUCE_API  DummyCriticalSection
 {
 public:
-    inline DummyCriticalSection() = default;
-    inline ~DummyCriticalSection() = default;
+    inline DummyCriticalSection() noexcept      {}
+    inline ~DummyCriticalSection() noexcept     {}
 
     inline void enter() const noexcept          {}
     inline bool tryEnter() const noexcept       { return true; }

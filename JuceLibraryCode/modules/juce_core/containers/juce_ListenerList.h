@@ -70,10 +70,10 @@ class ListenerList
 public:
     //==============================================================================
     /** Creates an empty list. */
-    ListenerList() = default;
+    ListenerList() {}
 
     /** Destructor. */
-    ~ListenerList() = default;
+    ~ListenerList() {}
 
     //==============================================================================
     /** Adds a listener to the list.
@@ -101,7 +101,7 @@ public:
     /** Returns the number of registered listeners. */
     int size() const noexcept                                { return listeners.size(); }
 
-    /** Returns true if no listeners are registered, false otherwise. */
+    /** Returns true if any listeners are registered. */
     bool isEmpty() const noexcept                            { return listeners.isEmpty(); }
 
     /** Clears the list. */
@@ -194,7 +194,7 @@ public:
             : list (listToIterate), index (listToIterate.size())
         {}
 
-        ~Iterator() = default;
+        ~Iterator() noexcept {}
 
         //==============================================================================
         bool next() noexcept

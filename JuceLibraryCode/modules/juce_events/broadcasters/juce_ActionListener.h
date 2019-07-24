@@ -35,7 +35,7 @@ class JUCE_API  ActionListener
 {
 public:
     /** Destructor. */
-    virtual ~ActionListener() = default;
+    virtual ~ActionListener()  {}
 
     /** Overridden by your subclass to receive the callback.
 

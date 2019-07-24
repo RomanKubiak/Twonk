@@ -42,7 +42,7 @@ class JUCE_API  KeyListener
 {
 public:
     /** Destructor. */
-    virtual ~KeyListener() = default;
+    virtual ~KeyListener()  {}
 
     //==============================================================================
     /** Called to indicate that a key has been pressed.
