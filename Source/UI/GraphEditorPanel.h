@@ -31,7 +31,7 @@
 class MainHostWindow;
 class TwonkFilterComponent;
 class TwonkFilterConnector;
-class TwonkFilterComponentPin;
+class TwonkFilterComponentPinWrapper;
 //==============================================================================
 /**
     A panel that displays and edits a FilterGraph.
@@ -80,7 +80,7 @@ private:
 public:
     TwonkFilterComponent* getComponentForFilter (AudioProcessorGraph::NodeID) const;
 	TwonkFilterConnector* getComponentForConnection (const AudioProcessorGraph::Connection&) const;
-    TwonkFilterComponentPin* findPinAt (Point<float>) const;
+    TwonkFilterComponentPinWrapper* findPinAt (Point<float>) const;
 	
 	Image bgImage;
     Point<int> originalTouchPos;

@@ -11,7 +11,7 @@
 #include "TwonkFilterComponentPin.h"
 #include "Twonk.h"
 //==============================================================================
-TwonkFilterComponentPin::TwonkFilterComponentPin (GraphEditorPanel& p, AudioProcessorGraph::NodeAndChannel pinToUse, bool isIn)
+TwonkFilterComponentPinWrapper::TwonkFilterComponentPinWrapper (GraphEditorPanel& p, AudioProcessorGraph::NodeAndChannel pinToUse, bool isIn)
 	: panel (p), graph (p.graph), pin (pinToUse), isInput (isIn)
 {
 	pin.isMIDI() ? currentColour = Colours::red : currentColour = Colours::green;
@@ -43,28 +43,32 @@ TwonkFilterComponentPin::TwonkFilterComponentPin (GraphEditorPanel& p, AudioProc
 	setSize (24, 24);
 }
 
-void TwonkFilterComponentPin::paint (Graphics& g)
+void TwonkFilterComponentPinWrapper::paint (Graphics& g)
 {
 	Path hexagon;
 	hexagon.addPolygon(getLocalBounds().getCentre().toFloat(), 6, getWidth() * 0.45f, float_Pi*0.5f);
 	g.setColour(currentColour.withAlpha(0.06f));
 	g.fillPath(hexagon);
 	g.setColour(currentColour);
-	g.strokePath(hexagon, PathStrokeType(NODE_SIZE * 0.2f));
+	g.strokePath(hexagon, PathStrokeType(NODE_SIZE * 0.1f));
 }
 
-void TwonkFilterComponentPin::mouseDown (const MouseEvent& e)
+void TwonkFilterComponentPinWrapper::mouseDown (const MouseEvent& e)
 {
 	AudioProcessorGraph::NodeAndChannel dummy {{}, 0};
 	panel.beginConnectorDrag (isInput ? dummy : pin, isInput ? pin : dummy, e);
 }
 
-void TwonkFilterComponentPin::mouseDrag (const MouseEvent& e)
+void TwonkFilterComponentPinWrapper::mouseDrag (const MouseEvent& e)
 {
 	panel.dragConnector (e);
 }
 
-void TwonkFilterComponentPin::mouseUp (const MouseEvent& e)
+void TwonkFilterComponentPinWrapper::mouseEnter(const MouseEvent &e)
+{
+}
+
+void TwonkFilterComponentPinWrapper::mouseUp (const MouseEvent& e)
 {
 	panel.endDraggingConnector (e);
 }

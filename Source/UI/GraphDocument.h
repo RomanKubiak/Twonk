@@ -86,9 +86,6 @@ private:
 	KnownPluginList& pluginList;
 	TwonkPlayHead &twonkPlayHead;
 	AudioProcessorPlayer graphPlayer;
-
-	class TitleBarComponent;
-	std::unique_ptr<TwonkTitleBarComponent> titleBarComponent;
 	std::unique_ptr<PluginListComponent> pluginListComponent;
 	//==============================================================================
 	struct PluginListBoxModel;

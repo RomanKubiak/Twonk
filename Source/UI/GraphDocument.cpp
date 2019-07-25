@@ -111,13 +111,6 @@ void GraphDocumentComponent::init()
 
 	if (isOnTouchDevice())
 	{
-		if (isOnTouchDevice())
-		{
-			titleBarComponent.reset (new TwonkTitleBarComponent (*this));
-			twonkPlayHead.addClockListener(titleBarComponent.get());
-			addAndMakeVisible (titleBarComponent.get());
-		}
-
 		pluginListBoxModel.reset (new PluginListBoxModel (pluginListBox, pluginList));
 		pluginListBox.setModel (pluginListBoxModel.get());
 		pluginListBox.setRowHeight (28);
@@ -158,11 +151,7 @@ GraphDocumentComponent::~GraphDocumentComponent()
 void GraphDocumentComponent::resized()
 {
 	auto r = getLocalBounds();
-	const int titleBarHeight = TITLEBAR_HEIGHT;
 	const int keysHeight = keyboardComp->isVisible() ? MIDI_KEYBOARD_HEIGHT : 0;
-
-	if (isOnTouchDevice())
-		titleBarComponent->setBounds (r.removeFromTop(titleBarHeight));
 
 	graphPanel->setBounds (r);
 	keyboardComp->setBounds (r.removeFromBottom (keysHeight));

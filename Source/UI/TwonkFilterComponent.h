@@ -39,7 +39,7 @@ class TwonkFilterComponent : public Component, public Timer, private AudioProces
 		std::unique_ptr<TextButton> removeButton;
 		std::unique_ptr<TextButton> bypassButton;
 		GraphEditorPanel& panel;
-		OwnedArray<TwonkFilterComponentPin> pins;
+		OwnedArray<TwonkFilterComponentPinWrapper> wrappingPins;
 		int numInputs = 0, numOutputs = 0;
 		int pinSize;
 		bool hitTest (int x, int y) override;
@@ -49,4 +49,6 @@ class TwonkFilterComponent : public Component, public Timer, private AudioProces
 		bool isInternalIO;
 		AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType ioDeviceType;
 		GlowEffect ge;
+		Path roundingHexagon;
+		Array <Point<float>> nodes;
 };

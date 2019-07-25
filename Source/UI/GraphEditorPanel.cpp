@@ -108,7 +108,7 @@ TwonkFilterConnector* GraphEditorPanel::getComponentForConnection (const AudioPr
     return nullptr;
 }
 
-TwonkFilterComponentPin* GraphEditorPanel::findPinAt (Point<float> pos) const
+TwonkFilterComponentPinWrapper* GraphEditorPanel::findPinAt (Point<float> pos) const
 {
     for (auto* fc : nodes)
     {
@@ -116,7 +116,7 @@ TwonkFilterComponentPin* GraphEditorPanel::findPinAt (Point<float> pos) const
         // variable before trying to cast it, or it gets mysteriously optimised away..
         auto* comp = fc->getComponentAt (pos.toInt() - fc->getPosition());
 
-        if (auto* pin = dynamic_cast<TwonkFilterComponentPin*> (comp))
+        if (auto* pin = dynamic_cast<TwonkFilterComponentPinWrapper*> (comp))
             return pin;
     }
 
