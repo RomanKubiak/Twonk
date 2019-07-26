@@ -22,7 +22,7 @@
 #include "DebugInfo/TwonkDebugInfoProcessor.h"
 #include "SequencerLinear/SequencerLinearProcessor.h"
 #include "SFZ/SFZeroAudioProcessor.h"
-
+#include "midiLooper/PizLooper.h"
 void TwonkFilters::getAllTypes(OwnedArray<PluginDescription>& results)
 {
 	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Tremolo", false, true)));
@@ -36,7 +36,7 @@ void TwonkFilters::getAllTypes(OwnedArray<PluginDescription>& results)
 	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Ping-Pong Delay", false, true)));
 	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Phaser", false, true)));
 	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Debug Info", false, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Sequencer Linear", true, true)));
+	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Sequencer", true, true)));
 	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("SFZ", true, true)));
 }
 
@@ -53,7 +53,7 @@ AudioPluginInstance* TwonkFilters::createInstance (const String& name)
 	if (name == "Ping-Pong Delay")  return new PingPongDelayAudioProcessor(InternalPlugin::getPluginDescriptionForTwonk("Ping-Pong Delay", false, true));
 	if (name == "Phaser")  return new PhaserAudioProcessor(InternalPlugin::getPluginDescriptionForTwonk("Phaser", false, true));
 	if (name == "Debug Info")  return new DebugInfoProcessor(InternalPlugin::getPluginDescriptionForTwonk("Debug Info", false, true));
-	if (name == "Sequencer Linear")  return new SequencerLinearProcessor(InternalPlugin::getPluginDescriptionForTwonk("Sequencer Linear", true, true));
+	if (name == "Sequencer")  return new PizLooper(InternalPlugin::getPluginDescriptionForTwonk("Sequencer", true, true));
 	if (name == "SFZ") return new sfzero::SFZeroAudioProcessor(InternalPlugin::getPluginDescriptionForTwonk("SFZ", true, true));
 	return nullptr;
 }

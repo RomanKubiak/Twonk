@@ -31,6 +31,16 @@ TwonkFilterComponent::TwonkFilterComponent(GraphEditorPanel& p, AudioProcessorGr
 	setSize (BUBBLE_SIZE, BUBBLE_SIZE);
 	ge.setGlowProperties(BUBBLE_SIZE * 0.06f, Colours::red.withAlpha(0.5f));
 	//setComponentEffect(&ge);
+	
+	pinAudioInput.reset(new TwonkFilterComponentPinWrapper(p, AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode));
+	pinAudioOutput.reset(new TwonkFilterComponentPinWrapper(p, AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode));
+	pinMIDIInput.reset(new TwonkFilterComponentPinWrapper(p, AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode));
+	pinMIDIOutput.reset(new TwonkFilterComponentPinWrapper(p, AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode));
+	
+	addAndMakeVisible(pinAudioInput.get());
+	addAndMakeVisible(pinAudioOutput.get());
+	addAndMakeVisible(pinMIDIInput.get());
+	addAndMakeVisible(pinMIDIOutput.get());
 
 	removeButton->setAlwaysOnTop(true);
 	bypassButton->setAlwaysOnTop(true);
@@ -41,7 +51,7 @@ TwonkFilterComponent::TwonkFilterComponent(GraphEditorPanel& p, AudioProcessorGr
 void TwonkFilterComponent::setType()
 {
 	isInternalIO = false;
-	baseColour = Colours::white;
+	baseColour = Colour(BUBBLE_COLOUR_INTERNAL);
 	AudioProcessorGraph::Node *node = panel.graph.graph.getNodeForId(pluginID);
 	if (node)
 	{
@@ -52,9 +62,14 @@ void TwonkFilterComponent::setType()
 				AudioProcessorGraph::AudioGraphIOProcessor *internalIO = dynamic_cast<AudioProcessorGraph::AudioGraphIOProcessor *>(processor);
 				if (internalIO)
 				{
-					baseColour = Colours::red;
+					baseColour = Colour(BUBBLE_COLOUR_INTERNAL);
 					isInternalIO = true;
 					ioDeviceType = internalIO->getType();
+				}
+				else
+				{
+					baseColour = Colour(BUBBLE_COLOUR_PLUGIN);
+					isInternalIO = false;
 				}
 			}
 		}
@@ -173,23 +188,7 @@ void TwonkFilterComponent::resized()
 	{
 		if (auto* processor = f->getProcessor())
 		{
-			for (auto* pin : wrappingPins)
-			{
-				const bool isInput = pin->isInput;
-				auto channelIndex = pin->pin.channelIndex;
-				int busIdx = 0;
-				processor->getOffsetInBusBufferForAbsoluteChannelIndex (isInput, channelIndex, busIdx);
-
-				const int total = isInput ? numIns : numOuts;
-				const int index = pin->pin.isMIDI() ? (total - 1) : channelIndex;
-
-				auto totalSpaces = static_cast<float> (total) + (static_cast<float> (jmax (0, processor->getBusCount (isInput) - 1)) * 0.5f);
-				auto indexPos = static_cast<float> (index) + (static_cast<float> (busIdx) * 0.5f);
-
-				pin->setBounds (proportionOfWidth ((1.0f + indexPos) / (totalSpaces + 1.0f)) - pinSize / 2,
-					pin->isInput ? 0 : (getHeight() - pinSize),
-					pinSize, pinSize);
-			}
+			
 		}
 	}
 
@@ -199,10 +198,10 @@ void TwonkFilterComponent::resized()
 
 Point<float> TwonkFilterComponent::getPinPos (int index, bool isInput) const
 {
-	for (auto* pin : wrappingPins)
+	/*for (auto* pin : wrappingPins)
 		if (pin->pin.channelIndex == index && isInput == pin->isInput)
 			return getPosition().toFloat() + pin->getBounds().getCentre().toFloat();
-
+	*/
 	return {};
 }
 
@@ -245,9 +244,7 @@ void TwonkFilterComponent::update()
 		numInputs = numIns;
 		numOutputs = numOuts;
 
-		wrappingPins.clear();
-
-		for (int i = 0; i < f->getProcessor()->getTotalNumInputChannels(); ++i)
+		/*for (int i = 0; i < f->getProcessor()->getTotalNumInputChannels(); ++i)
 			addAndMakeVisible (wrappingPins.add (new TwonkFilterComponentPinWrapper (panel, {pluginID, i}, true)));
 
 		if (f->getProcessor()->acceptsMidi())
@@ -258,7 +255,7 @@ void TwonkFilterComponent::update()
 
 		if (f->getProcessor()->producesMidi())
 			addAndMakeVisible (wrappingPins.add (new TwonkFilterComponentPinWrapper (panel, {pluginID, AudioProcessorGraph::midiChannelIndex}, false)));
-		
+		*/
 		resized();
 	}
 }

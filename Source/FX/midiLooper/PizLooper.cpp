@@ -78,7 +78,7 @@ JuceProgram::~JuceProgram()
 }
 
 //==============================================================================
-PizLooper::PizLooper() : programs(0), slotLimit(numSlots)
+PizLooper::PizLooper(const PluginDescription& descr) : PizAudioProcessor(descr), programs(0), slotLimit(numSlots)
 {
 	DBG("PizLooper()");
 	demo = !readKeyFile();

@@ -39,7 +39,10 @@ class TwonkFilterComponent : public Component, public Timer, private AudioProces
 		std::unique_ptr<TextButton> removeButton;
 		std::unique_ptr<TextButton> bypassButton;
 		GraphEditorPanel& panel;
-		OwnedArray<TwonkFilterComponentPinWrapper> wrappingPins;
+		std::unique_ptr<TwonkFilterComponentPinWrapper> pinAudioInput;
+		std::unique_ptr<TwonkFilterComponentPinWrapper> pinAudioOutput;
+		std::unique_ptr<TwonkFilterComponentPinWrapper> pinMIDIInput;
+		std::unique_ptr<TwonkFilterComponentPinWrapper> pinMIDIOutput;
 		int numInputs = 0, numOutputs = 0;
 		int pinSize;
 		bool hitTest (int x, int y) override;

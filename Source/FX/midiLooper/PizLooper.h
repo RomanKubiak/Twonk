@@ -5,7 +5,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MidiLoop.h"
 #include "common/key.h"
-
+#include "../../Filters/InternalFilters.h"
 
 //==============================================================================
 enum parameters {
@@ -125,7 +125,7 @@ class PizLooper  : public PizAudioProcessor,
 {
 public:
     //==============================================================================
-    PizLooper();
+    PizLooper(const PluginDescription& descr);
     ~PizLooper();
 
     //==============================================================================
@@ -261,7 +261,7 @@ public:
 	{
 		setParameterForSlot(kNote0+midiNoteNumber%12,curProgram,1.f);
 	}
-	void handleNoteOff(MidiKeyboardState *source, int midiChannel, int midiNoteNumber)
+	void handleNoteOff(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float)
 	{
 		setParameterForSlot(kNote0+midiNoteNumber%12,curProgram,0.f);
 	}

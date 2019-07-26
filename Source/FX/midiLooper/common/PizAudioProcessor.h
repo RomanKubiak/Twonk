@@ -11,14 +11,14 @@
 #undef min
 #undef max
 #include "../JuceLibraryCode/JuceHeader.h"
-
-class PizAudioProcessor : public AudioProcessor
+#include "../../Filters/InternalFilters.h"
+class PizAudioProcessor : public InternalPlugin
 {
 public:
-	PizAudioProcessor() : 
-		AudioProcessor(), 
+	PizAudioProcessor(const PluginDescription& descr) : 
 		bottomOctave(-2),
 		reaper(false),
+		InternalPlugin (descr, true),
 		currentPath(((File::getSpecialLocation(File::currentApplicationFile)).getParentDirectory()).getFullPathName())
 	{
 	}

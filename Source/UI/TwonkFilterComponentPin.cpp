@@ -10,7 +10,27 @@
 
 #include "TwonkFilterComponentPin.h"
 #include "Twonk.h"
-//==============================================================================
+TwonkFilterComponentPinWrapper::TwonkFilterComponentPinWrapper(GraphEditorPanel& _panel, AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType _pinType)
+	: panel(_panel), graph(panel.graph), pinType(_pinType)
+{
+	switch (pinType)
+	{
+		case AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode:
+		case AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode:
+			currentColour = Colour(NODE_COLOUR_AUDIO);
+			break;
+		case AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode:
+		case AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode:
+			currentColour = Colour(NODE_COLOUR_MIDI);
+			break;
+		default:
+			break;
+	}
+	setComponentEffect(nullptr);
+	setSize (NODE_SIZE, NODE_SIZE);
+}
+
+/*
 TwonkFilterComponentPinWrapper::TwonkFilterComponentPinWrapper (GraphEditorPanel& p, AudioProcessorGraph::NodeAndChannel pinToUse, bool isIn)
 	: panel (p), graph (p.graph), pin (pinToUse), isInput (isIn)
 {
@@ -42,7 +62,7 @@ TwonkFilterComponentPinWrapper::TwonkFilterComponentPinWrapper (GraphEditorPanel
 	setComponentEffect(nullptr);
 	setSize (24, 24);
 }
-
+*/
 void TwonkFilterComponentPinWrapper::paint (Graphics& g)
 {
 	Path hexagon;
