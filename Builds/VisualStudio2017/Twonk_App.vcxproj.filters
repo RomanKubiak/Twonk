@@ -17,6 +17,12 @@
     <Filter Include="Twonk\Source\FX\Flanger">
       <UniqueIdentifier>{AD44E9BE-45D2-DCEA-6BA3-B26AF6FB0ECC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Twonk\Source\FX\midiLooper\common">
+      <UniqueIdentifier>{F403B6D9-C416-892B-1B11-5AB862C24064}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\FX\midiLooper">
+      <UniqueIdentifier>{FBC1DC74-36F7-9A3D-E7A3-A68AAB8F5410}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Twonk\Source\FX\Phaser">
       <UniqueIdentifier>{5EFE7C29-360B-E0AB-F44B-AA983545D6F8}</UniqueIdentifier>
     </Filter>
@@ -498,6 +504,45 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\Flanger\TwonkFlangerProcessor.cpp">
       <Filter>Twonk\Source\FX\Flanger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\common\ChordFunctions.cpp">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\common\GuitarNeckComponent.cpp">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\common\piz_LookAndFeel.cpp">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\common\PizButton.cpp">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\LookAndFeel.cpp">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\MidiLoop.cpp">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\PianoRoll.cpp">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\piz_MidiMessageSequence.cpp">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\PizLooper.cpp">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\PizLooperEditor.cpp">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\PizLooperProcessing.cpp">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\Timeline.cpp">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\midiLooper\VSTSlider.cpp">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\Phaser\TwonkPhaserEditor.cpp">
       <Filter>Twonk\Source\FX\Phaser</Filter>
@@ -2546,6 +2591,69 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\Flanger\TwonkFlangerProcessor.h">
       <Filter>Twonk\Source\FX\Flanger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\CCSlider.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\ChannelSlider.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\ChordFunctions.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\ClickableLabel.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\GuitarNeckComponent.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\juce_FakeMouseMoveGenerator.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\key.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\log.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\MIDI.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\midistuff.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\NoteSlider.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\piz_LookAndFeel.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\PizAudioProcessor.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\common\PizButton.h">
+      <Filter>Twonk\Source\FX\midiLooper\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\LookAndFeel.h">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\MidiLoop.h">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\PianoRoll.h">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\piz_MidiMessageSequence.h">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\PizLooper.h">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\PizLooperEditor.h">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\midiLooper\VSTSlider.h">
+      <Filter>Twonk\Source\FX\midiLooper</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\Phaser\TwonkPhaserEditor.h">
       <Filter>Twonk\Source\FX\Phaser</Filter>

@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="NTe0XB0ij" name="Twonk" projectType="guiapp" version="1.0.0"
               juceFolder="../../../juce" vstFolderMac="~/SDKs/vstsdk2.4" vstFolderPC="c:\SDKs\vstsdk2.4"
-              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.3"
+              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.1"
               companyName="Instigator" displaySplashScreen="0" reportAppUsage="0"
               headerPath="../../vst3sdk&#10;../../Source/FX/SFZ/SFZero/&#10;../../Source/">
   <EXPORTFORMATS>
@@ -137,6 +137,58 @@
                 file="Source/FX/Flanger/TwonkFlangerProcessor.cpp"/>
           <FILE id="RJ8kTR" name="TwonkFlangerProcessor.h" compile="0" resource="0"
                 file="Source/FX/Flanger/TwonkFlangerProcessor.h"/>
+        </GROUP>
+        <GROUP id="{A5911F53-44CA-35F3-46FA-1B5FB7CC11B6}" name="midiLooper">
+          <GROUP id="{4C4375F6-C2B6-B193-B5C4-709036B08D2C}" name="common">
+            <FILE id="XBCA0b" name="CCSlider.h" compile="0" resource="0" file="Source/FX/midiLooper/common/CCSlider.h"/>
+            <FILE id="dJLuX5" name="ChannelSlider.h" compile="0" resource="0" file="Source/FX/midiLooper/common/ChannelSlider.h"/>
+            <FILE id="Z9aWV9" name="ChordFunctions.cpp" compile="1" resource="0"
+                  file="Source/FX/midiLooper/common/ChordFunctions.cpp"/>
+            <FILE id="F89vKT" name="ChordFunctions.h" compile="0" resource="0"
+                  file="Source/FX/midiLooper/common/ChordFunctions.h"/>
+            <FILE id="dLHNfX" name="ClickableLabel.h" compile="0" resource="0"
+                  file="Source/FX/midiLooper/common/ClickableLabel.h"/>
+            <FILE id="PTdSCG" name="GuitarNeckComponent.cpp" compile="1" resource="0"
+                  file="Source/FX/midiLooper/common/GuitarNeckComponent.cpp"/>
+            <FILE id="g4CFZG" name="GuitarNeckComponent.h" compile="0" resource="0"
+                  file="Source/FX/midiLooper/common/GuitarNeckComponent.h"/>
+            <FILE id="kkKUXv" name="juce_FakeMouseMoveGenerator.h" compile="0"
+                  resource="0" file="Source/FX/midiLooper/common/juce_FakeMouseMoveGenerator.h"/>
+            <FILE id="xSC2lD" name="key.h" compile="0" resource="0" file="Source/FX/midiLooper/common/key.h"/>
+            <FILE id="cRnTgL" name="log.h" compile="0" resource="0" file="Source/FX/midiLooper/common/log.h"/>
+            <FILE id="hZL0vC" name="MIDI.h" compile="0" resource="0" file="Source/FX/midiLooper/common/MIDI.h"/>
+            <FILE id="CdqKSP" name="midistuff.h" compile="0" resource="0" file="Source/FX/midiLooper/common/midistuff.h"/>
+            <FILE id="BPuz4q" name="NoteSlider.h" compile="0" resource="0" file="Source/FX/midiLooper/common/NoteSlider.h"/>
+            <FILE id="sptqVm" name="piz_LookAndFeel.cpp" compile="1" resource="0"
+                  file="Source/FX/midiLooper/common/piz_LookAndFeel.cpp"/>
+            <FILE id="HIDlkF" name="piz_LookAndFeel.h" compile="0" resource="0"
+                  file="Source/FX/midiLooper/common/piz_LookAndFeel.h"/>
+            <FILE id="qAsrvM" name="PizAudioProcessor.h" compile="0" resource="0"
+                  file="Source/FX/midiLooper/common/PizAudioProcessor.h"/>
+            <FILE id="iFUbTo" name="PizButton.cpp" compile="1" resource="0" file="Source/FX/midiLooper/common/PizButton.cpp"/>
+            <FILE id="FguRgT" name="PizButton.h" compile="0" resource="0" file="Source/FX/midiLooper/common/PizButton.h"/>
+          </GROUP>
+          <FILE id="p3fWoP" name="LookAndFeel.cpp" compile="1" resource="0" file="Source/FX/midiLooper/LookAndFeel.cpp"/>
+          <FILE id="CNazgG" name="LookAndFeel.h" compile="0" resource="0" file="Source/FX/midiLooper/LookAndFeel.h"/>
+          <FILE id="WK3TMG" name="MidiLoop.cpp" compile="1" resource="0" file="Source/FX/midiLooper/MidiLoop.cpp"/>
+          <FILE id="qnGvwl" name="MidiLoop.h" compile="0" resource="0" file="Source/FX/midiLooper/MidiLoop.h"/>
+          <FILE id="kyucZb" name="PianoRoll.cpp" compile="1" resource="0" file="Source/FX/midiLooper/PianoRoll.cpp"/>
+          <FILE id="B5RHGl" name="PianoRoll.h" compile="0" resource="0" file="Source/FX/midiLooper/PianoRoll.h"/>
+          <FILE id="dZTM60" name="piz_MidiMessageSequence.cpp" compile="1" resource="0"
+                file="Source/FX/midiLooper/piz_MidiMessageSequence.cpp"/>
+          <FILE id="Yqs8vK" name="piz_MidiMessageSequence.h" compile="0" resource="0"
+                file="Source/FX/midiLooper/piz_MidiMessageSequence.h"/>
+          <FILE id="GahylV" name="PizLooper.cpp" compile="1" resource="0" file="Source/FX/midiLooper/PizLooper.cpp"/>
+          <FILE id="pSwdaK" name="PizLooper.h" compile="0" resource="0" file="Source/FX/midiLooper/PizLooper.h"/>
+          <FILE id="eZg5dv" name="PizLooperEditor.cpp" compile="1" resource="0"
+                file="Source/FX/midiLooper/PizLooperEditor.cpp"/>
+          <FILE id="z7TaRr" name="PizLooperEditor.h" compile="0" resource="0"
+                file="Source/FX/midiLooper/PizLooperEditor.h"/>
+          <FILE id="YW8uxK" name="PizLooperProcessing.cpp" compile="1" resource="0"
+                file="Source/FX/midiLooper/PizLooperProcessing.cpp"/>
+          <FILE id="B6UbLC" name="Timeline.cpp" compile="1" resource="0" file="Source/FX/midiLooper/Timeline.cpp"/>
+          <FILE id="ZTc4JT" name="VSTSlider.cpp" compile="1" resource="0" file="Source/FX/midiLooper/VSTSlider.cpp"/>
+          <FILE id="oylTDw" name="VSTSlider.h" compile="0" resource="0" file="Source/FX/midiLooper/VSTSlider.h"/>
         </GROUP>
         <GROUP id="{40DAC0BA-6E03-1CD4-4245-CCFC33ACAC56}" name="Phaser">
           <FILE id="RfnU0h" name="TwonkPhaserEditor.cpp" compile="1" resource="0"

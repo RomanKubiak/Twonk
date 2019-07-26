@@ -77,6 +77,19 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkDistortionProcessor_23d1d60a.o \
   $(JUCE_OBJDIR)/TwonkFlangerEditor_997d0a31.o \
   $(JUCE_OBJDIR)/TwonkFlangerProcessor_8195a358.o \
+  $(JUCE_OBJDIR)/ChordFunctions_2c2d3c84.o \
+  $(JUCE_OBJDIR)/GuitarNeckComponent_6480b6f9.o \
+  $(JUCE_OBJDIR)/piz_LookAndFeel_171b70e5.o \
+  $(JUCE_OBJDIR)/PizButton_2150fcb8.o \
+  $(JUCE_OBJDIR)/LookAndFeel_2ea9b2ff.o \
+  $(JUCE_OBJDIR)/MidiLoop_dbccb24e.o \
+  $(JUCE_OBJDIR)/PianoRoll_ed6ae6e7.o \
+  $(JUCE_OBJDIR)/piz_MidiMessageSequence_9e0efaea.o \
+  $(JUCE_OBJDIR)/PizLooper_f3ca46d3.o \
+  $(JUCE_OBJDIR)/PizLooperEditor_4955b760.o \
+  $(JUCE_OBJDIR)/PizLooperProcessing_fc417306.o \
+  $(JUCE_OBJDIR)/Timeline_139bd32a.o \
+  $(JUCE_OBJDIR)/VSTSlider_cec8a599.o \
   $(JUCE_OBJDIR)/TwonkPhaserEditor_561d44b3.o \
   $(JUCE_OBJDIR)/TwonkPhaserProcessor_1b8e4196.o \
   $(JUCE_OBJDIR)/TwonkPPDelayEditor_ed313ffe.o \
@@ -182,6 +195,71 @@ $(JUCE_OBJDIR)/TwonkFlangerEditor_997d0a31.o: ../../Source/FX/Flanger/TwonkFlang
 $(JUCE_OBJDIR)/TwonkFlangerProcessor_8195a358.o: ../../Source/FX/Flanger/TwonkFlangerProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkFlangerProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/ChordFunctions_2c2d3c84.o: ../../Source/FX/midiLooper/common/ChordFunctions.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ChordFunctions.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/GuitarNeckComponent_6480b6f9.o: ../../Source/FX/midiLooper/common/GuitarNeckComponent.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling GuitarNeckComponent.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/piz_LookAndFeel_171b70e5.o: ../../Source/FX/midiLooper/common/piz_LookAndFeel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling piz_LookAndFeel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PizButton_2150fcb8.o: ../../Source/FX/midiLooper/common/PizButton.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PizButton.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/LookAndFeel_2ea9b2ff.o: ../../Source/FX/midiLooper/LookAndFeel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling LookAndFeel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/MidiLoop_dbccb24e.o: ../../Source/FX/midiLooper/MidiLoop.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling MidiLoop.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PianoRoll_ed6ae6e7.o: ../../Source/FX/midiLooper/PianoRoll.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PianoRoll.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/piz_MidiMessageSequence_9e0efaea.o: ../../Source/FX/midiLooper/piz_MidiMessageSequence.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling piz_MidiMessageSequence.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PizLooper_f3ca46d3.o: ../../Source/FX/midiLooper/PizLooper.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PizLooper.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PizLooperEditor_4955b760.o: ../../Source/FX/midiLooper/PizLooperEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PizLooperEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PizLooperProcessing_fc417306.o: ../../Source/FX/midiLooper/PizLooperProcessing.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PizLooperProcessing.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/Timeline_139bd32a.o: ../../Source/FX/midiLooper/Timeline.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling Timeline.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/VSTSlider_cec8a599.o: ../../Source/FX/midiLooper/VSTSlider.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling VSTSlider.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkPhaserEditor_561d44b3.o: ../../Source/FX/Phaser/TwonkPhaserEditor.cpp
