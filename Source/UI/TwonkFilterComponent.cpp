@@ -46,6 +46,8 @@ TwonkFilterComponent::TwonkFilterComponent(GraphEditorPanel& p, AudioProcessorGr
 	bypassButton->setAlwaysOnTop(true);
 	toggleOptions(false);
 	setType();
+
+	update();
 }
 
 void TwonkFilterComponent::setType()
@@ -131,7 +133,7 @@ void TwonkFilterComponent::timerCallback()
 void TwonkFilterComponent::paint(Graphics &g)
 {
 	g.setColour(Colours::white);
-	g.drawRect(getLocalBounds(), 1.0f);
+	//g.drawRect(getLocalBounds(), 1.0f);
 	g.setColour(baseColour.withAlpha(0.3f));
 	g.fillPath(roundingHexagon);
 	g.setColour(baseColour);
@@ -171,25 +173,15 @@ void TwonkFilterComponent::buttonClicked (Button* buttonThatWasClicked)
 
 void TwonkFilterComponent::resized()
 {
-	pinSize = BUBBLE_SIZE * 0.25;
-
 	roundingHexagon.clear();
 	roundingHexagon.addPolygon(getLocalBounds().getCentre().toFloat(), 6, BUBBLE_SIZE * 0.35f, float_Pi*0.5f);
-
-	int l = roundingHexagon.getLength();
-	nodes[0] = roundingHexagon.getPointAlongPath(l / 12.0f).translated(BUBBLE_SIZE * 0.1f, BUBBLE_SIZE * 0.1f);
-	nodes[1] = roundingHexagon.getPointAlongPath((l / 12.0f) * 3).translated(0, BUBBLE_SIZE * 0.1f);
-	nodes[2] = roundingHexagon.getPointAlongPath((l / 12.0f) * 5).translated(-BUBBLE_SIZE * 0.1f, BUBBLE_SIZE * 0.1f);
-	nodes[3] = roundingHexagon.getPointAlongPath((l / 12.0f) * 7).translated(-BUBBLE_SIZE * 0.1f, -BUBBLE_SIZE * 0.1f);
-	nodes[4] = roundingHexagon.getPointAlongPath((l / 12.0f) * 9).translated(0, -BUBBLE_SIZE * 0.1f);
-	nodes[5] = roundingHexagon.getPointAlongPath((l / 12.0f) * 11).translated(BUBBLE_SIZE * 0.1f, -BUBBLE_SIZE * 0.1f);
-
-	if (auto f = panel.graph.graph.getNodeForId (pluginID))
+	float offset = NODE_SIZE * 0.5f;
+	if (pinAudioInput && pinAudioOutput)
 	{
-		if (auto* processor = f->getProcessor())
-		{
-			
-		}
+		pinMIDIInput->setCentrePosition(offset, offset);
+		pinMIDIOutput->setCentrePosition(getWidth()-offset, offset);
+		pinAudioOutput->setCentrePosition(getWidth() - offset, getHeight()-offset);
+		pinAudioInput->setCentrePosition(offset, getHeight() - offset);
 	}
 
 	removeButton->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.0000f), proportionOfWidth (1.0000f), proportionOfHeight (0.3958f));
@@ -198,10 +190,21 @@ void TwonkFilterComponent::resized()
 
 Point<float> TwonkFilterComponent::getPinPos (int index, bool isInput) const
 {
-	/*for (auto* pin : wrappingPins)
-		if (pin->pin.channelIndex == index && isInput == pin->isInput)
-			return getPosition().toFloat() + pin->getBounds().getCentre().toFloat();
-	*/
+	DBG("TwonkFilterComponent::getPinPos index=" + String(index) + " isInput=" + String((int)isInput));
+	if (isInput)
+	{
+		if (index == 0)
+			return pinAudioInput->getBounds().getCentre().toFloat();
+		if (index == 1)
+			return pinMIDIInput->getBounds().getCentre().toFloat();
+	}
+	else
+	{
+		if (index == 0)
+			return pinAudioOutput->getBounds().getCentre().toFloat();
+		if (index == 1)
+			return pinMIDIOutput->getBounds().getCentre().toFloat();
+	}
 	return {};
 }
 
@@ -243,7 +246,7 @@ void TwonkFilterComponent::update()
 	{
 		numInputs = numIns;
 		numOutputs = numOuts;
-
+		
 		/*for (int i = 0; i < f->getProcessor()->getTotalNumInputChannels(); ++i)
 			addAndMakeVisible (wrappingPins.add (new TwonkFilterComponentPinWrapper (panel, {pluginID, i}, true)));
 
@@ -256,8 +259,9 @@ void TwonkFilterComponent::update()
 		if (f->getProcessor()->producesMidi())
 			addAndMakeVisible (wrappingPins.add (new TwonkFilterComponentPinWrapper (panel, {pluginID, AudioProcessorGraph::midiChannelIndex}, false)));
 		*/
-		resized();
+		
 	}
+	resized();
 }
 
 AudioProcessor* TwonkFilterComponent::getProcessor() const

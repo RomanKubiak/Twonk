@@ -67,7 +67,7 @@ void TwonkFilterComponentPinWrapper::paint (Graphics& g)
 {
 	Path hexagon;
 	hexagon.addPolygon(getLocalBounds().getCentre().toFloat(), 6, getWidth() * 0.45f, float_Pi*0.5f);
-	g.setColour(currentColour.withAlpha(0.06f));
+	g.setColour(currentColour.withAlpha(0.8f));
 	g.fillPath(hexagon);
 	g.setColour(currentColour);
 	g.strokePath(hexagon, PathStrokeType(NODE_SIZE * 0.1f));

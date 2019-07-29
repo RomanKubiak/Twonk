@@ -16,8 +16,8 @@
 #define BUBBLE_SIZE 100
 #define NODE_SIZE 32
 #define BUBBLE_COLOUR_INTERNAL Colours::blue
-#define BUBBLE_COLOUR_PLUGIN Colours::darkblue
+#define BUBBLE_COLOUR_PLUGIN Colours::yellow
 
-#define NODE_COLOUR_AUDIO  Colours::red
-#define NODE_COLOUR_MIDI   Colours::green
+#define NODE_COLOUR_AUDIO  Colours::green
+#define NODE_COLOUR_MIDI   Colours::red
 #define MIDI_KEYBOARD_HEIGHT 0
