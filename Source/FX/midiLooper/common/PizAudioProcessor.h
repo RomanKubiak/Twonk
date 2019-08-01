@@ -11,7 +11,7 @@
 #undef min
 #undef max
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../../Filters/InternalFilters.h"
+#include "Filters/InternalFilters.h"
 class PizAudioProcessor : public InternalPlugin
 {
 public:

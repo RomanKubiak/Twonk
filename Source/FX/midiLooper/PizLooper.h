@@ -7,6 +7,7 @@
 #include "common/key.h"
 #include "../../Filters/InternalFilters.h"
 
+#define final null
 //==============================================================================
 enum parameters {
     kThru = 0,      //midi thru
