@@ -7,7 +7,7 @@
               headerPath="../../vst3sdk&#10;../../Source/FX/SFZ/SFZero/&#10;../../Source/">
   <EXPORTFORMATS>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" vstFolder="" vst3Folder=""
-                smallIcon="c97aUr" bigIcon="c97aUr">
+                smallIcon="c97aUr" bigIcon="c97aUr" extraCompilerFlags="-w">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" targetName="Twonk" libraryPath="/usr/X11R6/lib/"
                        headerPath="/root/Twonk/JUCE"/>

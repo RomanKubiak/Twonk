@@ -822,6 +822,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="~/JUCE/modules/juce_audio_basics/buffers/juce_AudioProcessLoadMeasurer.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_audio_basics/buffers/juce_AudioProcessLoadMeasurer.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="~/JUCE/modules/juce_audio_basics/buffers/juce_AudioSampleBuffer.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -1212,7 +1224,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_audio_basics/juce_audio_basics.h">
+    <Unit filename="../../JUCE/modules/juce_audio_basics/juce_audio_basics.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -1428,7 +1440,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_audio_devices/juce_audio_devices.h">
+    <Unit filename="../../JUCE/modules/juce_audio_devices/juce_audio_devices.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -2370,7 +2382,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_audio_formats/juce_audio_formats.h">
+    <Unit filename="../../JUCE/modules/juce_audio_formats/juce_audio_formats.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -2754,6 +2766,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/pluginterfaces/vst/vstpshpack4.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/pluginterfaces/vst/vstspeaker.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -2761,24 +2779,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/pluginterfaces/vst/vsttypes.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/pluginterfaces/vst2.x/aeffect.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/pluginterfaces/vst2.x/aeffectx.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/pluginterfaces/vst2.x/vstfxstore.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -3066,6 +3066,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="~/JUCE/modules/juce_audio_processors/processors/juce_AudioProcessorParameterGroup.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_audio_processors/processors/juce_AudioProcessorParameterGroup.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="~/JUCE/modules/juce_audio_processors/processors/juce_GenericAudioProcessorEditor.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -3174,6 +3186,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="~/JUCE/modules/juce_audio_processors/utilities/juce_RangedAudioParameter.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="~/JUCE/modules/juce_audio_processors/juce_audio_processors.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -3186,7 +3204,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_audio_processors/juce_audio_processors.h">
+    <Unit filename="../../JUCE/modules/juce_audio_processors/juce_audio_processors.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -3390,7 +3408,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_audio_utils/juce_audio_utils.h">
+    <Unit filename="../../JUCE/modules/juce_audio_utils/juce_audio_utils.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -3415,6 +3433,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="~/JUCE/modules/juce_core/containers/juce_ArrayAllocationBase.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_core/containers/juce_ArrayBase.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_core/containers/juce_ArrayBase.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -3474,6 +3504,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="~/JUCE/modules/juce_core/containers/juce_OwnedArray.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="~/JUCE/modules/juce_core/containers/juce_OwnedArray.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -3487,6 +3523,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="~/JUCE/modules/juce_core/containers/juce_PropertySet.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_core/containers/juce_ReferenceCountedArray.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -3768,6 +3810,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="~/JUCE/modules/juce_core/memory/juce_HeavyweightLeakedObjectDetector.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="~/JUCE/modules/juce_core/memory/juce_LeakedObjectDetector.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -3823,6 +3871,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="~/JUCE/modules/juce_core/memory/juce_WeakReference.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_core/misc/juce_ConsoleApplication.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_core/misc/juce_ConsoleApplication.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -4003,6 +4063,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="~/JUCE/modules/juce_core/native/juce_osx_ObjCHelpers.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_core/native/juce_posix_IPAddress.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -4794,7 +4860,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_core/juce_core.h">
+    <Unit filename="../../JUCE/modules/juce_core/juce_core.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -4884,7 +4950,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_cryptography/juce_cryptography.h">
+    <Unit filename="../../JUCE/modules/juce_cryptography/juce_cryptography.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -4998,7 +5064,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_data_structures/juce_data_structures.h">
+    <Unit filename="../../JUCE/modules/juce_data_structures/juce_data_structures.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -5316,7 +5382,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_dsp/juce_dsp.h">
+    <Unit filename="../../JUCE/modules/juce_dsp/juce_dsp.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -5401,6 +5467,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="~/JUCE/modules/juce_events/interprocess/juce_InterprocessConnectionServer.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_events/interprocess/juce_NetworkServiceDiscovery.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_events/interprocess/juce_NetworkServiceDiscovery.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -5580,7 +5658,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_events/juce_events.h">
+    <Unit filename="../../JUCE/modules/juce_events/juce_events.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -6570,7 +6648,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_graphics/juce_graphics.h">
+    <Unit filename="../../JUCE/modules/juce_graphics/juce_graphics.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -6780,18 +6858,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="~/JUCE/modules/juce_gui_basics/components/juce_Desktop.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="~/JUCE/modules/juce_gui_basics/components/juce_Desktop.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="~/JUCE/modules/juce_gui_basics/components/juce_ModalComponentManager.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -6799,6 +6865,30 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="~/JUCE/modules/juce_gui_basics/components/juce_ModalComponentManager.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_gui_basics/desktop/juce_Desktop.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_gui_basics/desktop/juce_Desktop.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_gui_basics/desktop/juce_Displays.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_gui_basics/desktop/juce_Displays.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -8256,7 +8346,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_gui_basics/juce_gui_basics.h">
+    <Unit filename="../../JUCE/modules/juce_gui_basics/juce_gui_basics.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -8359,6 +8449,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="~/JUCE/modules/juce_gui_extra/embedding/juce_NSViewComponent.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="~/JUCE/modules/juce_gui_extra/embedding/juce_ScopedDPIAwarenessDisabler.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -8622,7 +8718,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../JUCE/modules/juce_gui_extra/juce_gui_extra.h">
+    <Unit filename="../../JUCE/modules/juce_gui_extra/juce_gui_extra.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
