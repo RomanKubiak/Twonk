@@ -42,7 +42,7 @@ GraphEditorPanel::~GraphEditorPanel()
 {
     graph.removeChangeListener (this);
     draggingConnector = nullptr;
-    nodes.clear();
+    //nodes.clear();
     connectors.clear();
 }
 
@@ -224,13 +224,13 @@ void GraphEditorPanel::dragConnector (const MouseEvent& e)
         {
             auto connection = draggingConnector->connection;
 
-            if (connection.source.nodeID == AudioProcessorGraph::NodeID() && ! pin->isInput)
+            if (connection.source.nodeID == AudioProcessorGraph::NodeID() && ! pin->isInput())
             {
-                connection.source = pin->pin;
+                connection.source = pin->getPin();
             }
-            else if (connection.destination.nodeID == AudioProcessorGraph::NodeID() && pin->isInput)
+            else if (connection.destination.nodeID == AudioProcessorGraph::NodeID() && pin->isInput())
             {
-                connection.destination = pin->pin;
+                connection.destination = pin->getPin();
             }
 
             if (graph.graph.canConnect (connection))
@@ -263,17 +263,17 @@ void GraphEditorPanel::endDraggingConnector (const MouseEvent& e)
     {
         if (connection.source.nodeID == AudioProcessorGraph::NodeID())
         {
-            if (pin->isInput)
+            if (pin->isInput())
                 return;
 
-            connection.source = pin->pin;
+            connection.source = pin->getPin();
         }
         else
         {
-            if (! pin->isInput)
+            if (! pin->isInput())
                 return;
 
-            connection.destination = pin->pin;
+            connection.destination = pin->getPin();
         }
 
         graph.graph.addConnection (connection);

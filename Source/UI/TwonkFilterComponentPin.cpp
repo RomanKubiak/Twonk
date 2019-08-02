@@ -9,19 +9,31 @@
 */
 
 #include "TwonkFilterComponentPin.h"
+#include "TwonkFilterComponent.h"
 #include "Twonk.h"
-TwonkFilterComponentPinWrapper::TwonkFilterComponentPinWrapper(GraphEditorPanel& _panel, AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType _pinType)
-	: panel(_panel), graph(panel.graph), pinType(_pinType)
+TwonkFilterComponentPinWrapper::TwonkFilterComponentPinWrapper(TwonkFilterComponent &_owner, GraphEditorPanel &_panel, AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType _pinType)
+	: pinType(_pinType), owner(_owner), panel(_panel)
 {
 	switch (pinType)
 	{
 		case AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode:
-		case AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode:
-			currentColour = Colour(NODE_COLOUR_AUDIO);
+			currentColour = Colour(BUBBLE_COLOUR_INTERNAL_AUDIO_IN);
+			pinImage = ImageCache::getFromMemory(BinaryData::icon_input_32_png, BinaryData::icon_input_32_pngSize);
 			break;
+
+		case AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode:
+			pinImage = ImageCache::getFromMemory(BinaryData::icon_output_32_png, BinaryData::icon_output_32_pngSize);
+			currentColour = Colour(BUBBLE_COLOUR_INTERNAL_AUDIO_OUT);
+			break;
+
 		case AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode:
+			pinImage = ImageCache::getFromMemory(BinaryData::icon_input_32_png, BinaryData::icon_input_32_pngSize);
+			currentColour = Colour(BUBBLE_COLOUR_INTERNAL_MIDI_IN);
+			break;
+
 		case AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode:
-			currentColour = Colour(NODE_COLOUR_MIDI);
+			pinImage = ImageCache::getFromMemory(BinaryData::icon_output_32_png, BinaryData::icon_output_32_pngSize);
+			currentColour = Colour(BUBBLE_COLOUR_INTERNAL_MIDI_OUT);
 			break;
 		default:
 			break;
@@ -67,7 +79,9 @@ void TwonkFilterComponentPinWrapper::paint (Graphics& g)
 {
 	Path hexagon;
 	hexagon.addPolygon(getLocalBounds().getCentre().toFloat(), 6, getWidth() * 0.45f, float_Pi*0.5f);
-	g.setColour(currentColour.withAlpha(0.8f));
+	g.setColour(currentColour.contrasting(0.1f));
+	g.drawImage(pinImage, getLocalBounds().toFloat().reduced(NODE_SIZE * 0.15f), RectanglePlacement::stretchToFit, true);
+	g.setColour(currentColour.withAlpha(0.3f));
 	g.fillPath(hexagon);
 	g.setColour(currentColour);
 	g.strokePath(hexagon, PathStrokeType(NODE_SIZE * 0.1f));
@@ -75,13 +89,11 @@ void TwonkFilterComponentPinWrapper::paint (Graphics& g)
 
 void TwonkFilterComponentPinWrapper::mouseDown (const MouseEvent& e)
 {
-	AudioProcessorGraph::NodeAndChannel dummy {{}, 0};
-	panel.beginConnectorDrag (isInput ? dummy : pin, isInput ? pin : dummy, e);
 }
 
 void TwonkFilterComponentPinWrapper::mouseDrag (const MouseEvent& e)
 {
-	panel.dragConnector (e);
+	owner.getPanel().dragConnector (e);
 }
 
 void TwonkFilterComponentPinWrapper::mouseEnter(const MouseEvent &e)
@@ -90,5 +102,5 @@ void TwonkFilterComponentPinWrapper::mouseEnter(const MouseEvent &e)
 
 void TwonkFilterComponentPinWrapper::mouseUp (const MouseEvent& e)
 {
-	panel.endDraggingConnector (e);
+	owner.getPanel().endDraggingConnector (e);
 }

@@ -1029,7 +1029,7 @@ bool PizLooper::writeMidiFile(int index, File file, bool IncrementFilename) {
 	}
 
     MidiMessageSequence timesigtrack;
-	uint8 ts [] = {0xFF,0x58,0x04,getNumerator(index),dd,0x18,0x08};
+	uint8 ts[] = { (uint8)0xFF, (uint8)0x58, (uint8)0x04, (uint8)getNumerator(index), (uint8)dd, (uint8)0x18, (uint8)0x08};
     timesigtrack.addEvent(MidiMessage(ts,7,0));
     midifile.addTrack(timesigtrack);
 

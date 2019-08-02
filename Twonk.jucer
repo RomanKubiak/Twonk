@@ -80,16 +80,33 @@
       <FILE id="OtV7Up" name="Twonk.h" compile="0" resource="0" file="Source/Twonk.h"/>
       <GROUP id="{2A443038-39E2-452E-37A0-3AD92CBC82C3}" name="Resources">
         <FILE id="BRulcj" name="hexagon.png" compile="0" resource="1" file="Source/Resources/hexagon.png"/>
+        <FILE id="HmV2EU" name="icon_block.png" compile="0" resource="1" file="Source/Resources/icon_block.png"/>
+        <FILE id="Y2rI0S" name="icon_block_64.png" compile="0" resource="1"
+              file="Source/Resources/icon_block_64.png"/>
+        <FILE id="qIEUfi" name="icon_input.png" compile="0" resource="1" file="Source/Resources/icon_input.png"/>
+        <FILE id="kSBoyl" name="icon_input_32.png" compile="0" resource="1"
+              file="Source/Resources/icon_input_32.png"/>
+        <FILE id="i2b2NE" name="icon_midi_64.png" compile="0" resource="1"
+              file="Source/Resources/icon_midi_64.png"/>
+        <FILE id="dQv5Sr" name="icon_output.png" compile="0" resource="1" file="Source/Resources/icon_output.png"/>
+        <FILE id="VfEgez" name="icon_output_32.png" compile="0" resource="1"
+              file="Source/Resources/icon_output_32.png"/>
+        <FILE id="re6tsa" name="icon_speaker.png" compile="0" resource="1"
+              file="Source/Resources/icon_speaker.png"/>
+        <FILE id="UEz55i" name="icon_speaker_64.png" compile="0" resource="1"
+              file="Source/Resources/icon_speaker_64.png"/>
         <FILE id="YUpw5f" name="iconfinder_icon-pause_211871.png" compile="0"
               resource="1" file="Source/Resources/iconfinder_icon-pause_211871.png"/>
         <FILE id="UUivlw" name="iconfinder_icon-play_211876.png" compile="0"
               resource="1" file="Source/Resources/iconfinder_icon-play_211876.png"/>
         <FILE id="TJO747" name="iconfinder_icon-stop_211931.png" compile="0"
               resource="1" file="Source/Resources/iconfinder_icon-stop_211931.png"/>
-        <FILE id="rsnRys" name="iconfinder_plugin_3671838.png" compile="0"
-              resource="1" file="Source/Resources/iconfinder_plugin_3671838.png"/>
         <FILE id="op7HUw" name="iconfinder_Streamline-75_185095.png" compile="0"
               resource="1" file="Source/Resources/iconfinder_Streamline-75_185095.png"/>
+        <FILE id="aNsZrb" name="LiberationSans-Bold.ttf" compile="0" resource="1"
+              file="Source/Resources/LiberationSans-Bold.ttf"/>
+        <FILE id="jbIBXC" name="LiberationSans-Regular.ttf" compile="0" resource="1"
+              file="Source/Resources/LiberationSans-Regular.ttf"/>
         <FILE id="ciZsqF" name="PianoKeyboard.svg.png" compile="0" resource="1"
               file="Source/Resources/PianoKeyboard.svg.png"/>
         <FILE id="gxldLH" name="sync_off.png" compile="0" resource="1" file="Source/Resources/sync_off.png"/>

@@ -118,24 +118,24 @@ NonShinyLookAndFeel::NonShinyLookAndFeel()
     const int textHighlightColour = 0x401111ee;
     const int standardOutlineColour = 0x50808080;
 
-    static const int standardColours[] =
+    static const int32_t standardColours[] =
     {
-        TextButton::buttonColourId,                 textButtonColour,
+		TextButton::buttonColourId,                 textButtonColour,
         TextButton::buttonOnColourId,               0xff4444ff,
         TextButton::textColourOnId,                 0xff000000,
         TextButton::textColourOffId,                0xff000000,
 
         ComboBox::buttonColourId,                   0xffb0b0b0,
-        ComboBox::outlineColourId,                  standardOutlineColour,
+		ComboBox::outlineColourId,                  standardOutlineColour,
 
         ToggleButton::textColourId,                 0xff000000,
 
         TextEditor::backgroundColourId,             0xffffffff,
         TextEditor::textColourId,                   0xff000000,
-        TextEditor::highlightColourId,              textHighlightColour,
+		TextEditor::highlightColourId,              textHighlightColour,
         TextEditor::highlightedTextColourId,        0xff000000,
         TextEditor::outlineColourId,                0x00000000,
-        TextEditor::focusedOutlineColourId,         textButtonColour,
+		TextEditor::focusedOutlineColourId,         textButtonColour,
         TextEditor::shadowColourId,                 0x38000000,
 
         Label::backgroundColourId,                  0x00000000,
@@ -205,7 +205,7 @@ NonShinyLookAndFeel::NonShinyLookAndFeel()
         GroupComponent::outlineColourId,            0x66000000,
         GroupComponent::textColourId,               0xff000000,
 
-        DirectoryContentsDisplayComponent::highlightColourId,   textHighlightColour,
+		DirectoryContentsDisplayComponent::highlightColourId,   textHighlightColour,
         DirectoryContentsDisplayComponent::textColourId,        0xff000000,
 
         0x1000440, /*LassoComponent::lassoFillColourId*/        0x66dddddd,
@@ -221,7 +221,7 @@ NonShinyLookAndFeel::NonShinyLookAndFeel()
         MidiKeyboardComponent::upDownButtonArrowColourId,       0xff000000,
 
         CodeEditorComponent::backgroundColourId,                0xffffffff,
-        CodeEditorComponent::highlightColourId,                 textHighlightColour,
+		CodeEditorComponent::highlightColourId,					textHighlightColour,
         CodeEditorComponent::defaultTextColourId,               0xff000000,
 
         ColourSelector::backgroundColourId,                     0xffe5e5e5,

@@ -2728,11 +2728,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Source\Resources\hexagon.png"/>
+    <None Include="..\..\Source\Resources\icon_block.png"/>
+    <None Include="..\..\Source\Resources\icon_block_64.png"/>
+    <None Include="..\..\Source\Resources\icon_input.png"/>
+    <None Include="..\..\Source\Resources\icon_input_32.png"/>
+    <None Include="..\..\Source\Resources\icon_midi_64.png"/>
+    <None Include="..\..\Source\Resources\icon_output.png"/>
+    <None Include="..\..\Source\Resources\icon_output_32.png"/>
+    <None Include="..\..\Source\Resources\icon_speaker.png"/>
+    <None Include="..\..\Source\Resources\icon_speaker_64.png"/>
     <None Include="..\..\Source\Resources\iconfinder_icon-pause_211871.png"/>
     <None Include="..\..\Source\Resources\iconfinder_icon-play_211876.png"/>
     <None Include="..\..\Source\Resources\iconfinder_icon-stop_211931.png"/>
-    <None Include="..\..\Source\Resources\iconfinder_plugin_3671838.png"/>
     <None Include="..\..\Source\Resources\iconfinder_Streamline-75_185095.png"/>
+    <None Include="..\..\Source\Resources\LiberationSans-Bold.ttf"/>
+    <None Include="..\..\Source\Resources\LiberationSans-Regular.ttf"/>
     <None Include="..\..\Source\Resources\PianoKeyboard.svg.png"/>
     <None Include="..\..\Source\Resources\sync_off.png"/>
     <None Include="..\..\Source\Resources\sync_on.png"/>

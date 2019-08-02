@@ -26,7 +26,7 @@ class TwonkFilterComponent : public Component, public Timer, private AudioProces
 		void timerCallback() override;
 		void parameterValueChanged (int, float) override;
 		void parameterGestureChanged (int, bool) override {}
-
+		GraphEditorPanel &getPanel() { return (panel); }
 		const AudioProcessorGraph::NodeID pluginID;
 		Point<int> originalPos;
 		
@@ -54,4 +54,6 @@ class TwonkFilterComponent : public Component, public Timer, private AudioProces
 		GlowEffect ge;
 		Path roundingHexagon;
 		Array <Point<float>> nodes;
+		int componentSize;
+		Image filterImage;
 };

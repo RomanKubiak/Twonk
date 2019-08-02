@@ -4841,6 +4841,33 @@
     <None Include="..\..\Source\Resources\hexagon.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
+    <None Include="..\..\Source\Resources\icon_block.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_block_64.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_input.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_input_32.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_midi_64.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_output.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_output_32.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_speaker.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_speaker_64.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
     <None Include="..\..\Source\Resources\iconfinder_icon-pause_211871.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
@@ -4850,10 +4877,13 @@
     <None Include="..\..\Source\Resources\iconfinder_icon-stop_211931.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
-    <None Include="..\..\Source\Resources\iconfinder_plugin_3671838.png">
+    <None Include="..\..\Source\Resources\iconfinder_Streamline-75_185095.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
-    <None Include="..\..\Source\Resources\iconfinder_Streamline-75_185095.png">
+    <None Include="..\..\Source\Resources\LiberationSans-Bold.ttf">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\LiberationSans-Regular.ttf">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\PianoKeyboard.svg.png">

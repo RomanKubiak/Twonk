@@ -3,7 +3,7 @@
 
 //==============================================================================
 TwonkFilterComponent::TwonkFilterComponent(GraphEditorPanel& p, AudioProcessorGraph::NodeID id) 
-	: panel (p), pluginID(id)
+	: panel (p), pluginID(id), componentSize(BUBBLE_SIZE)
 {
 	if (auto f = panel.graph.graph.getNodeForId (pluginID))
 	{
@@ -28,66 +28,70 @@ TwonkFilterComponent::TwonkFilterComponent(GraphEditorPanel& p, AudioProcessorGr
 	bypassButton->addListener (this);
 	bypassButton->setColour (TextButton::buttonColourId, Colour (0xff20d7d7));
 
-	setSize (BUBBLE_SIZE, BUBBLE_SIZE);
 	ge.setGlowProperties(BUBBLE_SIZE * 0.06f, Colours::red.withAlpha(0.5f));
 	//setComponentEffect(&ge);
 	
-	pinAudioInput.reset(new TwonkFilterComponentPinWrapper(p, AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode));
-	pinAudioOutput.reset(new TwonkFilterComponentPinWrapper(p, AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode));
-	pinMIDIInput.reset(new TwonkFilterComponentPinWrapper(p, AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode));
-	pinMIDIOutput.reset(new TwonkFilterComponentPinWrapper(p, AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode));
-	
-	addAndMakeVisible(pinAudioInput.get());
-	addAndMakeVisible(pinAudioOutput.get());
-	addAndMakeVisible(pinMIDIInput.get());
-	addAndMakeVisible(pinMIDIOutput.get());
-
 	removeButton->setAlwaysOnTop(true);
 	bypassButton->setAlwaysOnTop(true);
 	toggleOptions(false);
 	setType();
-
 	update();
-}
 
-void TwonkFilterComponent::setType()
-{
-	isInternalIO = false;
-	baseColour = Colour(BUBBLE_COLOUR_INTERNAL);
-	AudioProcessorGraph::Node *node = panel.graph.graph.getNodeForId(pluginID);
-	if (node)
+	if (!isInternalIO)
 	{
-		AudioProcessor *processor = node->getProcessor();
-		if (processor)
+		filterImage = ImageCache::getFromMemory(BinaryData::icon_block_64_png, BinaryData::icon_block_64_pngSize);
+		const AudioProcessorGraph::Node::Ptr f (panel.graph.graph.getNodeForId (pluginID));
+		jassert (f != nullptr);
+		numIns = f->getProcessor()->getTotalNumInputChannels();
+		if (f->getProcessor()->acceptsMidi())
+			++numIns;
+
+		numOuts = f->getProcessor()->getTotalNumOutputChannels();
+		if (f->getProcessor()->producesMidi())
+			++numOuts;
+		setName(f->getProcessor()->getName());
+		if (f->getProcessor()->getTotalNumInputChannels() > 0)
+			pinAudioInput.reset(new TwonkFilterComponentPinWrapper(*this, p, AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode));
+
+		if (f->getProcessor()->getTotalNumOutputChannels() > 0)
+			pinAudioOutput.reset(new TwonkFilterComponentPinWrapper(*this, p, AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode));
+
+		if (f->getProcessor()->acceptsMidi())
+			pinMIDIInput.reset(new TwonkFilterComponentPinWrapper(*this, p, AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode));
+
+		if (f->getProcessor()->producesMidi())
+			pinMIDIOutput.reset(new TwonkFilterComponentPinWrapper(*this, p, AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode));
+
+		addAndMakeVisible(pinAudioInput.get());
+		addAndMakeVisible(pinAudioOutput.get());
+		addAndMakeVisible(pinMIDIInput.get());
+		addAndMakeVisible(pinMIDIOutput.get());
+	}
+	else
+	{
+		if (ioDeviceType == AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode
+			|| ioDeviceType == AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode)
 		{
-			{
-				AudioProcessorGraph::AudioGraphIOProcessor *internalIO = dynamic_cast<AudioProcessorGraph::AudioGraphIOProcessor *>(processor);
-				if (internalIO)
-				{
-					baseColour = Colour(BUBBLE_COLOUR_INTERNAL);
-					isInternalIO = true;
-					ioDeviceType = internalIO->getType();
-				}
-				else
-				{
-					baseColour = Colour(BUBBLE_COLOUR_PLUGIN);
-					isInternalIO = false;
-				}
-			}
+			filterImage = ImageCache::getFromMemory(BinaryData::icon_midi_64_png, BinaryData::icon_midi_64_pngSize);
+		}
+		else
+		{
+			filterImage = ImageCache::getFromMemory(BinaryData::icon_speaker_64_png, BinaryData::icon_speaker_64_pngSize);
 		}
 	}
 }
+
 TwonkFilterComponent::~TwonkFilterComponent()
 {
-		if (auto f = panel.graph.graph.getNodeForId (pluginID))
+	if (auto f = panel.graph.graph.getNodeForId (pluginID))
+	{
+		if (auto* processor = f->getProcessor())
 		{
-			if (auto* processor = f->getProcessor())
-			{
-				if (auto* bypassParam = processor->getBypassParameter())
-					bypassParam->removeListener (this);
-			}
+			if (auto* bypassParam = processor->getBypassParameter())
+				bypassParam->removeListener (this);
 		}
 	}
+}
 
 void TwonkFilterComponent::mouseDown (const MouseEvent& e)
 {
@@ -132,8 +136,11 @@ void TwonkFilterComponent::timerCallback()
 
 void TwonkFilterComponent::paint(Graphics &g)
 {
-	g.setColour(Colours::white);
-	//g.drawRect(getLocalBounds(), 1.0f);
+	g.setColour(baseColour.contrasting(0.5f));
+	g.setFont(getDefaultTwonkSansFont());
+	g.drawText(getName(), getLocalBounds(), Justification::centredBottom, true);
+	g.setColour(baseColour.contrasting(0.1f));
+	g.drawImage(filterImage, getLocalBounds().toFloat().reduced(BUBBLE_SIZE * 0.35f), RectanglePlacement::stretchToFit, true);
 	g.setColour(baseColour.withAlpha(0.3f));
 	g.fillPath(roundingHexagon);
 	g.setColour(baseColour);
@@ -171,26 +178,69 @@ void TwonkFilterComponent::buttonClicked (Button* buttonThatWasClicked)
 	}
 }
 
+void TwonkFilterComponent::setType()
+{
+	isInternalIO = false;
+	baseColour = Colour(BUBBLE_COLOUR_INTERNAL_AUDIO_OUT);
+	AudioProcessorGraph::Node *node = panel.graph.graph.getNodeForId(pluginID);
+	if (node)
+	{
+		AudioProcessor *processor = node->getProcessor();
+		if (processor)
+		{
+			{
+				AudioProcessorGraph::AudioGraphIOProcessor *internalIO = dynamic_cast<AudioProcessorGraph::AudioGraphIOProcessor *>(processor);
+				if (internalIO)
+				{					
+					isInternalIO = true;
+					ioDeviceType = internalIO->getType();
+
+					if (internalIO->acceptsMidi())
+						baseColour = Colour(BUBBLE_COLOUR_INTERNAL_MIDI_IN);
+					if (internalIO->producesMidi())
+						baseColour = Colour(BUBBLE_COLOUR_INTERNAL_MIDI_OUT);
+					if (internalIO->getTotalNumOutputChannels()>0)
+						baseColour = Colour(BUBBLE_COLOUR_INTERNAL_AUDIO_OUT);
+					if (internalIO->getTotalNumInputChannels() > 0)
+						baseColour = Colour(BUBBLE_COLOUR_INTERNAL_AUDIO_IN);
+				}
+				else
+				{
+					if (processor->getTotalNumInputChannels() > 0)
+						baseColour = Colour(BUBBLE_COLOUR_PLUGIN_FX);
+					else
+						baseColour = Colour(BUBBLE_COLOUR_PLUGIN_SYNTH);
+
+					isInternalIO = false;
+				}
+			}
+		}
+	}
+}
+
 void TwonkFilterComponent::resized()
 {
 	roundingHexagon.clear();
-	roundingHexagon.addPolygon(getLocalBounds().getCentre().toFloat(), 6, BUBBLE_SIZE * 0.35f, float_Pi*0.5f);
-	float offset = NODE_SIZE * 0.5f;
-	if (pinAudioInput && pinAudioOutput)
+	roundingHexagon.addPolygon(getLocalBounds().getCentre().toFloat(), 6, BUBBLE_SIZE * 0.3f, float_Pi*0.5f);
+	if (!isInternalIO)
 	{
-		pinMIDIInput->setCentrePosition(offset, offset);
-		pinMIDIOutput->setCentrePosition(getWidth()-offset, offset);
-		pinAudioOutput->setCentrePosition(getWidth() - offset, getHeight()-offset);
-		pinAudioInput->setCentrePosition(offset, getHeight() - offset);
+		float offset = NODE_SIZE * 0.5f;
+		if (pinAudioInput)
+			pinAudioInput->setCentrePosition(offset, getHeight() - offset);
+		if (pinMIDIInput)
+			pinMIDIInput->setCentrePosition(offset, offset);
+		if (pinMIDIOutput)
+			pinMIDIOutput->setCentrePosition(getWidth() - offset, offset);
+		if (pinAudioOutput)
+			pinAudioOutput->setCentrePosition(getWidth() - offset, getHeight() - offset);
 	}
-
+		
 	removeButton->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.0000f), proportionOfWidth (1.0000f), proportionOfHeight (0.3958f));
 	bypassButton->setBounds (proportionOfWidth (0.0000f), proportionOfHeight (0.6042f), proportionOfWidth (1.0000f), proportionOfHeight (0.3958f));
 }
 
 Point<float> TwonkFilterComponent::getPinPos (int index, bool isInput) const
 {
-	DBG("TwonkFilterComponent::getPinPos index=" + String(index) + " isInput=" + String((int)isInput));
 	if (isInput)
 	{
 		if (index == 0)
@@ -230,10 +280,11 @@ void TwonkFilterComponent::update()
 	if (f->getProcessor()->producesMidi())
 		++numOuts;
 
-	int w = BUBBLE_SIZE;
-	int h = BUBBLE_SIZE;
+	int w = componentSize;
+	int h = componentSize;
 
-	w = jmax (w, (jmax (numIns, numOuts) + 1) * 20);
+	if (!isInternalIO)
+		w = jmax (w, (jmax (numIns, numOuts) + 1) * 20);
 
 	setSize (w, h);
 

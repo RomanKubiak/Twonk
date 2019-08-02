@@ -22,7 +22,7 @@ class SidePanelLookAndFeel : public LookAndFeel_V4
 	public:
 		SidePanelLookAndFeel()
 		{
-			font = Font(TWONK_DEFAULT_TYPEFACE, 16.0f, Font::plain);
+			font = getDefaultTwonkSansFont();
 		}
 		Font getSidePanelTitleFont(SidePanel &)
 		{

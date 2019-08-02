@@ -15,9 +15,20 @@
 #define TITLEBAR_HEIGHT 48
 #define BUBBLE_SIZE 100
 #define NODE_SIZE 32
-#define BUBBLE_COLOUR_INTERNAL Colours::blue
-#define BUBBLE_COLOUR_PLUGIN Colours::yellow
 
-#define NODE_COLOUR_AUDIO  Colours::green
-#define NODE_COLOUR_MIDI   Colours::red
+#define BUBBLE_COLOUR_INTERNAL_MIDI_IN		0xffbb3366
+#define BUBBLE_COLOUR_INTERNAL_MIDI_OUT		0xffff1188
+
+#define BUBBLE_COLOUR_INTERNAL_AUDIO_IN		0xff11bbcc
+#define BUBBLE_COLOUR_INTERNAL_AUDIO_OUT	0xff1199bb
+
+#define BUBBLE_COLOUR_PLUGIN_FX				0xffffee22
+#define BUBBLE_COLOUR_PLUGIN_SYNTH			0xff64ff22
+
 #define MIDI_KEYBOARD_HEIGHT 0
+
+static const Font getDefaultTwonkSansFont()
+{
+	Typeface::Ptr t = Typeface::createSystemTypefaceFor(BinaryData::LiberationSansRegular_ttf, BinaryData::LiberationSansBold_ttfSize);
+	return (Font(t));
+}
