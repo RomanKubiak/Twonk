@@ -28,7 +28,7 @@
 PingPongDelayAudioProcessorEditor::PingPongDelayAudioProcessorEditor (PingPongDelayAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
-    const OwnedArray<AudioProcessorParameter>& parameters = processor.getParameters();
+    const Array<AudioProcessorParameter *>& parameters = processor.getParameters();
     int comboBoxCounter = 0;
 
     int editorHeight = 2 * editorMargin;

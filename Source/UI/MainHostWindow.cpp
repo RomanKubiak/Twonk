@@ -92,7 +92,7 @@ MainHostWindow::MainHostWindow(bool _fullscreen, bool _opengl)
 	   setResizeLimits (500, 400, 10000, 10000);
 	   centreWithSize (1024, 600);
    }
-	deviceManager.initialise(2, 2, getAppProperties().getUserSettings()->getXmlValue("audioDeviceState"), true);
+	deviceManager.initialise(2, 2, getAppProperties().getUserSettings()->getXmlValue("audioDeviceState").get(), true);
     graphHolder.reset (new GraphDocumentComponent (formatManager, deviceManager, knownPluginList, *twonkPlayHead));
 
     setContentNonOwned (graphHolder.get(), false);

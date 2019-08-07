@@ -48,7 +48,7 @@ public:
         owner.activityList.addListener (this);
     }
 
-    ~ComponentListComp()
+    ~ComponentListComp() override
     {
         saveOpenness();
         owner.activityList.removeListener (this);
@@ -241,6 +241,8 @@ private:
                 else
                     classItem.launchEditor();
             }
+
+            using Button::clicked;
 
             const ClassItem& classItem;
             bool isShowCode;

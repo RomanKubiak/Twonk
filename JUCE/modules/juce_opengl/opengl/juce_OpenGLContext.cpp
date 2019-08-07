@@ -40,8 +40,8 @@ extern Array<AppInactivityCallback*> appBecomingInactiveCallbacks;
 // this prevents them from happening (which some messy locking behaviour)
 struct iOSBackgroundProcessCheck  : public AppInactivityCallback
 {
-    iOSBackgroundProcessCheck()     { isBackgroundProcess(); appBecomingInactiveCallbacks.add (this); }
-    ~iOSBackgroundProcessCheck()    { appBecomingInactiveCallbacks.removeAllInstancesOf (this); }
+    iOSBackgroundProcessCheck()              { isBackgroundProcess(); appBecomingInactiveCallbacks.add (this); }
+    ~iOSBackgroundProcessCheck() override    { appBecomingInactiveCallbacks.removeAllInstancesOf (this); }
 
     bool isBackgroundProcess()
     {
@@ -85,7 +85,7 @@ public:
             nativeContext.reset();
     }
 
-    ~CachedImage()
+    ~CachedImage() override
     {
         stop();
     }
@@ -293,8 +293,8 @@ public:
             {
                 scale = newScale;
                 viewportArea = newArea;
-                transform = AffineTransform::scale ((float) newArea.getRight()  / (float) localBounds.getRight(),
-                                                    (float) newArea.getBottom() / (float) localBounds.getBottom());
+                transform = AffineTransform::scale ((float) newArea.getWidth()  / (float) localBounds.getWidth(),
+                                                    (float) newArea.getHeight() / (float) localBounds.getHeight());
 
                 if (canTriggerUpdate)
                     invalidateAll();
@@ -540,7 +540,7 @@ public:
     struct BlockingWorker  : public OpenGLContext::AsyncWorker
     {
         BlockingWorker (OpenGLContext::AsyncWorker::Ptr && workerToUse)
-            : originalWorker (static_cast<OpenGLContext::AsyncWorker::Ptr&&> (workerToUse))
+            : originalWorker (std::move (workerToUse))
         {}
 
         void operator() (OpenGLContext& calleeContext)
@@ -590,7 +590,7 @@ public:
         {
             if (shouldBlock)
             {
-                auto blocker = new BlockingWorker (static_cast<OpenGLContext::AsyncWorker::Ptr&&> (workerToUse));
+                auto blocker = new BlockingWorker (std::move (workerToUse));
                 OpenGLContext::AsyncWorker::Ptr worker (*blocker);
                 workQueue.add (worker);
 
@@ -601,7 +601,7 @@ public:
             }
             else
             {
-                workQueue.add (static_cast<OpenGLContext::AsyncWorker::Ptr&&> (workerToUse));
+                workQueue.add (std::move (workerToUse));
 
                 messageManagerLock.abort();
                 context.triggerRepaint();
@@ -671,7 +671,7 @@ public:
             attach();
     }
 
-    ~Attachment()
+    ~Attachment() override
     {
         detach();
     }
@@ -702,6 +702,8 @@ public:
         }
     }
 
+    using ComponentMovementWatcher::componentMovedOrResized;
+
     void componentPeerChanged() override
     {
         detach();
@@ -724,6 +726,8 @@ public:
             detach();
         }
     }
+
+    using ComponentMovementWatcher::componentVisibilityChanged;
 
    #if JUCE_DEBUG || JUCE_LOG_ASSERTIONS
     void componentBeingDeleted (Component& c) override
@@ -1057,7 +1061,7 @@ size_t OpenGLContext::getImageCacheSize() const noexcept            { return ima
 void OpenGLContext::execute (OpenGLContext::AsyncWorker::Ptr workerToUse, bool shouldBlock)
 {
     if (auto* c = getCachedImage())
-        c->execute (static_cast<OpenGLContext::AsyncWorker::Ptr&&> (workerToUse), shouldBlock);
+        c->execute (std::move (workerToUse), shouldBlock);
     else
         jassertfalse; // You must have attached the context to a component
 }
@@ -1199,12 +1203,19 @@ void OpenGLContext::copyTexture (const Rectangle<int>& targetClipArea,
         extensions.glEnableVertexAttribArray (index);
         JUCE_CHECK_OPENGL_ERROR
 
-        glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
+        if (extensions.glCheckFramebufferStatus (GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
+        {
+            glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
 
-        extensions.glBindBuffer (GL_ARRAY_BUFFER, 0);
-        extensions.glUseProgram (0);
-        extensions.glDisableVertexAttribArray (index);
-        extensions.glDeleteBuffers (1, &vertexBuffer);
+            extensions.glBindBuffer (GL_ARRAY_BUFFER, 0);
+            extensions.glUseProgram (0);
+            extensions.glDisableVertexAttribArray (index);
+            extensions.glDeleteBuffers (1, &vertexBuffer);
+        }
+        else
+        {
+            clearGLError();
+        }
     }
     else
     {
@@ -1218,7 +1229,7 @@ void OpenGLContext::copyTexture (const Rectangle<int>& targetClipArea,
 EGLDisplay OpenGLContext::NativeContext::display = EGL_NO_DISPLAY;
 EGLDisplay OpenGLContext::NativeContext::config;
 
-void OpenGLContext::NativeContext::surfaceCreated (jobject holder)
+void OpenGLContext::NativeContext::surfaceCreated (LocalRef<jobject> holder)
 {
     ignoreUnused (holder);
 
@@ -1235,7 +1246,7 @@ void OpenGLContext::NativeContext::surfaceCreated (jobject holder)
     }
 }
 
-void OpenGLContext::NativeContext::surfaceDestroyed (jobject holder)
+void OpenGLContext::NativeContext::surfaceDestroyed (LocalRef<jobject> holder)
 {
     ignoreUnused (holder);
 

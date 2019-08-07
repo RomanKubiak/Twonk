@@ -459,6 +459,8 @@ public:
             if (initError.isNotEmpty())
                 JUCE_ASIO_LOG ("ASIOInit: " + initError);
 
+            setSampleRate (getSampleRate());
+
             needToReset = false;
         }
 
@@ -770,7 +772,7 @@ private:
         if (CharPointer_UTF8::isValidString (text, length))
             return String::fromUTF8 (text, length);
 
-        WCHAR wideVersion[64] = {};
+        WCHAR wideVersion[512] = {};
         MultiByteToWideChar (CP_ACP, 0, text, length, wideVersion, numElementsInArray (wideVersion));
         return wideVersion;
     }
@@ -1073,11 +1075,21 @@ private:
         }
     }
 
+    static bool shouldReleaseObject (const String& driverName)
+    {
+        return driverName != "Yamaha Steinberg USB ASIO";
+    }
+
     void removeCurrentDriver()
     {
         if (asioObject != nullptr)
         {
-            asioObject->Release();
+            char buffer[512] = {};
+            asioObject->getDriverName (buffer);
+
+            if (shouldReleaseObject (buffer))
+                asioObject->Release();
+
             asioObject = nullptr;
         }
     }
@@ -1113,9 +1125,11 @@ private:
     String getLastDriverError() const
     {
         jassert (asioObject != nullptr);
+
         char buffer[512] = {};
         asioObject->getErrorMessage (buffer);
-        return String (buffer, sizeof (buffer) - 1);
+
+        return convertASIOString (buffer, sizeof (buffer));
     }
 
     String initDriver()
@@ -1123,7 +1137,7 @@ private:
         if (asioObject == nullptr)
             return "No Driver";
 
-        const bool initOk = !! asioObject->init (juce_messageWindowHandle);
+        auto initOk = (asioObject->init (juce_messageWindowHandle) > 0);
         String driverError;
 
         // Get error message if init() failed, or if it's a buggy Denon driver,
@@ -1425,7 +1439,12 @@ public:
             TCHAR name[256] = {};
 
             while (RegEnumKey (hk, index++, name, numElementsInArray (name)) == ERROR_SUCCESS)
+            {
+                if (isBlacklistedDriver (name))
+                    continue;
+
                 addDriverInfo (name, hk);
+            }
 
             RegCloseKey (hk);
         }
@@ -1557,6 +1576,11 @@ private:
     }
 
     //==============================================================================
+    static bool isBlacklistedDriver (const String& driverName)
+    {
+        return driverName.startsWith ("ASIO DirectX Full Duplex") || driverName == "ASIO Multimedia Driver";
+    }
+
     void addDriverInfo (const String& keyName, HKEY hk)
     {
         HKEY subKey;

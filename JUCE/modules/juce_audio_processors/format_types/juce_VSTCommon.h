@@ -145,7 +145,7 @@ struct SpeakerMappings  : private AudioChannelSet // (inheritance only to give e
         VstSpeakerConfigurationHolder (const Vst2::VstSpeakerArrangement& vstConfig)   { operator= (vstConfig); }
         VstSpeakerConfigurationHolder (const VstSpeakerConfigurationHolder& other) { operator= (other.get()); }
         VstSpeakerConfigurationHolder (VstSpeakerConfigurationHolder&& other)
-            : storage (static_cast<HeapBlock<Vst2::VstSpeakerArrangement>&&> (other.storage)) { other.clear(); }
+            : storage (std::move (other.storage)) { other.clear(); }
 
         VstSpeakerConfigurationHolder (const AudioChannelSet& channels)
         {
@@ -180,7 +180,7 @@ struct SpeakerMappings  : private AudioChannelSet // (inheritance only to give e
 
         VstSpeakerConfigurationHolder& operator= (VstSpeakerConfigurationHolder && vstConfig)
         {
-            storage = static_cast<HeapBlock<Vst2::VstSpeakerArrangement>&&> (vstConfig.storage);
+            storage = std::move (vstConfig.storage);
             vstConfig.clear();
 
             return *this;
@@ -195,8 +195,8 @@ struct SpeakerMappings  : private AudioChannelSet // (inheritance only to give e
 
         Vst2::VstSpeakerArrangement* allocate (int numChannels)
         {
-            auto arrangementSize = sizeof (Vst2::VstSpeakerArrangement)
-                                     + sizeof (Vst2::VstSpeakerProperties) * static_cast<size_t> (jmax (8, numChannels) - 8);
+            auto arrangementSize = (size_t) (jmax (8, numChannels) - 8) * sizeof (Vst2::VstSpeakerProperties)
+                                    + sizeof (Vst2::VstSpeakerArrangement);
 
             storage.malloc (1, arrangementSize);
             return storage.get();

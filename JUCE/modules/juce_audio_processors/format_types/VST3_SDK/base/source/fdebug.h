@@ -11,28 +11,28 @@
 //
 //-----------------------------------------------------------------------------
 // LICENSE
-// (c) 2018, Steinberg Media Technologies GmbH, All Rights Reserved
+// (c) 2019, Steinberg Media Technologies GmbH, All Rights Reserved
 //-----------------------------------------------------------------------------
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
-//
-//   * Redistributions of source code must retain the above copyright notice,
+// 
+//   * Redistributions of source code must retain the above copyright notice, 
 //     this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
+//     this list of conditions and the following disclaimer in the documentation 
 //     and/or other materials provided with the distribution.
 //   * Neither the name of the Steinberg Media Technologies nor the names of its
-//     contributors may be used to endorse or promote products derived from this
+//     contributors may be used to endorse or promote products derived from this 
 //     software without specific prior written permission.
-//
+// 
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-// IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-// LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+// IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+// LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
@@ -60,7 +60,7 @@
 //-----------------------------------------------------------------------------
 // development / release
 //-----------------------------------------------------------------------------
-#if !defined (DEVELOPMENT) && !defined (RELEASE)
+#if !defined (DEVELOPMENT) && !defined (RELEASE) 
 	#ifdef _DEBUG
 		#define DEVELOPMENT 1
 	#elif defined (NDEBUG)
@@ -128,12 +128,12 @@
 */
 
 ///@{
-#define DBPRT0(a) FDebugPrint (a);
-#define DBPRT1(a, b) FDebugPrint (a, b);
-#define DBPRT2(a, b, c) FDebugPrint (a, b, c);
-#define DBPRT3(a, b, c, d) FDebugPrint (a, b, c, d);
-#define DBPRT4(a, b, c, d, e) FDebugPrint (a, b, c, d, e);
-#define DBPRT5(a, b, c, d, e, f) FDebugPrint (a, b, c, d, e, f);
+#define SMTG_DBPRT0(a) FDebugPrint (a);
+#define SMTG_DBPRT1(a, b) FDebugPrint (a, b);
+#define SMTG_DBPRT2(a, b, c) FDebugPrint (a, b, c);
+#define SMTG_DBPRT3(a, b, c, d) FDebugPrint (a, b, c, d);
+#define SMTG_DBPRT4(a, b, c, d, e) FDebugPrint (a, b, c, d, e);
+#define SMTG_DBPRT5(a, b, c, d, e, f) FDebugPrint (a, b, c, d, e, f);
 ///@}
 
 /** @name Helper functions for the above defined macros.
@@ -198,12 +198,12 @@ void* operator new (size_t, int, const char*, int);
 #define SMTG_VERIFY_IS(f, r) f;
 #define SMTG_VERIFY_NOT(f, r) f;
 
-#define DBPRT0(a)
-#define DBPRT1(a, b)
-#define DBPRT2(a, b, c)
-#define DBPRT3(a, b, c, d)
-#define DBPRT4(a, b, c, d, e)
-#define DBPRT5(a, b, c, d, e, f)
+#define SMTG_DBPRT0(a)
+#define SMTG_DBPRT1(a, b)
+#define SMTG_DBPRT2(a, b, c)
+#define SMTG_DBPRT3(a, b, c, d)
+#define SMTG_DBPRT4(a, b, c, d, e)
+#define SMTG_DBPRT5(a, b, c, d, e, f)
 
 #ifndef NEW
 #define NEW new
@@ -230,4 +230,11 @@ void* operator new (size_t, int, const char*, int);
 #define VERIFY_IS			SMTG_VERIFY_IS
 #define VERIFY_NOT			SMTG_VERIFY_NOT
 #define PRINTSYSERROR		SMTG_PRINTSYSERROR
+
+#define DBPRT0				SMTG_DBPRT0
+#define DBPRT1				SMTG_DBPRT1
+#define DBPRT2				SMTG_DBPRT2
+#define DBPRT3				SMTG_DBPRT3
+#define DBPRT4				SMTG_DBPRT4
+#define DBPRT5				SMTG_DBPRT5
 #endif

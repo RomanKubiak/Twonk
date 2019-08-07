@@ -24,6 +24,12 @@
   ==============================================================================
 */
 
+#if JUCE_CLANG && ! (defined (MAC_OS_X_VERSION_10_16) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_16)
+ #pragma clang diagnostic push
+ #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+ #define JUCE_DEPRECATION_IGNORED 1
+#endif
+
 struct CameraDevice::Pimpl
 {
     Pimpl (CameraDevice& ownerToUse, const String&, int /*index*/, int /*minWidth*/, int /*minHeight*/,
@@ -123,7 +129,7 @@ struct CameraDevice::Pimpl
             refreshConnections();
     }
 
-    void takeStillPicture (std::function<void (const Image&)> pictureTakenCallbackToUse)
+    void takeStillPicture (std::function<void(const Image&)> pictureTakenCallbackToUse)
     {
         if (pictureTakenCallbackToUse == nullptr)
         {
@@ -131,7 +137,7 @@ struct CameraDevice::Pimpl
             return;
         }
 
-        pictureTakenCallback = static_cast<std::function<void (const Image&)>&&> (pictureTakenCallbackToUse);
+        pictureTakenCallback = std::move (pictureTakenCallbackToUse);
 
         triggerImageCapture();
     }
@@ -143,6 +149,7 @@ struct CameraDevice::Pimpl
         firstPresentationTime = Time::getCurrentTime();
         file.deleteFile();
 
+        isRecording = true;
         [fileOutput startRecordingToOutputFileURL: createNSURLFromFile (file)
                                 recordingDelegate: callbackDelegate];
     }
@@ -258,7 +265,7 @@ struct CameraDevice::Pimpl
     CriticalSection listenerLock;
     ListenerList<Listener> listeners;
 
-    std::function<void (const Image&)> pictureTakenCallback;
+    std::function<void(const Image&)> pictureTakenCallback;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE (Pimpl)
 
@@ -327,3 +334,8 @@ String CameraDevice::getFileExtension()
 {
     return ".mov";
 }
+
+#if JUCE_DEPRECATION_IGNORED
+ #pragma clang diagnostic pop
+ #undef JUCE_DEPRECATION_IGNORED
+#endif

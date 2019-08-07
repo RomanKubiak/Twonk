@@ -30,7 +30,7 @@
 
 //==============================================================================
 PizButton::PizButton ()
-    : Button (String::empty),
+    : Button (""),
       cachedImage_pirate_png (nullptr)
 {
     cachedImage_pirate_png = ImageCache::getFromMemory (pirate_png, pirate_pngSize);

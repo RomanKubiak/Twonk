@@ -42,7 +42,7 @@ class Project  : public FileBasedDocument,
 public:
     //==============================================================================
     Project (const File&);
-    ~Project();
+    ~Project() override;
 
     //==============================================================================
     // FileBasedDocument stuff..
@@ -98,6 +98,8 @@ public:
     String getProjectFilenameRootString()                { return File::createLegalFileName (getDocumentTitle()); }
     String getProjectUIDString() const                   { return projectUIDValue.get(); }
 
+    String getProjectLineFeed() const                    { return projectLineFeedValue.get(); }
+
     String getVersionString() const                      { return versionValue.get(); }
     String getVersionAsHex() const;
     int getVersionAsHexInteger() const;
@@ -127,6 +129,13 @@ public:
 
     String getCppStandardString() const                  { return cppStandardValue.get(); }
 
+    StringArray getCompilerFlagSchemes() const;
+    void addCompilerFlagScheme (const String&);
+    void removeCompilerFlagScheme (const String&);
+
+    String getPostExportShellCommandPosixString() const     { return postExportShellCommandPosixValue.get(); }
+    String getPostExportShellCommandWinString() const       { return postExportShellCommandWinValue.get(); }
+
     //==============================================================================
     String getPluginNameString() const                { return pluginNameValue.get(); }
     String getPluginDescriptionString() const         { return pluginDescriptionValue.get();}
@@ -136,7 +145,8 @@ public:
     String getPluginChannelConfigsString() const      { return pluginChannelConfigsValue.get(); }
     String getAAXIdentifierString() const             { return pluginAAXIdentifierValue.get(); }
     String getPluginAUExportPrefixString() const      { return pluginAUExportPrefixValue.get(); }
-    String getPluginAUMainTypeString() const          { return pluginAUMainTypeValue.get(); }
+    String getVSTNumMIDIInputsString() const          { return pluginVSTNumMidiInputsValue.get(); }
+    String getVSTNumMIDIOutputsString() const         { return pluginVSTNumMidiOutputsValue.get(); }
 
     //==============================================================================
     static bool checkMultiChoiceVar (const ValueWithDefault& valueToCheck, Identifier idToCheck) noexcept
@@ -251,7 +261,7 @@ public:
         Item findItemWithID (const String& targetId) const; // (recursive search)
 
         String getImageFileID() const;
-        Drawable* loadAsImageFile() const;
+        std::unique_ptr<Drawable> loadAsImageFile() const;
 
         //==============================================================================
         Value getNameValue();
@@ -264,6 +274,7 @@ public:
         bool renameFile (const File& newFile);
 
         bool shouldBeAddedToTargetProject() const;
+        bool shouldBeAddedToTargetExporter (const ProjectExporter&) const;
         bool shouldBeCompiled() const;
         Value getShouldCompileValue();
 
@@ -277,6 +288,12 @@ public:
         bool shouldInhibitWarnings() const;
 
         bool isModuleCode() const;
+
+        Value getCompilerFlagSchemeValue();
+        String getCompilerFlagSchemeString() const;
+
+        void setCompilerFlagScheme (const String&);
+        void clearCurrentCompilerFlagScheme();
 
         //==============================================================================
         bool canContain (const Item& child) const;
@@ -371,7 +388,6 @@ public:
     void valueTreeChildAdded (ValueTree&, ValueTree&) override;
     void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override;
     void valueTreeChildOrderChanged (ValueTree&, int, int) override;
-    void valueTreeParentChanged (ValueTree&) override;
 
     //==============================================================================
     UndoManager* getUndoManagerFor (const ValueTree&) const             { return nullptr; }
@@ -409,13 +425,15 @@ public:
 private:
     ValueTree projectRoot  { Ids::JUCERPROJECT };
 
-    ValueWithDefault projectNameValue, projectUIDValue, projectTypeValue, versionValue, bundleIdentifierValue, companyNameValue, companyCopyrightValue,
-                     companyWebsiteValue, companyEmailValue, displaySplashScreenValue, reportAppUsageValue, splashScreenColourValue, cppStandardValue,
-                     headerSearchPathsValue, preprocessorDefsValue, userNotesValue, maxBinaryFileSizeValue, includeBinaryDataInJuceHeaderValue, binaryDataNamespaceValue;
+    ValueWithDefault projectNameValue, projectUIDValue, projectLineFeedValue, projectTypeValue, versionValue, bundleIdentifierValue, companyNameValue,
+                     companyCopyrightValue, companyWebsiteValue, companyEmailValue, displaySplashScreenValue, reportAppUsageValue, splashScreenColourValue, cppStandardValue,
+                     headerSearchPathsValue, preprocessorDefsValue, userNotesValue, maxBinaryFileSizeValue, includeBinaryDataInJuceHeaderValue, binaryDataNamespaceValue,
+                     compilerFlagSchemesValue, postExportShellCommandPosixValue, postExportShellCommandWinValue;
 
     ValueWithDefault pluginFormatsValue, pluginNameValue, pluginDescriptionValue, pluginManufacturerValue, pluginManufacturerCodeValue,
                      pluginCodeValue, pluginChannelConfigsValue, pluginCharacteristicsValue, pluginAUExportPrefixValue, pluginAAXIdentifierValue,
-                     pluginAUMainTypeValue, pluginAUSandboxSafeValue, pluginRTASCategoryValue, pluginVSTCategoryValue, pluginVST3CategoryValue, pluginAAXCategoryValue;
+                     pluginAUMainTypeValue, pluginAUSandboxSafeValue, pluginRTASCategoryValue, pluginVSTCategoryValue, pluginVST3CategoryValue, pluginAAXCategoryValue,
+                     pluginVSTNumMidiInputsValue, pluginVSTNumMidiOutputsValue;
 
     //==============================================================================
     std::unique_ptr<CompileEngineSettings> compileEngineSettings;

@@ -85,7 +85,7 @@ public:
         pipTree.addListener (this);
     }
 
-    ~PIPCreatorWindowComponent()
+    ~PIPCreatorWindowComponent() override
     {
         setLookAndFeel (nullptr);
     }
@@ -112,6 +112,12 @@ private:
             return { textW, 0, component.getWidth() - textW, component.getHeight() - 1 };
         }
     };
+
+    void lookAndFeelChanged() override
+    {
+        lf->setColourScheme (ProjucerApplication::getApp().lookAndFeel.getCurrentColourScheme());
+        lf->setupColours();
+    }
 
     //==============================================================================
     void buildProps()
@@ -203,11 +209,6 @@ private:
         }
     }
 
-    void valueTreeChildAdded (ValueTree&, ValueTree&) override           {}
-    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override    {}
-    void valueTreeChildOrderChanged (ValueTree&, int, int) override      {}
-    void valueTreeParentChanged (ValueTree&) override                    {}
-
     //==============================================================================
     String getFormattedMetadataString() const noexcept
     {
@@ -223,7 +224,7 @@ private:
             if (descriptionValue.get().toString().isNotEmpty())   section.add ("  description:      " + descriptionValue.get().toString());
 
             if (! section.isEmpty())
-                metadata.add (section.joinIntoString (getPreferredLinefeed()));
+                metadata.add (section.joinIntoString (getPreferredLineFeed()));
         }
 
         {
@@ -236,7 +237,7 @@ private:
             if (exportersString.isNotEmpty())                     section.add ("  exporters:        " + exportersString);
 
             if (! section.isEmpty())
-                metadata.add (section.joinIntoString (getPreferredLinefeed()));
+                metadata.add (section.joinIntoString (getPreferredLineFeed()));
         }
 
         {
@@ -246,7 +247,7 @@ private:
             if (definesValue.get().toString().isNotEmpty())       section.add ("  defines:          " + definesValue.get().toString());
 
             if (! section.isEmpty())
-                metadata.add (section.joinIntoString (getPreferredLinefeed()));
+                metadata.add (section.joinIntoString (getPreferredLineFeed()));
         }
 
         {
@@ -256,7 +257,7 @@ private:
             if (mainClassValue.get().toString().isNotEmpty())     section.add ("  mainClass:        " + mainClassValue.get().toString());
 
             if (! section.isEmpty())
-                metadata.add (section.joinIntoString (getPreferredLinefeed()));
+                metadata.add (section.joinIntoString (getPreferredLineFeed()));
         }
 
         {
@@ -265,10 +266,10 @@ private:
             if (useLocalCopyValue.get())                          section.add ("  useLocalCopy:     " + useLocalCopyValue.get().toString());
 
             if (! section.isEmpty())
-                metadata.add (section.joinIntoString (getPreferredLinefeed()));
+                metadata.add (section.joinIntoString (getPreferredLineFeed()));
         }
 
-        return metadata.joinIntoString (String (getPreferredLinefeed()) + getPreferredLinefeed());
+        return metadata.joinIntoString (String (getPreferredLineFeed()) + getPreferredLineFeed());
     }
 
     void createPIPFile (File fileToSave)
@@ -322,7 +323,7 @@ private:
                      mainClassValue     { pipTree, Ids::mainClass,     nullptr, "MyComponent" },
                      useLocalCopyValue  { pipTree, Ids::useLocalCopy,  nullptr, false };
 
-    std::unique_ptr<LookAndFeel> lf;
+    std::unique_ptr<PIPCreatorLookAndFeel> lf;
 
     Viewport propertyViewport;
     PropertyGroupComponent propertyGroup  { "PIP Creator", { getIcons().juceLogo, Colours::transparentBlack } };

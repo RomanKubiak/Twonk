@@ -78,12 +78,12 @@ AudioProcessorGraph::Node::Ptr FilterGraph::getNodeForName (const String& name) 
 
 void FilterGraph::addPlugin (const PluginDescription& desc, Point<double> p)
 {
-    struct AsyncCallback : public AudioPluginFormat::InstantiationCompletionCallback
+    struct AsyncCallback : public AudioPluginFormat::PluginCreationCallback
     {
         AsyncCallback (FilterGraph& g, Point<double> pos)  : owner (g), position (pos)
         {}
 
-        void completionCallback (AudioPluginInstance* instance, const String& error) override
+        void completionCallback (std::unique_ptr<AudioPluginInstance> instance, const String& error)
         {
             owner.addFilterCallback (instance, error, position);
         }
@@ -94,10 +94,10 @@ void FilterGraph::addPlugin (const PluginDescription& desc, Point<double> p)
     formatManager.createPluginInstanceAsync (desc,
                                              graph.getSampleRate(),
                                              graph.getBlockSize(),
-                                             new AsyncCallback (*this, p));
+                                             AsyncCallback (*this, p));
 }
 
-void FilterGraph::addFilterCallback (AudioPluginInstance* instance, const String& error, Point<double> pos)
+void FilterGraph::addFilterCallback (std::unique_ptr<AudioPluginInstance> instance, const String& error, Point<double> pos)
 {
     if (instance == nullptr)
     {
@@ -379,15 +379,15 @@ void FilterGraph::createNodeFromXml (const XmlElement& xml)
 
     String errorMessage;
 
-    if (auto* instance = formatManager.createPluginInstance (pd, graph.getSampleRate(),
+    if (std::unique_ptr<AudioPluginInstance> instance = formatManager.createPluginInstance (pd, graph.getSampleRate(),
                                                              graph.getBlockSize(), errorMessage))
     {
         if (auto* layoutEntity = xml.getChildByName ("LAYOUT"))
         {
             auto layout = instance->getBusesLayout();
 
-            readBusLayoutFromXml (layout, instance, *layoutEntity, true);
-            readBusLayoutFromXml (layout, instance, *layoutEntity, false);
+            readBusLayoutFromXml (layout, instance.get(), *layoutEntity, true);
+            readBusLayoutFromXml (layout, instance.get(), *layoutEntity, false);
 
             instance->setBusesLayout (layout);
         }
@@ -419,7 +419,7 @@ void FilterGraph::createNodeFromXml (const XmlElement& xml)
                     {
                         jassert (node->getProcessor() != nullptr);
 
-                        if (auto w = getOrCreateWindowFor (node, type))
+                        if (auto w = getOrCreateWindowFor (node.get(), type))
                             w->toFront (true);
                     }
                 }

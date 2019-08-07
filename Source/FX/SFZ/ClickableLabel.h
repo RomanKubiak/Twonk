@@ -9,7 +9,7 @@ namespace sfzero
 class ClickableLabel : public Label
 {
 public:
-  ClickableLabel(const String &componentName = String::empty, const String &labelText = String::empty);
+  ClickableLabel(const String &componentName = "", const String &labelText = "");
 
   class JUCE_API ClickListener
   {

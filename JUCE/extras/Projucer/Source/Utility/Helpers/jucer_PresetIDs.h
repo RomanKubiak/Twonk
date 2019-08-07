@@ -90,6 +90,7 @@ namespace Ids
     DECLARE_ID (alwaysGenerateDebugSymbols);
     DECLARE_ID (targetName);
     DECLARE_ID (binaryPath);
+    DECLARE_ID (recommendedWarnings);
     DECLARE_ID (optimisation);
     DECLARE_ID (defines);
     DECLARE_ID (headerPath);
@@ -98,6 +99,7 @@ namespace Ids
     DECLARE_ID (libraryPath);
     DECLARE_ID (customXcodeFlags);
     DECLARE_ID (customXcassetsFolder);
+    DECLARE_ID (customLaunchStoryboard);
     DECLARE_ID (customXcodeResourceFolders);
     DECLARE_ID (plistPreprocessorDefinitions);
     DECLARE_ID (customPList);
@@ -184,20 +186,29 @@ namespace Ids
     DECLARE_ID (showAllCode);
     DECLARE_ID (useLocalCopy);
     DECLARE_ID (overwriteOnSave);
+    DECLARE_ID (appSandbox);
+    DECLARE_ID (appSandboxOptions);
+    DECLARE_ID (hardenedRuntime);
+    DECLARE_ID (hardenedRuntimeOptions);
     DECLARE_ID (microphonePermissionNeeded);
     DECLARE_ID (microphonePermissionsText);
     DECLARE_ID (cameraPermissionNeeded);
     DECLARE_ID (cameraPermissionText);
     DECLARE_ID (androidJavaLibs);
+    DECLARE_ID (androidAdditionalJavaFolders);
+    DECLARE_ID (androidAdditionalResourceFolders);
+    DECLARE_ID (androidProjectRepositories);
     DECLARE_ID (androidRepositories);
     DECLARE_ID (androidDependencies);
+    DECLARE_ID (androidCustomAppBuildGradleContent);
     DECLARE_ID (androidBuildConfigRemoteNotifsConfigFile);
     DECLARE_ID (androidAdditionalXmlValueResources);
     DECLARE_ID (androidAdditionalDrawableResources);
     DECLARE_ID (androidAdditionalRawValueResources);
-    DECLARE_ID (androidActivityClass);
-    DECLARE_ID (androidActivitySubClassName);
-    DECLARE_ID (androidActivityBaseClassName);
+//    DECLARE_ID (androidActivityClass);  // DEPRECATED!
+    const Identifier androidCustomActivityClass ("androidActivitySubClassName"); // old name is very confusing, but we need to remain backward compatible
+//    DECLARE_ID (androidActivityBaseClassName); // DEPRECATED!
+    DECLARE_ID (androidCustomApplicationClass);
     DECLARE_ID (androidVersionCode);
     DECLARE_ID (androidSDKPath);
     DECLARE_ID (androidNDKPath);
@@ -205,16 +216,19 @@ namespace Ids
     DECLARE_ID (androidInternetNeeded);
     DECLARE_ID (androidArchitectures);
     DECLARE_ID (androidManifestCustomXmlElements);
+    DECLARE_ID (androidGradleSettingsContent);
     DECLARE_ID (androidCustomStringXmlElements);
     DECLARE_ID (androidBluetoothNeeded);
     DECLARE_ID (androidExternalReadNeeded);
     DECLARE_ID (androidExternalWriteNeeded);
     DECLARE_ID (androidInAppBilling);
     DECLARE_ID (androidVibratePermissionNeeded);
+    DECLARE_ID (androidPushNotifications);
     DECLARE_ID (androidEnableRemoteNotifications);
     DECLARE_ID (androidRemoteNotificationsConfigFile);
     DECLARE_ID (androidEnableContentSharing);
     DECLARE_ID (androidMinimumSDK);
+    DECLARE_ID (androidTargetSDK);
     DECLARE_ID (androidOtherPermissions);
     DECLARE_ID (androidKeyStore);
     DECLARE_ID (androidKeyStorePass);
@@ -332,6 +346,8 @@ namespace Ids
     DECLARE_ID (pluginAAXCategory);
     DECLARE_ID (pluginAAXDisableBypass);
     DECLARE_ID (pluginAAXDisableMultiMono);
+    DECLARE_ID (pluginVSTNumMidiInputs);
+    DECLARE_ID (pluginVSTNumMidiOutputs);
     DECLARE_ID (exporters);
     DECLARE_ID (website);
     DECLARE_ID (mainClass);
@@ -339,6 +355,12 @@ namespace Ids
     DECLARE_ID (buildEnabled);
     DECLARE_ID (continuousRebuildEnabled);
     DECLARE_ID (warningsEnabled);
+    DECLARE_ID (projectLineFeed);
+    DECLARE_ID (compilerFlagSchemes);
+    DECLARE_ID (compilerFlagScheme);
+    DECLARE_ID (dontQueryForUpdate);
+    DECLARE_ID (postExportShellCommandPosix);
+    DECLARE_ID (postExportShellCommandWin);
 
     const Identifier ID ("id");
     const Identifier ID_uppercase ("ID");

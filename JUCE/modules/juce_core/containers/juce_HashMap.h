@@ -120,7 +120,7 @@ public:
     */
     explicit HashMap (int numberOfSlots = defaultHashTableSize,
                       HashFunctionType hashFunction = HashFunctionType())
-       : hashFunctionToUse (hashFunction), totalNumItems (0)
+       : hashFunctionToUse (hashFunction)
     {
         hashSlots.insertMultiple (0, nullptr, numberOfSlots);
     }
@@ -203,7 +203,7 @@ public:
     }
 
     //==============================================================================
-    /** Returns true if the map contains an item with the specied key. */
+    /** Returns true if the map contains an item with the specified key. */
     bool contains (KeyTypeParameter keyToLookFor) const
     {
         const ScopedLockType sl (getLock());
@@ -479,7 +479,7 @@ private:
 
     HashFunctionType hashFunctionToUse;
     Array<HashEntry*> hashSlots;
-    int totalNumItems;
+    int totalNumItems = 0;
     TypeOfCriticalSectionToUse lock;
 
     int generateHashFor (KeyTypeParameter key, int numSlots) const

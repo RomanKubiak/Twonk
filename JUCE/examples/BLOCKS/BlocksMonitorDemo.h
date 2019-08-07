@@ -33,7 +33,7 @@
                    juce_audio_processors, juce_audio_utils, juce_blocks_basics,
                    juce_core, juce_data_structures, juce_events, juce_graphics,
                    juce_gui_basics, juce_gui_extra
- exporters:        xcode_mac, vs2017, linux_make, xcode_iphone
+ exporters:        xcode_mac, vs2019, linux_make, xcode_iphone
 
  moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
 
@@ -85,7 +85,7 @@ public:
         constrainer.setMinimumOnscreenAmounts (50, 50, 50, 50);
     }
 
-    ~BlockComponent()
+    ~BlockComponent() override
     {
         // Remove any listeners
         if (auto touchSurface = block->getTouchSurface())
@@ -112,7 +112,7 @@ public:
     }
 
     /** Subclasses should override this to paint the Block object on the screen */
-    virtual void paint (Graphics&) override = 0;
+    void paint (Graphics&) override = 0;
 
     /** Subclasses can override this to receive button down events from the Block */
     virtual void handleButtonPressed  (ControlButton::ButtonFunction, uint32) {}
@@ -150,7 +150,7 @@ public:
             { CB::down }
         };
 
-        for (auto i = 0; i < numElementsInArray (map); ++i)
+        for (int i = 0; i < numElementsInArray (map); ++i)
             if (map[i].contains (f))
                 return i;
 
@@ -446,7 +446,7 @@ private:
         {}
 
         /** Subclasses should override this to paint the button on the screen */
-        virtual void paint (Graphics&) override = 0;
+        void paint (Graphics&) override = 0;
 
         /** Sets the colour of the button */
         void setColour (Colour c)   { componentColour = c; }
@@ -609,7 +609,7 @@ public:
         topologyChanged();
     }
 
-    ~BlocksMonitorDemo()
+    ~BlocksMonitorDemo() override
     {
         topologySource.removeListener (this);
     }

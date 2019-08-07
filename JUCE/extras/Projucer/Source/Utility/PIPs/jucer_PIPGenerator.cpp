@@ -92,16 +92,17 @@ static bool isValidExporterName (StringRef exporterName)
     return ProjectExporter::getExporterValueTreeNames().contains (exporterName, true);
 }
 
-static bool isMobileExporter (const String& exporterName)
+static bool exporterRequiresExampleAssets (const String& exporterName, const String& projectName)
 {
-    return exporterName == "XCODE_IPHONE" || exporterName == "ANDROIDSTUDIO";
+    return (exporterName == "XCODE_IPHONE" || exporterName == "ANDROIDSTUDIO")
+            || (exporterName == "XCODE_MAC" && projectName == "AUv3SynthPlugin");
 }
 
 //==============================================================================
-PIPGenerator::PIPGenerator (const File& pip, const File& output, const File& jucePath, const Array<File>& userPaths)
+PIPGenerator::PIPGenerator (const File& pip, const File& output, const File& jucePath, const File& userPath)
     : pipFile (pip),
       juceModulesPath (jucePath),
-      userModulesPaths (userPaths),
+      userModulesPath (userPath),
       metadata (parseJUCEHeaderMetadata (pipFile))
 {
     if (output != File())
@@ -119,12 +120,12 @@ PIPGenerator::PIPGenerator (const File& pip, const File& output, const File& juc
                         && pip.getParentDirectory().getParentDirectory().getFileName() == "PIPs");
 
     outputDirectory = outputDirectory.getChildFile (metadata[Ids::name].toString());
-    useLocalCopy = metadata[Ids::useLocalCopy].toString().isNotEmpty() || isClipboard;
+    useLocalCopy = metadata[Ids::useLocalCopy].toString().trim().getIntValue() == 1 || isClipboard;
 
-    if (! userModulesPaths.isEmpty())
+    if (userModulesPath != File())
     {
         availableUserModules.reset (new AvailableModuleList());
-        availableUserModules->scanPaths (userModulesPaths);
+        availableUserModules->scanPaths ({ userModulesPath });
     }
 }
 
@@ -145,10 +146,9 @@ Result PIPGenerator::createJucerFile()
 
     auto outputFile = outputDirectory.getChildFile (metadata[Ids::name].toString() + ".jucer");
 
-    std::unique_ptr<XmlElement> xml (root.createXml());
-
-    if (xml->writeToFile (outputFile, {}))
-        return Result::ok();
+    if (auto xml = root.createXml())
+        if (xml->writeTo (outputFile, {}))
+            return Result::ok();
 
     return Result::fail ("Failed to create .jucer file in " + outputDirectory.getFullPathName());
 }
@@ -228,14 +228,14 @@ ValueTree PIPGenerator::createModulePathChild (const String& moduleID)
     ValueTree modulePath (Ids::MODULEPATH);
 
     modulePath.setProperty (Ids::ID, moduleID, nullptr);
-    modulePath.setProperty (Ids::path, getPathForModule (moduleID).getFullPathName(), nullptr);
+    modulePath.setProperty (Ids::path, getPathForModule (moduleID), nullptr);
 
     return modulePath;
 }
 
 ValueTree PIPGenerator::createBuildConfigChild (bool isDebug)
 {
-    ValueTree child (Ids::CONFIGURATIONS);
+    ValueTree child (Ids::CONFIGURATION);
 
     child.setProperty (Ids::name, isDebug ? "Debug" : "Release", nullptr);
     child.setProperty (Ids::isDebug, isDebug ? 1 : 0, nullptr);
@@ -251,13 +251,13 @@ ValueTree PIPGenerator::createExporterChild (const String& exporterName)
 
     exporter.setProperty (Ids::targetFolder, "Builds/" + ProjectExporter::getTargetFolderForExporter (exporterName), nullptr);
 
-    if (isMobileExporter (exporterName) || (metadata[Ids::name] == "AUv3SynthPlugin" && exporterName == "XCODE_MAC"))
+    if (isJUCEExample (pipFile) && exporterRequiresExampleAssets (exporterName, metadata[Ids::name]))
     {
-        auto juceDir = getAppSettings().getStoredPath (Ids::jucePath, TargetOS::getThisOS()).get().toString();
+        auto examplesDir = getExamplesDirectory();
 
-        if (isValidJUCEExamplesDirectory (File (juceDir).getChildFile ("examples")))
+        if (examplesDir != File())
         {
-            auto assetsDirectoryPath = File (juceDir).getChildFile ("examples").getChildFile ("Assets").getFullPathName();
+            auto assetsDirectoryPath = examplesDir.getChildFile ("Assets").getFullPathName();
 
             exporter.setProperty (exporterName == "ANDROIDSTUDIO" ? Ids::androidExtraAssetsFolder
                                                                   : Ids::customXcodeResourceFolders,
@@ -300,7 +300,7 @@ ValueTree PIPGenerator::createModuleChild (const String& moduleID)
     module.setProperty (Ids::ID, moduleID, nullptr);
     module.setProperty (Ids::showAllCode, 1, nullptr);
     module.setProperty (Ids::useLocalCopy, 0, nullptr);
-    module.setProperty (Ids::useGlobalPath, (getPathForModule (moduleID) == File() ? 1 : 0), nullptr);
+    module.setProperty (Ids::useGlobalPath, (getPathForModule (moduleID).isEmpty() ? 1 : 0), nullptr);
 
     return module;
 }
@@ -354,14 +354,14 @@ Result PIPGenerator::setProjectSettings (ValueTree& jucerTree)
 
     auto defines = metadata[Ids::defines].toString();
 
-    if (useLocalCopy && isJUCEExample (pipFile))
+    if (isJUCEExample (pipFile))
     {
-        auto juceDir = getAppSettings().getStoredPath (Ids::jucePath, TargetOS::getThisOS()).get().toString();
+        auto examplesDir = getExamplesDirectory();
 
-        if (isValidJUCEExamplesDirectory (File (juceDir).getChildFile ("examples")))
+        if (examplesDir != File())
         {
              defines += ((defines.isEmpty() ? "" : " ") + String ("PIP_JUCE_EXAMPLES_DIRECTORY=")
-                         + Base64::toBase64 (File (juceDir).getChildFile ("examples").getFullPathName()));
+                         + Base64::toBase64 (examplesDir.getFullPathName()));
         }
         else
         {
@@ -426,7 +426,9 @@ String PIPGenerator::getMainFileTextForType()
     String mainTemplate (BinaryData::jucer_PIPMain_cpp);
 
     mainTemplate = mainTemplate.replace ("%%filename%%", useLocalCopy ? pipFile.getFileName()
-                                                                      : pipFile.getFullPathName());
+                                                                      : isTemp ? pipFile.getFullPathName()
+                                                                               : RelativePath (pipFile, outputDirectory.getChildFile ("Source"),
+                                                                                               RelativePath::unknown).toUnixStyle());
 
     auto type = metadata[Ids::type].toString();
 
@@ -517,29 +519,61 @@ StringArray PIPGenerator::getPluginCharacteristics() const
     auto name = metadata[Ids::name].toString();
 
     if (name == "AudioPluginDemo")
-        return { Ids::pluginWantsMidiIn.toString(),
+        return { Ids::pluginIsSynth.toString(),
+                 Ids::pluginWantsMidiIn.toString(),
                  Ids::pluginProducesMidiOut.toString(),
                  Ids::pluginEditorRequiresKeys.toString() };
     else if (name == "AUv3SynthPlugin" || name == "MultiOutSynthPlugin")
-        return { Ids::pluginWantsMidiIn.toString(),
+        return { Ids::pluginIsSynth.toString(),
+                 Ids::pluginWantsMidiIn.toString(),
                  Ids::pluginIsSynth.toString() };
     else if (name == "ArpeggiatorPlugin")
-        return { Ids::pluginIsMidiEffectPlugin.toString() };
+        return { Ids::pluginWantsMidiIn.toString(),
+                 Ids::pluginProducesMidiOut.toString(),
+                 Ids::pluginIsMidiEffectPlugin.toString() };
 
     return {};
 }
 
-File PIPGenerator::getPathForModule (const String& moduleID) const
+String PIPGenerator::getPathForModule (const String& moduleID) const
 {
     if (isJUCEModule (moduleID))
     {
         if (juceModulesPath != File())
-            return juceModulesPath;
+        {
+            if (isTemp)
+                return juceModulesPath.getFullPathName();
+
+            return RelativePath (juceModulesPath, outputDirectory, RelativePath::projectFolder).toUnixStyle();
+        }
     }
     else if (availableUserModules != nullptr)
     {
-        return availableUserModules->getModuleWithID (moduleID).second.getParentDirectory();
+        auto moduleRoot = availableUserModules->getModuleWithID (moduleID).second.getParentDirectory();
+
+        if (isTemp)
+            return moduleRoot.getFullPathName();
+
+        return RelativePath (moduleRoot , outputDirectory, RelativePath::projectFolder).toUnixStyle();
     }
+
+    return {};
+}
+
+File PIPGenerator::getExamplesDirectory() const
+{
+    if (juceModulesPath != File())
+    {
+        auto examples = juceModulesPath.getSiblingFile ("examples");
+
+        if (isValidJUCEExamplesDirectory (examples))
+            return examples;
+    }
+
+    auto examples = File (getAppSettings().getStoredPath (Ids::jucePath, TargetOS::getThisOS()).get().toString()).getChildFile ("examples");
+
+    if (isValidJUCEExamplesDirectory (examples))
+        return examples;
 
     return {};
 }

@@ -287,7 +287,7 @@ int64 juce_fileSetPosition (void* handle, int64 pos)
 void FileInputStream::openHandle()
 {
     auto h = CreateFile (file.getFullPathName().toWideCharPointer(),
-                         GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0,
+                         GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, 0,
                          OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, 0);
 
     if (h != INVALID_HANDLE_VALUE)
@@ -398,7 +398,7 @@ void MemoryMappedFile::openInternal (const File& file, AccessMode mode, bool exc
     }
 
     auto h = CreateFile (file.getFullPathName().toWideCharPointer(), accessMode,
-                         exclusive ? 0 : (FILE_SHARE_READ | (mode == readWrite ? FILE_SHARE_WRITE : 0)), 0,
+                         exclusive ? 0 : (FILE_SHARE_READ | FILE_SHARE_DELETE | (mode == readWrite ? FILE_SHARE_WRITE : 0)), 0,
                          createType, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, 0);
 
     if (h != INVALID_HANDLE_VALUE)
@@ -544,7 +544,12 @@ uint64 File::getFileIdentifier() const
 {
     uint64 result = 0;
 
-    auto h = CreateFile (getFullPathName().toWideCharPointer(),
+    String path = getFullPathName();
+
+    if (isRoot())
+        path += "\\";
+
+    auto h = CreateFile (path.toWideCharPointer(),
                          GENERIC_READ, FILE_SHARE_READ, nullptr,
                          OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, 0);
 
@@ -575,10 +580,8 @@ bool File::isOnHardDisk() const
 
     auto n = WindowsFileHelpers::getWindowsDriveType (getFullPathName());
 
-    if (fullPath.toLowerCase()[0] <= 'b' && fullPath[1] == ':')
-        return n != DRIVE_REMOVABLE;
-
-    return n != DRIVE_CDROM
+    return n != DRIVE_REMOVABLE
+        && n != DRIVE_CDROM
         && n != DRIVE_REMOTE
         && n != DRIVE_NO_ROOT_DIR;
 }

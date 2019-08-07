@@ -27,60 +27,6 @@
 namespace juce
 {
 
-#if (JUCE_IOS && defined (__IPHONE_12_0))
- #define JUCE_CORE_GRAPHICS_NEEDS_DELAYED_GARBAGE_COLLECTION 1
-#endif
-
-#if JUCE_CORE_GRAPHICS_NEEDS_DELAYED_GARBAGE_COLLECTION
-class CoreGraphicsImageGarbageCollector   : public Timer,
-                                            public DeletedAtShutdown
-{
-public:
-    CoreGraphicsImageGarbageCollector()
-    {
-        // TODO: Add an assertion here telling JUCE developers to move to the
-        // latest SDK if/when the CoreGraphics memory handling is fixed.
-    }
-
-    ~CoreGraphicsImageGarbageCollector()
-    {
-        clearSingletonInstance();
-    }
-
-    JUCE_DECLARE_SINGLETON (CoreGraphicsImageGarbageCollector, false)
-
-    void addItem (HeapBlock<uint8>&& data)
-    {
-        ScopedLock lock (queueLock);
-
-        queue.emplace_back (Time::getApproximateMillisecondCounter(), std::move (data));
-
-        if (! isTimerRunning())
-            startTimer (timeDelta);
-    }
-
-    void timerCallback() override
-    {
-        ScopedLock lock (queueLock);
-
-        auto cutoffTime = Time::getApproximateMillisecondCounter() - timeDelta;
-
-        auto it = std::find_if (queue.begin(), queue.end(),
-                                [cutoffTime](const std::pair<uint32, HeapBlock<uint8>>& x) { return x.first > cutoffTime; });
-        queue.erase (queue.begin(), it);
-
-        queue.empty() ? stopTimer() : startTimer (timeDelta);
-    }
-
-private:
-    CriticalSection queueLock;
-    std::vector<std::pair<uint32, HeapBlock<uint8>>> queue;
-    static constexpr uint32 timeDelta = 50;
-};
-
-JUCE_IMPLEMENT_SINGLETON (CoreGraphicsImageGarbageCollector)
-#endif
-
 //==============================================================================
 class CoreGraphicsImage   : public ImagePixelData
 {
@@ -93,44 +39,40 @@ public:
 
         auto numComponents = (size_t) lineStride * (size_t) jmax (1, height);
 
-       # if JUCE_MAC && defined (__MAC_10_14)
+       # if JUCE_MAC && defined (MAC_OS_X_VERSION_10_14) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_14
         // This version of the SDK intermittently requires a bit of extra space
         // at the end of the image data. This feels like something has gone
         // wrong in Apple's code.
         numComponents += (size_t) lineStride;
        #endif
 
-        imageData.allocate (numComponents, clearImage);
+        imageDataHolder->data.allocate (numComponents, clearImage);
 
         CGColorSpaceRef colourSpace = (format == Image::SingleChannel) ? CGColorSpaceCreateDeviceGray()
                                                                        : CGColorSpaceCreateDeviceRGB();
 
-        context = CGBitmapContextCreate (imageData, (size_t) width, (size_t) height, 8, (size_t) lineStride,
+        context = CGBitmapContextCreate (imageDataHolder->data, (size_t) width, (size_t) height, 8, (size_t) lineStride,
                                          colourSpace, getCGImageFlags (format));
 
         CGColorSpaceRelease (colourSpace);
     }
 
-    ~CoreGraphicsImage()
+    ~CoreGraphicsImage() override
     {
         freeCachedImageRef();
         CGContextRelease (context);
-
-       #if JUCE_CORE_GRAPHICS_NEEDS_DELAYED_GARBAGE_COLLECTION
-        CoreGraphicsImageGarbageCollector::getInstance()->addItem (std::move (imageData));
-       #endif
     }
 
-    LowLevelGraphicsContext* createLowLevelContext() override
+    std::unique_ptr<LowLevelGraphicsContext> createLowLevelContext() override
     {
         freeCachedImageRef();
         sendDataChangeMessage();
-        return new CoreGraphicsContext (context, height, 1.0f);
+        return std::make_unique<CoreGraphicsContext> (context, height, 1.0f);
     }
 
     void initialiseBitmapData (Image::BitmapData& bitmap, int x, int y, Image::BitmapData::ReadWriteMode mode) override
     {
-        bitmap.data = imageData + x * pixelStride + y * lineStride;
+        bitmap.data = imageDataHolder->data + x * pixelStride + y * lineStride;
         bitmap.pixelFormat = pixelFormat;
         bitmap.lineStride = lineStride;
         bitmap.pixelStride = pixelStride;
@@ -145,11 +87,11 @@ public:
     ImagePixelData::Ptr clone() override
     {
         auto im = new CoreGraphicsImage (pixelFormat, width, height, false);
-        memcpy (im->imageData, imageData, (size_t) (lineStride * height));
+        memcpy (im->imageDataHolder->data, imageDataHolder->data, (size_t) (lineStride * height));
         return *im;
     }
 
-    ImageType* createType() const override    { return new NativeImageType(); }
+    std::unique_ptr<ImageType> createType() const override    { return std::make_unique<NativeImageType>(); }
 
     //==============================================================================
     static CGImageRef getCachedImageRef (const Image& juceImage, CGColorSpaceRef colourSpace)
@@ -165,10 +107,7 @@ public:
         CGImageRef ref = createImage (juceImage, colourSpace, false);
 
         if (cgim != nullptr)
-        {
-            CGImageRetain (ref);
-            cgim->cachedImageRef = ref;
-        }
+            cgim->cachedImageRef = CGImageRetain (ref);
 
         return ref;
     }
@@ -186,7 +125,18 @@ public:
         }
         else
         {
-            provider = CGDataProviderCreateWithData (nullptr, srcData.data, (size_t) srcData.lineStride * (size_t) srcData.height, nullptr);
+            auto* imageDataContainer = [](const Image& img) -> HeapBlockContainer::Ptr*
+            {
+                if (auto* cgim = dynamic_cast<CoreGraphicsImage*> (img.getPixelData()))
+                    return new HeapBlockContainer::Ptr (cgim->imageDataHolder);
+
+                return nullptr;
+            } (juceImage);
+
+            provider = CGDataProviderCreateWithData (imageDataContainer,
+                                                     srcData.data,
+                                                     (size_t) srcData.lineStride * (size_t) srcData.height,
+                                                     [] (void * __nullable info, const void*, size_t) { delete (HeapBlockContainer::Ptr*) info; });
         }
 
         CGImageRef imageRef = CGImageCreate ((size_t) srcData.width,
@@ -204,7 +154,14 @@ public:
     //==============================================================================
     CGContextRef context;
     CGImageRef cachedImageRef = {};
-    HeapBlock<uint8> imageData;
+
+    struct HeapBlockContainer   : public ReferenceCountedObject
+    {
+        using Ptr = ReferenceCountedObjectPtr<HeapBlockContainer>;
+        HeapBlock<uint8> data;
+    };
+
+    HeapBlockContainer::Ptr imageDataHolder = new HeapBlockContainer();
     int pixelStride, lineStride;
 
 private:
@@ -682,18 +639,13 @@ void CoreGraphicsContext::drawGlyph (int glyphNumber, const AffineTransform& tra
 {
     if (state->fontRef != nullptr && state->fillType.isColour())
     {
-       #if JUCE_CLANG
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-       #endif
-
         if (transform.isOnlyTranslation())
         {
             CGContextSetTextMatrix (context, state->fontTransform); // have to set this each time, as it's not saved as part of the state
 
-            auto g = (CGGlyph) glyphNumber;
-            CGContextShowGlyphsAtPoint (context, transform.getTranslationX(),
-                                        flipHeight - roundToInt (transform.getTranslationY()), &g, 1);
+            CGGlyph glyphs[1] = { (CGGlyph) glyphNumber };
+            CGPoint positions[1] = { { transform.getTranslationX(), flipHeight - roundToInt (transform.getTranslationY()) } };
+            CGContextShowGlyphsAtPositions (context, glyphs, positions, 1);
         }
         else
         {
@@ -705,15 +657,12 @@ void CoreGraphicsContext::drawGlyph (int glyphNumber, const AffineTransform& tra
             t.d = -t.d;
             CGContextSetTextMatrix (context, t);
 
-            auto g = (CGGlyph) glyphNumber;
-            CGContextShowGlyphsAtPoint (context, 0, 0, &g, 1);
+            CGGlyph glyphs[1] = { (CGGlyph) glyphNumber };
+            CGPoint positions[1] = { { 0.0f, 0.0f } };
+            CGContextShowGlyphsAtPositions (context, glyphs, positions, 1);
 
             CGContextRestoreGState (context);
         }
-
-       #if JUCE_CLANG
-        #pragma clang diagnostic pop
-       #endif
     }
     else
     {
@@ -795,13 +744,11 @@ void CoreGraphicsContext::drawGradient()
 
     auto& g = *state->fillType.gradient;
 
-    auto p1 = convertToCGPoint (g.point1);
-    auto p2 = convertToCGPoint (g.point2);
-
-    state->fillType.transform.transformPoints (p1.x, p1.y, p2.x, p2.y);
-
     if (state->gradient == nullptr)
         state->gradient = createGradient (g, rgbColourSpace);
+
+    auto p1 = convertToCGPoint (g.point1);
+    auto p2 = convertToCGPoint (g.point2);
 
     if (g.isRadial)
         CGContextDrawRadialGradient (context, state->gradient, p1, 0, p1, g.point1.getDistanceFrom (g.point2),
@@ -883,22 +830,31 @@ void CoreGraphicsContext::applyTransform (const AffineTransform& transform) cons
 #if USE_COREGRAPHICS_RENDERING && JUCE_USE_COREIMAGE_LOADER
 Image juce_loadWithCoreImage (InputStream& input)
 {
-    MemoryBlock data;
-    input.readIntoMemoryBlock (data, -1);
+    struct MemoryBlockHolder   : public ReferenceCountedObject
+    {
+        using Ptr = ReferenceCountedObjectPtr<MemoryBlockHolder>;
+        MemoryBlock block;
+    };
+
+    MemoryBlockHolder::Ptr memBlockHolder = new MemoryBlockHolder();
+    input.readIntoMemoryBlock (memBlockHolder->block, -1);
 
    #if JUCE_IOS
     JUCE_AUTORELEASEPOOL
    #endif
     {
       #if JUCE_IOS
-        if (UIImage* uiImage = [UIImage imageWithData: [NSData dataWithBytesNoCopy: data.getData()
-                                                                            length: data.getSize()
+        if (UIImage* uiImage = [UIImage imageWithData: [NSData dataWithBytesNoCopy: memBlockHolder->block.getData()
+                                                                            length: memBlockHolder->block.getSize()
                                                                       freeWhenDone: NO]])
         {
             CGImageRef loadedImage = uiImage.CGImage;
 
       #else
-        auto provider = CGDataProviderCreateWithData (nullptr, data.getData(), data.getSize(), nullptr);
+        auto provider = CGDataProviderCreateWithData (new MemoryBlockHolder::Ptr (memBlockHolder),
+                                                      memBlockHolder->block.getData(),
+                                                      memBlockHolder->block.getSize(),
+                                                      [] (void * __nullable info, const void*, size_t) { delete (MemoryBlockHolder::Ptr*) info; });
         auto imageSource = CGImageSourceCreateWithDataProvider (provider, nullptr);
         CGDataProviderRelease (provider);
 

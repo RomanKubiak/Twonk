@@ -26,7 +26,7 @@
 
 struct CameraDevice::Pimpl
 {
-    using InternalOpenCameraResultCallback = std::function<void (const String& /*cameraId*/, const String& /*error*/)>;
+    using InternalOpenCameraResultCallback = std::function<void(const String& /*cameraId*/, const String& /*error*/)>;
 
     Pimpl (CameraDevice& ownerToUse, const String& cameraIdToUse, int /*index*/,
            int /*minWidth*/, int /*minHeight*/, int /*maxWidth*/, int /*maxHeight*/,
@@ -41,7 +41,7 @@ struct CameraDevice::Pimpl
 
     void open (InternalOpenCameraResultCallback cameraOpenCallbackToUse)
     {
-        cameraOpenCallback = static_cast<InternalOpenCameraResultCallback&&> (cameraOpenCallbackToUse);
+        cameraOpenCallback = std::move (cameraOpenCallbackToUse);
 
         if (cameraOpenCallback == nullptr)
         {
@@ -75,7 +75,7 @@ struct CameraDevice::Pimpl
 
     bool openedOk() const noexcept { return captureSession.openedOk(); }
 
-    void takeStillPicture (std::function<void (const Image&)> pictureTakenCallbackToUse)
+    void takeStillPicture (std::function<void(const Image&)> pictureTakenCallbackToUse)
     {
         if (pictureTakenCallbackToUse == nullptr)
         {
@@ -83,7 +83,7 @@ struct CameraDevice::Pimpl
             return;
         }
 
-        pictureTakenCallback = static_cast<std::function<void (const Image&)>&&> (pictureTakenCallbackToUse);
+        pictureTakenCallback = std::move (pictureTakenCallbackToUse);
 
         triggerStillPictureCapture();
     }
@@ -304,7 +304,7 @@ private:
 
     static String cmTimeToString (CMTime time)
     {
-        CFStringRef timeDesc = CMTimeCopyDescription (NULL, time);
+        CFStringRef timeDesc = CMTimeCopyDescription (nullptr, time);
         String result = String::fromCFString (timeDesc);
 
         CFRelease (timeDesc);
@@ -984,7 +984,7 @@ private:
         class VideoRecorder
         {
         public:
-            VideoRecorder (CaptureSession& captureSession)
+            VideoRecorder (CaptureSession& session)
                 : movieFileOutput ([AVCaptureMovieFileOutput new]),
                   delegate (nullptr)
             {
@@ -992,7 +992,7 @@ private:
                 delegate.reset ([cls.createInstance() init]);
                 FileOutputRecordingDelegateClass::setOwner (delegate.get(), this);
 
-                captureSession.addOutputIfPossible (movieFileOutput);
+                session.addOutputIfPossible (movieFileOutput);
             }
 
             ~VideoRecorder()
@@ -1214,7 +1214,7 @@ private:
     CriticalSection listenerLock;
     ListenerList<Listener> listeners;
 
-    std::function<void (const Image&)> pictureTakenCallback;
+    std::function<void(const Image&)> pictureTakenCallback;
 
     CaptureSession captureSession;
 

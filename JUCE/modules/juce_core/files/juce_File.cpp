@@ -53,17 +53,17 @@ File& File::operator= (const File& other)
 }
 
 File::File (File&& other) noexcept
-    : fullPath (static_cast<String&&> (other.fullPath))
+    : fullPath (std::move (other.fullPath))
 {
 }
 
 File& File::operator= (File&& other) noexcept
 {
-    fullPath = static_cast<String&&> (other.fullPath);
+    fullPath = std::move (other.fullPath);
     return *this;
 }
 
-JUCE_DECLARE_DEPRECATED_STATIC (const File File::nonexistent;)
+JUCE_DECLARE_DEPRECATED_STATIC (const File File::nonexistent{};)
 
 //==============================================================================
 static String removeEllipsis (const String& path)
@@ -1005,12 +1005,15 @@ MemoryMappedFile::MemoryMappedFile (const File& file, const Range<int64>& fileRa
 
 
 //==============================================================================
+//==============================================================================
 #if JUCE_UNIT_TESTS
 
 class FileTests  : public UnitTest
 {
 public:
-    FileTests() : UnitTest ("Files", "Files") {}
+    FileTests()
+        : UnitTest ("Files", UnitTestCategories::files)
+    {}
 
     void runTest() override
     {
@@ -1028,7 +1031,6 @@ public:
         expect (home.isDirectory());
         expect (home.exists());
         expect (! home.existsAsFile());
-        expect (File::getSpecialLocation (File::userDocumentsDirectory).isDirectory());
         expect (File::getSpecialLocation (File::userApplicationDataDirectory).isDirectory());
         expect (File::getSpecialLocation (File::currentExecutableFile).exists());
         expect (File::getSpecialLocation (File::currentApplicationFile).exists());

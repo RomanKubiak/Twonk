@@ -271,7 +271,7 @@ namespace
         return statfs (f.getFullPathName().toUTF8(), &result) == 0;
     }
 
-   #if (JUCE_MAC && MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_5) || JUCE_IOS
+   #if JUCE_MAC || JUCE_IOS
     static int64 getCreationTime (const juce_statStruct& s) noexcept     { return (int64) s.st_birthtime; }
    #else
     static int64 getCreationTime (const juce_statStruct& s) noexcept     { return (int64) s.st_ctime; }
@@ -402,7 +402,7 @@ void File::getFileTimesInternal (int64& modificationTime, int64& accessTime, int
     {
         modificationTime  = (int64) info.st_mtime * 1000;
         accessTime        = (int64) info.st_atime * 1000;
-       #if (JUCE_MAC && MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_5) || JUCE_IOS
+       #if JUCE_MAC || JUCE_IOS
         creationTime      = (int64) info.st_birthtime * 1000;
        #else
         creationTime      = (int64) info.st_ctime * 1000;
@@ -640,9 +640,6 @@ MemoryMappedFile::~MemoryMappedFile()
 File juce_getExecutableFile();
 File juce_getExecutableFile()
 {
-   #if JUCE_ANDROID
-    return File (android.appFile);
-   #else
     struct DLAddrReader
     {
         static String getFilename()
@@ -657,7 +654,6 @@ File juce_getExecutableFile()
 
     static String filename = DLAddrReader::getFilename();
     return File::getCurrentWorkingDirectory().getChildFile (filename);
-   #endif
 }
 
 //==============================================================================
@@ -893,26 +889,24 @@ extern JavaVM* androidJNIJavaVM;
 
 static void* threadEntryProc (void* userData)
 {
-   #if JUCE_ANDROID
-
-    if (androidJNIJavaVM != nullptr)
-    {
-        JNIEnv* env;
-        androidJNIJavaVM->AttachCurrentThread (&env, nullptr);
-        setEnv (env);
-    }
-    else
-    {
-        // JNI_OnLoad was not called - make sure you load the JUCE shared library
-        // using System.load inside of Java
-        jassertfalse;
-    }
-   #endif
+    auto* myself = static_cast<Thread*> (userData);
 
     JUCE_AUTORELEASEPOOL
     {
-        juce_threadEntryPoint (userData);
+        juce_threadEntryPoint (myself);
     }
+
+   #if JUCE_ANDROID
+    if (androidJNIJavaVM != nullptr)
+    {
+        void* env = nullptr;
+        androidJNIJavaVM->GetEnv(&env, JNI_VERSION_1_2);
+
+        // only detach if we have actually been attached
+        if (env != nullptr)
+            androidJNIJavaVM->DetachCurrentThread();
+    }
+   #endif
 
     return nullptr;
 }
@@ -954,6 +948,7 @@ void Thread::launchThread()
         attrPtr = &attr;
         pthread_attr_setstacksize (attrPtr, threadStackSize);
     }
+
 
     if (pthread_create (&handle, attrPtr, threadEntryProc, this) == 0)
     {
@@ -1048,8 +1043,8 @@ void JUCE_CALLTYPE Thread::setCurrentThreadAffinityMask (uint32 affinityMask)
     CPU_ZERO (&affinity);
 
     for (int i = 0; i < 32; ++i)
-        if ((affinityMask & (1 << i)) != 0)
-            CPU_SET (i, &affinity);
+        if ((affinityMask & (uint32) (1 << i)) != 0)
+            CPU_SET ((size_t) i, &affinity);
 
    #if (! JUCE_ANDROID) && ((! JUCE_LINUX) || ((__GLIBC__ * 1000 + __GLIBC_MINOR__) >= 2004))
     pthread_setaffinity_np (pthread_self(), sizeof (cpu_set_t), &affinity);
@@ -1159,7 +1154,7 @@ public:
                 argv.add (nullptr);
 
                 execvp (exe.toRawUTF8(), argv.getRawDataPointer());
-                exit (-1);
+                _exit (-1);
             }
             else
             {
@@ -1180,14 +1175,24 @@ public:
             close (pipeHandle);
     }
 
-    bool isRunning() const noexcept
+    bool isRunning() noexcept
     {
         if (childPID == 0)
             return false;
 
         int childState;
         auto pid = waitpid (childPID, &childState, WNOHANG);
-        return pid == 0 || ! (WIFEXITED (childState) || WIFSIGNALED (childState));
+
+        if (pid == 0)
+            return true;
+
+        if (WIFEXITED (childState))
+        {
+            exitCode = WEXITSTATUS (childState);
+            return false;
+        }
+
+        return ! WIFSIGNALED (childState);
     }
 
     int read (void* dest, int numBytes) noexcept
@@ -1202,7 +1207,21 @@ public:
             readHandle = fdopen (pipeHandle, "r");
 
         if (readHandle != nullptr)
-            return (int) fread (dest, 1, (size_t) numBytes, readHandle);
+        {
+            for (;;)
+            {
+                auto numBytesRead = (int) fread (dest, 1, (size_t) numBytes, readHandle);
+
+                if (numBytesRead > 0 || feof (readHandle))
+                    return numBytesRead;
+
+                // signal occured during fread() so try again
+                if (ferror (readHandle) && errno == EINTR)
+                    continue;
+
+                break;
+            }
+        }
 
         return 0;
     }
@@ -1212,15 +1231,21 @@ public:
         return ::kill (childPID, SIGKILL) == 0;
     }
 
-    uint32 getExitCode() const noexcept
+    uint32 getExitCode() noexcept
     {
+        if (exitCode >= 0)
+            return (uint32) exitCode;
+
         if (childPID != 0)
         {
             int childState = 0;
             auto pid = waitpid (childPID, &childState, WNOHANG);
 
             if (pid >= 0 && WIFEXITED (childState))
-                return WEXITSTATUS (childState);
+            {
+                exitCode = WEXITSTATUS (childState);
+                return (uint32) exitCode;
+            }
         }
 
         return 0;
@@ -1228,6 +1253,7 @@ public:
 
     int childPID = 0;
     int pipeHandle = 0;
+    int exitCode = -1;
     FILE* readHandle = {};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ActiveProcess)
@@ -1325,7 +1351,7 @@ struct HighResolutionTimer::Pimpl
     }
 
     HighResolutionTimer& owner;
-    std::atomic<int> periodMs;
+    std::atomic<int> periodMs { 0 };
 
 private:
     pthread_t thread = {};
@@ -1335,15 +1361,7 @@ private:
 
     static void* timerThread (void* param)
     {
-       #if JUCE_ANDROID
-        // JNI_OnLoad was not called - make sure you load the JUCE shared library
-        // using System.load inside of Java
-        jassert (androidJNIJavaVM != nullptr);
-
-        JNIEnv* env;
-        androidJNIJavaVM->AttachCurrentThread (&env, nullptr);
-        setEnv (env);
-       #else
+       #if ! JUCE_ANDROID
         int dummy;
         pthread_setcancelstate (PTHREAD_CANCEL_ENABLE, &dummy);
        #endif

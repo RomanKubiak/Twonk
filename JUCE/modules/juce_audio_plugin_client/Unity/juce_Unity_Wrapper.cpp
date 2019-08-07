@@ -145,8 +145,15 @@ private:
         {
         }
 
-        ImageType* createType() const override                       { return new SoftwareImageType(); }
-        LowLevelGraphicsContext* createLowLevelContext() override    { return new LowLevelGraphicsSoftwareRenderer (Image (this)); }
+        std::unique_ptr<ImageType> createType() const override
+        {
+            return std::make_unique<SoftwareImageType>();
+        }
+
+        std::unique_ptr<LowLevelGraphicsContext> createLowLevelContext() override
+        {
+            return std::make_unique<LowLevelGraphicsSoftwareRenderer> (Image (this));
+        }
 
         void initialiseBitmapData (Image::BitmapData& bitmap, int x, int y, Image::BitmapData::ReadWriteMode mode) override
         {
@@ -655,7 +662,7 @@ static void declareEffect (UnityAudioEffectDefinition& definition)
 
 } // namespace juce
 
-UNITY_INTERFACE_EXPORT int UnityGetAudioEffectDefinitions (UnityAudioEffectDefinition*** definitionsPtr)
+UNITY_INTERFACE_EXPORT int UNITY_INTERFACE_API UnityGetAudioEffectDefinitions (UnityAudioEffectDefinition*** definitionsPtr)
 {
     if (juce::getWrapperMap().size() == 0)
         juce::initialiseJuce_GUI();
@@ -724,7 +731,7 @@ UNITY_INTERFACE_EXPORT renderCallback UNITY_INTERFACE_API getRenderCallback()
     return onRenderEvent;
 }
 
-UNITY_INTERFACE_EXPORT void unityInitialiseTexture (int id, void* data, int w, int h)
+UNITY_INTERFACE_EXPORT void UNITY_INTERFACE_API unityInitialiseTexture (int id, void* data, int w, int h)
 {
     getWrapperChecked (id)->getEditorPeer().setPixelDataHandle (reinterpret_cast<juce::uint8*> (data), w, h);
 }

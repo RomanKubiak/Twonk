@@ -132,8 +132,8 @@ struct JavascriptEngine::RootObject   : public DynamicObject
     struct Scope
     {
         Scope (const Scope* p, ReferenceCountedObjectPtr<RootObject> rt, DynamicObject::Ptr scp) noexcept
-            : parent (p), root (static_cast<ReferenceCountedObjectPtr<RootObject>&&> (rt)),
-              scope (static_cast<DynamicObject::Ptr&&> (scp)) {}
+            : parent (p), root (std::move (rt)),
+              scope (std::move (scp)) {}
 
         const Scope* const parent;
         ReferenceCountedObjectPtr<RootObject> root;
@@ -1183,7 +1183,7 @@ struct JavascriptEngine::RootObject   : public DynamicObject
             if (matchIf (TokenTypes::comma))
             {
                 std::unique_ptr<BlockStatement> block (new BlockStatement (location));
-                block->statements.add (s.release());
+                block->statements.add (std::move (s));
                 block->statements.add (parseVar());
                 return block.release();
             }

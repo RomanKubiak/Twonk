@@ -132,7 +132,7 @@ struct FFTFallback  : public FFT::Instance
         if (size == 1)
             return;
 
-        const size_t scratchSize = 16 + sizeof (Complex<float>) * (size_t) size;
+        const size_t scratchSize = 16 + (size_t) size * sizeof (Complex<float>);
 
         if (scratchSize < maxFFTScratchSpaceToAlloca)
         {
@@ -150,7 +150,7 @@ struct FFTFallback  : public FFT::Instance
         if (size == 1)
             return;
 
-        const size_t scratchSize = 16 + sizeof (Complex<float>) * (size_t) size;
+        const size_t scratchSize = 16 + (size_t) size * sizeof (Complex<float>);
 
         if (scratchSize < maxFFTScratchSpaceToAlloca)
         {
@@ -316,7 +316,7 @@ struct FFTFallback  : public FFT::Instance
                 default:  jassertfalse; break;
             }
 
-            auto* scratch = static_cast<Complex<float>*> (alloca (sizeof (Complex<float>) * (size_t) factor.radix));
+            auto* scratch = static_cast<Complex<float>*> (alloca ((size_t) factor.radix * sizeof (Complex<float>)));
 
             for (int i = 0; i < factor.length; ++i)
             {
@@ -632,7 +632,7 @@ struct FFTWImpl  : public FFT::Instance
             if (! Symbols::symbol (lib, symbols.execute_c2r_fftw, "fftwf_execute_dft_c2r")) return nullptr;
            #endif
 
-            return new FFTWImpl (static_cast<size_t> (order), static_cast<DynamicLibrary&&> (lib), symbols);
+            return new FFTWImpl (static_cast<size_t> (order), std::move (lib), symbols);
         }
 
         return nullptr;
@@ -843,7 +843,7 @@ void FFT::performFrequencyOnlyForwardTransform (float* inputOutputData) const no
     for (auto i = 0; i < size; ++i)
         inputOutputData[i] = std::abs (out[i]);
 
-    zeromem (&inputOutputData[size], sizeof (float) * static_cast<size_t> (size));
+    zeromem (&inputOutputData[size], static_cast<size_t> (size) * sizeof (float));
 }
 
 } // namespace dsp

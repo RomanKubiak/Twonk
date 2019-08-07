@@ -33,7 +33,7 @@
                    juce_audio_plugin_client, juce_audio_processors,
                    juce_audio_utils, juce_core, juce_data_structures,
                    juce_events, juce_graphics, juce_gui_basics, juce_gui_extra
- exporters:        xcode_mac, vs2017
+ exporters:        xcode_mac, vs2019
 
  moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
 
@@ -100,7 +100,7 @@ class MoveOnlyFifo final
 {
 public:
     explicit MoveOnlyFifo (int size)
-        : buffer (size),
+        : buffer ((size_t) size),
           abstractFifo (size)
     {}
 
@@ -115,12 +115,12 @@ public:
 
         if (writer.blockSize1 == 1)
         {
-            buffer[writer.startIndex1] = move (item);
+            buffer[(size_t) writer.startIndex1] = move (item);
             item = {};
         }
         else if (writer.blockSize2 == 1)
         {
-            buffer[writer.startIndex2] = move (item);
+            buffer[(size_t) writer.startIndex2] = move (item);
             item = {};
         }
 
@@ -132,10 +132,10 @@ public:
         auto reader = abstractFifo.read (1);
 
         if (reader.blockSize1 == 1)
-            return move (buffer[reader.startIndex1]);
+            return move (buffer[(size_t) reader.startIndex1]);
 
         if (reader.blockSize2 == 1)
-            return move (buffer[reader.startIndex2]);
+            return move (buffer[(size_t) reader.startIndex2]);
 
         return {};
     }
@@ -250,12 +250,12 @@ public:
         jassert (currentlyPlayingNote.keyState == MPENote::keyDown
               || currentlyPlayingNote.keyState == MPENote::keyDownAndSustained);
 
-        level    .setValue (currentlyPlayingNote.pressure.asUnsignedFloat());
-        frequency.setValue (currentlyPlayingNote.getFrequencyInHertz());
+        level    .setTargetValue (currentlyPlayingNote.pressure.asUnsignedFloat());
+        frequency.setTargetValue (currentlyPlayingNote.getFrequencyInHertz());
 
         auto loopPoints = samplerSound->getLoopPointsInSeconds();
-        loopBegin.setValue (loopPoints.getStart() * samplerSound->getSample()->getSampleRate());
-        loopEnd  .setValue (loopPoints.getEnd()   * samplerSound->getSample()->getSampleRate());
+        loopBegin.setTargetValue (loopPoints.getStart() * samplerSound->getSample()->getSampleRate());
+        loopEnd  .setTargetValue (loopPoints.getEnd()   * samplerSound->getSample()->getSampleRate());
 
         for (auto smoothed : { &level, &frequency, &loopBegin, &loopEnd })
             smoothed->reset (currentSampleRate, smoothingLengthInSeconds);
@@ -276,12 +276,12 @@ public:
 
     void notePressureChanged() override
     {
-        level.setValue (currentlyPlayingNote.pressure.asUnsignedFloat());
+        level.setTargetValue (currentlyPlayingNote.pressure.asUnsignedFloat());
     }
 
     void notePitchbendChanged() override
     {
-        frequency.setValue (currentlyPlayingNote.getFrequencyInHertz());
+        frequency.setTargetValue (currentlyPlayingNote.getFrequencyInHertz());
     }
 
     void noteTimbreChanged()   override {}
@@ -294,8 +294,8 @@ public:
         jassert (samplerSound->getSample() != nullptr);
 
         auto loopPoints = samplerSound->getLoopPointsInSeconds();
-        loopBegin.setValue (loopPoints.getStart() * samplerSound->getSample()->getSampleRate());
-        loopEnd  .setValue (loopPoints.getEnd()   * samplerSound->getSample()->getSampleRate());
+        loopBegin.setTargetValue (loopPoints.getStart() * samplerSound->getSample()->getSampleRate());
+        loopEnd  .setTargetValue (loopPoints.getEnd()   * samplerSound->getSample()->getSampleRate());
 
         auto& data = samplerSound->getSample()->getBuffer();
 
@@ -446,10 +446,10 @@ private:
     }
 
     std::shared_ptr<const MPESamplerSound> samplerSound;
-    LinearSmoothedValue<double> level { 0 };
-    LinearSmoothedValue<double> frequency { 0 };
-    LinearSmoothedValue<double> loopBegin;
-    LinearSmoothedValue<double> loopEnd;
+    SmoothedValue<double> level { 0 };
+    SmoothedValue<double> frequency { 0 };
+    SmoothedValue<double> loopBegin;
+    SmoothedValue<double> loopEnd;
     double currentSamplePos { 0 };
     double tailOff { 0 };
     Direction currentDirection { Direction::forward };
@@ -2178,14 +2178,14 @@ public:
         auto numVoices = synthesiser.getNumVoices();
 
         // Update the current playback positions
-        for (auto i = 0; i != maxVoices; ++i)
+        for (auto i = 0; i < maxVoices; ++i)
         {
             auto* voicePtr = dynamic_cast<MPESamplerVoice*> (synthesiser.getVoice (i));
 
             if (i < numVoices && voicePtr != nullptr)
-                playbackPositions[i] = static_cast<float> (voicePtr->getCurrentSamplePosition() / loadedSamplerSound->getSample()->getSampleRate());
+                playbackPositions[(size_t) i] = static_cast<float> (voicePtr->getCurrentSamplePosition() / loadedSamplerSound->getSample()->getSampleRate());
             else
-                playbackPositions[i] = 0.0f;
+                playbackPositions[(size_t) i] = 0.0f;
         }
     }
 
@@ -2207,8 +2207,8 @@ public:
             void operator() (SamplerAudioProcessor& proc)
             {
                 proc.readerFactory = move (readerFactory);
-                auto samplerSound = proc.samplerSound.load();
-                samplerSound->setSample (move (sample));
+                auto sound = proc.samplerSound.load();
+                sound->setSample (move (sample));
                 auto numberOfVoices = proc.synthesiser.getNumVoices();
                 proc.synthesiser.clearVoices();
 
@@ -2322,15 +2322,11 @@ public:
 
             void operator() (SamplerAudioProcessor& proc)
             {
-                if (newVoices.size() < proc.synthesiser.getNumVoices())
+                if (newVoices.size() < (size_t) proc.synthesiser.getNumVoices())
                     proc.synthesiser.reduceNumVoices (int (newVoices.size()));
                 else
-                {
-                    for (auto it = begin (newVoices); proc.synthesiser.getNumVoices() < newVoices.size(); ++it)
-                    {
+                    for (auto it = begin (newVoices); (size_t) proc.synthesiser.getNumVoices() < newVoices.size(); ++it)
                         proc.synthesiser.addVoice (it->release());
-                    }
-                }
             }
 
         private:
@@ -2340,7 +2336,7 @@ public:
         numberOfVoices = std::min (maxVoices, numberOfVoices);
         auto loadedSamplerSound = samplerSound.load();
         std::vector<std::unique_ptr<MPESamplerVoice>> newSamplerVoices;
-        newSamplerVoices.reserve (numberOfVoices);
+        newSamplerVoices.reserve ((size_t) numberOfVoices);
 
         for (auto i = 0; i != numberOfVoices; ++i)
             newSamplerVoices.emplace_back (new MPESamplerVoice (loadedSamplerSound));
@@ -2355,7 +2351,7 @@ public:
     // been updated to remove some voices in the meantime, so the returned
     // value won't correspond to an existing voice.
     int getNumVoices() const                    { return synthesiser.getNumVoices(); }
-    float getPlaybackPosition (int voice) const { return playbackPositions.at (voice); }
+    float getPlaybackPosition (int voice) const { return playbackPositions.at ((size_t) voice); }
 
 private:
     //==============================================================================
@@ -2373,7 +2369,7 @@ private:
                                {
                                    std::vector<float> ret;
                                    auto voices = p.getNumVoices();
-                                   ret.reserve (voices);
+                                   ret.reserve ((size_t) voices);
 
                                    for (auto i = 0; i != voices; ++i)
                                        ret.emplace_back (p.getPlaybackPosition (i));

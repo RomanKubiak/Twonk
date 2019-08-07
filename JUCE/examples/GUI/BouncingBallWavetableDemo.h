@@ -33,7 +33,7 @@
                    juce_audio_processors, juce_audio_utils, juce_core,
                    juce_data_structures, juce_events, juce_graphics,
                    juce_gui_basics, juce_gui_extra
- exporters:        xcode_mac, vs2017, linux_make
+ exporters:        xcode_mac, vs2019, linux_make
 
  moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
 
@@ -70,7 +70,7 @@ public:
         startTimerHz (60);
     }
 
-    ~BouncingBallWavetableDemo()
+    ~BouncingBallWavetableDemo() override
     {
         shutdownAudio();
     }
@@ -217,7 +217,7 @@ public:
 
         for (auto i = 0; i < steps; ++i)
         {
-            auto p = start + ((finish - start) * i) / steps;
+            auto p = start + ((finish - start) * i) / (int) steps;
 
             auto index = (bufferIndex + i) % wavetableSize;
             waveValues[1][index] = yToAmplitude (p.y);

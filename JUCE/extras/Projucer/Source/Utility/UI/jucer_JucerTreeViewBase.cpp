@@ -37,14 +37,12 @@ void TreePanelBase::setRoot (JucerTreeViewBase* root)
 
     if (project != nullptr)
     {
-        const std::unique_ptr<XmlElement> treeOpenness (project->getStoredProperties()
-                                                          .getXmlValue (opennessStateKey));
-        if (treeOpenness != nullptr)
+        if (auto treeOpenness = project->getStoredProperties().getXmlValue (opennessStateKey))
         {
             tree.restoreOpennessState (*treeOpenness, true);
 
             for (int i = tree.getNumSelectedItems(); --i >= 0;)
-                if (JucerTreeViewBase* item = dynamic_cast<JucerTreeViewBase*> (tree.getSelectedItem (i)))
+                if (auto item = dynamic_cast<JucerTreeViewBase*> (tree.getSelectedItem (i)))
                     item->cancelDelayedSelectionTimer();
         }
     }
@@ -118,7 +116,7 @@ Colour JucerTreeViewBase::getContentColour (bool isIcon) const
     return getOwnerView()->findColour (isIcon ? treeIconColourId : defaultTextColourId);
 }
 
-void JucerTreeViewBase::paintContent (Graphics& g, const Rectangle<int>& area)
+void JucerTreeViewBase::paintContent (Graphics& g, Rectangle<int> area)
 {
     g.setFont (getFont());
     g.setColour (getContentColour (false));

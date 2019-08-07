@@ -60,9 +60,7 @@ MainWindow::MainWindow()
     {
         commandManager.getKeyMappings()->resetToDefaultMappings();
 
-        std::unique_ptr<XmlElement> keys (getGlobalProperties().getXmlValue ("keyMappings"));
-
-        if (keys != nullptr)
+        if (auto keys = getGlobalProperties().getXmlValue ("keyMappings"))
             commandManager.getKeyMappings()->restoreFromXml (*keys);
 
         addKeyListener (commandManager.getKeyMappings());
@@ -832,7 +830,8 @@ void MainWindowList::reopenLastProjects()
     const ScopedValueSetter<bool> setter (isInReopenLastProjects, true);
 
     for (auto& p : getAppSettings().getLastProjects())
-        openFile (p, true);
+        if (p.existsAsFile())
+            openFile (p, true);
 }
 
 void MainWindowList::sendLookAndFeelChange()

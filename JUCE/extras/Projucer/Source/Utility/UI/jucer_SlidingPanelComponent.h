@@ -33,7 +33,7 @@ class SlidingPanelComponent   : public Component
 {
 public:
     SlidingPanelComponent();
-    ~SlidingPanelComponent();
+    ~SlidingPanelComponent() override;
 
     /** Adds a new tab to the panel slider. */
     void addTab (const String& tabName,
@@ -52,7 +52,6 @@ public:
 
     /** Animates the window to the desired tab. */
     void goToTab (int targetTabIndex);
-
 
     //==============================================================================
     /** @internal */

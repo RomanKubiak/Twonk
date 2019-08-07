@@ -142,13 +142,13 @@ void PingPongDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 
 void PingPongDelayAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    ScopedPointer<XmlElement> xml (parameters.valueTreeState.state.createXml());
+    ScopedPointer<XmlElement> xml (parameters.valueTreeState.state.createXml().get());
     copyXmlToBinary (*xml, destData);
 }
 
 void PingPongDelayAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+    ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes).get());
     if (xmlState != nullptr)
         if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
             parameters.valueTreeState.state = ValueTree::fromXml (*xmlState);

@@ -39,7 +39,7 @@ class JUCE_API  RelativeCoordinatePositionerBase  : public Component::Positioner
 {
 public:
     RelativeCoordinatePositionerBase (Component&);
-    ~RelativeCoordinatePositionerBase();
+    ~RelativeCoordinatePositionerBase() override;
 
     void componentMovedOrResized (Component&, bool, bool) override;
     void componentParentHierarchyChanged (Component&) override;
@@ -59,9 +59,6 @@ public:
     {
     public:
         ComponentScope (Component&);
-
-        // Suppress a VS2013 compiler warning
-        ComponentScope& operator= (const ComponentScope&) = delete;
 
         Expression getSymbolValue (const String& symbol) const override;
         void visitRelativeScope (const String& scopeName, Visitor&) const override;

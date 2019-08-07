@@ -33,7 +33,7 @@
                    juce_audio_plugin_client, juce_audio_processors,
                    juce_audio_utils, juce_core, juce_data_structures, juce_dsp,
                    juce_events, juce_graphics, juce_gui_basics, juce_gui_extra
- exporters:        xcode_mac, vs2017
+ exporters:        xcode_mac, vs2019
 
  moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
 
@@ -498,7 +498,7 @@ private:
     {
         ScopedNoDenormals noDenormals;
 
-        // Input volume applied with a LinearSmoothedValue
+        // Input volume applied with a SmoothedValue
         inputVolume.process (context);
 
         // Pre-highpass filtering, very useful for distortion audio effects
@@ -511,7 +511,7 @@ private:
         setLatencySamples (audioCurrentlyOversampled ? roundToInt (oversampling->getLatencyInSamples()) : 0);
 
         if (audioCurrentlyOversampled)
-            oversampledBlock = oversampling->processSamplesUp (context.getInputBlock());
+            oversampledBlock = oversampling->processSamplesUp (context.getOutputBlock());
 
         auto waveshaperContext = audioCurrentlyOversampled ? dsp::ProcessContextReplacing<float> (oversampledBlock)
                                                            : context;
@@ -543,7 +543,7 @@ private:
         convolution.process (context);
         context.isBypassed = wasBypassed;
 
-        // Output volume applied with a LinearSmoothedValue
+        // Output volume applied with a SmoothedValue
         outputVolume.process (context);
     }
 

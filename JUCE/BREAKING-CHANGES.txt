@@ -4,6 +4,231 @@ JUCE breaking changes
 Develop
 =======
 
+Change
+------
+The Visual Studio 2013 exporter has been removed from the Projucer and we will
+no longer maintain backwards compatibility with Visual Studio 2013 in JUCE.
+
+Possible Issues
+---------------
+It is no longer possible to create Visual Studio 2013 projects from the
+Projucer or compile JUCE-based software using Visual Studio 2013.
+
+Workaround
+----------
+If you are using Visual Studio 2013 to build your projects you will need to
+update to a more modern version of Visual Studio.
+
+Rationale
+---------
+Of all the platforms JUCE supports Visual Studio 2013 was holding us back the
+most in terms of C++ features we would like to use more broadly across the
+codebase. It is still possible to target older versions of Windows with more
+modern versions of Visual Studio. Until recently the AAX SDK was distributed as
+a Visual Studio 2013 project, but this is now provided as a Visual Studio 2017
+project.
+
+
+Change
+------
+JUCE is moving towards using C++11 pointer container types instead of passing
+raw pointers as arguments and return values.
+
+Possible Issues
+---------------
+You will need to change your code to pass std::unique_ptr into and out of
+various functions across JUCE's API.
+
+Workaround
+----------
+None
+
+Rationale
+---------
+Indicating ownership through the transfer of smart pointer types has been part
+of mainstream C++ for a long time and this change enforces memory safety by
+default in most situations.
+
+
+Change
+------
+SystemTrayIconComponent::setIconImage now takes two arguments, rather than one.
+The new argument is a template image for use on macOS where all non-transparent
+regions will render in a monochrome colour determined dynamically by the
+operating system.
+
+Possible Issues
+---------------
+You will now need to provide two images to display a SystemTrayIconComponent
+and the SystemTrayIconComponent will have a different appearance on macOS.
+
+Workaround
+----------
+If you are not targeting macOS then you can provide an empty image, `{}`, for
+the second argument. If you are targeting macOS then you will likely need to
+design a new monochrome icon.
+
+Rationale
+---------
+The introduction of "Dark Mode" in macOS 10.14 means that menu bar icons must
+support several different colours and highlight modes to retain the same
+appearance as the native Apple icons. Doing this correctly without delegating
+the behaviour to the operating system is extremely cumbersome, and the APIs we
+were previously using to interact with menu bar items have been deprecated.
+
+
+Change
+------
+The AudioBlock class now differentiates between const and non-const data.
+
+Possible Issues
+---------------
+The return type of the getInputBlock() method of the ProcessContextReplacing
+and ProcessContextNonReplacing classes has changed from AudioBlock<X> to
+AudioBlock<const X>.
+
+Workaround
+----------
+For ProcessContextReplacing you should use getOutputBlock() instead of
+getInputBlock(). For ProcessContextNonReplacing attempting to modify the input
+block is very likely an error.
+
+Rationale
+---------
+This change makes the intent of the code much clearer and means that we can
+remove some const_cast operations.
+
+
+Change
+------
+The formatting of floating point numbers written to XML and JSON files has
+changed.
+
+Note that there is no change in precision - the XML and JSON files containing
+the new format numbers will parse in exactly the same way, it is only the
+string representation that has changed.
+
+Possible Issues
+---------------
+If you rely upon exactly reproducing XML or JSON files then the new files may
+be different.
+
+Workaround
+----------
+Update any reference XML or JSON files to use the new format.
+
+Rationale
+---------
+The new format retains full precision, provides a human friendly representation
+of values near 1, and uses scientific notation for small and large numbers.
+This prevents needless file size bloat from numbers like 0.00000000000000001.
+
+
+Version 5.4.3
+=============
+
+Change
+------
+The global user module path setting in the Projucer can now only contain a
+single path.
+
+Possible Issues
+---------------
+Projects that previously relied on using multiple global user module paths
+separated by a semicolon will fail to find these modules after re-saving.
+
+Workaround
+----------
+Replace the multiple paths with a single global user module path.
+
+Rationale
+---------
+Using multiple global user module paths did not work when saving a project
+which exported to different OSes. Only allowing a single path will prevent this
+from silently causing issues.
+
+
+Version 5.4.2
+=============
+
+Change
+------
+The return type of Block::getBlockAreaWithinLayout() has been changed from
+Rectangle to a simpler BlockArea struct.
+
+Possible Issues
+---------------
+Classes that derive from Block and implement this pure virtual method will no
+longer compile due to a change in the function signature.
+
+Workaround
+----------
+Update the method to return a BlockArea struct and update code that calls
+getBlockAreaWithinLayout to handle a BlockArea instead of a Rectangle.
+
+Rationale
+---------
+The juce_blocks_basics is ISC licensed and therefore cannot depend on the
+GPL/Commercial licensed juce_graphics module that contains Rectangle.
+
+
+Change
+------
+Renaming and deletion of open file handles on Windows is now possible using the
+FILE_SHARE_DELETE flag.
+
+Possible Issues
+---------------
+Previous code that relied on open files not being able to be renamed or deleted
+on Windows may fail.
+
+Workaround
+----------
+No workaround.
+
+Rationale
+---------
+This unifies the behaviour across OSes as POSIX systems already allow this.
+
+
+Change
+------
+Multiple changes to low-level, non-public JNI and Android APIs.
+
+Possible Issues
+---------------
+If you were using any non-public, low-level JNI macros, calling java code or
+recieving JNI callbacks, then your code will probably no longer work. See the
+forum for further details.
+
+Workaround
+----------
+See the forum for further details.
+
+Rationale
+---------
+See the forum for further details.
+
+
+Change
+------
+The minimum Android version for a JUCE app is now Android 4.1
+
+Possible Issues
+---------------
+Your app may not run on very old versions of Android  (less than 0.5% of the
+devices).
+
+Workaround
+----------
+There is no workaround.
+
+Rationale
+---------
+Less than 0.5% of all devices in the world run versions of Android older than
+Android 4.1. In the interest of keeping JUCE code clean and lean, we must
+depricate support for very old Android versions from time to time.
+
 
 Version 5.4.0
 =============

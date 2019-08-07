@@ -50,7 +50,7 @@ InternalPluginFormat::InternalPluginFormat(TwonkPlayHead &_twonkPlayHead) : twon
     }
 }
 
-AudioPluginInstance* InternalPluginFormat::createInstance (const String& name)
+std::unique_ptr<AudioPluginInstance> InternalPluginFormat::createInstance (const String& name)
 {
 	DBG("InternalPluginFormat::createInstance " + name);
     if (name == audioOutDesc.name)
@@ -72,13 +72,12 @@ AudioPluginInstance* InternalPluginFormat::createInstance (const String& name)
 void InternalPluginFormat::createPluginInstance (const PluginDescription& desc,
                                                  double /*initialSampleRate*/,
                                                  int /*initialBufferSize*/,
-                                                 void* userData,
                                                  PluginCreationCallback callback)
 {
-	AudioPluginInstance* p = createInstance (desc.name);
+	std::unique_ptr<AudioPluginInstance> p (createInstance (desc.name));
 	DBG("InternalPluginFormat::createPluginInstance " + desc.name + " setting twonk play head");
 	//p->setPlayHead(&twonkPlayHead);
-    callback (userData, p, p == nullptr ? NEEDS_TRANS ("Invalid internal filter name") : String());
+    callback (p, p == nullptr ? NEEDS_TRANS ("Invalid internal filter name") : "");
 }
 
 bool InternalPluginFormat::requiresUnblockedMessageThreadDuringCreation (const PluginDescription&) const noexcept

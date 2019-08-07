@@ -157,7 +157,7 @@ inline int getIntervalValue(String intervalName)
 }
 
 inline String getNoteName(int noteNumber, int baseOctave/*=-2*/) {
-    String Note = String::empty;
+    String Note;
     switch (noteNumber%12) {
         case  0: Note="C" ; break;
         case  1: Note="C#"; break;
@@ -177,7 +177,7 @@ inline String getNoteName(int noteNumber, int baseOctave/*=-2*/) {
 }
 
 inline String getNoteNameWithoutOctave(int noteNumber, bool sharps = true) {
-    String Note = String::empty;
+    String Note;
 	if (sharps) 
 	{
 		switch (noteNumber%12) {

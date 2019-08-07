@@ -123,7 +123,8 @@ void HeaderComponent::setCurrentProject (Project* p) noexcept
     exportersTree.addListener (this);
     updateExporters();
 
-    project->addChangeListener (this);
+    projectNameValue.referTo (project->getProjectValue (Ids::name));
+    projectNameValue.addListener (this);
     updateName();
 
     isBuilding = false;
@@ -131,14 +132,12 @@ void HeaderComponent::setCurrentProject (Project* p) noexcept
     repaint();
 
     childProcess = ProjucerApplication::getApp().childProcessCache->getExisting (*project);
+
     if (childProcess != nullptr)
     {
         childProcess->activityList.addChangeListener (this);
         childProcess->errorList.addChangeListener (this);
-    }
 
-    if (childProcess != nullptr)
-    {
         runAppButton->setTooltip ({});
         runAppButton->setEnabled (true);
     }
@@ -165,13 +164,27 @@ void HeaderComponent::updateExporters() noexcept
         if (selectedName == exporter->getName())
             exporterBox.setSelectedId (i + 1);
 
-        if (exporter->canLaunchProject() && preferredExporterIndex == -1)
+        if (exporter->getName().contains (ProjectExporter::getCurrentPlatformExporterName()) && preferredExporterIndex == -1)
             preferredExporterIndex = i;
     }
 
     if (exporterBox.getSelectedItemIndex() == -1)
-        exporterBox.setSelectedItemIndex (preferredExporterIndex != -1 ? preferredExporterIndex
-                                                                       : 0);
+    {
+        if (preferredExporterIndex == -1)
+        {
+            i = 0;
+            for (Project::ExporterIterator exporter (*project); exporter.next(); ++i)
+            {
+                if (exporter->canLaunchProject())
+                {
+                    preferredExporterIndex = i;
+                    break;
+                }
+            }
+        }
+
+        exporterBox.setSelectedItemIndex (preferredExporterIndex != -1 ? preferredExporterIndex : 0);
+    }
 
     updateExporterButton();
 }
@@ -227,20 +240,20 @@ void HeaderComponent::lookAndFeelChanged()
         userSettingsWindow->sendLookAndFeelChange();
 }
 
-void HeaderComponent::changeListenerCallback (ChangeBroadcaster* source)
+void HeaderComponent::changeListenerCallback (ChangeBroadcaster*)
 {
-    if (source == project)
-    {
-        updateName();
-        updateExporters();
-    }
-    else if (childProcess != nullptr)
+    if (childProcess != nullptr)
     {
         if (childProcess->activityList.getNumActivities() > 0)
             buildPing();
         else
             buildFinished (childProcess->errorList.getNumErrors() == 0);
     }
+}
+
+void HeaderComponent::valueChanged (Value&)
+{
+    updateName();
 }
 
 void HeaderComponent::timerCallback()

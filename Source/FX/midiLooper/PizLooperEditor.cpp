@@ -2420,7 +2420,7 @@ PizLooperEditor::PizLooperEditor (PizLooper* const ownerFilter)
 	keySelector->addChangeListener(this);
 	ownerFilter->keySelectorState.addListener(this);
 	demo = ownerFilter->demo?1:0;
-	loopinfoLabel3->setText(demo?"DEMO VERSION":String::empty, NotificationType::dontSendNotification);
+	loopinfoLabel3->setText(demo?"DEMO VERSION":"", NotificationType::dontSendNotification);
 	counter=0;
 	startTimer(75);
 
@@ -3116,7 +3116,7 @@ void PizLooperEditor::buttonClicked (Button* buttonThatWasClicked)
         }
 		else {
 			FileChooser myChooser ("Save MIDI File...",
-				File(getFilter()->loopDir + File::separatorString + nameLabel->getText()),"*.mid");
+				File(getFilter()->loopDir + File::getSeparatorChar() + nameLabel->getText()),"*.mid");
 
 			if (myChooser.browseForFileToSave(true))
 			{

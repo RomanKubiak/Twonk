@@ -36,11 +36,12 @@ class Project;
 class HeaderComponent    : public Component,
                            private ValueTree::Listener,
                            private ChangeListener,
+                           private Value::Listener,
                            private Timer
 {
 public:
     HeaderComponent();
-    ~HeaderComponent();
+    ~HeaderComponent() override;
 
     //==========================================================================
     void resized() override;
@@ -65,12 +66,10 @@ private:
     //==========================================================================
     void lookAndFeelChanged() override;
     void changeListenerCallback (ChangeBroadcaster* source) override;
+    void valueChanged (Value&) override;
     void timerCallback() override;
 
     //==========================================================================
-    void valueTreePropertyChanged (ValueTree&, const Identifier&) override       {}
-    void valueTreeParentChanged (ValueTree&) override                            {}
-
     void valueTreeChildAdded (ValueTree& parentTree, ValueTree&) override        { updateIfNeeded (parentTree); }
     void valueTreeChildRemoved (ValueTree& parentTree, ValueTree&, int) override { updateIfNeeded (parentTree); }
     void valueTreeChildOrderChanged (ValueTree& parentTree, int, int) override   { updateIfNeeded (parentTree); }
@@ -99,6 +98,8 @@ private:
 
     Project* project = nullptr;
     ValueTree exportersTree;
+
+    Value projectNameValue;
 
     ComboBox exporterBox;
     Label configLabel  { "Config Label", "Selected exporter" },

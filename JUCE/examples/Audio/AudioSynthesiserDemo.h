@@ -33,7 +33,7 @@
                    juce_audio_processors, juce_audio_utils, juce_core,
                    juce_data_structures, juce_events, juce_graphics,
                    juce_gui_basics, juce_gui_extra
- exporters:        xcode_mac, vs2017, linux_make, androidstudio, xcode_iphone
+ exporters:        xcode_mac, vs2019, linux_make, androidstudio, xcode_iphone
 
  moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
 
@@ -148,6 +148,8 @@ struct SineWaveVoice  : public SynthesiserVoice
             }
         }
     }
+
+    using SynthesiserVoice::renderNextBlock;
 
 private:
     double currentAngle = 0.0, angleDelta = 0.0, level = 0.0, tailOff = 0.0;
@@ -270,16 +272,16 @@ public:
        #endif
 
         audioDeviceManager.addAudioCallback (&audioSourcePlayer);
-        audioDeviceManager.addMidiInputCallback ({}, &(synthAudioSource.midiCollector));
+        audioDeviceManager.addMidiInputDeviceCallback ({}, &(synthAudioSource.midiCollector));
 
         setOpaque (true);
         setSize (640, 480);
     }
 
-    ~AudioSynthesiserDemo()
+    ~AudioSynthesiserDemo() override
     {
         audioSourcePlayer.setSource (nullptr);
-        audioDeviceManager.removeMidiInputCallback ({}, &(synthAudioSource.midiCollector));
+        audioDeviceManager.removeMidiInputDeviceCallback ({}, &(synthAudioSource.midiCollector));
         audioDeviceManager.removeAudioCallback (&audioSourcePlayer);
         audioDeviceManager.removeAudioCallback (&liveAudioDisplayComp);
     }

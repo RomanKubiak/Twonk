@@ -32,11 +32,11 @@
 class ProjectSaver;
 
 //==============================================================================
-class ProjectExporter
+class ProjectExporter  : private Value::Listener
 {
 public:
     ProjectExporter (Project&, const ValueTree& settings);
-    virtual ~ProjectExporter();
+    virtual ~ProjectExporter() override;
 
     struct ExporterTypeInfo
     {
@@ -78,7 +78,7 @@ public:
     virtual bool canLaunchProject() = 0;
     virtual bool launchProject() = 0;
     virtual void create (const OwnedArray<LibraryModule>&) const = 0; // may throw a SaveError
-    virtual bool shouldFileBeCompiledByDefault (const RelativePath& path) const;
+    virtual bool shouldFileBeCompiledByDefault (const File& path) const;
     virtual bool canCopeWithDuplicateFiles() = 0;
     virtual bool supportsUserDefinedConfigurations() const = 0; // false if exporter only supports two configs Debug and Release
     virtual void updateDeprecatedProjectSettingsInteractively();
@@ -179,8 +179,8 @@ public:
 
     void addProjectPathToBuildPathList (StringArray&, const RelativePath&, int index = -1) const;
 
-    Drawable* getBigIcon() const;
-    Drawable* getSmallIcon() const;
+    std::unique_ptr<Drawable> getBigIcon() const;
+    std::unique_ptr<Drawable> getSmallIcon() const;
     Image getBestIconForSize (int size, bool returnNullIfNothingBigEnough) const;
 
     String getExporterIdentifierMacro() const
@@ -272,6 +272,9 @@ public:
 
         //==============================================================================
         void createPropertyEditors (PropertyListBuilder&);
+        void addRecommendedLinuxCompilerWarningsProperty (PropertyListBuilder&);
+        void addRecommendedLLVMCompilerWarningsProperty (PropertyListBuilder&);
+        StringArray getRecommendedCompilerWarningFlags() const;
         void addGCCOptimisationProperty (PropertyListBuilder&);
         void removeFromExporter();
 
@@ -281,10 +284,12 @@ public:
         const ProjectExporter& exporter;
 
     protected:
-        ValueWithDefault isDebugValue, configNameValue, targetNameValue, targetBinaryPathValue, optimisationLevelValue,
+        ValueWithDefault isDebugValue, configNameValue, targetNameValue, targetBinaryPathValue, recommendedWarningsValue, optimisationLevelValue,
                          linkTimeOptimisationValue, ppDefinesValue, headerSearchPathValue, librarySearchPathValue, userNotesValue;
 
     private:
+        std::map<String, StringArray> recommendedCompilerWarningFlags;
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BuildConfiguration)
     };
 
@@ -406,8 +411,10 @@ protected:
     ValueWithDefault targetLocationValue, extraCompilerFlagsValue, extraLinkerFlagsValue, externalLibrariesValue,
                      userNotesValue, gnuExtensionsValue, bigIconValue, smallIconValue, extraPPDefsValue;
 
+    Value projectCompilerFlagSchemesValue;
+    HashMap<String, ValueWithDefault> compilerFlagSchemesMap;
+
     mutable Array<Project::Item> itemGroups;
-    void initItemGroups() const;
     Project::Item* modulesGroup = nullptr;
 
     virtual BuildConfiguration::Ptr createBuildConfig (const ValueTree&) const = 0;
@@ -440,26 +447,26 @@ protected:
             throw SaveError ("Can't create folder: " + dirToCreate.getFullPathName());
     }
 
-    static void writeXmlOrThrow (const XmlElement& xml, const File& file, const String& encoding, int maxCharsPerLine, bool useUnixNewLines = false)
+    static void writeXmlOrThrow (const XmlElement& xml, const File& file, const String& encoding,
+                                 int maxCharsPerLine, bool useUnixNewLines = false)
     {
-        MemoryOutputStream mo;
-        xml.writeToStream (mo, String(), false, true, encoding, maxCharsPerLine);
+        XmlElement::TextFormat format;
+        format.customEncoding = encoding;
+        format.lineWrapLength = maxCharsPerLine;
+        format.newLineChars = useUnixNewLines ? "\n" : "\r\n";
 
-        if (useUnixNewLines)
-        {
-            MemoryOutputStream mo2;
-            mo2 << mo.toString().replace ("\r\n", "\n");
-            overwriteFileIfDifferentOrThrow (file, mo2);
-        }
-        else
-        {
-            overwriteFileIfDifferentOrThrow (file, mo);
-        }
+        MemoryOutputStream mo (8192);
+        xml.writeTo (mo, format);
+        overwriteFileIfDifferentOrThrow (file, mo);
     }
 
     static Image rescaleImageForIcon (Drawable&, int iconSize);
 
 private:
+    //==============================================================================
+    void valueChanged (Value&) override   { updateCompilerFlagValues(); }
+    void updateCompilerFlagValues();
+
     //==============================================================================
     static String addLibPrefix (const String name)
     {

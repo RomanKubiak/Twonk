@@ -136,14 +136,10 @@ void StoredSettings::reload()
     propertyFiles.clear();
     propertyFiles.add (createPropsFile ("Projucer", false));
 
-    std::unique_ptr<XmlElement> projectDefaultsXml (propertyFiles.getFirst()->getXmlValue ("PROJECT_DEFAULT_SETTINGS"));
-
-    if (projectDefaultsXml != nullptr)
+    if (auto projectDefaultsXml = propertyFiles.getFirst()->getXmlValue ("PROJECT_DEFAULT_SETTINGS"))
         projectDefaults = ValueTree::fromXml (*projectDefaultsXml);
 
-    std::unique_ptr<XmlElement> fallbackPathsXml (propertyFiles.getFirst()->getXmlValue ("FALLBACK_PATHS"));
-
-    if (fallbackPathsXml != nullptr)
+    if (auto fallbackPathsXml = propertyFiles.getFirst()->getXmlValue ("FALLBACK_PATHS"))
         fallbackPaths = ValueTree::fromXml (*fallbackPathsXml);
 
     // recent files...
@@ -413,11 +409,12 @@ static String getFallbackPathForOS (const Identifier& key, DependencyPathOS os)
     }
     else if (key == Ids::androidSDKPath)
     {
-        return "${user.home}/Library/Android/sdk";
+        return (os == TargetOS::linux ? "${user.home}/Android/Sdk" :
+                                        "${user.home}/Library/Android/sdk");
     }
     else if (key == Ids::androidNDKPath)
     {
-        return "${user.home}/Library/Android/sdk/ndk-bundle";
+        return getFallbackPathForOS (Ids::androidSDKPath, os) + "/ndk-bundle";
     }
     else if (key == Ids::clionExePath)
     {

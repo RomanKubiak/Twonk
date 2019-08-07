@@ -26,7 +26,7 @@
 
 #pragma once
 
-#include "../Filters/FilterGraph.h"
+#include "../Plugins/PluginGraph.h"
 #include "GraphEditorPanel.h"
 
 
@@ -60,7 +60,7 @@ class MainHostWindow    : public DocumentWindow,
 public:
     //==============================================================================
     MainHostWindow();
-    ~MainHostWindow();
+    ~MainHostWindow() override;
 
     //==============================================================================
     void closeButtonPressed() override;
@@ -86,8 +86,8 @@ public:
 
     void createPlugin (const PluginDescription&, Point<int> pos);
 
-    void addPluginsToMenu (PopupMenu&) const;
-    const PluginDescription* getChosenType (int menuID) const;
+    void addPluginsToMenu (PopupMenu&);
+    PluginDescription getChosenType (int menuID) const;
 
     bool isDoublePrecisionProcessing();
     void updatePrecisionMenuItem (ApplicationCommandInfo& info);
@@ -99,9 +99,10 @@ private:
     AudioDeviceManager deviceManager;
     AudioPluginFormatManager formatManager;
 
-    OwnedArray<PluginDescription> internalTypes;
+    Array<PluginDescription> internalTypes;
     KnownPluginList knownPluginList;
     KnownPluginList::SortMethod pluginSortMethod;
+    Array<PluginDescription> pluginDescriptions;
 
     class PluginListWindow;
     std::unique_ptr<PluginListWindow> pluginListWindow;

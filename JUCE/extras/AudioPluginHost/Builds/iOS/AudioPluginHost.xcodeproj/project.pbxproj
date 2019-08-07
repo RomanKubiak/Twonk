@@ -77,21 +77,25 @@
 			isa = PBXBuildFile;
 			fileRef = 29E0972229FB44D969035B4E;
 		};
+		E283262A07376A7EDFCEAF6F = {
+			isa = PBXBuildFile;
+			fileRef = F58EBA72DA53F75945B91321;
+		};
 		443244451A0F2064D4767337 = {
 			isa = PBXBuildFile;
 			fileRef = 2A6983F82B13F9E8B10299AE;
 		};
-		2E74188531792924F0C73142 = {
+		7FF8A938915488310A7F5921 = {
 			isa = PBXBuildFile;
-			fileRef = 05863BDFC582C9552A86DF49;
+			fileRef = 87A7AAB053051C49EAF4EE88;
 		};
-		C8423A9611C8AAF27468847D = {
+		025B22813EA4E34CE3630B9A = {
 			isa = PBXBuildFile;
-			fileRef = 336FD30C38BD0A176161B8AE;
+			fileRef = C37B2E77AAB6C9E13729BF99;
 		};
-		786AF545C1C1E4D11140C3DF = {
+		09309BD494A05931864B6730 = {
 			isa = PBXBuildFile;
-			fileRef = 43647951ECC7F030B9953965;
+			fileRef = 0B1CC8C80F6F99BDE7D6AEC9;
 		};
 		3E1689E23B9C85F03209DCEF = {
 			isa = PBXBuildFile;
@@ -186,11 +190,11 @@
 			path = ../../Source/UI/GraphEditorPanel.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		05863BDFC582C9552A86DF49 = {
+		0B1CC8C80F6F99BDE7D6AEC9 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
-			name = FilterGraph.cpp;
-			path = ../../Source/Filters/FilterGraph.cpp;
+			name = PluginGraph.cpp;
+			path = ../../Source/Plugins/PluginGraph.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		1DADAD8E34AAF4AFF1C69DC4 = {
@@ -249,13 +253,6 @@
 			path = System/Library/Frameworks/CoreMedia.framework;
 			sourceTree = SDKROOT;
 		};
-		336FD30C38BD0A176161B8AE = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = FilterIOConfiguration.cpp;
-			path = ../../Source/Filters/FilterIOConfiguration.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		37E4D5C341406B7072120006 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.objcpp;
@@ -284,11 +281,11 @@
 			path = ../../Source/UI/GraphEditorPanel.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		43647951ECC7F030B9953965 = {
+		46C3C2CD301CD59C51FD02D6 = {
 			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = InternalFilters.cpp;
-			path = ../../Source/Filters/InternalFilters.cpp;
+			lastKnownFileType = sourcecode.c.h;
+			name = PluginGraph.h;
+			path = ../../Source/Plugins/PluginGraph.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		4C7D82F9274A4F9DBF11235C = {
@@ -303,13 +300,6 @@
 			lastKnownFileType = file;
 			name = "juce_audio_devices";
 			path = "../../../../modules/juce_audio_devices";
-			sourceTree = "SOURCE_ROOT";
-		};
-		545D57A6AA801B38548B0CAC = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = FilterGraph.h;
-			path = ../../Source/Filters/FilterGraph.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		57DF618F1DE781556B7AFC32 = {
@@ -389,13 +379,6 @@
 			path = ../../JuceLibraryCode/BinaryData.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		725D0D9C8C7FF7B3FB3020ED = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = FilterIOConfiguration.h;
-			path = ../../Source/Filters/FilterIOConfiguration.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		81C1A7770E082F56FE5A90A7 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
@@ -423,6 +406,13 @@
 			name = Accelerate.framework;
 			path = System/Library/Frameworks/Accelerate.framework;
 			sourceTree = SDKROOT;
+		};
+		87A7AAB053051C49EAF4EE88 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = InternalPlugins.cpp;
+			path = ../../Source/Plugins/InternalPlugins.cpp;
+			sourceTree = "SOURCE_ROOT";
 		};
 		89309C0C5F3269BD06BE7F27 = {
 			isa = PBXFileReference;
@@ -471,13 +461,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = PluginWindow.h;
 			path = ../../Source/UI/PluginWindow.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		9EBEE3AE5856E877478607C7 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = InternalFilters.h;
-			path = ../../Source/Filters/InternalFilters.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		9F9B445E6755CAA19E4344ED = {
@@ -550,6 +533,20 @@
 			path = "../../JuceLibraryCode/include_juce_cryptography.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
+		B95B9D6774059DBB19F2B4E2 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = InternalPlugins.h;
+			path = ../../Source/Plugins/InternalPlugins.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		C37B2E77AAB6C9E13729BF99 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = IOConfigurationWindow.cpp;
+			path = ../../Source/Plugins/IOConfigurationWindow.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		CFFA8E9A7820C5A27B4393C9 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -585,11 +582,25 @@
 			path = System/Library/Frameworks/CoreAudioKit.framework;
 			sourceTree = SDKROOT;
 		};
+		F14CDB17EFE157DA3C3A5A91 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = IOConfigurationWindow.h;
+			path = ../../Source/Plugins/IOConfigurationWindow.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		F299BECFB2AEA6105F014848 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
 			name = "juce_gui_extra";
 			path = "../../../../modules/juce_gui_extra";
+			sourceTree = "SOURCE_ROOT";
+		};
+		F58EBA72DA53F75945B91321 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file.storyboard;
+			name = LaunchScreen.storyboard;
+			path = LaunchScreen.storyboard;
 			sourceTree = "SOURCE_ROOT";
 		};
 		F9AC862E9A3583B6C1488EE0 = {
@@ -620,17 +631,17 @@
 			path = "../../../../modules/juce_audio_processors";
 			sourceTree = "SOURCE_ROOT";
 		};
-		AA37F82D57C9BB4BE78FCCB9 = {
+		9F51E92D8C77FA9DDD1F7B10 = {
 			isa = PBXGroup;
 			children = (
-				05863BDFC582C9552A86DF49,
-				545D57A6AA801B38548B0CAC,
-				336FD30C38BD0A176161B8AE,
-				725D0D9C8C7FF7B3FB3020ED,
-				43647951ECC7F030B9953965,
-				9EBEE3AE5856E877478607C7,
+				87A7AAB053051C49EAF4EE88,
+				B95B9D6774059DBB19F2B4E2,
+				C37B2E77AAB6C9E13729BF99,
+				F14CDB17EFE157DA3C3A5A91,
+				0B1CC8C80F6F99BDE7D6AEC9,
+				46C3C2CD301CD59C51FD02D6,
 			);
-			name = Filters;
+			name = Plugins;
 			sourceTree = "<group>";
 		};
 		DE7B77306553B1204071B39A = {
@@ -648,7 +659,7 @@
 		B225B7F2CAABD28A41E7C339 = {
 			isa = PBXGroup;
 			children = (
-				AA37F82D57C9BB4BE78FCCB9,
+				9F51E92D8C77FA9DDD1F7B10,
 				DE7B77306553B1204071B39A,
 				A66EFAC64B1B67B536C73415,
 				B2A1E626CC120982805754F6,
@@ -715,6 +726,7 @@
 			children = (
 				57DF618F1DE781556B7AFC32,
 				29E0972229FB44D969035B4E,
+				F58EBA72DA53F75945B91321,
 				2A6983F82B13F9E8B10299AE,
 			);
 			name = Resources;
@@ -802,6 +814,7 @@
 				INFOPLIST_FILE = Info-App.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_CPLUSPLUSFLAGS = "-Wall -Wshadow-all -Wshorten-64-to-32 -Wstrict-aliasing -Wuninitialized -Wunused-parameter -Wconversion -Wsign-compare -Wint-conversion -Wconditional-uninitialized -Woverloaded-virtual -Wreorder -Wconstant-conversion -Wsign-conversion -Wunused-private-field -Wbool-conversion -Wextra-semi -Wunreachable-code -Wzero-as-null-pointer-constant -Wcast-align -Winconsistent-missing-destructor-override -Wshift-sign-overflow -Wnullable-to-nonnull-conversion -Wno-missing-field-initializers -Wno-ignored-qualifiers";
 				PRODUCT_BUNDLE_IDENTIFIER = com.roli.juce.pluginhost;
 				PRODUCT_NAME = "Plugin Host";
 				USE_HEADERMAP = NO;
@@ -848,6 +861,7 @@
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LLVM_LTO = YES;
+				OTHER_CPLUSPLUSFLAGS = "-Wall -Wshadow-all -Wshorten-64-to-32 -Wstrict-aliasing -Wuninitialized -Wunused-parameter -Wconversion -Wsign-compare -Wint-conversion -Wconditional-uninitialized -Woverloaded-virtual -Wreorder -Wconstant-conversion -Wsign-conversion -Wunused-private-field -Wbool-conversion -Wextra-semi -Wunreachable-code -Wzero-as-null-pointer-constant -Wcast-align -Winconsistent-missing-destructor-override -Wshift-sign-overflow -Wnullable-to-nonnull-conversion -Wno-missing-field-initializers -Wno-ignored-qualifiers";
 				PRODUCT_BUNDLE_IDENTIFIER = com.roli.juce.pluginhost;
 				PRODUCT_NAME = "Plugin Host";
 				USE_HEADERMAP = NO;
@@ -877,7 +891,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
@@ -899,7 +913,7 @@
 				PRODUCT_NAME = "Plugin Host";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				WARNING_CFLAGS = -Wreorder;
+				WARNING_CFLAGS = "-Wreorder";
 				ZERO_LINK = NO;
 			};
 			name = Debug;
@@ -927,7 +941,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
@@ -947,7 +961,7 @@
 				PRODUCT_NAME = "Plugin Host";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				WARNING_CFLAGS = -Wreorder;
+				WARNING_CFLAGS = "-Wreorder";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -979,6 +993,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				59F4F23BFFDAB414B4801F85,
+				E283262A07376A7EDFCEAF6F,
 				443244451A0F2064D4767337,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -987,9 +1002,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E74188531792924F0C73142,
-				C8423A9611C8AAF27468847D,
-				786AF545C1C1E4D11140C3DF,
+				7FF8A938915488310A7F5921,
+				025B22813EA4E34CE3630B9A,
+				09309BD494A05931864B6730,
 				3E1689E23B9C85F03209DCEF,
 				F635D974599DEC2ED91E6A88,
 				A1B0416DA378BB0C3AD6F74B,
@@ -1052,13 +1067,14 @@
 		ADE6E539DB98A302483A82D0 = {
 			isa = PBXProject;
 			buildConfigurationList = 493C2C5E457692E5149C5525;
-			attributes = { LastUpgradeCheck = 0930; ORGANIZATIONNAME = "ROLI Ltd."; TargetAttributes = { DE12B7643D374BFF7E4FEB1C = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; };
+			attributes = { LastUpgradeCheck = 1100; ORGANIZATIONNAME = "ROLI Ltd."; TargetAttributes = { DE12B7643D374BFF7E4FEB1C = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 0;
 			mainGroup = 65BEFC705A89E5C8A9E35C97;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (DE12B7643D374BFF7E4FEB1C);
+			knownRegions = (en, Base);
 		};
 	};
 	rootObject = ADE6E539DB98A302483A82D0;

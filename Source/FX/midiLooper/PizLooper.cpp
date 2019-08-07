@@ -67,7 +67,7 @@ JuceProgram::JuceProgram ()
     measureFromHere=0;
 
 	numerator=denominator=4;
-	device = String::empty;
+	device = "";
 
     //program name
 	name = "Default";
@@ -104,7 +104,7 @@ PizLooper::PizLooper(const PluginDescription& descr) : PizAudioProcessor(descr),
     midiOutput = NULL;
 	info = new Info();
     loopDir = ((File::getSpecialLocation(File::currentExecutableFile)).getParentDirectory()).getFullPathName()
-                  + File::separatorString + String("midiloops");
+                  + File::getSeparatorChar() + String("midiloops");
 
 
     //look for a default bank
@@ -201,7 +201,7 @@ bool PizLooper::readKeyFile(File file)
 		copy=true;
 	}
 	else {
-		file = File(getCurrentPath()+File::separatorString+"midiLooperKey.txt");
+		file = File(getCurrentPath()+File::getSeparatorChar()+"midiLooperKey.txt");
 	}
 
 	if (file.exists()) {
@@ -212,7 +212,7 @@ bool PizLooper::readKeyFile(File file)
 		{
 			demo=false;
 			//infoString = "Registered to " + xmlKey->getStringAttribute("username");
-			if (copy) file.copyFileTo(File(getCurrentPath()+File::separatorString+"midiLooperKey.txt"));
+			if (copy) file.copyFileTo(File(getCurrentPath()+File::getSeparatorChar()+"midiLooperKey.txt"));
 			sendChangeMessage();
 		}
 		else
@@ -418,7 +418,7 @@ void PizLooper::setActiveDevice(String name)
 	else {
 		getCallbackLock().enter();
 		if (midiOutput) midiOutput->stopBackgroundThread();
-		midiOutput = MidiOutput::openDevice(index);
+		midiOutput = MidiOutput::openDevice(index).get();
 		if (midiOutput) midiOutput->startBackgroundThread();
 		else setActiveDevice("--");
 		getCallbackLock().exit();
@@ -498,7 +498,7 @@ const String PizLooper::getParameterName (int index) {
 		default: break;
 		}
 	}
-	return String::empty;
+	return "";
 }
 
 const String PizLooper::getParameterText (int index) {
@@ -673,14 +673,14 @@ const String PizLooper::getParameterText (int index) {
 			if (getParameter(index)<0.2f) return String("Unsync 1-shot");
 			if (getParameter(index)<0.3f) return String("Unsync loop");
 			//if (getParameter(index)<0.5f) return String("sync 1-shot");
-			return String::empty;
+			return "";
 		case kNoteTrig:
 			if (getParameter(index)==0.0f) return String("Off");
 			if (getParameter(index)<0.1f) return String("Mono (Transpose)");
 			if (getParameter(index)<0.2f) return String("Poly (Transpose)");
 			if (getParameter(index)<0.3f) return String("Mono (Orig. Key)");
 			//if (getParameter(index)<0.4f) return String("Poly (Orig. Key)");
-			return String::empty;
+			return "";
 		case kRoot:
 		case kNLow:
 		case kNHigh:
@@ -721,12 +721,12 @@ const String PizLooper::getParameterText (int index) {
 			else if (mode==alwaysup)   return String("Up");
 			else if (mode==alwaysdown) return String("Down");
 			else if (mode==block)      return String("Block");
-			return String::empty;
+			return "";
 		default: 
 			break;
 		}
 	}
-    return String::empty;
+    return "";
 }
 
 const String PizLooper::getInputChannelName (const int channelIndex) const {
@@ -794,7 +794,7 @@ const String PizLooper::getProgramName(int index) {
     if (index<getNumPrograms()) {
         return programs[index].name;
     }
-    return String::empty;
+    return "";
 }
 
 int PizLooper::getCurrentProgram() {
@@ -866,7 +866,7 @@ void PizLooper::getStateInformation(MemoryBlock &destData) {
         xmlProgram->setAttribute("denominator", programs[p].denominator);
 		xmlProgram->setAttribute("device", programs[p].device);
 
-		xmlProgram->addChildElement(programs[p].PRSettings.getChild(0).createXml());
+		xmlProgram->addChildElement(programs[p].PRSettings.getChild(0).createXml().get());
 
 		xmlState.addChildElement(xmlProgram);
 		//if (programs[p].loop.getNumEvents()>0) writeMidiFile(p);
@@ -891,7 +891,7 @@ void PizLooper::setStateInformation (const void* data, int sizeInBytes) {
 		}
 	}
 
-	ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+	ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes).get());
 	if (xmlState==0)
 	{
 		uint8* datab = (uint8*)data;
@@ -902,7 +902,7 @@ void PizLooper::setStateInformation (const void* data, int sizeInBytes) {
 			programs[i].loop.clear();
 			if (i==16)
 			{
-				xmlState = getXmlFromBinary (datab, sizeInBytes-totalMidiSize);
+				xmlState = getXmlFromBinary (datab, sizeInBytes-totalMidiSize).get();
 				if (xmlState!=0)
 					oldBank=true;
 			}
@@ -937,7 +937,7 @@ void PizLooper::setStateInformation (const void* data, int sizeInBytes) {
 			}
 		}
 		if (xmlState==0) 
-			xmlState = getXmlFromBinary (datab, sizeInBytes-totalMidiSize);
+			xmlState = getXmlFromBinary (datab, sizeInBytes-totalMidiSize).get();
 	}
 
     if (xmlState != 0) {
@@ -1050,14 +1050,14 @@ bool PizLooper::writeMidiFile(int index, File file, bool IncrementFilename) {
 	if (!File(loopDir).exists()) 
 		File(loopDir).createDirectory();
 	if (file.isDirectory()) {
-		String filename = file.getFullPathName() + File::separatorString + getProgramName(index);
+		String filename = file.getFullPathName() + File::getSeparatorChar() + getProgramName(index);
 		if (IncrementFilename) filename << "_" << FilenameIndex++;
 		filename << ".mid";
 		file = File(filename);
 	}
     if (!file.deleteFile()) 
 		file.copyFileTo(File(file.getParentDirectory().getFullPathName() 
-		                + File::separator + file.getFileNameWithoutExtension() + String("_old.mid")));
+		                + File::getSeparatorChar() + file.getFileNameWithoutExtension() + String("_old.mid")));
     if (file.create()) {
         FileOutputStream stream(file);
         midifile.writeTo(stream);
@@ -1079,8 +1079,8 @@ bool PizLooper::readMidiFile(int index, String progname, File mid) {
 	double l = ppqPerBar * (double)getPRSetting(String("bars"));
     if (!mid.exists()) {
         String path = ((File::getSpecialLocation(File::currentExecutableFile)).getParentDirectory()).getFullPathName()
-                      + File::separatorString + String("midiloops");
-        mid = File(path + File::separatorString + getProgramName(index) + String(".mid"));
+                      + File::getSeparatorChar() + String("midiloops");
+        mid = File(path + File::getSeparatorChar() + getProgramName(index) + String(".mid"));
     }
     if (mid.exists()) {
 		programs[index].loop.clear();

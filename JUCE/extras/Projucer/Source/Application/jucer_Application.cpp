@@ -174,7 +174,8 @@ void ProjucerApplication::handleAsyncUpdate()
     MenuBarModel::setMacMainMenu (menuModel.get(), &extraAppleMenuItems); //, "Open Recent");
    #endif
 
-    versionChecker.reset (new LatestVersionChecker());
+    if (getGlobalProperties().getValue (Ids::dontQueryForUpdate, {}).isEmpty())
+        LatestVersionCheckerAndUpdater::getInstance()->checkForNewVersion (false);
 
     if (licenseController != nullptr)
     {
@@ -217,7 +218,6 @@ void ProjucerApplication::shutdown()
         Logger::writeToLog ("Server shutdown cleanly");
     }
 
-    versionChecker.reset();
     utf8Window.reset();
     svgPathWindow.reset();
     aboutWindow.reset();
@@ -359,8 +359,6 @@ enum
     recentProjectsBaseID = 100,
     openWindowsBaseID = 300,
     activeDocumentsBaseID = 400,
-    colourSchemeBaseID = 1000,
-    codeEditorColourSchemeBaseID = 1500,
     showPathsID = 1999,
     examplesBaseID = 2000
 };
@@ -438,6 +436,7 @@ void ProjucerApplication::createFileMenu (PopupMenu& menu)
     #if ! JUCE_MAC
       menu.addCommandItem (commandManager.get(), CommandIDs::showAboutWindow);
       menu.addCommandItem (commandManager.get(), CommandIDs::showAppUsageWindow);
+      menu.addCommandItem (commandManager.get(), CommandIDs::checkForNewVersion);
       menu.addCommandItem (commandManager.get(), CommandIDs::showGlobalPathsWindow);
       menu.addSeparator();
       menu.addCommandItem (commandManager.get(), StandardApplicationCommandIDs::quit);
@@ -495,16 +494,24 @@ void ProjucerApplication::createBuildMenu (PopupMenu& menu)
 
 void ProjucerApplication::createColourSchemeItems (PopupMenu& menu)
 {
-    PopupMenu colourSchemes;
+    PopupMenu colourSchemeMenu;
 
-    colourSchemes.addItem (colourSchemeBaseID + 0, "Dark", true, selectedColourSchemeIndex == 0);
-    colourSchemes.addItem (colourSchemeBaseID + 1, "Grey", true, selectedColourSchemeIndex == 1);
-    colourSchemes.addItem (colourSchemeBaseID + 2, "Light", true, selectedColourSchemeIndex == 2);
+    colourSchemeMenu.addItem (PopupMenu::Item ("Dark")
+                                .setTicked (selectedColourSchemeIndex == 0)
+                                .setAction ([this] { setColourScheme (0, true); updateEditorColourSchemeIfNeeded(); }));
 
-    menu.addSubMenu ("Colour Scheme", colourSchemes);
+    colourSchemeMenu.addItem (PopupMenu::Item ("Grey")
+                                .setTicked (selectedColourSchemeIndex == 1)
+                                .setAction ([this] { setColourScheme (1, true); updateEditorColourSchemeIfNeeded(); }));
+
+    colourSchemeMenu.addItem (PopupMenu::Item ("Light")
+                                .setTicked (selectedColourSchemeIndex == 2)
+                                .setAction ([this] { setColourScheme (2, true); updateEditorColourSchemeIfNeeded(); }));
+
+    menu.addSubMenu ("Colour Scheme", colourSchemeMenu);
 
     //==========================================================================
-    PopupMenu editorColourSchemes;
+    PopupMenu editorColourSchemeMenu;
 
     auto& appearanceSettings = getAppSettings().appearance;
 
@@ -512,21 +519,22 @@ void ProjucerApplication::createColourSchemeItems (PopupMenu& menu)
     auto schemes = appearanceSettings.getPresetSchemes();
 
     auto i = 0;
-    for (auto s : schemes)
+
+    for (auto& s : schemes)
     {
-        editorColourSchemes.addItem (codeEditorColourSchemeBaseID + i, s,
-                                     editorColourSchemeWindow == nullptr,
-                                     selectedEditorColourSchemeIndex == i);
+        editorColourSchemeMenu.addItem (PopupMenu::Item (s)
+                                           .setEnabled (editorColourSchemeWindow == nullptr)
+                                           .setTicked (selectedEditorColourSchemeIndex == i)
+                                           .setAction ([this, i] { setEditorColourScheme (i, true); }));
         ++i;
     }
 
-    numEditorColourSchemes = i;
+    editorColourSchemeMenu.addSeparator();
+    editorColourSchemeMenu.addItem (PopupMenu::Item ("Create...")
+                                       .setEnabled (editorColourSchemeWindow == nullptr)
+                                       .setAction ([this] { showEditorColourSchemeWindow(); }));
 
-    editorColourSchemes.addSeparator();
-    editorColourSchemes.addItem (codeEditorColourSchemeBaseID + numEditorColourSchemes,
-                                 "Create...", editorColourSchemeWindow == nullptr);
-
-    menu.addSubMenu ("Editor Colour Scheme", editorColourSchemes);
+    menu.addSubMenu ("Editor Colour Scheme", editorColourSchemeMenu);
 }
 
 void ProjucerApplication::createWindowMenu (PopupMenu& menu)
@@ -537,14 +545,11 @@ void ProjucerApplication::createWindowMenu (PopupMenu& menu)
     menu.addSeparator();
 
     int counter = 0;
+
     for (auto* window : mainWindowList.windows)
-    {
         if (window != nullptr)
-        {
             if (auto* project = window->getProject())
                 menu.addItem (openWindowsBaseID + counter++, project->getProjectNameString());
-        }
-    }
 
     menu.addSeparator();
     menu.addCommandItem (commandManager.get(), CommandIDs::closeAllWindows);
@@ -589,6 +594,7 @@ void ProjucerApplication::createExtraAppleMenuItems (PopupMenu& menu)
 {
     menu.addCommandItem (commandManager.get(), CommandIDs::showAboutWindow);
     menu.addCommandItem (commandManager.get(), CommandIDs::showAppUsageWindow);
+    menu.addCommandItem (commandManager.get(), CommandIDs::checkForNewVersion);
     menu.addSeparator();
     menu.addCommandItem (commandManager.get(), CommandIDs::showGlobalPathsWindow);
 }
@@ -954,19 +960,6 @@ void ProjucerApplication::handleMainMenuCommand (int menuItemID)
         else
             jassertfalse;
     }
-    else if (menuItemID >= colourSchemeBaseID && menuItemID < (colourSchemeBaseID + 3))
-    {
-        setColourScheme (menuItemID - colourSchemeBaseID, true);
-        updateEditorColourSchemeIfNeeded();
-    }
-    else if (menuItemID >= codeEditorColourSchemeBaseID && menuItemID < (codeEditorColourSchemeBaseID + numEditorColourSchemes))
-    {
-        setEditorColourScheme (menuItemID - codeEditorColourSchemeBaseID, true);
-    }
-    else if (menuItemID == (codeEditorColourSchemeBaseID + numEditorColourSchemes))
-    {
-        showEditorColourSchemeWindow();
-    }
     else if (menuItemID == showPathsID)
     {
         showPathsWindow (true);
@@ -1000,6 +993,7 @@ void ProjucerApplication::getAllCommands (Array <CommandID>& commands)
                               CommandIDs::showSVGPathTool,
                               CommandIDs::showAboutWindow,
                               CommandIDs::showAppUsageWindow,
+                              CommandIDs::checkForNewVersion,
                               CommandIDs::showForum,
                               CommandIDs::showAPIModules,
                               CommandIDs::showAPIClasses,
@@ -1090,6 +1084,10 @@ void ProjucerApplication::getCommandInfo (CommandID commandID, ApplicationComman
         result.setInfo ("Application Usage Data", "Shows the application usage data agreement window", CommandCategories::general, 0);
         break;
 
+    case CommandIDs::checkForNewVersion:
+        result.setInfo ("Check for New Version...", "Checks the web server for a new version of JUCE", CommandCategories::general, 0);
+        break;
+
     case CommandIDs::showForum:
         result.setInfo ("JUCE Community Forum", "Shows the JUCE community forum in a browser", CommandCategories::general, 0);
         break;
@@ -1149,6 +1147,7 @@ bool ProjucerApplication::perform (const InvocationInfo& info)
         case CommandIDs::showGlobalPathsWindow:     showPathsWindow (false); break;
         case CommandIDs::showAboutWindow:           showAboutWindow(); break;
         case CommandIDs::showAppUsageWindow:        showApplicationUsageDataAgreementPopup(); break;
+        case CommandIDs::checkForNewVersion:        LatestVersionCheckerAndUpdater::getInstance()->checkForNewVersion (true); break;
         case CommandIDs::showForum:                 launchForumBrowser(); break;
         case CommandIDs::showAPIModules:            launchModulesBrowser(); break;
         case CommandIDs::showAPIClasses:            launchClassesBrowser(); break;
@@ -1490,35 +1489,22 @@ void ProjucerApplication::showSetJUCEPathAlert()
 
 }
 
-void ProjucerApplication::rescanJUCEPathModules()
+void rescanModules (AvailableModuleList& list, const Array<File>& paths, bool async)
 {
-    File jucePath (getAppSettings().getStoredPath (Ids::defaultJuceModulePath, TargetOS::getThisOS()).get().toString());
-
-    if (isRunningCommandLine)
-        jucePathModuleList.scanPaths ({ jucePath });
+    if (async)
+        list.scanPathsAsync (paths);
     else
-        jucePathModuleList.scanPathsAsync ({ jucePath });
+        list.scanPaths (paths);
 }
 
-static Array<File> getSanitisedUserModulePaths()
+void ProjucerApplication::rescanJUCEPathModules()
 {
-    Array<File> paths;
-
-    for (auto p : StringArray::fromTokens (getAppSettings().getStoredPath (Ids::defaultUserModulePath, TargetOS::getThisOS()).get().toString(), ";", {}))
-    {
-        p = p.replace ("~", File::getSpecialLocation (File::userHomeDirectory).getFullPathName());
-        paths.add (File::createFileWithoutCheckingPath (p.trim()));
-    }
-
-    return paths;
+    rescanModules (jucePathModuleList, { getAppSettings().getStoredPath (Ids::defaultJuceModulePath, TargetOS::getThisOS()).get().toString() }, ! isRunningCommandLine);
 }
 
 void ProjucerApplication::rescanUserPathModules()
 {
-    if (isRunningCommandLine)
-        userPathsModuleList.scanPaths (getSanitisedUserModulePaths());
-    else
-        userPathsModuleList.scanPathsAsync (getSanitisedUserModulePaths());
+    rescanModules (userPathsModuleList, { getAppSettings().getStoredPath (Ids::defaultUserModulePath, TargetOS::getThisOS()).get().toString() }, ! isRunningCommandLine);
 }
 
 void ProjucerApplication::selectEditorColourSchemeWithName (const String& schemeName)

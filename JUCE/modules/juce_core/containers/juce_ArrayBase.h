@@ -136,7 +136,14 @@ public:
     }
 
     //==============================================================================
-    inline ElementType& operator[] (const int index) const noexcept
+    inline ElementType& operator[] (const int index) noexcept
+    {
+        jassert (elements != nullptr);
+        jassert (isPositiveAndBelow (index, numUsed));
+        return elements[index];
+    }
+
+    inline const ElementType& operator[] (const int index) const noexcept
     {
         jassert (elements != nullptr);
         jassert (isPositiveAndBelow (index, numUsed));
@@ -159,17 +166,32 @@ public:
     }
 
     //==============================================================================
-    inline ElementType* begin() const noexcept
+    inline ElementType* begin() noexcept
     {
         return elements;
     }
 
-    inline ElementType* end() const noexcept
+    inline const ElementType* begin() const noexcept
+    {
+        return elements;
+    }
+
+    inline ElementType* end() noexcept
     {
         return elements + numUsed;
     }
 
-    inline ElementType* data() const noexcept
+    inline const ElementType* end() const noexcept
+    {
+        return elements + numUsed;
+    }
+
+    inline ElementType* data() noexcept
+    {
+        return elements;
+    }
+
+    inline const ElementType* data() const noexcept
     {
         return elements;
     }
@@ -372,10 +394,17 @@ public:
 private:
     //==============================================================================
     template <typename T>
-    using TriviallyCopyableVoid = typename std::enable_if<std::is_trivially_copyable<T>::value, void>::type;
+   #if defined(__GNUC__) && __GNUC__ < 5 && ! defined(__clang__)
+    using IsTriviallyCopyable = std::is_scalar<T>;
+   #else
+    using IsTriviallyCopyable = std::is_trivially_copyable<T>;
+   #endif
 
     template <typename T>
-    using NonTriviallyCopyableVoid = typename std::enable_if<! std::is_trivially_copyable<T>::value, void>::type;
+    using TriviallyCopyableVoid = typename std::enable_if<IsTriviallyCopyable<T>::value, void>::type;
+
+    template <typename T>
+    using NonTriviallyCopyableVoid = typename std::enable_if<! IsTriviallyCopyable<T>::value, void>::type;
 
     //==============================================================================
     template <typename T = ElementType>
@@ -492,13 +521,13 @@ private:
         {
             memmove (elements + currentIndex,
                      elements + currentIndex + 1,
-                     sizeof (ElementType) * (size_t) (newIndex - currentIndex));
+                     (size_t) (newIndex - currentIndex) * sizeof (ElementType));
         }
         else
         {
             memmove (elements + newIndex + 1,
                      elements + newIndex,
-                     sizeof (ElementType) * (size_t) (currentIndex - newIndex));
+                     (size_t) (currentIndex - newIndex) * sizeof (ElementType));
         }
 
         memcpy (elements + newIndex, tempCopy, sizeof (ElementType));

@@ -593,7 +593,7 @@ public:
     */
     struct Listener
     {
-        virtual ~Listener() {}
+        virtual ~Listener() = default;
 
         /** This callback will be called after you call requestSettingsUsed() or
             requestPermissionsWithSettings().
@@ -694,17 +694,15 @@ public:
 
 private:
     PushNotifications();
-    ~PushNotifications();
+    ~PushNotifications() override;
 
     ListenerList<PushNotifications::Listener> listeners;
 
    #if JUCE_ANDROID
     friend bool juce_handleNotificationIntent (void*);
-    friend void juce_firebaseDeviceNotificationsTokenRefreshed (void*);
-    friend void juce_firebaseRemoteNotificationReceived (void*);
-    friend void juce_firebaseRemoteMessagesDeleted();
-    friend void juce_firebaseRemoteMessageSent (void*);
-    friend void juce_firebaseRemoteMessageSendError (void*, void*);
+
+    friend struct JuceFirebaseInstanceIdService;
+    friend struct JuceFirebaseMessagingService;
    #endif
 
   #if JUCE_PUSH_NOTIFICATIONS

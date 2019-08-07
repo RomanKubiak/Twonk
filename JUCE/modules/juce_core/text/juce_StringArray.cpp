@@ -33,12 +33,12 @@ StringArray::StringArray (const StringArray& other)
 }
 
 StringArray::StringArray (StringArray&& other) noexcept
-    : strings (static_cast<Array<String>&&> (other.strings))
+    : strings (std::move (other.strings))
 {
 }
 
 StringArray::StringArray (Array<String>&& other) noexcept
-    : strings (static_cast<Array<String>&&> (other))
+    : strings (std::move (other))
 {
 }
 
@@ -85,7 +85,7 @@ StringArray& StringArray::operator= (const StringArray& other)
 
 StringArray& StringArray::operator= (StringArray&& other) noexcept
 {
-    strings = static_cast<Array<String>&&> (other.strings);
+    strings = std::move (other.strings);
     return *this;
 }
 
@@ -300,7 +300,7 @@ String StringArray::joinIntoString (StringRef separator, int start, int numberTo
         return strings.getReference (start);
 
     auto separatorBytes = separator.text.sizeInBytes() - sizeof (String::CharPointerType::CharType);
-    auto bytesNeeded = separatorBytes * (size_t) (last - start - 1);
+    auto bytesNeeded = (size_t) (last - start - 1) * separatorBytes;
 
     for (int i = start; i < last; ++i)
         bytesNeeded += strings.getReference(i).getCharPointer().sizeInBytes() - sizeof (String::CharPointerType::CharType);

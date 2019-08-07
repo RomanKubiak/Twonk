@@ -33,7 +33,7 @@
                    juce_audio_processors, juce_audio_utils, juce_core,
                    juce_data_structures, juce_events, juce_graphics,
                    juce_gui_basics, juce_gui_extra
- exporters:        xcode_mac, vs2017
+ exporters:        xcode_mac, vs2019, linux_make, androidstudio, xcode_iphone
 
  moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
 
@@ -268,7 +268,7 @@ public:
         setAudioChannels (numInputChannels, numOutputChannels);
     }
 
-    ~PluckedStringsDemo()
+    ~PluckedStringsDemo() override
     {
         shutdownAudio();
     }

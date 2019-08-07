@@ -204,7 +204,7 @@ public:
     */
     AudioProcessorValueTreeState (AudioProcessor& processorToConnectTo,
                                   UndoManager* undoManagerToUse,
-                                  const juce::Identifier& valueTreeType,
+                                  const Identifier& valueTreeType,
                                   ParameterLayout parameterLayout);
 
     /** This constructor is discouraged and will be deprecated in a future version of JUCE!
@@ -220,7 +220,7 @@ public:
     AudioProcessorValueTreeState (AudioProcessor& processorToConnectTo, UndoManager* undoManagerToUse);
 
     /** Destructor. */
-    ~AudioProcessorValueTreeState();
+    ~AudioProcessorValueTreeState() override;
 
     //==============================================================================
     /** This function is deprecated and will be removed in a future version of JUCE!
@@ -262,12 +262,12 @@ public:
                                                                   const String& labelText,
                                                                   NormalisableRange<float> valueRange,
                                                                   float defaultValue,
-                                                                  std::function<String (float)> valueToTextFunction,
-                                                                  std::function<float (const String&)> textToValueFunction,
+                                                                  std::function<String(float)> valueToTextFunction,
+                                                                  std::function<float(const String&)> textToValueFunction,
                                                                   bool isMetaParameter = false,
                                                                   bool isAutomatableParameter = true,
                                                                   bool isDiscrete = false,
-                                                                  AudioProcessorParameter::Category category = AudioProcessorParameter::genericParameter,
+                                                                  AudioProcessorParameter::Category parameterCategory = AudioProcessorParameter::genericParameter,
                                                                   bool isBoolean = false));
 
     /** This function adds a parameter to the attached AudioProcessor and that parameter will
@@ -279,8 +279,11 @@ public:
     /** Returns a parameter by its ID string. */
     RangedAudioParameter* getParameter (StringRef parameterID) const noexcept;
 
-    /** Returns a pointer to a floating point representation of a particular
-        parameter which a realtime process can read to find out its current value.
+    /** Returns a pointer to a floating point representation of a particular parameter which a realtime
+        process can read to find out its current value.
+
+        Note that calling this method from within AudioProcessorValueTreeState::Listener::parameterChanged()
+        is not guaranteed to return an up-to-date value for the parameter.
     */
     float* getRawParameterValue (StringRef parameterID) const noexcept;
 
@@ -292,7 +295,12 @@ public:
     {
         virtual ~Listener() = default;
 
-        /** This callback method is called by the AudioProcessorValueTreeState when a parameter changes. */
+        /** This callback method is called by the AudioProcessorValueTreeState when a parameter changes.
+
+            Within this call, retrieving the value of the parameter that has changed via the getRawParameterValue()
+            or getParameter() methods is not guaranteed to return the up-to-date value. If you need this you should
+            instead use the newValue parameter.
+        */
         virtual void parameterChanged (const String& parameterID, float newValue) = 0;
     };
 
@@ -394,7 +402,7 @@ public:
                    bool isMetaParameter = false,
                    bool isAutomatableParameter = true,
                    bool isDiscrete = false,
-                   AudioProcessorParameter::Category category = AudioProcessorParameter::genericParameter,
+                   AudioProcessorParameter::Category parameterCategory = AudioProcessorParameter::genericParameter,
                    bool isBoolean = false);
 
         float getDefaultValue() const override;
@@ -406,8 +414,11 @@ public:
         bool isBoolean() const override;
 
     private:
+        void valueChanged (float) override;
+
         const float unsnappedDefault;
         const bool metaParameter, automatable, discrete, boolean;
+        float lastValue = 0.0f;
     };
 
     //==============================================================================
@@ -508,7 +519,7 @@ private:
         @endcode
     */
     JUCE_DEPRECATED (std::unique_ptr<RangedAudioParameter> createParameter (const String&, const String&, const String&, NormalisableRange<float>,
-                                                                            float, std::function<String (float)>, std::function<float (const String&)>,
+                                                                            float, std::function<String(float)>, std::function<float(const String&)>,
                                                                             bool, bool, bool, AudioProcessorParameter::Category, bool));
 
     //==============================================================================
@@ -518,25 +529,26 @@ private:
     friend struct ParameterAdapterTests;
    #endif
 
+    void addParameterAdapter (RangedAudioParameter&);
     ParameterAdapter* getParameterAdapter (StringRef) const;
 
-    ValueTree getChildValueTree (const String&) const;
-    ValueTree getOrCreateChildValueTree (const String&);
     bool flushParameterValuesToValueTree();
-    void setNewState (ParameterAdapter&);
+    void setNewState (ValueTree);
     void timerCallback() override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void valueTreeChildAdded (ValueTree&, ValueTree&) override;
-    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override;
-    void valueTreeChildOrderChanged (ValueTree&, int, int) override;
-    void valueTreeParentChanged (ValueTree&) override;
     void valueTreeRedirected (ValueTree&) override;
     void updateParameterConnectionsToChildTrees();
 
     const Identifier valueType { "PARAM" }, valuePropertyID { "value" }, idPropertyID { "id" };
 
-    std::vector<std::unique_ptr<ParameterAdapter>> parameters;
+    struct StringRefLessThan final
+    {
+        bool operator() (StringRef a, StringRef b) const noexcept { return a.text.compare (b.text) < 0; }
+    };
+
+    std::map<StringRef, std::unique_ptr<ParameterAdapter>, StringRefLessThan> adapterTable;
 
     CriticalSection valueTreeChanging;
 

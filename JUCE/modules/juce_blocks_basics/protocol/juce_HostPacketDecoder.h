@@ -104,7 +104,7 @@ struct HostPacketDecoder
 
     static bool handleTopology (Handler& handler, Packed7BitArrayReader& reader, bool newTopology)
     {
-        if (reader.getRemainingBits() < DeviceCount::bits + ConnectionCount::bits)
+        if (reader.getRemainingBits() < (int) DeviceCount::bits + (int) ConnectionCount::bits)
         {
             jassertfalse; // not enough data available for this message type!
             return false;
@@ -164,8 +164,11 @@ struct HostPacketDecoder
     {
         DeviceStatus status;
 
-        for (uint32 i = 0; i < sizeof (BlockSerialNumber); ++i)
-            status.serialNumber.serial[i] = (uint8) reader.readBits (7);
+        for (uint32 i = 0; i < BlockSerialNumber::maxLength; ++i)
+        {
+            status.serialNumber.data[i] = (uint8) reader.readBits (7);
+            ++status.serialNumber.length;
+        }
 
         status.index            = (TopologyIndex) reader.readBits (topologyIndexBits);
         status.batteryLevel     = reader.read<BatteryLevel>();
@@ -194,7 +197,7 @@ struct HostPacketDecoder
         version.version.length = (uint8) reader.readBits (7);
 
         for (uint32 i = 0; i < version.version.length; ++i)
-            version.version.version[i] = (uint8) reader.readBits (7);
+            version.version.data[i] = (uint8) reader.readBits (7);
 
         handler.handleVersion (version);
         return true;
@@ -208,7 +211,7 @@ struct HostPacketDecoder
         name.name.length = (uint8) reader.readBits (7);
 
         for (uint32 i = 0; i < name.name.length; ++i)
-            name.name.name[i] = (uint8) reader.readBits (7);
+            name.name.data[i] = (uint8) reader.readBits (7);
 
         handler.handleName (name);
         return true;
@@ -217,7 +220,7 @@ struct HostPacketDecoder
     static bool handleTouch (Handler& handler, Packed7BitArrayReader& reader, TopologyIndex deviceIndex,
                              PacketTimestamp packetTimestamp, bool isStart, bool isEnd)
     {
-        if (reader.getRemainingBits() < BitSizes::touchMessage - MessageType::bits)
+        if (reader.getRemainingBits() < (int) BitSizes::touchMessage - (int) MessageType::bits)
         {
             jassertfalse; // not enough data available for this message type!
             return false;
@@ -237,7 +240,7 @@ struct HostPacketDecoder
     static bool handleTouchWithVelocity (Handler& handler, Packed7BitArrayReader& reader, TopologyIndex deviceIndex,
                                          PacketTimestamp packetTimestamp, bool isStart, bool isEnd)
     {
-        if (reader.getRemainingBits() < BitSizes::touchMessageWithVelocity - MessageType::bits)
+        if (reader.getRemainingBits() < (int) BitSizes::touchMessageWithVelocity - (int) MessageType::bits)
         {
             jassertfalse; // not enough data available for this message type!
             return false;
@@ -266,7 +269,7 @@ struct HostPacketDecoder
     static bool handleButtonDownOrUp (Handler& handler, Packed7BitArrayReader& reader, TopologyIndex deviceIndex,
                                       PacketTimestamp packetTimestamp, bool isDown)
     {
-        if (reader.getRemainingBits() < BitSizes::controlButtonMessage - MessageType::bits)
+        if (reader.getRemainingBits() < (int) BitSizes::controlButtonMessage - (int) MessageType::bits)
         {
             jassertfalse; // not enough data available for this message type!
             return false;
@@ -282,7 +285,7 @@ struct HostPacketDecoder
     static bool handleCustomMessage (Handler& handler, Packed7BitArrayReader& reader,
                                      TopologyIndex deviceIndex, PacketTimestamp packetTimestamp)
     {
-        if (reader.getRemainingBits() < BitSizes::programEventMessage - MessageType::bits)
+        if (reader.getRemainingBits() < BitSizes::programEventMessage - (int) MessageType::bits)
         {
             jassertfalse; // not enough data available for this message type!
             return false;
@@ -299,7 +302,7 @@ struct HostPacketDecoder
 
     static bool handlePacketACK (Handler& handler, Packed7BitArrayReader& reader, TopologyIndex deviceIndex)
     {
-        if (reader.getRemainingBits() < BitSizes::packetACK - MessageType::bits)
+        if (reader.getRemainingBits() < BitSizes::packetACK - (int) MessageType::bits)
         {
             jassertfalse; // not enough data available for this message type!
             return false;

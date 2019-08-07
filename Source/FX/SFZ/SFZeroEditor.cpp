@@ -11,7 +11,7 @@ enum
 };
 
 sfzero::SFZeroEditor::SFZeroEditor(SFZeroAudioProcessor *ownerFilter)
-    : AudioProcessorEditor(ownerFilter), fileLabel(String::empty, "File... (click here to choose)"), pathLabel(String::empty),
+    : AudioProcessorEditor(ownerFilter), fileLabel("", "File... (click here to choose)"), pathLabel(""),
       showingInfo(showingSoundInfo), midiKeyboard(ownerFilter->keyboardState, MidiKeyboardComponent::horizontalKeyboard),
       progressBar(nullptr)
 {
@@ -48,7 +48,7 @@ sfzero::SFZeroEditor::SFZeroEditor(SFZeroAudioProcessor *ownerFilter)
   startTimer(200);
 
   File sfzFile = ownerFilter->getSfzFile();
-  if (sfzFile != File::nonexistent)
+  if (sfzFile != File())
   {
     updateFile(&sfzFile);
     showSoundInfo();
@@ -161,7 +161,7 @@ void sfzero::SFZeroEditor::timerCallback()
 
 void sfzero::SFZeroEditor::chooseFile()
 {
-  FileChooser chooser("Select an SFZ file...", File::nonexistent, "*.sfz;*.SFZ;*.sf2;*.SF2");
+  FileChooser chooser("Select an SFZ file...", File(), "*.sfz;*.SFZ;*.sf2;*.SF2");
 
   if (chooser.browseForFileToOpen())
   {

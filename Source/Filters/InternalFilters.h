@@ -163,13 +163,14 @@ public:
     String getNameOfPluginFromIdentifier (const String& fileOrIdentifier) override      { return fileOrIdentifier; }
     bool pluginNeedsRescanning (const PluginDescription&) override                      { return false; }
     StringArray searchPathsForPlugins (const FileSearchPath&, bool, bool) override      { return {}; }
-
+	bool isTrivialToScan() const { return (true); }
+protected:
+	void createPluginInstance (const PluginDescription&, double initialSampleRate, int initialBufferSize, PluginCreationCallback) override;
 private:
 	TwonkPlayHead &twonkPlayHead;
     //==============================================================================
-    void createPluginInstance (const PluginDescription&, double initialSampleRate, int initialBufferSize,
-                               void* userData, PluginCreationCallback) override;
-    AudioPluginInstance* createInstance (const String& name);
+    
+	std::unique_ptr<AudioPluginInstance> createInstance (const String& name);
 
     bool requiresUnblockedMessageThreadDuringCreation (const PluginDescription&) const noexcept override;
 };

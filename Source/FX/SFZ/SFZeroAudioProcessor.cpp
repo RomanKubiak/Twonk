@@ -17,8 +17,8 @@ const String sfzero::SFZeroAudioProcessor::getName() const { return "SFZ"; }
 int sfzero::SFZeroAudioProcessor::getNumParameters() { return 0; }
 float sfzero::SFZeroAudioProcessor::getParameter(int /*index*/) { return 0.0f; }
 void sfzero::SFZeroAudioProcessor::setParameter(int /*index*/, float /*newValue*/) {}
-const String sfzero::SFZeroAudioProcessor::getParameterName(int /*index*/) { return String::empty; }
-const String sfzero::SFZeroAudioProcessor::getParameterText(int /*index*/) { return String::empty; }
+const String sfzero::SFZeroAudioProcessor::getParameterName(int /*index*/) { return ""; }
+const String sfzero::SFZeroAudioProcessor::getParameterText(int /*index*/) { return ""; }
 bool sfzero::SFZeroAudioProcessor::hasEditor() const { return true; }
 int sfzero::SFZeroAudioProcessor::numVoicesUsed() { return synth.numVoicesUsed(); }
 String sfzero::SFZeroAudioProcessor::voiceInfoString() { return synth.voiceInfoString(); }
@@ -41,7 +41,7 @@ bool sfzero::SFZeroAudioProcessor::producesMidi() const { return false; }
 int sfzero::SFZeroAudioProcessor::getNumPrograms() { return 1; }
 int sfzero::SFZeroAudioProcessor::getCurrentProgram() { return 0; }
 void sfzero::SFZeroAudioProcessor::setCurrentProgram(int /*index*/) {}
-const String sfzero::SFZeroAudioProcessor::getProgramName(int /*index*/) { return String::empty; }
+const String sfzero::SFZeroAudioProcessor::getProgramName(int /*index*/) { return ""; }
 void sfzero::SFZeroAudioProcessor::changeProgramName(int /*index*/, const String & /*newName*/) {}
 void sfzero::SFZeroAudioProcessor::prepareToPlay(double _sampleRate_, int /*samplesPerBlock*/)
 {

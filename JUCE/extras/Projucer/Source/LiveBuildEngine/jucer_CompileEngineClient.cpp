@@ -210,7 +210,7 @@ public:
         openedOk = true;
     }
 
-    ~ChildProcess()
+    ~ChildProcess() override
     {
         projectRoot.removeListener (this);
 
@@ -310,7 +310,6 @@ private:
     void valueTreeChildAdded (ValueTree&, ValueTree&) override                   { projectStructureChanged(); }
     void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override            { projectStructureChanged(); }
     void valueTreeParentChanged (ValueTree&) override                            { projectStructureChanged(); }
-    void valueTreeChildOrderChanged (ValueTree&, int, int) override              {}
 
     String getGlobalDefs()
     {
@@ -430,14 +429,13 @@ private:
     {
         auto liveModules = project.getProjectRoot().getChildWithName (Ids::MODULES);
 
-        auto xml = parseXML (project.getFile());
+        if (auto xml = parseXMLIfTagMatches (project.getFile(), Ids::JUCERPROJECT.toString()))
+        {
+            auto diskModules = ValueTree::fromXml (*xml).getChildWithName (Ids::MODULES);
+            return liveModules.isEquivalentTo (diskModules);
+        }
 
-        if (xml == nullptr || ! xml->hasTagName (Ids::JUCERPROJECT.toString()))
-            return false;
-
-        auto diskModules = ValueTree::fromXml (*xml).getChildWithName (Ids::MODULES);
-
-        return liveModules.isEquivalentTo (diskModules);
+        return false;
     }
 
     static bool areAnyModulesMissing (Project& project)
@@ -642,7 +640,7 @@ struct CompileEngineChildProcess::Editor  : private CodeDocument::Listener,
         document.addListener (this);
     }
 
-    ~Editor()
+    ~Editor() override
     {
         document.removeListener (this);
     }

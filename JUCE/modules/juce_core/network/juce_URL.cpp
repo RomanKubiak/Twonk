@@ -40,13 +40,14 @@ struct FallbackDownloadTask  : public URL::DownloadTask,
         jassert (fileStream != nullptr);
         jassert (stream != nullptr);
 
-        contentLength = stream->getTotalLength();
-        httpCode      = stream->getStatusCode();
+        targetLocation = fileStream->getFile();
+        contentLength  = stream->getTotalLength();
+        httpCode       = stream->getStatusCode();
 
         startThread();
     }
 
-    ~FallbackDownloadTask()
+    ~FallbackDownloadTask() override
     {
         signalThreadShouldExit();
         stream->cancel();
@@ -61,8 +62,8 @@ struct FallbackDownloadTask  : public URL::DownloadTask,
             if (listener != nullptr)
                 listener->progress (this, downloaded, contentLength);
 
-            auto max = jmin ((int) bufferSize, contentLength < 0 ? std::numeric_limits<int>::max()
-                                                                 : static_cast<int> (contentLength - downloaded));
+            auto max = (int) jmin ((int64) bufferSize, contentLength < 0 ? std::numeric_limits<int64>::max()
+                                                                         : static_cast<int64> (contentLength - downloaded));
 
             auto actual = stream->read (buffer.get(), max);
 
@@ -208,34 +209,6 @@ void URL::init()
 
 URL::URL (const String& u, int)  : url (u) {}
 
-URL::URL (URL&& other)
-    : url             (static_cast<String&&> (other.url)),
-      postData        (static_cast<MemoryBlock&&> (other.postData)),
-      parameterNames  (static_cast<StringArray&&> (other.parameterNames)),
-      parameterValues (static_cast<StringArray&&> (other.parameterValues)),
-      filesToUpload   (static_cast<ReferenceCountedArray<Upload>&&> (other.filesToUpload))
-   #if JUCE_IOS
-    , bookmark        (static_cast<Bookmark::Ptr&&> (other.bookmark))
-   #endif
-{
-}
-
-URL& URL::operator= (URL&& other)
-{
-    url             = static_cast<String&&> (other.url);
-    postData        = static_cast<MemoryBlock&&> (other.postData);
-    parameterNames  = static_cast<StringArray&&> (other.parameterNames);
-    parameterValues = static_cast<StringArray&&> (other.parameterValues);
-    filesToUpload   = static_cast<ReferenceCountedArray<Upload>&&> (other.filesToUpload);
-   #if JUCE_IOS
-    bookmark        = static_cast<Bookmark::Ptr&&> (other.bookmark);
-   #endif
-
-    return *this;
-}
-
-URL::~URL() {}
-
 URL URL::createWithoutParsing (const String& u)
 {
     return URL (u, 0);
@@ -324,8 +297,8 @@ void URL::addParameter (const String& name, const String& value)
 
 String URL::toString (bool includeGetParameters) const
 {
-    if (includeGetParameters && parameterNames.size() > 0)
-        return url + "?" + URLHelpers::getMangledParameters (*this);
+    if (includeGetParameters)
+        return url + getQueryString();
 
     return url;
 }
@@ -343,22 +316,27 @@ bool URL::isWellFormed() const
 
 String URL::getDomain() const
 {
-    auto start = URLHelpers::findStartOfNetLocation (url);
-    auto end1 = url.indexOfChar (start, '/');
-    auto end2 = url.indexOfChar (start, ':');
-
-    auto end = (end1 < 0 && end2 < 0) ? std::numeric_limits<int>::max()
-                                      : ((end1 < 0 || end2 < 0) ? jmax (end1, end2)
-                                                                : jmin (end1, end2));
-    return url.substring (start, end);
+    return getDomainInternal (false);
 }
 
-String URL::getSubPath() const
+String URL::getSubPath (bool includeGetParameters) const
 {
     auto startOfPath = URLHelpers::findStartOfPath (url);
+    auto subPath = startOfPath <= 0 ? String()
+                                    : url.substring (startOfPath);
 
-    return startOfPath <= 0 ? String()
-        : url.substring (startOfPath);
+    if (includeGetParameters)
+        subPath += getQueryString();
+
+    return subPath;
+}
+
+String URL::getQueryString() const
+{
+    if (parameterNames.size() > 0)
+        return "?" + URLHelpers::getMangledParameters (*this);
+
+    return {};
 }
 
 String URL::getScheme() const
@@ -391,7 +369,7 @@ File URL::fileFromFileSchemeURL (const URL& fileURL)
         return {};
     }
 
-    auto path = removeEscapeChars (fileURL.getDomain()).replace ("+", "%2B");
+    auto path = removeEscapeChars (fileURL.getDomainInternal (true)).replace ("+", "%2B");
 
    #ifdef JUCE_WINDOWS
     bool isUncPath = (! fileURL.url.startsWith ("file:///"));
@@ -527,6 +505,18 @@ bool URL::isProbablyAnEmailAddress (const String& possibleEmailAddress)
     return atSign > 0
         && possibleEmailAddress.lastIndexOfChar ('.') > (atSign + 1)
         && ! possibleEmailAddress.endsWithChar ('.');
+}
+
+String URL::getDomainInternal (bool ignorePort) const
+{
+    auto start = URLHelpers::findStartOfNetLocation (url);
+    auto end1 = url.indexOfChar (start, '/');
+    auto end2 = ignorePort ? -1 : url.indexOfChar (start, ':');
+
+    auto end = (end1 < 0 && end2 < 0) ? std::numeric_limits<int>::max()
+                                      : ((end1 < 0 || end2 < 0) ? jmax (end1, end2)
+                                                                : jmin (end1, end2));
+    return url.substring (start, end);
 }
 
 #if JUCE_IOS
@@ -687,10 +677,6 @@ InputStream* URL::createInputStream (bool usePostCommand,
 
         OpenStreamProgressCallback* callback;
         void* const data;
-
-        // workaround a MSVC 2013 compiler warning
-        ProgressCallbackCaller (const ProgressCallbackCaller& o) : callback (o.callback), data (o.data) { jassertfalse; }
-        ProgressCallbackCaller& operator= (const ProgressCallbackCaller&) { jassertfalse; return *this; }
     };
 
     std::unique_ptr<ProgressCallbackCaller> callbackCaller
@@ -748,7 +734,7 @@ OutputStream* URL::createOutputStream() const
 bool URL::readEntireBinaryStream (MemoryBlock& destData, bool usePostCommand) const
 {
     const std::unique_ptr<InputStream> in (isLocalFile() ? getLocalFile().createInputStream()
-                                                         : static_cast<InputStream*> (createInputStream (usePostCommand)));
+                                                         : createInputStream (usePostCommand));
 
     if (in != nullptr)
     {
@@ -762,7 +748,7 @@ bool URL::readEntireBinaryStream (MemoryBlock& destData, bool usePostCommand) co
 String URL::readEntireTextStream (bool usePostCommand) const
 {
     const std::unique_ptr<InputStream> in (isLocalFile() ? getLocalFile().createInputStream()
-                                                         : static_cast<InputStream*> (createInputStream (usePostCommand)));
+                                                         : createInputStream (usePostCommand));
 
     if (in != nullptr)
         return in->readEntireStreamAsString();
@@ -770,23 +756,23 @@ String URL::readEntireTextStream (bool usePostCommand) const
     return {};
 }
 
-XmlElement* URL::readEntireXmlStream (bool usePostCommand) const
+std::unique_ptr<XmlElement> URL::readEntireXmlStream (bool usePostCommand) const
 {
-    return XmlDocument::parse (readEntireTextStream (usePostCommand));
+    return parseXML (readEntireTextStream (usePostCommand));
 }
 
 //==============================================================================
 URL URL::withParameter (const String& parameterName,
                         const String& parameterValue) const
 {
-    URL u (*this);
+    auto u = *this;
     u.addParameter (parameterName, parameterValue);
     return u;
 }
 
 URL URL::withParameters (const StringPairArray& parametersToAdd) const
 {
-    URL u (*this);
+    auto u = *this;
 
     for (int i = 0; i < parametersToAdd.size(); ++i)
         u.addParameter (parametersToAdd.getAllKeys()[i],
@@ -802,7 +788,7 @@ URL URL::withPOSTData (const String& newPostData) const
 
 URL URL::withPOSTData (const MemoryBlock& newPostData) const
 {
-    URL u (*this);
+    auto u = *this;
     u.postData = newPostData;
     return u;
 }
@@ -816,7 +802,7 @@ URL::Upload::Upload (const String& param, const String& name,
 
 URL URL::withUpload (Upload* const f) const
 {
-    URL u (*this);
+    auto u = *this;
 
     for (int i = u.filesToUpload.size(); --i >= 0;)
         if (u.filesToUpload.getObjectPointerUnchecked(i)->parameterName == f->parameterName)

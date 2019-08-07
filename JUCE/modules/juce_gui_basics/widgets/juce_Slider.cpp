@@ -42,7 +42,7 @@ public:
         rotaryParams.stopAtEnd = true;
     }
 
-    ~Pimpl()
+    ~Pimpl() override
     {
         currentValue.removeListener (this);
         valueMin.removeListener (this);
@@ -775,7 +775,9 @@ public:
                 newPos = 1.0 - newPos;
         }
 
-        valueWhenLastDragged = owner.proportionOfLengthToValue (jlimit (0.0, 1.0, newPos));
+        newPos = (isRotary() && ! rotaryParams.stopAtEnd) ? newPos - std::floor (newPos)
+                                                          : jlimit (0.0, 1.0, newPos);
+        valueWhenLastDragged = owner.proportionOfLengthToValue (newPos);
     }
 
     void handleVelocityDrag (const MouseEvent& e)
@@ -806,8 +808,10 @@ public:
                  || (style == IncDecButtons && ! incDecDragDirectionIsHorizontal()))
                 speed = -speed;
 
-            auto currentPos = owner.valueToProportionOfLength (valueWhenLastDragged);
-            valueWhenLastDragged = owner.proportionOfLengthToValue (jlimit (0.0, 1.0, currentPos + speed));
+            auto newPos = owner.valueToProportionOfLength (valueWhenLastDragged) + speed;
+            newPos = (isRotary() && ! rotaryParams.stopAtEnd) ? newPos - std::floor (newPos)
+                                                              : jlimit (0.0, 1.0, newPos);
+            valueWhenLastDragged = owner.proportionOfLengthToValue (newPos);
 
             e.source.enableUnboundedMouseMovement (true, false);
         }
@@ -828,7 +832,7 @@ public:
                 showPopupMenu();
             }
             else if (canDoubleClickToValue()
-                      && e.mods.withoutMouseButtons() == ModifierKeys (ModifierKeys::altModifier))
+                     && (singleClickModifiers != ModifierKeys() && e.mods.withoutMouseButtons() == singleClickModifiers))
             {
                 mouseDoubleClick();
             }
@@ -1051,7 +1055,10 @@ public:
 
         auto proportionDelta = wheelAmount * 0.15;
         auto currentPos = owner.valueToProportionOfLength (value);
-        return owner.proportionOfLengthToValue (jlimit (0.0, 1.0, currentPos + proportionDelta)) - value;
+        auto newPos = currentPos + proportionDelta;
+        newPos = (isRotary() && ! rotaryParams.stopAtEnd) ? newPos - std::floor (newPos)
+                                                          : jlimit (0.0, 1.0, newPos);
+        return owner.proportionOfLengthToValue (newPos) - value;
     }
 
     bool mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel)
@@ -1277,6 +1284,8 @@ public:
     int popupHoverTimeout = 2000;
     double lastPopupDismissal = 0.0;
 
+    ModifierKeys singleClickModifiers;
+
     std::unique_ptr<Label> valueBox;
     std::unique_ptr<Button> incButton, decButton;
 
@@ -1289,14 +1298,14 @@ public:
               font (s.getLookAndFeel().getSliderPopupFont (s))
         {
             if (isOnDesktop)
-                setTransform (AffineTransform::scale (getApproximateScaleFactor (&s)));
+                setTransform (AffineTransform::scale (Component::getApproximateScaleFactorForComponent (&s)));
 
             setAlwaysOnTop (true);
             setAllowedPlacement (owner.getLookAndFeel().getSliderPopupPlacement (s));
             setLookAndFeel (&s.getLookAndFeel());
         }
 
-        ~PopupDisplayComponent()
+        ~PopupDisplayComponent() override
         {
             if (owner.pimpl != nullptr)
                 owner.pimpl->lastPopupDismissal = Time::getMillisecondCounterHiRes();
@@ -1329,21 +1338,6 @@ public:
         }
 
     private:
-        static float getApproximateScaleFactor (Component* targetComponent)
-        {
-            AffineTransform transform;
-
-            for (Component* target = targetComponent; target != nullptr; target = target->getParentComponent())
-            {
-                transform = transform.followedBy (target->getTransform());
-
-                if (target->isOnDesktop())
-                    transform = transform.scaled (target->getDesktopScaleFactor());
-            }
-
-            return (transform.getScaleFactor() / Desktop::getInstance().getGlobalScaleFactor());
-        }
-
         //==============================================================================
         Slider& owner;
         Font font;
@@ -1543,10 +1537,11 @@ void Slider::setMinAndMaxValues (double newMinValue, double newMaxValue, Notific
     pimpl->setMinAndMaxValues (newMinValue, newMaxValue, notification);
 }
 
-void Slider::setDoubleClickReturnValue (bool isDoubleClickEnabled,  double valueToSetOnDoubleClick)
+void Slider::setDoubleClickReturnValue (bool isDoubleClickEnabled,  double valueToSetOnDoubleClick, ModifierKeys mods)
 {
     pimpl->doubleClickToValue = isDoubleClickEnabled;
     pimpl->doubleClickReturnValue = valueToSetOnDoubleClick;
+    pimpl->singleClickModifiers = mods;
 }
 
 double Slider::getDoubleClickReturnValue() const noexcept       { return pimpl->doubleClickReturnValue; }
@@ -1569,24 +1564,29 @@ String Slider::getTextValueSuffix() const
 
 String Slider::getTextFromValue (double v)
 {
-    if (textFromValueFunction != nullptr)
-        return textFromValueFunction (v);
+    auto getText = [this] (double val)
+    {
+        if (textFromValueFunction != nullptr)
+            return textFromValueFunction (val);
 
-    if (getNumDecimalPlacesToDisplay() > 0)
-        return String (v, getNumDecimalPlacesToDisplay()) + getTextValueSuffix();
+        if (getNumDecimalPlacesToDisplay() > 0)
+            return String (val, getNumDecimalPlacesToDisplay());
 
-    return String (roundToInt (v)) + getTextValueSuffix();
+        return String (roundToInt (val));
+    };
+
+    return getText (v) + getTextValueSuffix();
 }
 
 double Slider::getValueFromText (const String& text)
 {
-    if (valueFromTextFunction != nullptr)
-        return valueFromTextFunction (text);
-
     auto t = text.trimStart();
 
     if (t.endsWith (getTextValueSuffix()))
         t = t.substring (0, t.length() - getTextValueSuffix().length());
+
+    if (valueFromTextFunction != nullptr)
+        return valueFromTextFunction (t);
 
     while (t.startsWithChar ('+'))
         t = t.substring (1).trimStart();

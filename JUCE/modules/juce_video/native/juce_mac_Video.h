@@ -82,7 +82,7 @@ struct VideoComponent::Pimpl   : public Base
         return Result::fail ("Couldn't open movie");
     }
 
-    void loadAsync (const URL& url, std::function<void (const URL&, Result)> callback)
+    void loadAsync (const URL& url, std::function<void(const URL&, Result)> callback)
     {
         if (url.isEmpty())
         {
@@ -220,7 +220,7 @@ private:
 
         private:
             static void valueChanged (id self, SEL, NSString* keyPath, id,
-                                      NSDictionary<NSKeyValueChangeKey, id>* change, void*)
+                                      NSDictionary<NSString*, id>* change, void*)
             {
                 auto& owner = getOwner (self);
 
@@ -321,7 +321,7 @@ private:
 
             private:
                 static void valueChanged (id self, SEL, NSString*, id object,
-                                          NSDictionary<NSKeyValueChangeKey, id>* change, void* context)
+                                          NSDictionary<NSString*, id>* change, void* context)
                 {
                     auto& owner = getOwner (self);
 
@@ -632,17 +632,21 @@ private:
         {
            #if ! JUCE_32BIT
             if (useNativeControls)
-            {
                 [playerView setPlayer: player];
+            else
+           #endif
+                [playerLayer setPlayer: player];
+
+            if (player != nil)
+            {
                 attachPlayerStatusObserver();
                 attachPlaybackObserver();
-                return;
             }
-           #endif
-
-            [playerLayer setPlayer: player];
-            attachPlayerStatusObserver();
-            attachPlaybackObserver();
+            else
+            {
+                detachPlayerStatusObserver();
+                detachPlaybackObserver();
+            }
         }
 
         AVPlayer* getPlayer() const
@@ -774,7 +778,7 @@ private:
 
     PlayerController playerController;
 
-    std::function<void (const URL&, Result)> loadFinishedCallback;
+    std::function<void(const URL&, Result)> loadFinishedCallback;
 
     double playSpeedMult = 1.0;
 

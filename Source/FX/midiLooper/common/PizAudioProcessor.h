@@ -40,7 +40,7 @@ public:
 	bool loadDefaultFxb() 
 	{
 		//look for a default bank
-		String defaultBank  = currentPath + File::separatorString 
+		String defaultBank  = currentPath + File::getSeparatorChar()
 			+ File::getSpecialLocation(File::currentExecutableFile).getFileNameWithoutExtension() + ".fxb";
 		if (File(defaultBank).exists()) {
 			juce::MemoryBlock bank = juce::MemoryBlock(0,true);
@@ -67,7 +67,7 @@ public:
 	bool loadDefaultFxp() 
 	{
 		//look for a default patch
-		String defaultBank = currentPath + File::separatorString 
+		String defaultBank = currentPath + File::getSeparatorChar()
 			+ File::getSpecialLocation(File::currentApplicationFile).getFileNameWithoutExtension() + ".fxp";
 		if (File(defaultBank).exists()) {
 			juce::MemoryBlock bank = juce::MemoryBlock(0,true);

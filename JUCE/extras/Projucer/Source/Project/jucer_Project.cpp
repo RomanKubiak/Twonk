@@ -200,6 +200,8 @@ void Project::initialiseProjectValues()
     if (projectUIDValue.isUsingDefault())
         projectUIDValue = projectUIDValue.getDefault();
 
+    projectLineFeedValue.referTo     (projectRoot, Ids::projectLineFeed,  getUndoManager(), "\r\n");
+
     companyNameValue.referTo         (projectRoot, Ids::companyName,      getUndoManager());
     companyCopyrightValue.referTo    (projectRoot, Ids::companyCopyright, getUndoManager());
     companyWebsiteValue.referTo      (projectRoot, Ids::companyWebsite,   getUndoManager());
@@ -223,13 +225,13 @@ void Project::initialiseProjectValues()
         reportAppUsageValue.setDefault (true);
     }
 
-    cppStandardValue.referTo                   (projectRoot, Ids::cppLanguageStandard, getUndoManager(), "14");
+    cppStandardValue.referTo       (projectRoot, Ids::cppLanguageStandard, getUndoManager(), "14");
 
-    headerSearchPathsValue.referTo             (projectRoot, Ids::headerPath, getUndoManager());
-    preprocessorDefsValue.referTo              (projectRoot, Ids::defines,    getUndoManager());
-    userNotesValue.referTo                     (projectRoot, Ids::userNotes,  getUndoManager());
+    headerSearchPathsValue.referTo (projectRoot, Ids::headerPath, getUndoManager());
+    preprocessorDefsValue.referTo  (projectRoot, Ids::defines,    getUndoManager());
+    userNotesValue.referTo         (projectRoot, Ids::userNotes,  getUndoManager());
 
-    maxBinaryFileSizeValue.referTo             (projectRoot, Ids::maxBinaryFileSize,         getUndoManager(), 10240 * 1024);
+    maxBinaryFileSizeValue.referTo (projectRoot, Ids::maxBinaryFileSize,         getUndoManager(), 10240 * 1024);
 
     // this is here for backwards compatibility with old projects using the incorrect id
     if (projectRoot.hasProperty ("includeBinaryInAppConfig"))
@@ -237,7 +239,12 @@ void Project::initialiseProjectValues()
     else
         includeBinaryDataInJuceHeaderValue.referTo (projectRoot, Ids::includeBinaryInJuceHeader, getUndoManager(), true);
 
-    binaryDataNamespaceValue.referTo           (projectRoot, Ids::binaryDataNamespace,       getUndoManager(), "BinaryData");
+    binaryDataNamespaceValue.referTo (projectRoot, Ids::binaryDataNamespace, getUndoManager(), "BinaryData");
+
+    compilerFlagSchemesValue.referTo (projectRoot, Ids::compilerFlagSchemes, getUndoManager(), Array<var>(), ",");
+
+    postExportShellCommandPosixValue.referTo (projectRoot, Ids::postExportShellCommandPosix, getUndoManager());
+    postExportShellCommandWinValue.referTo   (projectRoot, Ids::postExportShellCommandWin,   getUndoManager());
 }
 
 void Project::initialiseAudioPluginValues()
@@ -262,6 +269,9 @@ void Project::initialiseAudioPluginValues()
     pluginVST3CategoryValue.referTo          (projectRoot, Ids::pluginVST3Category,         getUndoManager(), getDefaultVST3Categories(), ",");
     pluginRTASCategoryValue.referTo          (projectRoot, Ids::pluginRTASCategory,         getUndoManager(), getDefaultRTASCategories(), ",");
     pluginAAXCategoryValue.referTo           (projectRoot, Ids::pluginAAXCategory,          getUndoManager(), getDefaultAAXCategories(),  ",");
+
+    pluginVSTNumMidiInputsValue.referTo      (projectRoot, Ids::pluginVSTNumMidiInputs,     getUndoManager(), 16);
+    pluginVSTNumMidiOutputsValue.referTo     (projectRoot, Ids::pluginVSTNumMidiOutputs,    getUndoManager(), 16);
 }
 
 void Project::updateOldStyleConfigList()
@@ -323,9 +333,13 @@ void Project::removeDefunctExporters()
 
         if (oldExporter.isValid())
         {
-            AlertWindow::showMessageBox (AlertWindow::WarningIcon,
-                                         TRANS (oldExporters[key]),
-                                         TRANS ("The " + oldExporters[key]  + " Exporter is deprecated. The exporter will be removed from this project."));
+            if (ProjucerApplication::getApp().isRunningCommandLine)
+                std::cout <<  "WARNING! The " + oldExporters[key]  + " Exporter is deprecated. The exporter will be removed from this project." << std::endl;
+            else
+                AlertWindow::showMessageBox (AlertWindow::WarningIcon,
+                                             TRANS (oldExporters[key]),
+                                             TRANS ("The " + oldExporters[key]  + " Exporter is deprecated. The exporter will be removed from this project."));
+
             exporters.removeChild (oldExporter, nullptr);
         }
     }
@@ -561,9 +575,9 @@ static void forgetRecentFile (const File& file)
 //==============================================================================
 Result Project::loadDocument (const File& file)
 {
-    auto xml = parseXML (file);
+    auto xml = parseXMLIfTagMatches (file, Ids::JUCERPROJECT.toString());
 
-    if (xml == nullptr || ! xml->hasTagName (Ids::JUCERPROJECT.toString()))
+    if (xml == nullptr)
         return Result::fail ("Not a valid Jucer project!");
 
     auto newTree = ValueTree::fromXml (*xml);
@@ -683,18 +697,15 @@ void Project::moveTemporaryDirectory (const File& newParentDirectory)
 
 bool Project::saveProjectRootToFile()
 {
-    std::unique_ptr<XmlElement> xml (projectRoot.createXml());
-
-    if (xml == nullptr)
+    if (auto xml = projectRoot.createXml())
     {
-        jassertfalse;
-        return false;
+        MemoryOutputStream mo;
+        xml->writeTo (mo, {});
+        return FileHelpers::overwriteFileWithNewDataIfDifferent (getFile(), mo);
     }
 
-    MemoryOutputStream mo;
-    xml->writeToStream (mo, {});
-
-    return FileHelpers::overwriteFileWithNewDataIfDifferent (getFile(), mo);
+    jassertfalse;
+    return false;
 }
 
 //==============================================================================
@@ -712,8 +723,6 @@ void Project::valueTreePropertyChanged (ValueTree& tree, const Identifier& prope
     {
         if (property == Ids::projectType)
         {
-            sendChangeMessage();
-
             sendProjectSettingAnalyticsEvent ("Project Type = " + projectTypeValue.get().toString());
         }
         else if (property == Ids::name)
@@ -756,7 +765,6 @@ void Project::valueTreePropertyChanged (ValueTree& tree, const Identifier& prope
 void Project::valueTreeChildAdded (ValueTree&, ValueTree&)          { changed(); }
 void Project::valueTreeChildRemoved (ValueTree&, ValueTree&, int)   { changed(); }
 void Project::valueTreeChildOrderChanged (ValueTree&, int, int)     { changed(); }
-void Project::valueTreeParentChanged (ValueTree&)                   {}
 
 //==============================================================================
 bool Project::hasProjectBeenModified()
@@ -928,6 +936,10 @@ void Project::createPropertyEditors (PropertyListBuilder& props)
                "The project's version number. This should be in the format major.minor.point[.point] where you should omit the final "
                "(optional) [.point] if you are targeting AU and AUv3 plug-ins as they only support three number versions.");
 
+    props.add (new ChoicePropertyComponent (projectLineFeedValue, "Project Line Feed", { "\\r\\n", "\\n", }, { "\r\n", "\n" }),
+               "Use this to set the line feed which will be used when creating new source files for this project "
+               "(this won't affect any existing files).");
+
     props.add (new TextPropertyComponent (companyNameValue, "Company Name", 256, false),
                "Your company name, which will be added to the properties of the binary where possible");
 
@@ -1037,6 +1049,14 @@ void Project::createPropertyEditors (PropertyListBuilder& props)
 
     props.addSearchPathProperty (headerSearchPathsValue, "Header Search Paths", "Global header search paths.");
 
+    props.add (new TextPropertyComponent (postExportShellCommandPosixValue, "Post-Export Shell Command (macOS, Linux)", 1024, false),
+               "A command that will be executed by the system shell after saving this project on macOS or Linux. "
+               "The string \"%%1%%\" will be substituted with the absolute path to the project root folder.");
+
+    props.add (new TextPropertyComponent (postExportShellCommandWinValue, "Post-Export Shell Command (Windows)", 1024, false),
+               "A command that will be executed by the system shell after saving this project on Windows. "
+               "The string \"%%1%%\" will be substituted with the absolute path to the project root folder.");
+
     props.add (new TextPropertyComponent (userNotesValue, "Notes", 32768, true),
                "Extra comments: This field is not used for code or project generation, it's just a space where you can express your thoughts.");
 }
@@ -1044,7 +1064,7 @@ void Project::createPropertyEditors (PropertyListBuilder& props)
 void Project::createAudioPluginPropertyEditors (PropertyListBuilder& props)
 {
     props.add (new MultiChoicePropertyComponent (pluginFormatsValue, "Plugin Formats",
-                                                 { "VST3", "AU", "AUv3", "RTAS", "AAX", "Standalone", "Unity", "Enable IAA", "VST (Legacy)" },
+                                                 { "VST3", "AU", "AUv3", "RTAS (deprecated)", "AAX", "Standalone", "Unity", "Enable IAA", "VST (Legacy)" },
                                                  { Ids::buildVST3.toString(), Ids::buildAU.toString(), Ids::buildAUv3.toString(),
                                                    Ids::buildRTAS.toString(), Ids::buildAAX.toString(), Ids::buildStandalone.toString(), Ids::buildUnity.toString(),
                                                    Ids::enableIAA.toString(), Ids::buildVST.toString() }),
@@ -1082,6 +1102,25 @@ void Project::createAudioPluginPropertyEditors (PropertyListBuilder& props)
     props.add (new ChoicePropertyComponent (pluginAUSandboxSafeValue, "Plugin AU is sandbox safe"),
                "Check this box if your plug-in is sandbox safe. A sand-box safe plug-in is loaded in a restricted path and can only access it's own bundle resources and "
                "the Music folder. Your plug-in must be able to deal with this. Newer versions of GarageBand require this to be enabled.");
+
+    {
+        Array<var> varChoices;
+        StringArray stringChoices;
+
+        for (int i = 1; i <= 16; ++i)
+        {
+            varChoices.add (i);
+            stringChoices.add (String (i));
+        }
+
+        props.add (new ChoicePropertyComponentWithEnablement (pluginVSTNumMidiInputsValue, pluginCharacteristicsValue, Ids::pluginWantsMidiIn,
+                                                              "Plugin VST Num MIDI Inputs",  stringChoices, varChoices),
+                   "For VST and VST3 plug-ins that accept MIDI, this allows you to configure the number of inputs.");
+
+        props.add (new ChoicePropertyComponentWithEnablement (pluginVSTNumMidiOutputsValue, pluginCharacteristicsValue, Ids::pluginProducesMidiOut,
+                                                              "Plugin VST Num MIDI Outputs", stringChoices, varChoices),
+                   "For VST and VST3 plug-ins that produce MIDI, this allows you to configure the number of outputs.");
+    }
 
     {
         Array<var> vst3CategoryVars;
@@ -1192,15 +1231,17 @@ Project::Item Project::Item::createCopy()         { Item i (*this); i.state = i.
 String Project::Item::getID() const               { return state [Ids::ID]; }
 void Project::Item::setID (const String& newID)   { state.setProperty (Ids::ID, newID, nullptr); }
 
-Drawable* Project::Item::loadAsImageFile() const
+std::unique_ptr<Drawable> Project::Item::loadAsImageFile() const
 {
     const MessageManagerLock mml (ThreadPoolJob::getCurrentThreadPoolJob());
 
     if (! mml.lockWasGained())
         return nullptr;
 
-    return isValid() ? Drawable::createFromImageFile (getFile())
-                     : nullptr;
+    if (isValid())
+        return Drawable::createFromImageFile (getFile());
+
+    return {};
 }
 
 Project::Item Project::Item::createGroup (Project& project, const String& name, const String& uid, bool isModuleCode)
@@ -1255,6 +1296,14 @@ bool Project::Item::canContain (const Item& child) const
 
 bool Project::Item::shouldBeAddedToTargetProject() const    { return isFile(); }
 
+bool Project::Item::shouldBeAddedToTargetExporter (const ProjectExporter& exporter) const
+{
+    if (shouldBeAddedToXcodeResources())
+        return exporter.isXcode() || shouldBeCompiled();
+
+    return true;
+}
+
 Value Project::Item::getShouldCompileValue()                { return state.getPropertyAsValue (Ids::compile, getUndoManager()); }
 bool Project::Item::shouldBeCompiled() const                { return state [Ids::compile]; }
 
@@ -1268,6 +1317,19 @@ Value Project::Item::getShouldInhibitWarningsValue()        { return state.getPr
 bool Project::Item::shouldInhibitWarnings() const           { return state [Ids::noWarnings]; }
 
 bool Project::Item::isModuleCode() const                    { return belongsToModule; }
+
+Value Project::Item::getCompilerFlagSchemeValue()           { return state.getPropertyAsValue (Ids::compilerFlagScheme, getUndoManager()); }
+String Project::Item::getCompilerFlagSchemeString() const   { return state [Ids::compilerFlagScheme]; }
+
+void Project::Item::setCompilerFlagScheme (const String& scheme)
+{
+    state.getPropertyAsValue (Ids::compilerFlagScheme, getUndoManager()).setValue (scheme);
+}
+
+void Project::Item::clearCurrentCompilerFlagScheme()
+{
+    state.removeProperty (Ids::compilerFlagScheme, getUndoManager());
+}
 
 String Project::Item::getFilePath() const
 {
@@ -1638,6 +1700,55 @@ bool Project::isConfigFlagEnabled (const String& name, bool defaultIsEnabled) co
 }
 
 //==============================================================================
+StringArray Project::getCompilerFlagSchemes() const
+{
+    if (compilerFlagSchemesValue.isUsingDefault())
+        return {};
+
+    StringArray schemes;
+    auto schemesVar = compilerFlagSchemesValue.get();
+
+    if (auto* arr = schemesVar.getArray())
+        schemes.addArray (arr->begin(), arr->end());
+
+    return schemes;
+}
+
+void Project::addCompilerFlagScheme (const String& schemeToAdd)
+{
+    auto schemesVar = compilerFlagSchemesValue.get();
+
+    if (auto* arr = schemesVar.getArray())
+    {
+        arr->addIfNotAlreadyThere (schemeToAdd);
+        compilerFlagSchemesValue.setValue ({ *arr }, getUndoManager());
+    }
+}
+
+void Project::removeCompilerFlagScheme (const String& schemeToRemove)
+{
+    auto schemesVar = compilerFlagSchemesValue.get();
+
+    if (auto* arr = schemesVar.getArray())
+    {
+        for (int i = 0; i < arr->size(); ++i)
+        {
+            if (arr->getUnchecked (i).toString() == schemeToRemove)
+            {
+                arr->remove (i);
+
+                if (arr->isEmpty())
+                    compilerFlagSchemesValue.resetToDefault();
+                else
+                    compilerFlagSchemesValue.setValue ({ *arr }, getUndoManager());
+
+                return;
+            }
+        }
+    }
+}
+
+//==============================================================================
 static String getCompanyNameOrDefault (StringRef str)
 {
     if (str.isEmpty())
@@ -1648,7 +1759,8 @@ static String getCompanyNameOrDefault (StringRef str)
 
 String Project::getDefaultBundleIdentifierString() const
 {
-    return "com." + getCompanyNameOrDefault (getCompanyNameString()) + "." + CodeHelpers::makeValidIdentifier (getProjectNameString(), false, true, false);
+    return "com." + CodeHelpers::makeValidIdentifier (getCompanyNameOrDefault (getCompanyNameString()), false, true, false)
+            + "." + CodeHelpers::makeValidIdentifier (getProjectNameString(), false, true, false);
 }
 
 String Project::getDefaultPluginManufacturerString() const

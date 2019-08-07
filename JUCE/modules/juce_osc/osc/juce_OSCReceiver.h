@@ -110,7 +110,7 @@ public:
     {
     public:
         /** Destructor. */
-        virtual ~Listener() {}
+        virtual ~Listener() = default;
 
         /** Called when the OSCReceiver receives a new OSC message.
             You must implement this function.
@@ -150,7 +150,7 @@ public:
     {
     public:
         /** Destructor. */
-        virtual ~ListenerWithOSCAddress() {}
+        virtual ~ListenerWithOSCAddress() = default;
 
         /** Called when the OSCReceiver receives an OSC message with an OSC address
             pattern that matches the OSC address with which this listener was added.
@@ -203,7 +203,7 @@ public:
         The arguments passed are the pointer to and the data of the buffer that
         the OSCReceiver has failed to parse.
     */
-    using FormatErrorHandler = std::function<void (const char* data, int dataSize)>;
+    using FormatErrorHandler = std::function<void(const char* data, int dataSize)>;
 
     /** Installs a custom error handler which is called in case the receiver
         encounters a stream it cannot parse as an OSC bundle or OSC message.

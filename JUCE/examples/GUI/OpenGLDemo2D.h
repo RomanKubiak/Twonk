@@ -31,7 +31,7 @@
 
  dependencies:     juce_core, juce_data_structures, juce_events, juce_graphics,
                    juce_gui_basics, juce_gui_extra, juce_opengl
- exporters:        xcode_mac, vs2017, linux_make, androidstudio, xcode_iphone
+ exporters:        xcode_mac, vs2019, linux_make, androidstudio, xcode_iphone
 
  moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
 
@@ -87,7 +87,7 @@ public:
         setSize (500, 500);
     }
 
-    ~OpenGLDemo2D()
+    ~OpenGLDemo2D() override
     {
         openGLContext.detach();
         shader.reset();

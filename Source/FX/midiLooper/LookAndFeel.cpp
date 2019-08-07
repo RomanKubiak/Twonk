@@ -557,13 +557,13 @@ void NonShinyLookAndFeel::drawLinearSlider (Graphics& g,
 
 Button* NonShinyLookAndFeel::createSliderButton (Slider &,const bool isIncrement)
 {
-    return new TextButton (isIncrement ? "+" : "-", String::empty);
+    return new TextButton (isIncrement ? "+" : "-", "");
 }
 
 class SliderLabelComp : public Label
 {
 public:
-	SliderLabelComp() : Label (String::empty, String::empty) {}
+	SliderLabelComp() : Label ("", "") {}
 	~SliderLabelComp()	{}
 
 	virtual int mouseWheelMove (const MouseEvent&, float, float) { return 0; }

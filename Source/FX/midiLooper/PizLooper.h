@@ -281,7 +281,7 @@ public:
     Info* info;
     void killNotes(int slot);
 	bool newLoop;
-	bool readKeyFile(File file=File::nonexistent);
+	bool readKeyFile(File file = File());
 	bool demo;
 
     void loadMidiFile(File file);
@@ -347,7 +347,7 @@ public:
 
 	String loopDir;
 	bool writeMidiFile(int index, File file, bool IncrementFilename=false);
-    bool readMidiFile(int index, String progname, File mid=File::nonexistent);
+    bool readMidiFile(int index, String progname, File mid=File());
 
 	//==============================================================================
     juce_UseDebuggingNewOperator

@@ -33,7 +33,7 @@
                    juce_audio_processors, juce_audio_utils, juce_core,
                    juce_data_structures, juce_events, juce_graphics,
                    juce_gui_basics, juce_gui_extra
- exporters:        xcode_mac, vs2017, linux_make
+ exporters:        xcode_mac, vs2019, linux_make, androidstudio, xcode_iphone
 
  moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
 
@@ -47,7 +47,6 @@
 *******************************************************************************/
 
 #pragma once
-
 
 //==============================================================================
 class ZoneColourPicker
@@ -263,7 +262,7 @@ public:
 
 private:
     //==============================================================================
-    MPENote* findActiveNote (int noteID) const noexcept
+    const MPENote* findActiveNote (int noteID) const noexcept
     {
         for (auto& note : activeNotes)
             if (note.noteID == noteID)
@@ -722,9 +721,9 @@ public:
         jassert (currentlyPlayingNote.keyState == MPENote::keyDown
                  || currentlyPlayingNote.keyState == MPENote::keyDownAndSustained);
 
-        level.setValue (currentlyPlayingNote.pressure.asUnsignedFloat());
-        frequency.setValue (currentlyPlayingNote.getFrequencyInHertz());
-        timbre.setValue (currentlyPlayingNote.timbre.asUnsignedFloat());
+        level    .setTargetValue (currentlyPlayingNote.pressure.asUnsignedFloat());
+        frequency.setTargetValue (currentlyPlayingNote.getFrequencyInHertz());
+        timbre   .setTargetValue (currentlyPlayingNote.timbre.asUnsignedFloat());
 
         phase = 0.0;
         auto cyclesPerSample = frequency.getNextValue() / currentSampleRate;
@@ -756,17 +755,17 @@ public:
 
     void notePressureChanged() override
     {
-        level.setValue (currentlyPlayingNote.pressure.asUnsignedFloat());
+        level.setTargetValue (currentlyPlayingNote.pressure.asUnsignedFloat());
     }
 
     void notePitchbendChanged() override
     {
-        frequency.setValue (currentlyPlayingNote.getFrequencyInHertz());
+        frequency.setTargetValue (currentlyPlayingNote.getFrequencyInHertz());
     }
 
     void noteTimbreChanged() override
     {
-        timbre.setValue (currentlyPlayingNote.timbre.asUnsignedFloat());
+        timbre.setTargetValue (currentlyPlayingNote.timbre.asUnsignedFloat());
     }
 
     void noteKeyStateChanged() override {}
@@ -828,6 +827,8 @@ public:
         }
     }
 
+    using MPESynthesiserVoice::renderNextBlock;
+
 private:
     //==============================================================================
     float getNextSample() noexcept
@@ -851,7 +852,7 @@ private:
     }
 
     //==============================================================================
-    LinearSmoothedValue<double> level, timbre, frequency;
+    SmoothedValue<double> level, timbre, frequency;
 
     double phase      = 0.0;
     double phaseDelta = 0.0;
@@ -876,10 +877,10 @@ public:
           visualiserComp (colourPicker)
     {
        #ifndef JUCE_DEMO_RUNNER
-        audioDeviceManager.initialise (0, 2, 0, true, {}, 0);
+        audioDeviceManager.initialise (0, 2, nullptr, true, {}, nullptr);
        #endif
 
-        audioDeviceManager.addMidiInputCallback ({}, this);
+        audioDeviceManager.addMidiInputDeviceCallback ({}, this);
         audioDeviceManager.addAudioCallback (this);
 
         addAndMakeVisible (audioSetupComp);
@@ -902,9 +903,9 @@ public:
         setSize (880, 720);
     }
 
-    ~MPEDemo()
+    ~MPEDemo() override
     {
-        audioDeviceManager.removeMidiInputCallback ({}, this);
+        audioDeviceManager.removeMidiInputDeviceCallback ({}, this);
         audioDeviceManager.removeAudioCallback (this);
     }
 

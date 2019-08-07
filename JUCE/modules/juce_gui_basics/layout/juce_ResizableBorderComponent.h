@@ -70,7 +70,7 @@ public:
                               ComponentBoundsConstrainer* constrainer);
 
     /** Destructor. */
-    ~ResizableBorderComponent();
+    ~ResizableBorderComponent() override;
 
 
     //==============================================================================
@@ -78,7 +78,7 @@ public:
 
         @see getBorderThickness
     */
-    void setBorderThickness (const BorderSize<int>& newBorderSize);
+    void setBorderThickness (BorderSize<int> newBorderSize);
 
     /** Returns the number of pixels wide that the draggable edges of this component are.
 

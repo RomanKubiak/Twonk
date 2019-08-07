@@ -31,7 +31,7 @@
 
  dependencies:     juce_core, juce_data_structures, juce_events, juce_graphics,
                    juce_gui_basics
- exporters:        xcode_mac, vs2017, linux_make, xcode_iphone
+ exporters:        xcode_mac, vs2019, linux_make, xcode_iphone
 
  moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
 
@@ -64,7 +64,7 @@ public:
         helloWorldLabel.setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
         addAndMakeVisible (quitButton);
-        quitButton.onClick = [this] { JUCEApplication::quit(); };
+        quitButton.onClick = [] { JUCEApplication::quit(); };
 
         setSize (600, 300);
     }

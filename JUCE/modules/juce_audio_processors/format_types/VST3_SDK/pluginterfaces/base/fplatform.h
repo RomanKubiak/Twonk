@@ -9,7 +9,7 @@
 //-----------------------------------------------------------------------------
 // This file is part of a Steinberg SDK. It is subject to the license terms
 // in the LICENSE file found in the top-level directory of this distribution
-// and at www.steinberg.net/sdklicenses.
+// and at www.steinberg.net/sdklicenses. 
 // No part of the SDK, including this file, may be copied, modified, propagated,
 // or distributed except according to the terms contained in the LICENSE file.
 //-----------------------------------------------------------------------------
@@ -34,8 +34,15 @@
 #endif
 
 //-----------------------------------------------------------------------------
-// WIN32 AND WIN64
+// WIN32 AND WIN64 (WINDOWS)
+//-----------------------------------------------------------------------------
 #if defined (_WIN32)
+	//-----------------------------------------------------------------------------
+	// ARM32 AND ARM64 (WINDOWS)
+	#if (defined(_M_ARM64) || defined(_M_ARM))
+		#define SMTG_OS_WINDOWS_ARM	1
+	#endif
+
 	#define SMTG_OS_LINUX	0
 	#define SMTG_OS_MACOS	0
 	#define SMTG_OS_WINDOWS	1
@@ -43,7 +50,7 @@
 	#define SMTG_OS_OSX		0
 
 	#define BYTEORDER kLittleEndian
-
+	
 	#define COM_COMPATIBLE	1
 	#define PLUGIN_API __stdcall
 	#define SMTG_PTHREADS	0
@@ -59,7 +66,7 @@
 	#pragma warning (3 : 4189) // local variable is initialized but not referenced
 	#pragma warning (3 : 4238) // nonstandard extension used : class rvalue used as lvalue
 
-	#if defined (_WIN64)       // WIN64 only
+	#if defined (_WIN64) || defined (_M_ARM64)
 		#define SMTG_PLATFORM_64 1
 	#else
 		#define SMTG_PLATFORM_64 0
@@ -74,8 +81,11 @@
 		#define SMTG_CPP11_STDLIBSUPPORT SMTG_CPP11
 		#define SMTG_HAS_NOEXCEPT _MSC_VER >= 1900 || (SMTG_INTEL_CXX11_MODE && SMTG_INTEL_COMPILER >= 1300)
 	#endif
+
+	#define SMTG_DEPRECATED_ATTRIBUTE(message) __declspec (deprecated ("Is Deprecated: " message))
 //-----------------------------------------------------------------------------
 // LINUX
+//-----------------------------------------------------------------------------
 #elif __gnu_linux__
 	#define SMTG_OS_LINUX	1
 	#define SMTG_OS_MACOS	0
@@ -110,6 +120,7 @@
 	#endif
 //-----------------------------------------------------------------------------
 // Mac and iOS
+//-----------------------------------------------------------------------------
 #elif __APPLE__
 	#include <TargetConditionals.h>
 	#define SMTG_OS_LINUX	0
@@ -175,9 +186,9 @@
 	#endif
 #else
 	#pragma error unknown platform
-
 #endif
 
+//-----------------------------------------------------------------------------
 #if !SMTG_RENAME_ASSERT
 #undef WINDOWS
 #undef MAC
@@ -206,3 +217,13 @@
 #else
 #define SMTG_NOEXCEPT
 #endif
+
+//-----------------------------------------------------------------------------
+// Deprecation setting
+//-----------------------------------------------------------------------------
+#ifndef SMTG_DEPRECATED_ATTRIBUTE
+#define SMTG_DEPRECATED_ATTRIBUTE(msg)
+#endif
+
+#define SMTG_DEPRECATED_MSG(msg) SMTG_DEPRECATED_ATTRIBUTE(msg)
+//-----------------------------------------------------------------------------

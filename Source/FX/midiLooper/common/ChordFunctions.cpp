@@ -82,7 +82,7 @@ String ChordName::getIntervalString(String noteString)
 {
 	String p;
 	StringArray a;
-	a.addTokens(noteString,",",String::empty);
+	a.addTokens(noteString,",","");
 
 	Array<int> temp;
 	for (int i=0;i<a.size();i++)
@@ -321,7 +321,7 @@ String getIntervalName(int semitones)
 	case 19: return "Perfect 12th";
 	case 20: return "Flat 13th";
 	case 21: return "13th";
-	default: return String::empty;
+	default: return "";
 	}
 }
 
@@ -367,7 +367,7 @@ String getIntervalStringFromNoteNames(int root, String noteString, int bottomOct
 {
 	bool multichannel = noteString.contains(".");
 	StringArray sa;
-	sa.addTokens(noteString," ,",String::empty);
+	sa.addTokens(noteString," ,","");
 	bool absolute;
 	int bass = getNoteValue(sa[0].upToFirstOccurrenceOf(".",false,false),bottomOctave,absolute);
 	int last = 0;

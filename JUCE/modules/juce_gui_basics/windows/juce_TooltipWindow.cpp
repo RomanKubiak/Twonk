@@ -103,9 +103,11 @@ void TooltipWindow::displayTip (Point<int> screenPos, const String& tip)
        #if JUCE_DEBUG
         activeTooltipWindows.addIfNotAlreadyThere (this);
 
+        auto* parent = getParentComponent();
+
         for (auto* w : activeTooltipWindows)
         {
-            if (w != this && w->tipShowing == tipShowing)
+            if (w != this && w->tipShowing == tipShowing && w->getParentComponent() == parent)
             {
                 // Looks like you have more than one TooltipWindow showing the same tip..
                 // Be careful not to create more than one instance of this class with the
@@ -153,9 +155,8 @@ void TooltipWindow::timerCallback()
     auto now = Time::getApproximateMillisecondCounter();
 
     auto* newComp = mouseSource.isTouch() ? nullptr : mouseSource.getComponentUnderMouse();
-    auto* parent = getParentComponent();
 
-    if (newComp == nullptr || parent == nullptr || parent == newComp || parent->isParentOf (newComp))
+    if (newComp == nullptr || getParentComponent() == nullptr || newComp->getPeer() == getPeer())
     {
         auto newTip = newComp != nullptr ? getTipFor (*newComp) : String();
         bool tipChanged = (newTip != lastTipUnderMouse || newComp != lastComponentUnderMouse);

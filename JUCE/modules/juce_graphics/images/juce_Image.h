@@ -360,9 +360,9 @@ public:
         class BitmapDataReleaser
         {
         protected:
-            BitmapDataReleaser() {}
+            BitmapDataReleaser() = default;
         public:
-            virtual ~BitmapDataReleaser() {}
+            virtual ~BitmapDataReleaser() = default;
         };
 
         std::unique_ptr<BitmapDataReleaser> dataReleaser;
@@ -398,7 +398,7 @@ public:
     /** Creates a context suitable for drawing onto this image.
         Don't call this method directly! It's used internally by the Graphics class.
     */
-    LowLevelGraphicsContext* createLowLevelContext() const;
+    std::unique_ptr<LowLevelGraphicsContext> createLowLevelContext() const;
 
     /** Returns the number of Image objects which are currently referring to the same internal
         shared image data.
@@ -444,16 +444,16 @@ class JUCE_API  ImagePixelData  : public ReferenceCountedObject
 {
 public:
     ImagePixelData (Image::PixelFormat, int width, int height);
-    ~ImagePixelData();
+    ~ImagePixelData() override;
 
     using Ptr = ReferenceCountedObjectPtr<ImagePixelData>;
 
     /** Creates a context that will draw into this image. */
-    virtual LowLevelGraphicsContext* createLowLevelContext() = 0;
+    virtual std::unique_ptr<LowLevelGraphicsContext> createLowLevelContext() = 0;
     /** Creates a copy of this image. */
     virtual Ptr clone() = 0;
     /** Creates an instance of the type of this image. */
-    virtual ImageType* createType() const = 0;
+    virtual std::unique_ptr<ImageType> createType() const = 0;
     /** Initialises a BitmapData object. */
     virtual void initialiseBitmapData (Image::BitmapData&, int x, int y, Image::BitmapData::ReadWriteMode) = 0;
     /** Returns the number of Image objects which are currently referring to the same internal
@@ -475,7 +475,7 @@ public:
     /** Used to receive callbacks for image data changes */
     struct Listener
     {
-        virtual ~Listener() {}
+        virtual ~Listener() = default;
 
         virtual void imageDataChanged (ImagePixelData*) = 0;
         virtual void imageDataBeingDeleted (ImagePixelData*) = 0;
@@ -528,7 +528,7 @@ class JUCE_API  SoftwareImageType   : public ImageType
 {
 public:
     SoftwareImageType();
-    ~SoftwareImageType();
+    ~SoftwareImageType() override;
 
     ImagePixelData::Ptr create (Image::PixelFormat, int width, int height, bool clearImage) const override;
     int getTypeID() const override;
@@ -546,7 +546,7 @@ class JUCE_API  NativeImageType   : public ImageType
 {
 public:
     NativeImageType();
-    ~NativeImageType();
+    ~NativeImageType() override;
 
     ImagePixelData::Ptr create (Image::PixelFormat, int width, int height, bool clearImage) const override;
     int getTypeID() const override;
