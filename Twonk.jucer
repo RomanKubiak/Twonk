@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="NTe0XB0ij" name="Twonk" projectType="guiapp" version="1.0.0"
               juceFolder="../../../juce" vstFolderMac="~/SDKs/vstsdk2.4" vstFolderPC="c:\SDKs\vstsdk2.4"
-              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.3"
+              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.1"
               companyName="Instigator" displaySplashScreen="0" reportAppUsage="0"
               headerPath="../../vst3sdk&#10;../../Source/FX/SFZ/SFZero/&#10;../../Source/">
   <EXPORTFORMATS>
@@ -347,6 +347,12 @@
               file="Source/Filters/InternalFilters.h"/>
       </GROUP>
       <GROUP id="{D892BFB2-FE85-B70F-10D3-450F407E2B3D}" name="UI">
+        <FILE id="ak0JE8" name="PluginDefaultEditor.cpp" compile="1" resource="0"
+              file="Source/UI/PluginDefaultEditor.cpp"/>
+        <FILE id="XxDCh4" name="PluginDefaultEditor.h" compile="0" resource="0"
+              file="Source/UI/PluginDefaultEditor.h"/>
+        <FILE id="pvrmu7" name="PluginWindow.cpp" compile="1" resource="0"
+              file="Source/UI/PluginWindow.cpp"/>
         <FILE id="Lhw9Qp" name="TwonkTitleBarComponent.cpp" compile="1" resource="0"
               file="Source/UI/TwonkTitleBarComponent.cpp"/>
         <FILE id="N24pYf" name="TwonkTitleBarComponent.h" compile="0" resource="0"

@@ -145,16 +145,15 @@ float RingModulationAudioProcessor::lfo (float phase, int waveform)
 
 void RingModulationAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    ScopedPointer<XmlElement> xml (parameters.valueTreeState.state.createXml().get());
-    copyXmlToBinary (*xml, destData);
+	//auto xml = parameters.valueTreeState.state.createXml();
+    //if ()
+		//copyXmlToBinary (*xml, destData);
 }
 
 void RingModulationAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes).get());
-    if (xmlState != nullptr)
-        if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.state = ValueTree::fromXml (*xmlState);
+	if (auto xmlState = getXmlFromBinary (data, sizeInBytes))
+		parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

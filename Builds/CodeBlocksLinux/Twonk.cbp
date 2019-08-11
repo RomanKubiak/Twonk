@@ -34,7 +34,7 @@
           <Add option="-std=c++14"/>
           <Add option="-mstackrealign"/>
           <Add option="-g"/>
-          <Add option="&#96;pkg-config --cflags alsa x11 xinerama xext freetype2 libcurl&#96;"/>
+          <Add option="&#96;pkg-config --cflags alsa freetype2 x11 xext xinerama&#96;"/>
           <Add option="-pthread"/>
           <Add directory="."/>
           <Add directory="$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"/>
@@ -47,10 +47,10 @@
         </Compiler>
         <Linker>
           <Add option="-m64"/>
-          <Add option="&#96;pkg-config --libs alsa x11 xinerama xext freetype2 libcurl&#96;"/>
-          <Add library="rt"/>
+          <Add option="&#96;pkg-config --libs alsa freetype2 x11 xext xinerama&#96;"/>
           <Add library="dl"/>
           <Add library="pthread"/>
+          <Add library="rt"/>
         </Linker>
       </Target>
       <Target title="App | Release">
@@ -78,7 +78,7 @@
           <Add option="-O3"/>
           <Add option="-std=c++14"/>
           <Add option="-mstackrealign"/>
-          <Add option="&#96;pkg-config --cflags alsa x11 xinerama xext freetype2 libcurl&#96;"/>
+          <Add option="&#96;pkg-config --cflags alsa freetype2 x11 xext xinerama&#96;"/>
           <Add option="-pthread"/>
           <Add directory="."/>
           <Add directory="$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"/>
@@ -92,10 +92,10 @@
         <Linker>
           <Add option="-m64"/>
           <Add option="-s"/>
-          <Add option="&#96;pkg-config --libs alsa x11 xinerama xext freetype2 libcurl&#96;"/>
-          <Add library="rt"/>
+          <Add option="&#96;pkg-config --libs alsa freetype2 x11 xext xinerama&#96;"/>
           <Add library="dl"/>
           <Add library="pthread"/>
+          <Add library="rt"/>
         </Linker>
       </Target>
     </Build>
@@ -761,6 +761,20 @@
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/UI/PluginDefaultEditor.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/UI/PluginDefaultEditor.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/UI/PluginWindow.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
     </Unit>
     <Unit filename="../../Source/UI/TwonkTitleBarComponent.cpp">
       <Option target="App | Debug"/>
@@ -8989,9 +9003,6 @@
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
-    </Unit>
-    <Unit filename="resources.rc">
-      <Option compilerVar="WINDRES"/>
     </Unit>
   </Project>
 </CodeBlocks_project_file>

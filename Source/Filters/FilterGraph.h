@@ -64,7 +64,7 @@ public:
     void audioProcessorChanged (AudioProcessor*) override { changed(); }
 
     //==============================================================================
-    XmlElement* createXml() const;
+    std::unique_ptr<XmlElement> createXml() const;
     void restoreFromXml (const XmlElement& xml);
 
     static const char* getFilenameSuffix()      { return ".filtergraph"; }
@@ -77,7 +77,7 @@ public:
     Result saveDocument (const File& file) override;
     File getLastDocumentOpened() override;
     void setLastDocumentOpened (const File& file) override;
-
+	void addPluginCallback (std::unique_ptr<AudioPluginInstance> instance, const String& error, Point<double> pos);
     static File getDefaultGraphDocumentOnMobile();
 
     //==============================================================================

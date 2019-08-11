@@ -170,7 +170,7 @@ private:
 	TwonkPlayHead &twonkPlayHead;
     //==============================================================================
     
-	std::unique_ptr<AudioPluginInstance> createInstance (const String& name);
+	std::unique_ptr<AudioPluginInstance> InternalPluginFormat::createInstance (const String& name);
 
     bool requiresUnblockedMessageThreadDuringCreation (const PluginDescription&) const noexcept override;
 };

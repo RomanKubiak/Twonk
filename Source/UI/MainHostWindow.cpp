@@ -374,8 +374,8 @@ const PluginDescription* MainHostWindow::getChosenType (const int menuID) const
 {
     if (menuID >= 1 && menuID < 1 + internalTypes.size())
         return internalTypes [menuID - 1];
-
-    return knownPluginList.getType (knownPluginList.getIndexChosenByMenu (menuID));
+	
+	return knownPluginList.getType (knownPluginList.getIndexChosenByMenu (menuID));
 }
 
 //==============================================================================

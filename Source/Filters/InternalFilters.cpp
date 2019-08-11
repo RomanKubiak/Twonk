@@ -52,21 +52,13 @@ InternalPluginFormat::InternalPluginFormat(TwonkPlayHead &_twonkPlayHead) : twon
 
 std::unique_ptr<AudioPluginInstance> InternalPluginFormat::createInstance (const String& name)
 {
-	DBG("InternalPluginFormat::createInstance " + name);
-    if (name == audioOutDesc.name)
-		return new AudioProcessorGraph::AudioGraphIOProcessor (AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode);
-    
-	if (name == audioInDesc.name)
-		return new AudioProcessorGraph::AudioGraphIOProcessor (AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode);
-    
-	if (name == midiInDesc.name)
-		return new AudioProcessorGraph::AudioGraphIOProcessor (AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode);
+	if (name == audioOutDesc.name) return std::make_unique<AudioProcessorGraph::AudioGraphIOProcessor> (AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode);
+	if (name == audioInDesc.name)  return std::make_unique<AudioProcessorGraph::AudioGraphIOProcessor> (AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode);
+	if (name == midiInDesc.name)   return std::make_unique<AudioProcessorGraph::AudioGraphIOProcessor> (AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode);
 
-    if (name == SineWaveSynth::getIdentifier())
-		return new SineWaveSynth (SineWaveSynth::getPluginDescription());
+	if (name == SineWaveSynth::getIdentifier()) return std::make_unique<SineWaveSynth> (SineWaveSynth::getPluginDescription());
 	
-	return TwonkFilters::createInstance(name);
-    return nullptr;
+ 	return TwonkFilters::createInstance(name);
 }
 
 void InternalPluginFormat::createPluginInstance (const PluginDescription& desc,
@@ -74,10 +66,10 @@ void InternalPluginFormat::createPluginInstance (const PluginDescription& desc,
                                                  int /*initialBufferSize*/,
                                                  PluginCreationCallback callback)
 {
-	std::unique_ptr<AudioPluginInstance> p (createInstance (desc.name));
-	DBG("InternalPluginFormat::createPluginInstance " + desc.name + " setting twonk play head");
-	//p->setPlayHead(&twonkPlayHead);
-    callback (p, p == nullptr ? NEEDS_TRANS ("Invalid internal filter name") : "");
+	if (auto p = createInstance (desc.name))
+		callback (std::move (p), {});
+	else
+		callback (nullptr, NEEDS_TRANS ("Invalid internal plugin name"));
 }
 
 bool InternalPluginFormat::requiresUnblockedMessageThreadDuringCreation (const PluginDescription&) const noexcept

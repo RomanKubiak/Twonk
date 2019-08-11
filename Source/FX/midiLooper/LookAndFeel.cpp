@@ -118,122 +118,122 @@ NonShinyLookAndFeel::NonShinyLookAndFeel()
     const int textHighlightColour = 0x401111ee;
     const int standardOutlineColour = 0x50808080;
 
-    static const int32_t standardColours[] =
-    {
-		TextButton::buttonColourId,                 textButtonColour,
-        TextButton::buttonOnColourId,               0xff4444ff,
-        TextButton::textColourOnId,                 0xff000000,
-        TextButton::textColourOffId,                0xff000000,
+	static const int32_t standardColours[] =
+	{
+		(int32_t)TextButton::buttonColourId,                 (int32_t)textButtonColour,
+		(int32_t)TextButton::buttonOnColourId,               (int32_t)0xff4444ff,
+		(int32_t)TextButton::textColourOnId,                 (int32_t)0xff000000,
+		(int32_t)TextButton::textColourOffId,                (int32_t)0xff000000,
 
-        ComboBox::buttonColourId,                   0xffb0b0b0,
-		ComboBox::outlineColourId,                  standardOutlineColour,
+		(int32_t)ComboBox::buttonColourId,                   (int32_t)0xffb0b0b0,
+		(int32_t)ComboBox::outlineColourId,                  (int32_t)standardOutlineColour,
 
-        ToggleButton::textColourId,                 0xff000000,
+		(int32_t)ToggleButton::textColourId,                 (int32_t)0xff000000,
 
-        TextEditor::backgroundColourId,             0xffffffff,
-        TextEditor::textColourId,                   0xff000000,
-		TextEditor::highlightColourId,              textHighlightColour,
-        TextEditor::highlightedTextColourId,        0xff000000,
-        TextEditor::outlineColourId,                0x00000000,
-		TextEditor::focusedOutlineColourId,         textButtonColour,
-        TextEditor::shadowColourId,                 0x38000000,
+		(int32_t)TextEditor::backgroundColourId,             (int32_t)0xffffffff,
+		(int32_t)TextEditor::textColourId,                   (int32_t)0xff000000,
+		(int32_t)TextEditor::highlightColourId,              (int32_t)textHighlightColour,
+		(int32_t)TextEditor::highlightedTextColourId,        (int32_t)0xff000000,
+		(int32_t)TextEditor::outlineColourId,                (int32_t)0x00000000,
+		(int32_t)TextEditor::focusedOutlineColourId,         (int32_t)textButtonColour,
+		(int32_t)TextEditor::shadowColourId,                 (int32_t)0x38000000,
 
-        Label::backgroundColourId,                  0x00000000,
-        Label::textColourId,                        0xff000000,
-        Label::outlineColourId,                     0x00000000,
+		(int32_t)Label::backgroundColourId,                  (int32_t)0x00000000,
+		(int32_t)Label::textColourId,                        (int32_t)0xff000000,
+		(int32_t)Label::outlineColourId,                     (int32_t)0x00000000,
 
-        ScrollBar::backgroundColourId,              0x00000000,
-        ScrollBar::thumbColourId,                   0xffffffff,
-        ScrollBar::trackColourId,                   0xffffffff,
+		(int32_t)ScrollBar::backgroundColourId,              (int32_t)0x00000000,
+		(int32_t)ScrollBar::thumbColourId,                   (int32_t)0xffffffff,
+		(int32_t)ScrollBar::trackColourId,                   (int32_t)0xffffffff,
 
-        TreeView::linesColourId,                    0x4c000000,
-        TreeView::backgroundColourId,               0x00000000,
-        TreeView::dragAndDropIndicatorColourId,     0x80ff0000,
+		(int32_t)TreeView::linesColourId,                    (int32_t)0x4c000000,
+		(int32_t)TreeView::backgroundColourId,               (int32_t)0x00000000,
+		(int32_t)TreeView::dragAndDropIndicatorColourId,     (int32_t)0x80ff0000,
 
-        PopupMenu::backgroundColourId,              0xffffffff,
-        PopupMenu::textColourId,                    0xff000000,
-        PopupMenu::headerTextColourId,              0xff000000,
-        PopupMenu::highlightedTextColourId,         0xffffffff,
-        PopupMenu::highlightedBackgroundColourId,   0x991111aa,
+		(int32_t)PopupMenu::backgroundColourId,              (int32_t)0xffffffff,
+		(int32_t)PopupMenu::textColourId,                    (int32_t)0xff000000,
+		(int32_t)PopupMenu::headerTextColourId,              (int32_t)0xff000000,
+		(int32_t)PopupMenu::highlightedTextColourId,         (int32_t)0xffffffff,
+		(int32_t)PopupMenu::highlightedBackgroundColourId,   (int32_t)0x991111aa,
 
-        ComboBox::textColourId,                     0xff000000,
-        ComboBox::backgroundColourId,               0xffb0b0b0,
-        ComboBox::arrowColourId,                    0x99000000,
+		(int32_t)ComboBox::textColourId,                     (int32_t)0xff000000,
+		(int32_t)ComboBox::backgroundColourId,               (int32_t)0xffb0b0b0,
+		(int32_t)ComboBox::arrowColourId,                    (int32_t)0x99000000,
 
-        ListBox::backgroundColourId,                0xffffffff,
-        ListBox::outlineColourId,                   standardOutlineColour,
-        ListBox::textColourId,                      0xff000000,
+		(int32_t)ListBox::backgroundColourId,                (int32_t)0xffffffff,
+		(int32_t)ListBox::outlineColourId,                   (int32_t)standardOutlineColour,
+		(int32_t)ListBox::textColourId,                      (int32_t)0xff000000,
 
-        Slider::backgroundColourId,                 0x00000000,
-        Slider::thumbColourId,                      textButtonColour,
-        Slider::trackColourId,                      0x7fffffff,
-        Slider::rotarySliderFillColourId,           0x7f0000ff,
-        Slider::rotarySliderOutlineColourId,        0x66000000,
-        Slider::textBoxTextColourId,                0xff000000,
-        Slider::textBoxBackgroundColourId,          0xffffffff,
-        Slider::textBoxHighlightColourId,           textHighlightColour,
-        Slider::textBoxOutlineColourId,             standardOutlineColour,
+		(int32_t)Slider::backgroundColourId,                 (int32_t)0x00000000,
+		(int32_t)Slider::thumbColourId,                      (int32_t)textButtonColour,
+		(int32_t)Slider::trackColourId,                      (int32_t)0x7fffffff,
+		(int32_t)Slider::rotarySliderFillColourId,           (int32_t)0x7f0000ff,
+		(int32_t)Slider::rotarySliderOutlineColourId,        (int32_t)0x66000000,
+		(int32_t)Slider::textBoxTextColourId,                (int32_t)0xff000000,
+		(int32_t)Slider::textBoxBackgroundColourId,          (int32_t)0xffffffff,
+		(int32_t)Slider::textBoxHighlightColourId,           (int32_t)textHighlightColour,
+		(int32_t)Slider::textBoxOutlineColourId,             (int32_t)standardOutlineColour,
 
-        ResizableWindow::backgroundColourId,        0xff777777,
-        //DocumentWindow::textColourId,               0xff000000, // (this is deliberately not set)
+		(int32_t)ResizableWindow::backgroundColourId,        (int32_t)0xff777777,
+		//DocumentWindow::textColourId,               0xff000000, // (this is deliberately not set)
 
-        AlertWindow::backgroundColourId,            0xffededed,
-        AlertWindow::textColourId,                  0xff000000,
-        AlertWindow::outlineColourId,               0xff666666,
+		(int32_t)AlertWindow::backgroundColourId,            (int32_t)0xffededed,
+		(int32_t)AlertWindow::textColourId,                  (int32_t)0xff000000,
+		(int32_t)AlertWindow::outlineColourId,               (int32_t)0xff666666,
 
-        ProgressBar::backgroundColourId,            0xffeeeeee,
-        ProgressBar::foregroundColourId,            0xffaaaaee,
+		(int32_t)ProgressBar::backgroundColourId,            (int32_t)0xffeeeeee,
+		(int32_t)ProgressBar::foregroundColourId,            (int32_t)0xffaaaaee,
 
-        TooltipWindow::backgroundColourId,          0xffeeeebb,
-        TooltipWindow::textColourId,                0xff000000,
-        TooltipWindow::outlineColourId,             0x4c000000,
+		(int32_t)TooltipWindow::backgroundColourId,          (int32_t)0xffeeeebb,
+		(int32_t)TooltipWindow::textColourId,                (int32_t)0xff000000,
+		(int32_t)TooltipWindow::outlineColourId,             (int32_t)0x4c000000,
 
-        TabbedComponent::backgroundColourId,        0x00000000,
-        TabbedComponent::outlineColourId,           0xff777777,
-        TabbedButtonBar::tabOutlineColourId,        0x80000000,
-        TabbedButtonBar::frontOutlineColourId,      0x90000000,
+		(int32_t)TabbedComponent::backgroundColourId,        (int32_t)0x00000000,
+		(int32_t)TabbedComponent::outlineColourId,           (int32_t)0xff777777,
+		(int32_t)TabbedButtonBar::tabOutlineColourId,        (int32_t)0x80000000,
+		(int32_t)TabbedButtonBar::frontOutlineColourId,      (int32_t)0x90000000,
 
-        Toolbar::backgroundColourId,                0xfff6f8f9,
-        Toolbar::separatorColourId,                 0x4c000000,
-        Toolbar::buttonMouseOverBackgroundColourId, 0x4c0000ff,
-        Toolbar::buttonMouseDownBackgroundColourId, 0x800000ff,
-        Toolbar::labelTextColourId,                 0xff000000,
-        Toolbar::editingModeOutlineColourId,        0xffff0000,
+		(int32_t)Toolbar::backgroundColourId,                (int32_t)0xfff6f8f9,
+		(int32_t)Toolbar::separatorColourId,                 (int32_t)0x4c000000,
+		(int32_t)Toolbar::buttonMouseOverBackgroundColourId, (int32_t)0x4c0000ff,
+		(int32_t)Toolbar::buttonMouseDownBackgroundColourId, (int32_t)0x800000ff,
+		(int32_t)Toolbar::labelTextColourId,                 (int32_t)0xff000000,
+		(int32_t)Toolbar::editingModeOutlineColourId,        (int32_t)0xffff0000,
 
-        HyperlinkButton::textColourId,              0xcc1111ee,
+		(int32_t)HyperlinkButton::textColourId,              (int32_t)0xcc1111ee,
 
-        GroupComponent::outlineColourId,            0x66000000,
-        GroupComponent::textColourId,               0xff000000,
+		(int32_t)GroupComponent::outlineColourId,            (int32_t)0x66000000,
+		(int32_t)GroupComponent::textColourId,               (int32_t)0xff000000,
 
-		DirectoryContentsDisplayComponent::highlightColourId,   textHighlightColour,
-        DirectoryContentsDisplayComponent::textColourId,        0xff000000,
+		(int32_t)DirectoryContentsDisplayComponent::highlightColourId,   (int32_t)textHighlightColour,
+		(int32_t)DirectoryContentsDisplayComponent::textColourId,        (int32_t)0xff000000,
 
-        0x1000440, /*LassoComponent::lassoFillColourId*/        0x66dddddd,
-        0x1000441, /*LassoComponent::lassoOutlineColourId*/     0x99111111,
+		(int32_t)0x1000440, /*LassoComponent::lassoFillColourId*/        (int32_t)0x66dddddd,
+		(int32_t)0x1000441, /*LassoComponent::lassoOutlineColourId*/     (int32_t)0x99111111,
 
-        MidiKeyboardComponent::whiteNoteColourId,               0xffffffff,
-        MidiKeyboardComponent::blackNoteColourId,               0xff000000,
-        MidiKeyboardComponent::keySeparatorLineColourId,        0x66000000,
-        MidiKeyboardComponent::mouseOverKeyOverlayColourId,     0x80ffff00,
-        MidiKeyboardComponent::keyDownOverlayColourId,          0xffb6b600,
-        MidiKeyboardComponent::textLabelColourId,               0xff000000,
-        MidiKeyboardComponent::upDownButtonBackgroundColourId,  0xffd3d3d3,
-        MidiKeyboardComponent::upDownButtonArrowColourId,       0xff000000,
+		(int32_t)MidiKeyboardComponent::whiteNoteColourId,               (int32_t)0xffffffff,
+		(int32_t)MidiKeyboardComponent::blackNoteColourId,               (int32_t)0xff000000,
+		(int32_t)MidiKeyboardComponent::keySeparatorLineColourId,        (int32_t)0x66000000,
+		(int32_t)MidiKeyboardComponent::mouseOverKeyOverlayColourId,     (int32_t)0x80ffff00,
+		(int32_t)MidiKeyboardComponent::keyDownOverlayColourId,          (int32_t)0xffb6b600,
+		(int32_t)MidiKeyboardComponent::textLabelColourId,               (int32_t)0xff000000,
+		(int32_t)MidiKeyboardComponent::upDownButtonBackgroundColourId,  (int32_t)0xffd3d3d3,
+		(int32_t)MidiKeyboardComponent::upDownButtonArrowColourId,       (int32_t)0xff000000,
 
-        CodeEditorComponent::backgroundColourId,                0xffffffff,
-		CodeEditorComponent::highlightColourId,					textHighlightColour,
-        CodeEditorComponent::defaultTextColourId,               0xff000000,
+			(int32_t)CodeEditorComponent::backgroundColourId, (int32_t)0xffffffff,
+			(int32_t)CodeEditorComponent::highlightColourId, (int32_t)textHighlightColour,
+			(int32_t)CodeEditorComponent::defaultTextColourId, (int32_t)0xff000000,
 
-        ColourSelector::backgroundColourId,                     0xffe5e5e5,
-        ColourSelector::labelTextColourId,                      0xff000000,
+			(int32_t)ColourSelector::backgroundColourId, (int32_t)0xffe5e5e5,
+			(int32_t)ColourSelector::labelTextColourId, (int32_t)0xff000000,
 
-        KeyMappingEditorComponent::backgroundColourId,          0x00000000,
-        KeyMappingEditorComponent::textColourId,                0xff000000,
+			(int32_t)KeyMappingEditorComponent::backgroundColourId, (int32_t)0x00000000,
+			(int32_t)KeyMappingEditorComponent::textColourId, (int32_t)0xff000000,
 
-        FileSearchPathListComponent::backgroundColourId,        0xffffffff,
+			(int32_t)FileSearchPathListComponent::backgroundColourId, (int32_t)0xffffffff,
 
-        FileChooserDialogBox::titleTextColourId,                0xff000000,
-    };
+			(int32_t)FileChooserDialogBox::titleTextColourId, (int32_t)0xff000000,
+	};
 
     for (int i = 0; i < numElementsInArray (standardColours); i += 2)
         setColour (standardColours [i], Colour (standardColours [i + 1]));
@@ -557,13 +557,13 @@ void NonShinyLookAndFeel::drawLinearSlider (Graphics& g,
 
 Button* NonShinyLookAndFeel::createSliderButton (Slider &,const bool isIncrement)
 {
-    return new TextButton (isIncrement ? "+" : "-", "");
+    return new TextButton (isIncrement ? "+" : "-", String());
 }
 
 class SliderLabelComp : public Label
 {
 public:
-	SliderLabelComp() : Label ("", "") {}
+	SliderLabelComp() : Label (String(), String()) {}
 	~SliderLabelComp()	{}
 
 	virtual int mouseWheelMove (const MouseEvent&, float, float) { return 0; }

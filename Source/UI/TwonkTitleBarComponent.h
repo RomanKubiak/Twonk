@@ -59,9 +59,7 @@ class TitleBarLookAndFeel : public LookAndFeel_V4
                                                                     //[/Comments]
 */
 class TwonkTitleBarComponent  : public Component,
-                                public TwonkClockListener,
-                                public Button::Listener,
-                                public Slider::Listener
+                                public TwonkClockListener
 {
 public:
     //==============================================================================
@@ -74,8 +72,6 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
 
 
 
@@ -89,15 +85,6 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<ImageButton> settingsButton;
-    std::unique_ptr<ImageButton> midiKeysButton;
-    std::unique_ptr<ImageButton> pluginButton;
-    std::unique_ptr<ImageButton> syncButton;
-    std::unique_ptr<ImageButton> stopButton;
-    std::unique_ptr<ImageButton> playButton;
-    std::unique_ptr<Slider> tempoSlider;
-    std::unique_ptr<Label> timeLabel;
-    std::unique_ptr<Slider> clockPositionIndicator;
 
 
     //==============================================================================

@@ -67,7 +67,7 @@ JuceProgram::JuceProgram ()
     measureFromHere=0;
 
 	numerator=denominator=4;
-	device = "";
+	device = String();
 
     //program name
 	name = "Default";
@@ -498,7 +498,7 @@ const String PizLooper::getParameterName (int index) {
 		default: break;
 		}
 	}
-	return "";
+	return String();
 }
 
 const String PizLooper::getParameterText (int index) {
@@ -570,19 +570,19 @@ const String PizLooper::getParameterText (int index) {
 		if (l==0) 
 			return String("Manual");
 		if (getParameter(kRecStep)<0.1) 
-			return String(l) + String(" Bar") + (l>1 ? "s" : "");
+			return String(l) + String(" Bar") + (l>1 ? "s" : String());
 		if (getParameter(kRecStep)<0.2) 
 			return String(l*3) + String(" Beats");
 		if (getParameter(kRecStep)<0.3) 
 			return String(l*2) + String(" Beats");
 		if (getParameter(kRecStep)<0.4) 
-			return String(l) + String(" Beat") + (l>1 ? "s" : "");
+			return String(l) + String(" Beat") + (l>1 ? "s" : String());
 		if (getParameter(kRecStep)<0.5) 
-			return String(l) + String(" 8th Note") + (l>1 ? "s" : "");
+			return String(l) + String(" 8th Note") + (l>1 ? "s" : String());
 		if (getParameter(kRecStep)<0.6) 
-			return String(l) + String(" 16th Note") + (l>1 ? "s" : "");
+			return String(l) + String(" 16th Note") + (l>1 ? "s" : String());
 		else 
-			return String(l) + String(" Tick") + (l>1 ? "s" : "");
+			return String(l) + String(" Tick") + (l>1 ? "s" : String());
 	}
 	if (index==kRecMode)  {
 		if (getParameter(index)<0.5) return String("Replace");
@@ -673,14 +673,14 @@ const String PizLooper::getParameterText (int index) {
 			if (getParameter(index)<0.2f) return String("Unsync 1-shot");
 			if (getParameter(index)<0.3f) return String("Unsync loop");
 			//if (getParameter(index)<0.5f) return String("sync 1-shot");
-			return "";
+			return String();
 		case kNoteTrig:
 			if (getParameter(index)==0.0f) return String("Off");
 			if (getParameter(index)<0.1f) return String("Mono (Transpose)");
 			if (getParameter(index)<0.2f) return String("Poly (Transpose)");
 			if (getParameter(index)<0.3f) return String("Mono (Orig. Key)");
 			//if (getParameter(index)<0.4f) return String("Poly (Orig. Key)");
-			return "";
+			return String();
 		case kRoot:
 		case kNLow:
 		case kNHigh:
@@ -721,12 +721,12 @@ const String PizLooper::getParameterText (int index) {
 			else if (mode==alwaysup)   return String("Up");
 			else if (mode==alwaysdown) return String("Down");
 			else if (mode==block)      return String("Block");
-			return "";
+			return String();
 		default: 
 			break;
 		}
 	}
-    return "";
+    return String();
 }
 
 const String PizLooper::getInputChannelName (const int channelIndex) const {
@@ -794,7 +794,7 @@ const String PizLooper::getProgramName(int index) {
     if (index<getNumPrograms()) {
         return programs[index].name;
     }
-    return "";
+    return String();
 }
 
 int PizLooper::getCurrentProgram() {

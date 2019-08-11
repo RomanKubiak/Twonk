@@ -2387,7 +2387,7 @@ PizLooperEditor::PizLooperEditor (PizLooper* const ownerFilter)
     midiOutDeviceBox->setMouseClickGrabsKeyboardFocus(false);
     midiOutDeviceBox->addItem(String("--"),1);
     for (int i=0;i<devices.size();i++) {
-        midiOutDeviceBox->addItem(devices.joinIntoString("",i,1),i+2);
+        midiOutDeviceBox->addItem(devices.joinIntoString(String(),i,1),i+2);
     }
     midiOutDeviceBox->setSelectedId(1);
 
@@ -2420,7 +2420,7 @@ PizLooperEditor::PizLooperEditor (PizLooper* const ownerFilter)
 	keySelector->addChangeListener(this);
 	ownerFilter->keySelectorState.addListener(this);
 	demo = ownerFilter->demo?1:0;
-	loopinfoLabel3->setText(demo?"DEMO VERSION":"", NotificationType::dontSendNotification);
+	loopinfoLabel3->setText(demo?"DEMO VERSION":String(), NotificationType::dontSendNotification);
 	counter=0;
 	startTimer(75);
 

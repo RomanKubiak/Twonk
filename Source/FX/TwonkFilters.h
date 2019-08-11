@@ -21,5 +21,5 @@ class TwonkFilters
 {
 	public:
 		static void getAllTypes(OwnedArray<PluginDescription>& results);
-		static AudioPluginInstance* createInstance (const String& name);
+		static std::unique_ptr<AudioPluginInstance> createInstance (const String& name);
 };

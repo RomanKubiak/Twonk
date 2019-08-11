@@ -182,12 +182,23 @@ void GraphEditorPanel::showPopupMenu (Point<int> mousePos)
 
         menu->showMenuAsync ({},
                              ModalCallbackFunction::create ([this, mousePos] (int r)
-                                                            {
-                                                                if (auto* mainWin = findParentComponentOfClass<MainHostWindow>())
-                                                                    if (auto* desc = mainWin->getChosenType (r))
-                                                                        createNewPlugin (*desc, mousePos);
-                                                            }));
-    }
+		{
+			DBG("GraphEditorPanel::showPopupMenu r=" + String(r));
+			if (r == 0)
+				return;
+
+			if (auto* mainWin = findParentComponentOfClass<MainHostWindow>())
+			{
+				const PluginDescription* desc = mainWin->getChosenType(r);
+				
+				if (desc)
+				{
+					DBG("GraphEditorPanel::showPopupMenu createNewPlugin desc:"+desc->descriptiveName);
+					createNewPlugin (*desc, mousePos);
+				}
+			}
+		}));
+	}
 }
 
 void GraphEditorPanel::beginConnectorDrag (AudioProcessorGraph::NodeAndChannel source,

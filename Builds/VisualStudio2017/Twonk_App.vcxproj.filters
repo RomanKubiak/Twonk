@@ -622,6 +622,12 @@
     <ClCompile Include="..\..\Source\Filters\InternalFilters.cpp">
       <Filter>Twonk\Source\Filters</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\PluginDefaultEditor.cpp">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\PluginWindow.cpp">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkTitleBarComponent.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
@@ -2765,6 +2771,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Filters\InternalFilters.h">
       <Filter>Twonk\Source\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\PluginDefaultEditor.h">
+      <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkTitleBarComponent.h">
       <Filter>Twonk\Source\UI</Filter>
