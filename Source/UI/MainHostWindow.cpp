@@ -93,7 +93,7 @@ MainHostWindow::MainHostWindow(bool _fullscreen, bool _opengl)
 	   centreWithSize (1024, 600);
    }
 	deviceManager.initialise(2, 2, getAppProperties().getUserSettings()->getXmlValue("audioDeviceState").get(), true);
-    graphHolder.reset (new GraphDocumentComponent (formatManager, deviceManager, knownPluginList, *twonkPlayHead));
+    graphHolder.reset (new GraphEditorPanel (formatManager, deviceManager, knownPluginList, *twonkPlayHead));
 
     setContentNonOwned (graphHolder.get(), false);
 
@@ -137,15 +137,6 @@ MainHostWindow::~MainHostWindow()
 
     getAppProperties().getUserSettings()->setValue ("mainWindowPos", getWindowStateAsString());
     clearContentComponent();
-
-  #if ! (JUCE_ANDROID || JUCE_IOS)
-   #if JUCE_MAC
-    setMacMainMenu (nullptr);
-   #else
-    setMenuBar (nullptr);
-   #endif
-  #endif
-
     graphHolder = nullptr;
 	deleteAndZero(twonkPlayHead);
 }
@@ -340,12 +331,6 @@ void MainHostWindow::menuItemSelected (int menuItemID, int /*topLevelMenuIndex*/
                           { proportionOfWidth  (0.3f + Random::getSystemRandom().nextFloat() * 0.6f),
                             proportionOfHeight (0.3f + Random::getSystemRandom().nextFloat() * 0.6f) });
     }
-}
-
-void MainHostWindow::menuBarActivated (bool isActivated)
-{
-    if (isActivated && graphHolder != nullptr)
-        graphHolder->unfocusKeyboardComponent();
 }
 
 void MainHostWindow::createPlugin (const PluginDescription& desc, Point<int> pos)

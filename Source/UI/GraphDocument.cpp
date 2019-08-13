@@ -15,7 +15,7 @@
 #include "GraphDocument.h"
 #include "../TwonkPlayHead.h"
 #include "../UI/TwonkTitleBarComponent.h"
-
+#include "Filters/FilterGraph.h"
 //==============================================================================
 struct GraphDocumentComponent::PluginListBoxModel : public ListBoxModel,
 	public ChangeListener,
@@ -96,16 +96,11 @@ GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm, Au
 
 void GraphDocumentComponent::init()
 {
-	graphPanel.reset (new GraphEditorPanel (*graph));
+	graphPanel.reset (new GraphEditorPanel (*this));
 	addAndMakeVisible (graphPanel.get());
 	graphPlayer.setProcessor (&graph->graph);
 
 	audioSettingsComponent.reset(new AudioDeviceSelectorComponent (deviceManager, 1, 8, 1, 8, true, true, true, false));
-
-	keyState.addListener (&graphPlayer.getMidiMessageCollector());
-	keyboardComp.reset(new MidiKeyboardComponent(keyState, MidiKeyboardComponent::horizontalKeyboard));
-	keyboardComp->setKeyWidth(40);
-	addAndMakeVisible(keyboardComp.get());
 
 	graphPanel->updateComponents();
 
@@ -134,38 +129,13 @@ void GraphDocumentComponent::init()
 			addAndMakeVisible (mobileSettingsSidePanel);
 		}
 	}
-
-	mobileSettingsSidePanel.setLookAndFeel(&sidePanelLF);
-	pluginListSidePanel.setLookAndFeel(&sidePanelLF);
 }
 
 GraphDocumentComponent::~GraphDocumentComponent()
 {
 	mobileSettingsSidePanel.setLookAndFeel(nullptr);
 	pluginListSidePanel.setLookAndFeel(nullptr);
-	releaseGraph();
-
-	keyState.removeListener (&graphPlayer.getMidiMessageCollector());
-}
-
-void GraphDocumentComponent::resized()
-{
-	auto r = getLocalBounds();
-	const int keysHeight = keyboardComp->isVisible() ? MIDI_KEYBOARD_HEIGHT : 0;
-
-	graphPanel->setBounds (r);
-	keyboardComp->setBounds (r.removeFromBottom (keysHeight));
-	checkAvailableWidth();
-}
-
-void GraphDocumentComponent::createNewPlugin (const PluginDescription& desc, Point<int> pos)
-{
-	graphPanel->createNewPlugin (desc, pos);
-}
-
-void GraphDocumentComponent::unfocusKeyboardComponent()
-{
-	keyboardComp->unfocusAllComponents();
+	//releaseGraph();
 }
 
 void GraphDocumentComponent::releaseGraph()
@@ -178,12 +148,20 @@ void GraphDocumentComponent::releaseGraph()
 		deviceManager.removeChangeListener (graphPanel.get());
 		graphPanel = nullptr;
 	}
-	keyboardComp = nullptr;
-	settingsTab = nullptr;
-	pluginListComponent = nullptr;
-	audioSettingsComponent = nullptr;
+
 	graphPlayer.setProcessor (nullptr);
 	graph = nullptr;
+}
+
+void GraphDocumentComponent::resized()
+{
+	auto r = getLocalBounds();
+	graphPanel->setBounds (r);
+}
+
+void GraphDocumentComponent::createNewPlugin (const PluginDescription& desc, Point<int> pos)
+{
+	graphPanel->createNewPlugin (desc, pos);
 }
 
 bool GraphDocumentComponent::isInterestedInDragSource (const SourceDetails& details)
@@ -194,10 +172,6 @@ bool GraphDocumentComponent::isInterestedInDragSource (const SourceDetails& deta
 
 void GraphDocumentComponent::itemDropped (const SourceDetails& details)
 {
-	// don't allow items to be dropped behind the sidebar
-	if (pluginListSidePanel.getBounds().contains (details.localPosition))
-		return;
-
 	auto pluginTypeIndex = details.description.toString()
 		.fromFirstOccurrenceOf ("PLUGIN: ", false, false)
 		.getIntValue();
@@ -208,69 +182,9 @@ void GraphDocumentComponent::itemDropped (const SourceDetails& details)
 	createNewPlugin (*pluginList.getType (pluginTypeIndex), details.localPosition);
 }
 
-void GraphDocumentComponent::showSidePanel (bool showSettingsPanel)
-{
-	if (showSettingsPanel)
-		mobileSettingsSidePanel.showOrHide (true);
-	else
-		pluginListSidePanel.showOrHide (true);
-
-	checkAvailableWidth();
-
-	lastOpenedSidePanel = showSettingsPanel ? &mobileSettingsSidePanel
-		: &pluginListSidePanel;
-}
-
-void GraphDocumentComponent::hideLastSidePanel()
-{
-	if (lastOpenedSidePanel != nullptr)
-		lastOpenedSidePanel->showOrHide (false);
-
-	if (mobileSettingsSidePanel.isPanelShowing())    lastOpenedSidePanel = &mobileSettingsSidePanel;
-	else if (pluginListSidePanel.isPanelShowing())        lastOpenedSidePanel = &pluginListSidePanel;
-	else                                                  lastOpenedSidePanel = nullptr;
-}
-
-void GraphDocumentComponent::checkAvailableWidth()
-{
-	if (mobileSettingsSidePanel.isPanelShowing() && pluginListSidePanel.isPanelShowing())
-	{
-		if (getWidth() - (mobileSettingsSidePanel.getWidth() + pluginListSidePanel.getWidth()) < 150)
-			hideLastSidePanel();
-	}
-}
-
 bool GraphDocumentComponent::closeAnyOpenPluginWindows()
 {
-	return graphPanel->graph.closeAnyOpenPluginWindows();
-}
-
-void GraphDocumentComponent::showMidiKeyboardComponent()
-{
-	keyboardComp.get()->setVisible(!keyboardComp.get()->isVisible());
-}
-
-void GraphDocumentComponent::stop()
-{
-	twonkPlayHead.stop();
-}
-void GraphDocumentComponent::play(const bool isPlaying)
-{
-	twonkPlayHead.play(isPlaying);
-}
-void GraphDocumentComponent::toggleSync(const bool shouldBeSynced)
-{
-	twonkPlayHead.setExternalSync(shouldBeSynced);
-}
-
-void GraphDocumentComponent::setTempo(const double bpm)
-{
-	twonkPlayHead.setTempo(bpm);
-}
-
-void GraphDocumentComponent::setLoopLength(const int _loopLength)
-{
-	twonkPlayHead.setLoopLength(_loopLength);
+	return graphPanel->graph->closeAnyOpenPluginWindows();
 }
 
 void GraphDocumentComponent::paint (Graphics& g)

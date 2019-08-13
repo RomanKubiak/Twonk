@@ -15,7 +15,7 @@
 #define TITLEBAR_HEIGHT 48
 #define BUBBLE_SIZE 100
 #define NODE_SIZE 32
-
+#define TOOLBAR_BUTTON_SIZE 64
 #define BUBBLE_COLOUR_INTERNAL_MIDI_IN		0xffbb3366
 #define BUBBLE_COLOUR_INTERNAL_MIDI_OUT		0xffff1188
 
@@ -30,5 +30,11 @@
 static const Font getDefaultTwonkSansFont()
 {
 	Typeface::Ptr t = Typeface::createSystemTypefaceFor(BinaryData::LiberationSansRegular_ttf, BinaryData::LiberationSansBold_ttfSize);
+	return (Font(t));
+}
+
+static const Font getDefaultTwonkMonoFont()
+{
+	Typeface::Ptr t = Typeface::createSystemTypefaceFor(BinaryData::terminess_ttf, BinaryData::terminess_ttfSize);
 	return (Font(t));
 }

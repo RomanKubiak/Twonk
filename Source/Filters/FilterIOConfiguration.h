@@ -28,7 +28,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 class MainHostWindow;
-class GraphDocumentComponent;
+class GraphEditorPanel;
 
 
 //==============================================================================
@@ -53,7 +53,7 @@ private:
     void update();
 
     MainHostWindow* getMainWindow() const;
-    GraphDocumentComponent* getGraphEditor() const;
+    GraphEditorPanel* getGraphEditor() const;
     AudioProcessorGraph* getGraph() const;
     AudioProcessorGraph::NodeID getNodeID() const;
 

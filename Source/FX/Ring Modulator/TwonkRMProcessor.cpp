@@ -145,9 +145,9 @@ float RingModulationAudioProcessor::lfo (float phase, int waveform)
 
 void RingModulationAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-	//auto xml = parameters.valueTreeState.state.createXml();
-    //if ()
-		//copyXmlToBinary (*xml, destData);
+	auto xml = parameters.valueTreeState.state.createXml();
+    if (xml)
+		copyXmlToBinary (*xml, destData);
 }
 
 void RingModulationAudioProcessor::setStateInformation (const void* data, int sizeInBytes)

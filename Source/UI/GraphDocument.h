@@ -11,26 +11,10 @@
 #pragma once
 #include "Twonk.h"
 #include "../Filters/FilterGraph.h"
-#include "../UI/GraphEditorPanel.h"
 
-
+class GraphEditorPanel;
 class TwonkPlayHead;
 class TwonkTitleBarComponent;
-
-class SidePanelLookAndFeel : public LookAndFeel_V4
-{
-	public:
-		SidePanelLookAndFeel()
-		{
-			font = getDefaultTwonkSansFont();
-		}
-		Font getSidePanelTitleFont(SidePanel &)
-		{
-			return (font);
-		}
-	private:
-		Font font;
-};
 
 //==============================================================================
 /**
@@ -58,7 +42,6 @@ public:
 	std::unique_ptr<FilterGraph> graph;
 
 	void resized() override;
-	void unfocusKeyboardComponent();
 	void releaseGraph();
 	void paint (Graphics& g);
 	//==============================================================================
@@ -67,19 +50,8 @@ public:
 
 	//==============================================================================
 	std::unique_ptr<GraphEditorPanel> graphPanel;
-	std::unique_ptr<MidiKeyboardComponent> keyboardComp;
-	MidiKeyboardState keyState;
-	void showMidiKeyboardComponent();
-	void stop();
-	void play(const bool isPlaying);
-	void toggleSync(const bool shouldBeSynced);
-	void setTempo(const double bpm);
-	void setLoopLength(const int _loopLength);
+	AudioProcessorPlayer &getGraphPlayer() { return (graphPlayer); }
 	//==============================================================================
-	void showSidePanel (bool isSettingsPanel);
-	void hideLastSidePanel();
-	BurgerMenuComponent burgerMenu;
-
 private:
 	//==============================================================================
 	AudioDeviceManager& deviceManager;
@@ -94,14 +66,8 @@ private:
 	std::unique_ptr<AudioDeviceSelectorComponent> audioSettingsComponent;
 	ListBox pluginListBox;
 	Image bg;
-	SidePanel mobileSettingsSidePanel{ "Settings", 300, true };
-	SidePanel pluginListSidePanel{ "Plugins", 300, false };
-	std::unique_ptr<TabbedComponent> settingsTab;
-	SidePanel* lastOpenedSidePanel = nullptr;
-	SidePanelLookAndFeel sidePanelLF;
 	//==============================================================================
 	void init();
-	void checkAvailableWidth();
 
 	//==============================================================================
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphDocumentComponent)

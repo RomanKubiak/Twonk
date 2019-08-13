@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.1
+  Created with Projucer version: 5.4.3
 
   ------------------------------------------------------------------------------
 
@@ -23,29 +23,9 @@
 #include "../../JuceLibraryCode/JuceHeader.h"
 #include "../TwonkPlayHead.h"
 
-class GraphDocumentComponent;
-
-class TitleBarLookAndFeel : public LookAndFeel_V4
-{
-	public:
-		TitleBarLookAndFeel(Font _font) : font(_font)
-		{
-		}
-		Label* createSliderTextBox (Slider& slider) override
-		{
-			auto* l = LookAndFeel_V2::createSliderTextBox (slider);
-			l->setFont(font);
-			if (getCurrentColourScheme() == LookAndFeel_V4::getGreyColourScheme() && (slider.getSliderStyle() == Slider::LinearBar
-				|| slider.getSliderStyle() == Slider::LinearBarVertical))
-			{
-
-				l->setColour (Label::textColourId, Colours::black.withAlpha (0.7f));
-			}
-
-			return l;
-		}
-		Font font;
-};
+class GraphEditorPanel;
+class TwonkTitleBarButton;
+class TwonkTitleBarStatus;
 //[/Headers]
 
 
@@ -59,15 +39,17 @@ class TitleBarLookAndFeel : public LookAndFeel_V4
                                                                     //[/Comments]
 */
 class TwonkTitleBarComponent  : public Component,
-                                public TwonkClockListener
+                                public TwonkClockListener,
+                                public Button::Listener
 {
 public:
     //==============================================================================
-    TwonkTitleBarComponent (GraphDocumentComponent &_owner);
+    TwonkTitleBarComponent (GraphEditorPanel &_owner);
     ~TwonkTitleBarComponent();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+	void buttonClicked (Button *b) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -77,14 +59,19 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-	GraphDocumentComponent &owner;
+	GraphEditorPanel &owner;
 	void positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo);
 	void transportStopped();
-	TitleBarLookAndFeel *titleBarLookAndFeel;
 	Font labelFont;
     //[/UserVariables]
 
     //==============================================================================
+    std::unique_ptr<TwonkTitleBarButton> buttonConfig;
+    std::unique_ptr<TwonkTitleBarButton> buttonFilters;
+    std::unique_ptr<TwonkTitleBarButton> buttonMinMax;
+    std::unique_ptr<TwonkTitleBarButton> buttonPlay;
+    std::unique_ptr<TwonkTitleBarStatus> statusItem;
+    std::unique_ptr<TwonkTitleBarButton> buttonMidiKeyboard;
 
 
     //==============================================================================
@@ -93,3 +80,4 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

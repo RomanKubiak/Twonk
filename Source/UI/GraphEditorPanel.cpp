@@ -31,24 +31,134 @@
 #include "GraphDocument.h"
 #include "TwonkFilterComponent.h"
 #include "TwonkFilterConnector.h"
-//==============================================================================
-GraphEditorPanel::GraphEditorPanel (FilterGraph& g)  : graph (g)
+
+struct GraphEditorPanel::PluginListBoxModel : public ListBoxModel,
+	public ChangeListener,
+	public MouseListener
 {
-    graph.addChangeListener (this);
+	PluginListBoxModel (ListBox& lb, KnownPluginList& kpl)
+		: owner (lb),
+		knownPlugins (kpl)
+	{
+		knownPlugins.addChangeListener (this);
+		owner.addMouseListener (this, true);
+	}
+
+	int getNumRows() override
+	{
+		return knownPlugins.getNumTypes();
+	}
+
+	void paintListBoxItem (int rowNumber, Graphics& g,
+		int width, int height, bool rowIsSelected) override
+	{
+		g.fillAll (rowIsSelected ? Colour (0xff42A2C8)
+			: Colour (0xff263238));
+
+		g.setColour (rowIsSelected ? Colours::black : Colours::white);
+		g.setFont(Font("Liberation Sans", 20.0f, Font::plain));
+		knownPlugins.sort(KnownPluginList::sortAlphabetically, true);
+		if (rowNumber < knownPlugins.getNumTypes())
+			g.drawFittedText (knownPlugins.getType (rowNumber)->name,
+				{ 0, 0, width - 4, height - 2 },
+				Justification::centredRight,
+				1);
+
+		g.setColour (Colours::black.withAlpha (0.4f));
+		g.drawRect (0, height - 1, width, 1);
+	}
+
+	var getDragSourceDescription (const SparseSet<int>& selectedRows) override
+	{
+		if (!isOverSelectedRow)
+			return var();
+
+		return String ("PLUGIN: " + String (selectedRows[0]));
+	}
+
+	void changeListenerCallback (ChangeBroadcaster*) override
+	{
+		owner.updateContent();
+	}
+
+	void mouseDown (const MouseEvent& e) override
+	{
+		isOverSelectedRow = owner.getRowPosition (owner.getSelectedRow(), true)
+			.contains (e.getEventRelativeTo (&owner).getMouseDownPosition());
+	}
+
+	ListBox& owner;
+	KnownPluginList& knownPlugins;
+
+	bool isOverSelectedRow = false;
+};
+
+GraphEditorPanel::GraphEditorPanel (AudioPluginFormatManager& _formatManager,
+	AudioDeviceManager& _deviceManager,
+	KnownPluginList& _pluginList,
+	TwonkPlayHead &_twonkPlayHead)
+	: graph (new FilterGraph (formatManager, _twonkPlayHead)),
+	twonkPlayHead(_twonkPlayHead),
+	pluginList(_pluginList),
+	deviceManager(_deviceManager),
+	formatManager(_formatManager)
+{
+	toolBar.reset(new TwonkTitleBarComponent(*this));
+	toolBar->setAlwaysOnTop(true);
+	toolBar->setTopLeftPosition(32, 32);
+	addAndMakeVisible(toolBar.get());
+    graph->addChangeListener (this);
     setOpaque (false);
+	bgImage = ImageCache::getFromMemory(BinaryData::hexagon_png, BinaryData::hexagon_pngSize);
+
+	deviceManager.addChangeListener (this);
+	deviceManager.addAudioCallback (&graphPlayer);
+	deviceManager.addMidiInputCallback (String(), &graphPlayer.getMidiMessageCollector());
 }
 
 GraphEditorPanel::~GraphEditorPanel()
 {
-    graph.removeChangeListener (this);
-    draggingConnector = nullptr;
-    //nodes.clear();
-    connectors.clear();
+	releaseGraph();
+	draggingConnector = nullptr;
+	connectors.clear();
+}
+
+void GraphEditorPanel::releaseGraph()
+{
+	deviceManager.removeAudioCallback (&graphPlayer);
+	deviceManager.removeMidiInputCallback (String(), &graphPlayer.getMidiMessageCollector());
+	deviceManager.removeChangeListener (this);
+	graphPlayer.setProcessor (nullptr);
+	graph = nullptr;
+}
+
+void GraphEditorPanel::init()
+{
+	graphPlayer.setProcessor (&graph->graph);
+	audioSettingsComponent.reset(new AudioDeviceSelectorComponent (deviceManager, 1, 8, 1, 8, true, true, true, false));
+	updateComponents();
+
+	if (isOnTouchDevice())
+	{
+		pluginListBoxModel.reset (new PluginListBoxModel (pluginListBox, pluginList));
+		pluginListBox.setModel (pluginListBoxModel.get());
+		pluginListBox.setRowHeight (28);
+
+		auto deadMansPedalFile = getAppProperties().getUserSettings()
+			->getFile().getSiblingFile ("RecentlyCrashedPluginsList");
+
+		pluginListComponent.reset(new PluginListComponent (formatManager, pluginList, deadMansPedalFile, getAppProperties().getUserSettings(), true));
+	}
+}
+
+bool GraphEditorPanel::closeAnyOpenPluginWindows()
+{
+	return graph->closeAnyOpenPluginWindows();
 }
 
 void GraphEditorPanel::paint (Graphics& g)
 {
-	g.fillAll(Colours::transparentBlack);
+	g.drawImageWithin(bgImage, 0, 0, getWidth(), getHeight(), RectanglePlacement::fillDestination, false);
 }
 
 void GraphEditorPanel::mouseDown (const MouseEvent& e)
@@ -87,7 +197,7 @@ void GraphEditorPanel::mouseDrag (const MouseEvent& e)
 
 void GraphEditorPanel::createNewPlugin (const PluginDescription& desc, Point<int> position)
 {
-    graph.addPlugin (desc, position.toDouble() / Point<double> ((double) getWidth(), (double) getHeight()));
+    graph->addPlugin (desc, position.toDouble() / Point<double> ((double) getWidth(), (double) getHeight()));
 }
 
 TwonkFilterComponent* GraphEditorPanel::getComponentForFilter (AudioProcessorGraph::NodeID nodeID) const
@@ -136,11 +246,11 @@ void GraphEditorPanel::changeListenerCallback (ChangeBroadcaster*)
 void GraphEditorPanel::updateComponents()
 {
     for (int i = nodes.size(); --i >= 0;)
-        if (graph.graph.getNodeForId (nodes.getUnchecked(i)->pluginID) == nullptr)
+        if (graph->graph.getNodeForId (nodes.getUnchecked(i)->pluginID) == nullptr)
             nodes.remove (i);
 
     for (int i = connectors.size(); --i >= 0;)
-        if (! graph.graph.isConnected (connectors.getUnchecked(i)->connection))
+        if (! graph->graph.isConnected (connectors.getUnchecked(i)->connection))
             connectors.remove (i);
 
     for (auto* fc : nodes)
@@ -149,7 +259,7 @@ void GraphEditorPanel::updateComponents()
     for (auto* cc : connectors)
         cc->update();
 
-    for (auto* f : graph.graph.getNodes())
+    for (auto* f : graph->graph.getNodes())
     {
         if (getComponentForFilter (f->nodeID) == nullptr)
         {
@@ -159,7 +269,7 @@ void GraphEditorPanel::updateComponents()
         }
     }
 
-    for (auto& c : graph.graph.getConnections())
+    for (auto& c : graph->graph.getConnections())
     {
         if (getComponentForConnection (c) == nullptr)
         {
@@ -244,7 +354,7 @@ void GraphEditorPanel::dragConnector (const MouseEvent& e)
                 connection.destination = pin->getPin();
             }
 
-            if (graph.graph.canConnect (connection))
+            if (graph->graph.canConnect (connection))
             {
                 pos = (pin->getParentComponent()->getPosition() + pin->getBounds().getCentre()).toFloat();
                 draggingConnector->setTooltip (pin->getTooltip());
@@ -287,7 +397,7 @@ void GraphEditorPanel::endDraggingConnector (const MouseEvent& e)
             connection.destination = pin->getPin();
         }
 
-        graph.graph.addConnection (connection);
+        graph->graph.addConnection (connection);
     }
 }
 
@@ -298,4 +408,22 @@ void GraphEditorPanel::timerCallback()
 
     stopTimer();
     showPopupMenu (originalTouchPos);
+}
+
+bool GraphEditorPanel::isInterestedInDragSource (const SourceDetails& details)
+{
+	return ((dynamic_cast<ListBox*> (details.sourceComponent.get()) != nullptr)
+		&& details.description.toString().startsWith ("PLUGIN"));
+}
+
+void GraphEditorPanel::itemDropped (const SourceDetails& details)
+{
+	auto pluginTypeIndex = details.description.toString()
+		.fromFirstOccurrenceOf ("PLUGIN: ", false, false)
+		.getIntValue();
+
+	// must be a valid index!
+	jassert (isPositiveAndBelow (pluginTypeIndex, pluginList.getNumTypes()));
+
+	createNewPlugin (*pluginList.getType (pluginTypeIndex), details.localPosition);
 }

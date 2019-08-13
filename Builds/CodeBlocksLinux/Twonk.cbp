@@ -34,7 +34,7 @@
           <Add option="-std=c++14"/>
           <Add option="-mstackrealign"/>
           <Add option="-g"/>
-          <Add option="&#96;pkg-config --cflags alsa freetype2 x11 xext xinerama&#96;"/>
+          <Add option="&#96;pkg-config --cflags alsa x11 xinerama xext freetype2 libcurl&#96;"/>
           <Add option="-pthread"/>
           <Add directory="."/>
           <Add directory="$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"/>
@@ -47,10 +47,10 @@
         </Compiler>
         <Linker>
           <Add option="-m64"/>
-          <Add option="&#96;pkg-config --libs alsa freetype2 x11 xext xinerama&#96;"/>
+          <Add option="&#96;pkg-config --libs alsa x11 xinerama xext freetype2 libcurl&#96;"/>
+          <Add library="rt"/>
           <Add library="dl"/>
           <Add library="pthread"/>
-          <Add library="rt"/>
         </Linker>
       </Target>
       <Target title="App | Release">
@@ -78,7 +78,7 @@
           <Add option="-O3"/>
           <Add option="-std=c++14"/>
           <Add option="-mstackrealign"/>
-          <Add option="&#96;pkg-config --cflags alsa freetype2 x11 xext xinerama&#96;"/>
+          <Add option="&#96;pkg-config --cflags alsa x11 xinerama xext freetype2 libcurl&#96;"/>
           <Add option="-pthread"/>
           <Add directory="."/>
           <Add directory="$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"/>
@@ -92,10 +92,10 @@
         <Linker>
           <Add option="-m64"/>
           <Add option="-s"/>
-          <Add option="&#96;pkg-config --libs alsa freetype2 x11 xext xinerama&#96;"/>
+          <Add option="&#96;pkg-config --libs alsa x11 xinerama xext freetype2 libcurl&#96;"/>
+          <Add library="rt"/>
           <Add library="dl"/>
           <Add library="pthread"/>
-          <Add library="rt"/>
         </Linker>
       </Target>
     </Build>
@@ -185,6 +185,24 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Resources/iconfinder_icon-stop_211931.png">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Resources/iconfinder_maximize-2_2561250.png">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Resources/iconfinder_minimize-2_2561246.png">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Resources/iconfinder_piano_music_instrument_keyboard_musical_4593126.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -762,11 +780,41 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/UI/TwonkMidiKeyboard.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkMidiKeyboard.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkTitleBarStatus.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkTitleBarStatus.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkTitleBarButton.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
     <Unit filename="../../Source/UI/PluginDefaultEditor.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
     <Unit filename="../../Source/UI/PluginDefaultEditor.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkTitleBarButton.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -821,16 +869,6 @@
       <Option target="App | Release"/>
     </Unit>
     <Unit filename="../../Source/UI/TwonkFilterComponentPin.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/UI/GraphDocument.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/UI/GraphDocument.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -9003,6 +9041,9 @@
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
+    </Unit>
+    <Unit filename="resources.rc">
+      <Option compilerVar="WINDRES"/>
     </Unit>
   </Project>
 </CodeBlocks_project_file>

@@ -39,13 +39,22 @@ namespace BinaryData
     const int            icon_speaker_64_pngSize = 6792;
 
     extern const char*   iconfinder_iconpause_211871_png;
-    const int            iconfinder_iconpause_211871_pngSize = 1241;
+    const int            iconfinder_iconpause_211871_pngSize = 624;
 
     extern const char*   iconfinder_iconplay_211876_png;
-    const int            iconfinder_iconplay_211876_pngSize = 1143;
+    const int            iconfinder_iconplay_211876_pngSize = 1439;
 
     extern const char*   iconfinder_iconstop_211931_png;
-    const int            iconfinder_iconstop_211931_pngSize = 1102;
+    const int            iconfinder_iconstop_211931_pngSize = 563;
+
+    extern const char*   iconfinder_maximize2_2561250_png;
+    const int            iconfinder_maximize2_2561250_pngSize = 1169;
+
+    extern const char*   iconfinder_minimize2_2561246_png;
+    const int            iconfinder_minimize2_2561246_pngSize = 1192;
+
+    extern const char*   iconfinder_piano_music_instrument_keyboard_musical_4593126_png;
+    const int            iconfinder_piano_music_instrument_keyboard_musical_4593126_pngSize = 593;
 
     extern const char*   iconfinder_Streamline75_185095_png;
     const int            iconfinder_Streamline75_185095_pngSize = 2627;
@@ -69,7 +78,7 @@ namespace BinaryData
     const int            terminess_ttfSize = 879176;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 20;
+    const int namedResourceListSize = 23;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

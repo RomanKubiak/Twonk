@@ -622,6 +622,15 @@
     <ClCompile Include="..\..\Source\Filters\InternalFilters.cpp">
       <Filter>Twonk\Source\Filters</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkMidiKeyboard.cpp">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkTitleBarStatus.cpp">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkTitleBarButton.cpp">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\PluginDefaultEditor.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
@@ -641,9 +650,6 @@
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkFilterComponentPin.cpp">
-      <Filter>Twonk\Source\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\GraphDocument.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\GraphEditorPanel.cpp">
@@ -2772,7 +2778,16 @@
     <ClInclude Include="..\..\Source\Filters\InternalFilters.h">
       <Filter>Twonk\Source\Filters</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkMidiKeyboard.h">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkTitleBarStatus.h">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\PluginDefaultEditor.h">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkTitleBarButton.h">
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkTitleBarComponent.h">
@@ -2788,9 +2803,6 @@
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkFilterComponentPin.h">
-      <Filter>Twonk\Source\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\GraphDocument.h">
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\GraphEditorPanel.h">
@@ -4941,6 +4953,15 @@
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\iconfinder_icon-stop_211931.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\iconfinder_maximize-2_2561250.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\iconfinder_minimize-2_2561246.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\iconfinder_piano_music_instrument_keyboard_musical_4593126.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\iconfinder_Streamline-75_185095.png">

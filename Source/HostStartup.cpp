@@ -134,12 +134,6 @@ public:
             JUCEApplicationBase::quit();
     }
 
-    void backButtonPressed() override
-    {
-        if (mainWindow->graphHolder != nullptr)
-            mainWindow->graphHolder->hideLastSidePanel();
-    }
-
     const String getApplicationName() override       { return "Juce Plug-In Host"; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
     bool moreThanOneInstanceAllowed() override       { return true; }

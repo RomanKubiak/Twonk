@@ -511,7 +511,7 @@ void FilterIOConfigurationWindow::update()
             graph->disconnectNode (nodeID);
 
     if (auto* graphEditor = getGraphEditor())
-        if (auto* panel = graphEditor->graphPanel.get())
+        if (auto* panel = graphEditor)
             panel->updateComponents();
 }
 
@@ -536,7 +536,7 @@ MainHostWindow* FilterIOConfigurationWindow::getMainWindow() const
     return nullptr;
 }
 
-GraphDocumentComponent* FilterIOConfigurationWindow::getGraphEditor() const
+GraphEditorPanel* FilterIOConfigurationWindow::getGraphEditor() const
 {
     if (auto* mainWindow = getMainWindow())
         return mainWindow->graphHolder.get();

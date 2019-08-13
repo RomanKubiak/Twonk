@@ -70,7 +70,6 @@ public:
     void fileDragMove (const StringArray& files, int, int) override;
     void fileDragExit (const StringArray& files) override;
     void filesDropped (const StringArray& files, int, int) override;
-    void menuBarActivated (bool isActive) override;
 
     StringArray getMenuBarNames() override;
     PopupMenu getMenuForIndex (int topLevelMenuIndex, const String& menuName) override;
@@ -86,7 +85,7 @@ public:
 
     void addPluginsToMenu (PopupMenu&) const;
     const PluginDescription* getChosenType (int menuID) const;
-    std::unique_ptr<GraphDocumentComponent> graphHolder;
+    std::unique_ptr<GraphEditorPanel> graphHolder;
 
 private:
     //==============================================================================

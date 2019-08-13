@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="NTe0XB0ij" name="Twonk" projectType="guiapp" version="1.0.0"
               juceFolder="../../../juce" vstFolderMac="~/SDKs/vstsdk2.4" vstFolderPC="c:\SDKs\vstsdk2.4"
-              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.1"
+              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.3"
               companyName="Instigator" displaySplashScreen="0" reportAppUsage="0"
               headerPath="../../vst3sdk&#10;../../Source/FX/SFZ/SFZero/&#10;../../Source/">
   <EXPORTFORMATS>
@@ -122,6 +122,12 @@
               resource="1" file="Source/Resources/iconfinder_icon-play_211876.png"/>
         <FILE id="TJO747" name="iconfinder_icon-stop_211931.png" compile="0"
               resource="1" file="Source/Resources/iconfinder_icon-stop_211931.png"/>
+        <FILE id="LTPQ4G" name="iconfinder_maximize-2_2561250.png" compile="0"
+              resource="1" file="Source/Resources/iconfinder_maximize-2_2561250.png"/>
+        <FILE id="Pfae9X" name="iconfinder_minimize-2_2561246.png" compile="0"
+              resource="1" file="Source/Resources/iconfinder_minimize-2_2561246.png"/>
+        <FILE id="YvXwdS" name="iconfinder_piano_music_instrument_keyboard_musical_4593126.png"
+              compile="0" resource="1" file="Source/Resources/iconfinder_piano_music_instrument_keyboard_musical_4593126.png"/>
         <FILE id="op7HUw" name="iconfinder_Streamline-75_185095.png" compile="0"
               resource="1" file="Source/Resources/iconfinder_Streamline-75_185095.png"/>
         <FILE id="aNsZrb" name="LiberationSans-Bold.ttf" compile="0" resource="1"
@@ -347,10 +353,22 @@
               file="Source/Filters/InternalFilters.h"/>
       </GROUP>
       <GROUP id="{D892BFB2-FE85-B70F-10D3-450F407E2B3D}" name="UI">
+        <FILE id="Bm6VFp" name="TwonkMidiKeyboard.cpp" compile="1" resource="0"
+              file="Source/UI/TwonkMidiKeyboard.cpp"/>
+        <FILE id="HBO5P9" name="TwonkMidiKeyboard.h" compile="0" resource="0"
+              file="Source/UI/TwonkMidiKeyboard.h"/>
+        <FILE id="FUFWKN" name="TwonkTitleBarStatus.cpp" compile="1" resource="0"
+              file="Source/UI/TwonkTitleBarStatus.cpp"/>
+        <FILE id="oawWon" name="TwonkTitleBarStatus.h" compile="0" resource="0"
+              file="Source/UI/TwonkTitleBarStatus.h"/>
+        <FILE id="U6CS1L" name="TwonkTitleBarButton.cpp" compile="1" resource="0"
+              file="Source/UI/TwonkTitleBarButton.cpp"/>
         <FILE id="ak0JE8" name="PluginDefaultEditor.cpp" compile="1" resource="0"
               file="Source/UI/PluginDefaultEditor.cpp"/>
         <FILE id="XxDCh4" name="PluginDefaultEditor.h" compile="0" resource="0"
               file="Source/UI/PluginDefaultEditor.h"/>
+        <FILE id="bG9wCX" name="TwonkTitleBarButton.h" compile="0" resource="0"
+              file="Source/UI/TwonkTitleBarButton.h"/>
         <FILE id="pvrmu7" name="PluginWindow.cpp" compile="1" resource="0"
               file="Source/UI/PluginWindow.cpp"/>
         <FILE id="Lhw9Qp" name="TwonkTitleBarComponent.cpp" compile="1" resource="0"
@@ -373,9 +391,6 @@
               file="Source/UI/TwonkFilterComponentPin.cpp"/>
         <FILE id="QL7bD3" name="TwonkFilterComponentPin.h" compile="0" resource="0"
               file="Source/UI/TwonkFilterComponentPin.h"/>
-        <FILE id="zXrRsE" name="GraphDocument.cpp" compile="1" resource="0"
-              file="Source/UI/GraphDocument.cpp"/>
-        <FILE id="Nv5yqA" name="GraphDocument.h" compile="0" resource="0" file="Source/UI/GraphDocument.h"/>
         <FILE id="wPgLS9" name="GraphEditorPanel.cpp" compile="1" resource="0"
               file="Source/UI/GraphEditorPanel.cpp"/>
         <FILE id="BDMvfT" name="GraphEditorPanel.h" compile="0" resource="0"

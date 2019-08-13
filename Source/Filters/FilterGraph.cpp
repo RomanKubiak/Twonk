@@ -39,7 +39,7 @@ FilterGraph::FilterGraph (AudioPluginFormatManager& fm, TwonkPlayHead &_twonkPla
 		formatManager (fm),
 		twonkPlayHead(_twonkPlayHead)
 {
-    newDocument();
+    //newDocument();
 	graph.setPlayHead(&twonkPlayHead);
     graph.addListener (this);
 }
