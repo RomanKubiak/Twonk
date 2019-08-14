@@ -11,7 +11,7 @@
 #pragma once
 #include "Twonk.h"
 #include "Filters/FilterGraph.h"
-#include "Filters/InternalFilters.h"
+#include "Filters/InternalPlugins.h"
 
 
 class TwonkClockListener

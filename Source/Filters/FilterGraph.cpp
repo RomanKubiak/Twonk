@@ -29,18 +29,17 @@
 #include "FilterGraph.h"
 #include "InternalFilters.h"
 #include "../UI/GraphEditorPanel.h"
-#include "../TwonkPlayHead.h"
+
+
 //==============================================================================
-FilterGraph::FilterGraph (AudioPluginFormatManager& fm, TwonkPlayHead &_twonkPlayHead)
+FilterGraph::FilterGraph (AudioPluginFormatManager& fm)
     : FileBasedDocument (getFilenameSuffix(),
                          getFilenameWildcard(),
                          "Load a filter graph",
                          "Save a filter graph"),
-		formatManager (fm),
-		twonkPlayHead(_twonkPlayHead)
+      formatManager (fm)
 {
-    //newDocument();
-	graph.setPlayHead(&twonkPlayHead);
+    newDocument();
     graph.addListener (this);
 }
 
@@ -76,36 +75,47 @@ AudioProcessorGraph::Node::Ptr FilterGraph::getNodeForName (const String& name) 
     return nullptr;
 }
 
-void FilterGraph::addPlugin (const PluginDescription& desc, Point<double> pos)
+void FilterGraph::addPlugin (const PluginDescription& desc, Point<double> p)
 {
-	formatManager.createPluginInstanceAsync (desc,
-		graph.getSampleRate(),
-		graph.getBlockSize(),
-		[this, pos](std::unique_ptr<AudioPluginInstance> instance, const String& error)
-	{
-		addPluginCallback (std::move (instance), error, pos);
-	});
+    struct AsyncCallback : public AudioPluginFormat::InstantiationCompletionCallback
+    {
+        AsyncCallback (FilterGraph& g, Point<double> pos)  : owner (g), position (pos)
+        {}
+
+        void completionCallback (AudioPluginInstance* instance, const String& error) override
+        {
+            owner.addFilterCallback (instance, error, position);
+        }
+
+        FilterGraph& owner;
+        Point<double> position;
+    };
+
+    formatManager.createPluginInstanceAsync (desc,
+                                             graph.getSampleRate(),
+                                             graph.getBlockSize(),
+                                             new AsyncCallback (*this, p));
 }
 
-void FilterGraph::addPluginCallback (std::unique_ptr<AudioPluginInstance> instance, const String& error, Point<double> pos)
+void FilterGraph::addFilterCallback (AudioPluginInstance* instance, const String& error, Point<double> pos)
 {
-	if (instance == nullptr)
-	{
-		AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon,
-			TRANS("Couldn't create plugin"),
-			error);
-	}
-	else
-	{
-		instance->enableAllBuses();
+    if (instance == nullptr)
+    {
+        AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon,
+                                          TRANS("Couldn't create filter"),
+                                          error);
+    }
+    else
+    {
+        instance->enableAllBuses();
 
-		if (auto node = graph.addNode (std::move (instance)))
-		{
-			node->properties.set ("x", pos.x);
-			node->properties.set ("y", pos.y);
-			changed();
-		}
-	}
+        if (auto node = graph.addNode (instance))
+        {
+            node->properties.set ("x", pos.x);
+            node->properties.set ("y", pos.y);
+            changed();
+        }
+    }
 }
 
 void FilterGraph::setNodePosition (NodeID nodeID, Point<double> pos)
@@ -138,9 +148,13 @@ PluginWindow* FilterGraph::getOrCreateWindowFor (AudioProcessorGraph::Node* node
 {
     jassert (node != nullptr);
 
+   #if JUCE_IOS || JUCE_ANDROID
+    closeAnyOpenPluginWindows();
+   #else
     for (auto* w : activePluginWindows)
         if (w->node.get() == node && w->type == type)
             return w;
+   #endif
 
     if (auto* processor = node->getProcessor())
     {
@@ -148,17 +162,21 @@ PluginWindow* FilterGraph::getOrCreateWindowFor (AudioProcessorGraph::Node* node
         {
             auto description = plugin->getPluginDescription();
 
-			if (description.fileOrIdentifier.endsWith(":Twonk"))
-			{
-				DBG("open a twonk filter editor");
-				return activePluginWindows.add (new PluginWindow (node, type, activePluginWindows));
-			}
             if (description.pluginFormatName == "Internal")
             {
                 getCommandManager().invokeDirectly (CommandIDs::showAudioSettings, false);
                 return nullptr;
             }
         }
+
+       #if JUCE_WINDOWS && JUCE_WIN_PER_MONITOR_DPI_AWARE
+        if (! node->properties["DPIAware"]
+            && ! node->getProcessor()->getName().contains ("Kontakt")) // Kontakt doesn't behave correctly in DPI unaware mode...
+        {
+            ScopedDPIAwarenessDisabler disableDPIAwareness;
+            return activePluginWindows.add (new PluginWindow (node, type, activePluginWindows));
+        }
+       #endif
 
         return activePluginWindows.add (new PluginWindow (node, type, activePluginWindows));
     }
@@ -189,7 +207,7 @@ void FilterGraph::newDocument()
 
     graph.removeChangeListener (this);
 
-    InternalPluginFormat internalFormat(twonkPlayHead);
+    InternalPluginFormat internalFormat;
 
     addPlugin (internalFormat.audioInDesc,  { 0.5,  0.1 });
     addPlugin (internalFormat.midiInDesc,   { 0.25, 0.1 });
@@ -222,8 +240,7 @@ Result FilterGraph::loadDocument (const File& file)
 
 Result FilterGraph::saveDocument (const File& file)
 {
-	DBG("Result FilterGraph::saveDocument");
-	auto xml = createXml();
+    std::unique_ptr<XmlElement> xml (createXml());
 
     if (! xml->writeToFile (file, {}))
         return Result::fail ("Couldn't write to the file");
@@ -337,7 +354,7 @@ static XmlElement* createNodeXml (AudioProcessorGraph::Node* const node) noexcep
         {
             PluginDescription pd;
             plugin->fillInPluginDescription (pd);
-            e->addChildElement (pd.createXml().release());
+            e->addChildElement (pd.createXml());
         }
 
         {
@@ -347,7 +364,7 @@ static XmlElement* createNodeXml (AudioProcessorGraph::Node* const node) noexcep
         }
 
         auto layout = plugin->getBusesLayout();
-		
+
         auto layouts = e->createNewChildElement ("LAYOUT");
         layouts->addChildElement (createBusLayoutXml (layout, true));
         layouts->addChildElement (createBusLayoutXml (layout, false));
@@ -371,20 +388,20 @@ void FilterGraph::createNodeFromXml (const XmlElement& xml)
 
     String errorMessage;
 
-    if (auto instance = formatManager.createPluginInstance (pd, graph.getSampleRate(),
+    if (auto* instance = formatManager.createPluginInstance (pd, graph.getSampleRate(),
                                                              graph.getBlockSize(), errorMessage))
     {
         if (auto* layoutEntity = xml.getChildByName ("LAYOUT"))
         {
             auto layout = instance->getBusesLayout();
 
-            readBusLayoutFromXml (layout, instance.get(), *layoutEntity, true);
-            readBusLayoutFromXml (layout, instance.get(), *layoutEntity, false);
+            readBusLayoutFromXml (layout, instance, *layoutEntity, true);
+            readBusLayoutFromXml (layout, instance, *layoutEntity, false);
 
             instance->setBusesLayout (layout);
         }
 
-        if (auto node = graph.addNode (std::move(instance), NodeID ((uint32) xml.getIntAttribute ("uid"))))
+        if (auto node = graph.addNode (instance, NodeID ((uint32) xml.getIntAttribute ("uid"))))
         {
             if (auto* state = xml.getChildByName ("STATE"))
             {
@@ -411,7 +428,7 @@ void FilterGraph::createNodeFromXml (const XmlElement& xml)
                     {
                         jassert (node->getProcessor() != nullptr);
 
-                        if (auto w = getOrCreateWindowFor (node.get(), type))
+                        if (auto w = getOrCreateWindowFor (node, type))
                             w->toFront (true);
                     }
                 }
@@ -420,19 +437,15 @@ void FilterGraph::createNodeFromXml (const XmlElement& xml)
     }
 }
 
-std::unique_ptr<XmlElement> FilterGraph::createXml() const
+XmlElement* FilterGraph::createXml() const
 {
-    auto xml = std::make_unique<XmlElement> ("FILTERGRAPH");
+    auto* xml = new XmlElement ("FILTERGRAPH");
 
-	for (auto* node : graph.getNodes())
-	{
-		DBG("FilterGraph::createXml addNode");
-		xml->addChildElement (createNodeXml (node));
-	}
+    for (auto* node : graph.getNodes())
+        xml->addChildElement (createNodeXml (node));
 
     for (auto& connection : graph.getConnections())
     {
-		DBG("FilterGraph::createXml addConnection");
         auto e = xml->createNewChildElement ("CONNECTION");
 
         e->setAttribute ("srcFilter", (int) connection.source.nodeID.uid);

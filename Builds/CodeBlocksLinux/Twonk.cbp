@@ -43,6 +43,7 @@
           <Add directory="../../vst3sdk"/>
           <Add directory="../../Source/FX/SFZ/SFZero/"/>
           <Add directory="../../Source/"/>
+          <Add directory="../../JuceLibraryCode/"/>
           <Add directory="/usr/include/freetype2"/>
         </Compiler>
         <Linker>
@@ -87,6 +88,7 @@
           <Add directory="../../vst3sdk"/>
           <Add directory="../../Source/FX/SFZ/SFZero/"/>
           <Add directory="../../Source/"/>
+          <Add directory="../../JuceLibraryCode/"/>
           <Add directory="/usr/include/freetype2"/>
         </Compiler>
         <Linker>
@@ -624,26 +626,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/SequencerLinear/SequencerLinearEditor.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/SequencerLinear/SequencerLinearEditor.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/SequencerLinear/SequencerLinearProcessor.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/SequencerLinear/SequencerLinearProcessor.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/FX/SFZ/SFZero/SFZero.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -679,16 +661,6 @@
       <Option target="App | Release"/>
     </Unit>
     <Unit filename="../../Source/FX/SFZ/SFZeroEditor.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/SineWaveSynth/SineWaveSynth.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/SineWaveSynth/SineWaveSynth.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -750,31 +722,31 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Filters/FilterGraph.cpp">
+    <Unit filename="../../Source/Filters/InternalPlugins.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/Filters/FilterGraph.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/Filters/FilterIOConfiguration.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/Filters/FilterIOConfiguration.h">
+    <Unit filename="../../Source/Filters/InternalPlugins.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Filters/InternalFilters.cpp">
+    <Unit filename="../../Source/Filters/IOConfigurationWindow.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/Filters/InternalFilters.h">
+    <Unit filename="../../Source/Filters/IOConfigurationWindow.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Filters/PluginGraph.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/Filters/PluginGraph.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -790,17 +762,17 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkTitleBarStatus.cpp">
+    <Unit filename="../../Source/UI/TwonkToolBarStatus.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkTitleBarStatus.h">
+    <Unit filename="../../Source/UI/TwonkToolBarStatus.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkTitleBarButton.cpp">
+    <Unit filename="../../Source/UI/TwonkToolBarButton.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
@@ -808,13 +780,13 @@
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/UI/PluginDefaultEditor.h">
+    <Unit filename="../../Source/UI/TwonkToolBarButton.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkTitleBarButton.h">
+    <Unit filename="../../Source/UI/PluginDefaultEditor.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -824,11 +796,11 @@
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkTitleBarComponent.cpp">
+    <Unit filename="../../Source/UI/TwonkToolBar.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkTitleBarComponent.h">
+    <Unit filename="../../Source/UI/TwonkToolBar.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -849,16 +821,6 @@
       <Option target="App | Release"/>
     </Unit>
     <Unit filename="../../Source/UI/TwonkFilterComponent.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/UI/TwonkFilterConnector.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/UI/TwonkFilterConnector.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>

@@ -1,35 +1,10 @@
-/*
-  ==============================================================================
-
-    This code is based on the contents of the book: "Audio Effects: Theory,
-    Implementation and Application" by Joshua D. Reiss and Andrew P. McPherson.
-
-    Code by Juan Gil <https://juangil.com/>.
-    Copyright (C) 2017-2019 Juan Gil.
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-  ==============================================================================
-*/
-
 #include "TwonkFlangerProcessor.h"
 #include "TwonkFlangerEditor.h"
 #include "../PluginParameter.h"
 
 //==============================================================================
 
-FlangerAudioProcessor::FlangerAudioProcessor(const PluginDescription& descr): InternalPlugin (descr, true),
+FlangerAudioProcessor::FlangerAudioProcessor(const PluginDescription& descr): TwonkPlugin (descr),
     parameters (*this)
     , paramDelay (parameters, "Delay", "ms", 1.0f, 20.0f, 2.5f, [](float value){ return value * 0.001f; })
     , paramWidth (parameters, "Width", "ms", 1.0f, 20.0f, 10.0f, [](float value){ return value * 0.001f; })

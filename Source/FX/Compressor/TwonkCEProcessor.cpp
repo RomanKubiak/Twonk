@@ -4,7 +4,7 @@
 #include "TwonkCEEditor.h"
 //==============================================================================
 
-CompressorExpanderAudioProcessor::CompressorExpanderAudioProcessor(const PluginDescription& descr): InternalPlugin (descr, true),
+CompressorExpanderAudioProcessor::CompressorExpanderAudioProcessor(const PluginDescription& descr): TwonkPlugin (descr),
     parameters (*this)
     , paramMode (parameters, "Mode", {"Compressor / Limiter", "Expander / Noise gate"}, 1)
     , paramThreshold (parameters, "Threshold", "dB", -60.0f, 0.0f, -24.0f)

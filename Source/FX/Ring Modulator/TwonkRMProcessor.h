@@ -27,10 +27,10 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../PluginParameter.h"
-#include "../../Filters/InternalFilters.h"
+#include "../../Filters/InternalPlugins.h"
 //==============================================================================
 
-class RingModulationAudioProcessor : public InternalPlugin
+class RingModulationAudioProcessor : public TwonkPlugin
 {
 public:
     //==============================================================================

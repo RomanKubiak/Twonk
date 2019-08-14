@@ -4,7 +4,7 @@
 
 //==============================================================================
 
-WahWahAudioProcessor::WahWahAudioProcessor(const PluginDescription& descr): InternalPlugin (descr, true),
+WahWahAudioProcessor::WahWahAudioProcessor(const PluginDescription& descr): TwonkPlugin (descr),
     parameters (*this)
     , paramMode (parameters, "Mode", modeItemsUI, modeManual)
     , paramMix (parameters, "Mix", "", 0.0f, 1.0f, 0.5f)

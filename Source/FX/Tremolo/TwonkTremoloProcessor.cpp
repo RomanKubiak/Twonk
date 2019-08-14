@@ -5,7 +5,7 @@
 
 //==============================================================================
 
-TremoloAudioProcessor::TremoloAudioProcessor(const PluginDescription& descr): InternalPlugin (descr, true),
+TremoloAudioProcessor::TremoloAudioProcessor(const PluginDescription& descr): TwonkPlugin (descr),
     parameters (*this)
     , paramDepth (parameters, "Depth", "", 0.0f, 1.0f, 0.5f)
     , paramFrequency (parameters, "LFO Frequency", "Hz", 0.0f, 10.0f, 2.0f)

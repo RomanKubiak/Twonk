@@ -26,10 +26,10 @@
 #pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../PluginParameter.h"
-#include "../../Filters/InternalFilters.h"
+#include "../../Filters/InternalPlugins.h"
 //==============================================================================
 
-class PingPongDelayAudioProcessor : public InternalPlugin
+class PingPongDelayAudioProcessor : public TwonkPlugin
 {
 public:
     //==============================================================================

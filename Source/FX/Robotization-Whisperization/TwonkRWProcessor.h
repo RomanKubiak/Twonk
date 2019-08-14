@@ -3,10 +3,10 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../PluginParameter.h"
 #include "STFT.h"
-#include "../../Filters/InternalFilters.h"
+#include "../../Filters/InternalPlugins.h"
 //==============================================================================
 
-class RobotizationWhisperizationAudioProcessor : public InternalPlugin
+class RobotizationWhisperizationAudioProcessor : public TwonkPlugin
 {
 public:
     //==============================================================================

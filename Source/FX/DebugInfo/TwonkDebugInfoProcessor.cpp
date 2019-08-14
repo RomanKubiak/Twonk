@@ -2,7 +2,7 @@
 #include "TwonkDebugInfoEditor.h"
 #include "../PluginParameter.h"
 
-DebugInfoProcessor::DebugInfoProcessor(const PluginDescription& descr): InternalPlugin (descr, true)
+DebugInfoProcessor::DebugInfoProcessor(const PluginDescription& descr): TwonkPlugin (descr)
 {
 	lastPosInfo.resetToDefault();
 }

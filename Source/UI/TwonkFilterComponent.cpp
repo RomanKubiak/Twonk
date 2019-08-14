@@ -5,7 +5,7 @@
 TwonkFilterComponent::TwonkFilterComponent(GraphEditorPanel& p, AudioProcessorGraph::NodeID id) 
 	: panel (p), pluginID(id), componentSize(BUBBLE_SIZE)
 {
-	if (auto f = panel.graph->graph.getNodeForId (pluginID))
+	if (auto f = panel.graph.graph.getNodeForId (pluginID))
 	{
 		if (auto* processor = f->getProcessor())
 		{
@@ -40,7 +40,7 @@ TwonkFilterComponent::TwonkFilterComponent(GraphEditorPanel& p, AudioProcessorGr
 	if (!isInternalIO)
 	{
 		filterImage = ImageCache::getFromMemory(BinaryData::icon_block_64_png, BinaryData::icon_block_64_pngSize);
-		const AudioProcessorGraph::Node::Ptr f (panel.graph->graph.getNodeForId (pluginID));
+		const AudioProcessorGraph::Node::Ptr f (panel.graph.graph.getNodeForId (pluginID));
 		jassert (f != nullptr);
 		numIns = f->getProcessor()->getTotalNumInputChannels();
 		if (f->getProcessor()->acceptsMidi())
@@ -83,7 +83,7 @@ TwonkFilterComponent::TwonkFilterComponent(GraphEditorPanel& p, AudioProcessorGr
 
 TwonkFilterComponent::~TwonkFilterComponent()
 {
-	if (auto f = panel.graph->graph.getNodeForId (pluginID))
+	if (auto f = panel.graph.graph.getNodeForId (pluginID))
 	{
 		if (auto* processor = f->getProcessor())
 		{
@@ -112,7 +112,7 @@ void TwonkFilterComponent::mouseDrag (const MouseEvent& e)
 
 	pos += getLocalBounds().getCentre();
 
-	panel.graph->setNodePosition (pluginID, { pos.x / (double)getParentWidth(), pos.y / (double)getParentHeight() });
+	panel.graph.setNodePosition (pluginID, { pos.x / (double)getParentWidth(), pos.y / (double)getParentHeight() });
 
 	panel.updateComponents();
 	stopTimer();
@@ -152,12 +152,12 @@ void TwonkFilterComponent::mouseUp (const MouseEvent& e)
 {
 	if (e.mouseWasDraggedSinceMouseDown())
 	{
-		panel.graph->setChangedFlag (true);
+		panel.graph.setChangedFlag (true);
 	}
 	else if (e.getNumberOfClicks() == 2)
 	{
-		if (auto f = panel.graph->graph.getNodeForId (pluginID))
-			if (auto* w = panel.graph->getOrCreateWindowFor (f, PluginWindow::Type::normal))
+		if (auto f = panel.graph.graph.getNodeForId (pluginID))
+			if (auto* w = panel.graph.getOrCreateWindowFor (f, PluginWindow::Type::normal))
 				w->toFront (true);
 	}
 	else if (e.getNumberOfClicks() == 2)
@@ -171,7 +171,7 @@ void TwonkFilterComponent::buttonClicked (Button* buttonThatWasClicked)
 {
 	if (buttonThatWasClicked == removeButton.get())
 	{
-		panel.graph->graph.removeNode (pluginID);
+		panel.graph.graph.removeNode (pluginID);
 	}
 	else if (buttonThatWasClicked == bypassButton.get())
 	{
@@ -182,7 +182,7 @@ void TwonkFilterComponent::setType()
 {
 	isInternalIO = false;
 	baseColour = Colour(BUBBLE_COLOUR_INTERNAL_AUDIO_OUT);
-	AudioProcessorGraph::Node *node = panel.graph->graph.getNodeForId(pluginID);
+	AudioProcessorGraph::Node *node = panel.graph.graph.getNodeForId(pluginID);
 	if (node)
 	{
 		AudioProcessor *processor = node->getProcessor();
@@ -269,7 +269,7 @@ bool TwonkFilterComponent::hitTest (int x, int y)
 
 void TwonkFilterComponent::update()
 {
-	const AudioProcessorGraph::Node::Ptr f (panel.graph->graph.getNodeForId (pluginID));
+	const AudioProcessorGraph::Node::Ptr f (panel.graph.graph.getNodeForId (pluginID));
 	jassert (f != nullptr);
 
 	numIns = f->getProcessor()->getTotalNumInputChannels();
@@ -289,7 +289,7 @@ void TwonkFilterComponent::update()
 	setSize (w, h);
 
 	{
-		auto p = panel.graph->getNodePosition (pluginID);
+		auto p = panel.graph.getNodePosition (pluginID);
 		setCentreRelative ((float)p.x, (float)p.y);
 	}
 
@@ -317,7 +317,7 @@ void TwonkFilterComponent::update()
 
 AudioProcessor* TwonkFilterComponent::getProcessor() const
 {
-	if (auto node = panel.graph->graph.getNodeForId (pluginID))
+	if (auto node = panel.graph.graph.getNodeForId (pluginID))
 		return node->getProcessor();
 
 	return {};
@@ -347,11 +347,11 @@ void TwonkFilterComponent::showPopupMenu()
 	([this](int r) {
 		switch (r)
 		{
-		case 1:   panel.graph->graph.removeNode (pluginID); break;
-		case 2:   panel.graph->graph.disconnectNode (pluginID); break;
+		case 1:   panel.graph.graph.removeNode (pluginID); break;
+		case 2:   panel.graph.graph.disconnectNode (pluginID); break;
 		case 3:
 		{
-			if (auto* node = panel.graph->graph.getNodeForId (pluginID))
+			if (auto* node = panel.graph.graph.getNodeForId (pluginID))
 				node->setBypassed (!node->isBypassed());
 
 			repaint();
@@ -384,8 +384,8 @@ void TwonkFilterComponent::testStateSaveLoad()
 
 void TwonkFilterComponent::showWindow (PluginWindow::Type type)
 {
-	if (auto node = panel.graph->graph.getNodeForId (pluginID))
-		if (auto* w = panel.graph->getOrCreateWindowFor (node, type))
+	if (auto node = panel.graph.graph.getNodeForId (pluginID))
+		if (auto* w = panel.graph.getOrCreateWindowFor (node, type))
 			w->toFront (true);
 }
 

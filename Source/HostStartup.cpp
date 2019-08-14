@@ -1,33 +1,6 @@
-/*
-  ==============================================================================
-
-   This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
-
-   JUCE is an open source library subject to commercial or open-source
-   licensing.
-
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
-
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
-
-   Or: You may also use this code under the terms of the GPL v3 (see
-   www.gnu.org/licenses).
-
-   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
-   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
-   DISCLAIMED.
-
-  ==============================================================================
-*/
-
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "UI/MainHostWindow.h"
-#include "UI/GraphDocument.h"
-#include "Filters/InternalFilters.h"
+#include "Filters/InternalPlugins.h"
 
 #if ! (JUCE_PLUGINHOST_VST || JUCE_PLUGINHOST_VST3 || JUCE_PLUGINHOST_AU)
  #error "If you're building the audio plugin host, you probably want to enable VST and/or AU support"
@@ -41,16 +14,9 @@ class PluginHostApp  : public JUCEApplication,
 public:
     PluginHostApp() {}
 
-    void initialise (const String &commandLine) override
+    void initialise (const String&) override
     {
         // initialise our settings file..
-		bool fullscreen = false;
-		bool opengl = false;
-		if (commandLine.contains("--fullscreen"))
-			fullscreen = true;
-
-		if (commandLine.contains("--opengl"))
-			opengl = true;
 
         PropertiesFile::Options options;
         options.applicationName     = "Twonk";
@@ -60,7 +26,7 @@ public:
         appProperties.reset (new ApplicationProperties());
         appProperties->setStorageParameters (options);
 
-        mainWindow.reset (new MainHostWindow(fullscreen, opengl));
+        mainWindow.reset (new MainHostWindow());
         mainWindow->setUsingNativeTitleBar (true);
 
         commandManager.registerAllCommandsForTarget (this);
@@ -84,7 +50,7 @@ public:
         File fileToOpen;
 
        #if JUCE_ANDROID || JUCE_IOS
-        fileToOpen = FilterGraph::getDefaultGraphDocumentOnMobile();
+        fileToOpen = PluginGraph::getDefaultGraphDocumentOnMobile();
        #else
         for (int i = 0; i < getCommandLineParameterArray().size(); ++i)
         {
@@ -120,9 +86,9 @@ public:
     void suspended() override
     {
        #if JUCE_ANDROID || JUCE_IOS
-        if (GraphDocumentComponent* graph = mainWindow->graphHolder.get())
-            if (FilterGraph* ioGraph = graph->graph.get())
-                ioGraph->saveDocument (FilterGraph::getDefaultGraphDocumentOnMobile());
+        if (auto graph = mainWindow->graphHolder.get())
+            if (auto ioGraph = graph->graph.get())
+                ioGraph->saveDocument (PluginGraph::getDefaultGraphDocumentOnMobile());
        #endif
     }
 
@@ -134,7 +100,13 @@ public:
             JUCEApplicationBase::quit();
     }
 
-    const String getApplicationName() override       { return "Juce Plug-In Host"; }
+    void backButtonPressed() override
+    {
+        if (mainWindow->graphHolder != nullptr)
+            mainWindow->graphHolder->hideLastSidePanel();
+    }
+
+    const String getApplicationName() override       { return "Twonk"; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
     bool moreThanOneInstanceAllowed() override       { return true; }
 
@@ -150,9 +122,7 @@ static PluginHostApp& getApp()                    { return *dynamic_cast<PluginH
 ApplicationProperties& getAppProperties()         { return *getApp().appProperties; }
 ApplicationCommandManager& getCommandManager()    { return getApp().commandManager; }
 
-//bool isOnTouchDevice()                            { return Desktop::getInstance().getMainMouseSource().isTouch(); }
-bool isOnTouchDevice()                            {
-	return true;
-}
+bool isOnTouchDevice()                            { return Desktop::getInstance().getMainMouseSource().isTouch(); }
+
 // This kicks the whole thing off..
 START_JUCE_APPLICATION (PluginHostApp)

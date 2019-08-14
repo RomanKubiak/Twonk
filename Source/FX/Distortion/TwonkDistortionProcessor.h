@@ -1,11 +1,11 @@
 #pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../PluginParameter.h"
-#include "../../Filters/InternalFilters.h"
+#include "../../Filters/InternalPlugins.h"
 
 //==============================================================================
 
-class DistortionAudioProcessor : public InternalPlugin
+class DistortionAudioProcessor : public TwonkPlugin
 {
 public:
     //==============================================================================

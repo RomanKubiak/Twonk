@@ -2,7 +2,7 @@
 #include "../Filters/FilterGraph.h"
 #include "TwonkFilterComponentPin.h"
 #include "GraphEditorPanel.h"
-#include "Filters/InternalFilters.h"
+#include "Filters/InternalPlugins.h"
 //==============================================================================
 class TwonkFilterComponent : public Component, public Timer, private AudioProcessorParameter::Listener, public Button::Listener
 {

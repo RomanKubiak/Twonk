@@ -35,7 +35,7 @@ ifeq ($(CONFIG),Debug)
     TARGET_ARCH := -march=native
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.0.0 -DJUCE_APP_VERSION_HEX=0x10000 $(shell pkg-config --cflags alsa x11 xinerama xext freetype2 libcurl) -pthread -I$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I$(HOME)/JUCE/modules -I/root/Twonk/JUCE -I../../vst3sdk -I../../Source/FX/SFZ/SFZero/ -I../../Source/ $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.0.0 -DJUCE_APP_VERSION_HEX=0x10000 $(shell pkg-config --cflags alsa x11 xinerama xext freetype2 libcurl) -pthread -I$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I$(HOME)/JUCE/modules -I/root/Twonk/JUCE -I../../vst3sdk -I../../Source/FX/SFZ/SFZero/ -I../../Source/ -I../../JuceLibraryCode/ $(CPPFLAGS)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_TARGET_APP := Twonk
 
@@ -56,7 +56,7 @@ ifeq ($(CONFIG),Release)
     TARGET_ARCH := -march=native
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.0.0 -DJUCE_APP_VERSION_HEX=0x10000 $(shell pkg-config --cflags alsa x11 xinerama xext freetype2 libcurl) -pthread -I$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I$(HOME)/JUCE/modules -I../../vst3sdk -I../../Source/FX/SFZ/SFZero/ -I../../Source/ $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.0.0 -DJUCE_APP_VERSION_HEX=0x10000 $(shell pkg-config --cflags alsa x11 xinerama xext freetype2 libcurl) -pthread -I$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I$(HOME)/JUCE/modules -I../../vst3sdk -I../../Source/FX/SFZ/SFZero/ -I../../Source/ -I../../JuceLibraryCode/ $(CPPFLAGS)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_TARGET_APP := Twonk
 
@@ -100,30 +100,26 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkRMProcessor_9ab88bca.o \
   $(JUCE_OBJDIR)/TwonkRWEditor_fd6adaed.o \
   $(JUCE_OBJDIR)/TwonkRWProcessor_596b491c.o \
-  $(JUCE_OBJDIR)/SequencerLinearEditor_86a75e96.o \
-  $(JUCE_OBJDIR)/SequencerLinearProcessor_b288b8d3.o \
   $(JUCE_OBJDIR)/SFZero_844de053.o \
   $(JUCE_OBJDIR)/ClickableLabel_9159dc58.o \
   $(JUCE_OBJDIR)/SFZeroAudioProcessor_d66bcd9d.o \
   $(JUCE_OBJDIR)/SFZeroEditor_c14f092e.o \
-  $(JUCE_OBJDIR)/SineWaveSynth_5dad0889.o \
   $(JUCE_OBJDIR)/TwonkTremoloProcessor_36282d78.o \
   $(JUCE_OBJDIR)/TwonkTremoloEditor_63b411.o \
   $(JUCE_OBJDIR)/TwonkWWEditor_409921e2.o \
   $(JUCE_OBJDIR)/TwonkWWProcessor_3fbea207.o \
   $(JUCE_OBJDIR)/TwonkFilters_70d0b1f0.o \
-  $(JUCE_OBJDIR)/FilterGraph_769715e3.o \
-  $(JUCE_OBJDIR)/FilterIOConfiguration_d1cf3d25.o \
-  $(JUCE_OBJDIR)/InternalFilters_eceadbab.o \
+  $(JUCE_OBJDIR)/InternalPlugins_577454d0.o \
+  $(JUCE_OBJDIR)/IOConfigurationWindow_beb677cd.o \
+  $(JUCE_OBJDIR)/PluginGraph_1fc57488.o \
   $(JUCE_OBJDIR)/TwonkMidiKeyboard_ca27245f.o \
-  $(JUCE_OBJDIR)/TwonkTitleBarStatus_794415a4.o \
-  $(JUCE_OBJDIR)/TwonkTitleBarButton_7fdacce4.o \
+  $(JUCE_OBJDIR)/TwonkToolBarStatus_6bd5820.o \
+  $(JUCE_OBJDIR)/TwonkToolBarButton_d540f60.o \
   $(JUCE_OBJDIR)/PluginDefaultEditor_eea7f1e9.o \
   $(JUCE_OBJDIR)/PluginWindow_fd769e3f.o \
-  $(JUCE_OBJDIR)/TwonkTitleBarComponent_e453c015.o \
+  $(JUCE_OBJDIR)/TwonkToolBar_fcb3ebce.o \
   $(JUCE_OBJDIR)/TwonkFilterPropertiesEditor_f042fcf.o \
   $(JUCE_OBJDIR)/TwonkFilterComponent_edb4fdd8.o \
-  $(JUCE_OBJDIR)/TwonkFilterConnector_73c3ad28.o \
   $(JUCE_OBJDIR)/TwonkFilterComponentPin_49c857a7.o \
   $(JUCE_OBJDIR)/GraphEditorPanel_2223d925.o \
   $(JUCE_OBJDIR)/MainHostWindow_b3494acd.o \
@@ -316,16 +312,6 @@ $(JUCE_OBJDIR)/TwonkRWProcessor_596b491c.o: ../../Source/FX/Robotization-Whisper
 	@echo "Compiling TwonkRWProcessor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/SequencerLinearEditor_86a75e96.o: ../../Source/FX/SequencerLinear/SequencerLinearEditor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling SequencerLinearEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/SequencerLinearProcessor_b288b8d3.o: ../../Source/FX/SequencerLinear/SequencerLinearProcessor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling SequencerLinearProcessor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/SFZero_844de053.o: ../../Source/FX/SFZ/SFZero/SFZero.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling SFZero.cpp"
@@ -344,11 +330,6 @@ $(JUCE_OBJDIR)/SFZeroAudioProcessor_d66bcd9d.o: ../../Source/FX/SFZ/SFZeroAudioP
 $(JUCE_OBJDIR)/SFZeroEditor_c14f092e.o: ../../Source/FX/SFZ/SFZeroEditor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling SFZeroEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/SineWaveSynth_5dad0889.o: ../../Source/FX/SineWaveSynth/SineWaveSynth.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling SineWaveSynth.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkTremoloProcessor_36282d78.o: ../../Source/FX/Tremolo/TwonkTremoloProcessor.cpp
@@ -376,19 +357,19 @@ $(JUCE_OBJDIR)/TwonkFilters_70d0b1f0.o: ../../Source/FX/TwonkFilters.cpp
 	@echo "Compiling TwonkFilters.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/FilterGraph_769715e3.o: ../../Source/Filters/FilterGraph.cpp
+$(JUCE_OBJDIR)/InternalPlugins_577454d0.o: ../../Source/Filters/InternalPlugins.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling FilterGraph.cpp"
+	@echo "Compiling InternalPlugins.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/FilterIOConfiguration_d1cf3d25.o: ../../Source/Filters/FilterIOConfiguration.cpp
+$(JUCE_OBJDIR)/IOConfigurationWindow_beb677cd.o: ../../Source/Filters/IOConfigurationWindow.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling FilterIOConfiguration.cpp"
+	@echo "Compiling IOConfigurationWindow.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/InternalFilters_eceadbab.o: ../../Source/Filters/InternalFilters.cpp
+$(JUCE_OBJDIR)/PluginGraph_1fc57488.o: ../../Source/Filters/PluginGraph.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling InternalFilters.cpp"
+	@echo "Compiling PluginGraph.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkMidiKeyboard_ca27245f.o: ../../Source/UI/TwonkMidiKeyboard.cpp
@@ -396,14 +377,14 @@ $(JUCE_OBJDIR)/TwonkMidiKeyboard_ca27245f.o: ../../Source/UI/TwonkMidiKeyboard.c
 	@echo "Compiling TwonkMidiKeyboard.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TwonkTitleBarStatus_794415a4.o: ../../Source/UI/TwonkTitleBarStatus.cpp
+$(JUCE_OBJDIR)/TwonkToolBarStatus_6bd5820.o: ../../Source/UI/TwonkToolBarStatus.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkTitleBarStatus.cpp"
+	@echo "Compiling TwonkToolBarStatus.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TwonkTitleBarButton_7fdacce4.o: ../../Source/UI/TwonkTitleBarButton.cpp
+$(JUCE_OBJDIR)/TwonkToolBarButton_d540f60.o: ../../Source/UI/TwonkToolBarButton.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkTitleBarButton.cpp"
+	@echo "Compiling TwonkToolBarButton.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/PluginDefaultEditor_eea7f1e9.o: ../../Source/UI/PluginDefaultEditor.cpp
@@ -416,9 +397,9 @@ $(JUCE_OBJDIR)/PluginWindow_fd769e3f.o: ../../Source/UI/PluginWindow.cpp
 	@echo "Compiling PluginWindow.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TwonkTitleBarComponent_e453c015.o: ../../Source/UI/TwonkTitleBarComponent.cpp
+$(JUCE_OBJDIR)/TwonkToolBar_fcb3ebce.o: ../../Source/UI/TwonkToolBar.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkTitleBarComponent.cpp"
+	@echo "Compiling TwonkToolBar.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkFilterPropertiesEditor_f042fcf.o: ../../Source/UI/TwonkFilterPropertiesEditor.cpp
@@ -429,11 +410,6 @@ $(JUCE_OBJDIR)/TwonkFilterPropertiesEditor_f042fcf.o: ../../Source/UI/TwonkFilte
 $(JUCE_OBJDIR)/TwonkFilterComponent_edb4fdd8.o: ../../Source/UI/TwonkFilterComponent.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkFilterComponent.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/TwonkFilterConnector_73c3ad28.o: ../../Source/UI/TwonkFilterConnector.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkFilterConnector.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkFilterComponentPin_49c857a7.o: ../../Source/UI/TwonkFilterComponentPin.cpp

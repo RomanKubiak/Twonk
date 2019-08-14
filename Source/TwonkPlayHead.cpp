@@ -1,13 +1,4 @@
-/*
-  ==============================================================================
-
-    TwonkPlayHead.cpp
-    Created: 26 Jun 2019 2:22:01pm
-    Author:  rkubiak
-
-  ==============================================================================
-*/
-
+#include "JuceHeader.h"
 #include "TwonkPlayHead.h"
 #include <chrono>
 

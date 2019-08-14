@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -32,9 +32,9 @@ TwonkMidiKeyboard::TwonkMidiKeyboard ()
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    midiKeyboard.reset (new MidiKeyboardComponent (keyState, MidiKeyboardComponent::horizontalKeyboard));
-    addAndMakeVisible (midiKeyboard.get());
-    midiKeyboard->setName ("Midi Keyboard");
+    //midiKeyboard.reset (new MidiKeyboardComponent (keyState));
+    //addAndMakeVisible (midiKeyboard.get());
+    //midiKeyboard->setName ("Midi Keyboard");
 
 
     //[UserPreSize]

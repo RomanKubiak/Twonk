@@ -2,7 +2,7 @@
 #include "SFZeroEditor.h"
 
 sfzero::SFZeroAudioProcessor::SFZeroAudioProcessor(const PluginDescription& descr) 
-	: loadProgress(0.0), loadThread(this), InternalPlugin (descr, true)
+	: loadProgress(0.0), loadThread(this), TwonkPlugin (descr)
 {
 	formatManager.registerBasicFormats();
 

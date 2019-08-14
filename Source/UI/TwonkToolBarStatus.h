@@ -11,15 +11,17 @@
 #pragma once
 #include "../../JuceLibraryCode/JuceHeader.h"
 
-class TwonkTitleBarStatus : public Component
+class TwonkToolBarStatus : public Component
 {
 public:
-	TwonkTitleBarStatus();
-	~TwonkTitleBarStatus();
+	TwonkToolBarStatus();
+	~TwonkToolBarStatus();
 	void paint(Graphics &g);
 	void resized();
 private:
 	Path roundingHexagon;
 	Colour baseColour;
 	std::unique_ptr <Label> statusLabel;
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkToolBarStatus)
+
 };

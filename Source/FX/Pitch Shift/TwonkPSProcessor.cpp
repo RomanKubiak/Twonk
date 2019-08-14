@@ -5,7 +5,7 @@
 
 //==============================================================================
 
-PitchShiftAudioProcessor::PitchShiftAudioProcessor(const PluginDescription& descr): InternalPlugin (descr, true),
+PitchShiftAudioProcessor::PitchShiftAudioProcessor(const PluginDescription& descr): TwonkPlugin (descr),
     parameters (*this)
     , paramShift (parameters, "Shift", " Semitone(s)", -12.0f, 12.0f, 0.0f,
                   [this](float value){ return powf (2.0f, value / 12.0f); })

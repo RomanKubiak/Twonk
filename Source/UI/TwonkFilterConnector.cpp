@@ -1,7 +1,7 @@
 #include "TwonkFilterConnector.h"
 #include "TwonkFilterComponent.h"
 
-TwonkFilterConnector::TwonkFilterConnector (GraphEditorPanel& p) : panel (p), graph (*p.graph.get())
+TwonkFilterConnector::TwonkFilterConnector (GraphEditorPanel& p) : panel (p), filterGraph (p.graph)
 {
 	setAlwaysOnTop (true);
 }
@@ -65,10 +65,10 @@ void TwonkFilterConnector::getPoints (Point<float>& p1, Point<float>& p2) const
 	p1 = lastInputPos;
 	p2 = lastOutputPos;
 
-	if (auto* src = panel.getComponentForFilter (connection.source.nodeID))
+	if (auto* src = panel.getComponentForPlugin (connection.source.nodeID))
 		p1 = src->getPinPos (connection.source.channelIndex, false);
 
-	if (auto* dest = panel.getComponentForFilter (connection.destination.nodeID))
+	if (auto* dest = panel.getComponentForPlugin (connection.destination.nodeID))
 		p2 = dest->getPinPos (connection.destination.channelIndex, true);
 }
 
@@ -113,7 +113,7 @@ void TwonkFilterConnector::mouseDrag (const MouseEvent& e)
 	{
 		dragging = true;
 
-		graph.graph.removeConnection (connection);
+		filterGraph.graph.removeConnection (connection);
 
 		double distanceFromStart, distanceFromEnd;
 		getDistancesFromEnds (getPosition().toFloat() + e.position, distanceFromStart, distanceFromEnd);

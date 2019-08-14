@@ -23,38 +23,54 @@
 #include "SequencerLinear/SequencerLinearProcessor.h"
 #include "SFZ/SFZeroAudioProcessor.h"
 #include "midiLooper/PizLooper.h"
-void TwonkFilters::getAllTypes(OwnedArray<PluginDescription>& results)
+
+void TwonkFilters::getAllTypes(Array<PluginDescription>& results)
 {
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Tremolo", false, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Pitch Shift", false, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Ring Modulator", false, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Compressor", false, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Distortion", false, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("WahWah", false, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Robot Whisper", false, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Flanger", false, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Ping-Pong Delay", false, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Phaser", false, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Debug Info", false, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("Sequencer", true, true)));
-	results.add (new PluginDescription (InternalPlugin::getPluginDescriptionForTwonk("SFZ", true, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Tremolo", false, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Pitch Shift", false, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Ring Modulator", false, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Compressor", false, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Distortion", false, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("WahWah", false, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Robot Whisper", false, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Flanger", false, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Ping-Pong Delay", false, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Phaser", false, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Debug Info", false, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Sequencer", true, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("SFZ", true, true)));
 }
 
 std::unique_ptr<AudioPluginInstance> TwonkFilters::createInstance (const String& name)
 {
-	if (name == "Tremolo") return std::make_unique<TremoloAudioProcessor> (InternalPlugin::getPluginDescriptionForTwonk("Tremolo", false, true));
-	if (name == "Ring Modulator") return std::make_unique <RingModulationAudioProcessor> (InternalPlugin::getPluginDescriptionForTwonk("Ring Modulator", false, true));
-	if (name == "Compressor") return std::make_unique <CompressorExpanderAudioProcessor> (InternalPlugin::getPluginDescriptionForTwonk("Compressor", false, true));
-	if (name == "Pitch Shift")return  std::make_unique <PitchShiftAudioProcessor> (InternalPlugin::getPluginDescriptionForTwonk("Pitch Shift", false, true));
-	if (name == "Distortion") return std::make_unique <DistortionAudioProcessor> (InternalPlugin::getPluginDescriptionForTwonk("Distortion", false, true));
-	if (name == "WahWah") return std::make_unique <WahWahAudioProcessor> (InternalPlugin::getPluginDescriptionForTwonk("WahWah", false, true));
-	if (name == "Robot Whisper") return std::make_unique <RobotizationWhisperizationAudioProcessor> (InternalPlugin::getPluginDescriptionForTwonk("Robot Whisper", false, true));
-	if (name == "Flanger") return std::make_unique <FlangerAudioProcessor> (InternalPlugin::getPluginDescriptionForTwonk("Flanger", false, true));
-	if (name == "Ping-Pong Delay") return std::make_unique <PingPongDelayAudioProcessor> (InternalPlugin::getPluginDescriptionForTwonk("Ping-Pong Delay", false, true));
-	if (name == "Phaser") return std::make_unique <PhaserAudioProcessor> (InternalPlugin::getPluginDescriptionForTwonk("Phaser", false, true));
-	if (name == "Debug Info") return std::make_unique <DebugInfoProcessor> (InternalPlugin::getPluginDescriptionForTwonk("Debug Info", false, true));
-	if (name == "Sequencer") return std::make_unique <PizLooper> (InternalPlugin::getPluginDescriptionForTwonk("Sequencer", true, true));
-	if (name == "SFZ") return std::make_unique <sfzero::SFZeroAudioProcessor> (InternalPlugin::getPluginDescriptionForTwonk("SFZ", true, true));
+	DBG("TwonkFilters::createInstance trying to create instance for \"" + name + "\"");
+	if (name == "Tremolo") 
+		return std::make_unique<TremoloAudioProcessor> (TwonkPlugin::getPluginDescription("Tremolo", false, true));
+	if (name == "Ring Modulator") 
+		return std::make_unique <RingModulationAudioProcessor> (TwonkPlugin::getPluginDescription("Ring Modulator", false, true));
+	if (name == "Compressor") 
+		return std::make_unique <CompressorExpanderAudioProcessor> (TwonkPlugin::getPluginDescription("Compressor", false, true));
+	if (name == "Pitch Shift")
+		return  std::make_unique <PitchShiftAudioProcessor> (TwonkPlugin::getPluginDescription("Pitch Shift", false, true));
+	if (name == "Distortion")
+		return std::make_unique <DistortionAudioProcessor> (TwonkPlugin::getPluginDescription("Distortion", false, true));
+	if (name == "WahWah")
+		return std::make_unique <WahWahAudioProcessor> (TwonkPlugin::getPluginDescription("WahWah", false, true));
+	if (name == "Robot Whisper")
+		return std::make_unique <RobotizationWhisperizationAudioProcessor> (TwonkPlugin::getPluginDescription("Robot Whisper", false, true));
+	if (name == "Flanger")
+		return std::make_unique <FlangerAudioProcessor> (TwonkPlugin::getPluginDescription("Flanger", false, true));
+	if (name == "Ping-Pong Delay")
+		return std::make_unique <PingPongDelayAudioProcessor> (TwonkPlugin::getPluginDescription("Ping-Pong Delay", false, true));
+	if (name == "Phaser")
+		return std::make_unique <PhaserAudioProcessor> (TwonkPlugin::getPluginDescription("Phaser", false, true));
+	if (name == "Debug Info")
+		return std::make_unique <DebugInfoProcessor> (TwonkPlugin::getPluginDescription("Debug Info", false, true));
+	if (name == "Sequencer")
+		return std::make_unique <PizLooper> (TwonkPlugin::getPluginDescription("Sequencer", true, true));
+	if (name == "SFZ")
+		return std::make_unique <sfzero::SFZeroAudioProcessor> (TwonkPlugin::getPluginDescription("SFZ", true, true));
 	
+	DBG("TwonkFilters::createInstance don't know how to create instance for: " + name);
 	return nullptr;
 }

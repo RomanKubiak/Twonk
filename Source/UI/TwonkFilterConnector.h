@@ -10,6 +10,7 @@
 
 #pragma once
 #include "GraphEditorPanel.h"
+#include "Filters/PluginGraph.h"
 //==============================================================================
 class TwonkFilterConnector : public Component, public SettableTooltipClient
 {
@@ -30,7 +31,7 @@ class TwonkFilterConnector : public Component, public SettableTooltipClient
 		void resized() override;
 		void getDistancesFromEnds (Point<float> p, double& distanceFromStart, double& distanceFromEnd) const;
 		GraphEditorPanel& panel;
-		FilterGraph& graph;
+		PluginGraph& filterGraph;
 		AudioProcessorGraph::Connection connection {{ {}, 0 }, { {}, 0 }};
 		Point<float> lastInputPos, lastOutputPos;
 		Path linePath, hitPath;

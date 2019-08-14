@@ -2,10 +2,10 @@
 #include <cmath>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../PluginParameter.h"
-#include "../../Filters/InternalFilters.h"
+#include "../../Filters/InternalPlugins.h"
 //==============================================================================
 
-class FlangerAudioProcessor : public InternalPlugin
+class FlangerAudioProcessor : public TwonkPlugin
 {
 public:
     //==============================================================================

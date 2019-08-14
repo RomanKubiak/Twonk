@@ -27,10 +27,10 @@
 #include <cmath>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../PluginParameter.h"
-#include "../../Filters/InternalFilters.h"
+#include "../../Filters/InternalPlugins.h"
 //==============================================================================
 
-class TremoloAudioProcessor : public InternalPlugin
+class TremoloAudioProcessor : public TwonkPlugin
 {
 public:
     //==============================================================================

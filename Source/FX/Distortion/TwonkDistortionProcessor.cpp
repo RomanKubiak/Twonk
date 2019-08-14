@@ -1,35 +1,10 @@
-/*
-  ==============================================================================
-
-    This code is based on the contents of the book: "Audio Effects: Theory,
-    Implementation and Application" by Joshua D. Reiss and Andrew P. McPherson.
-
-    Code by Juan Gil <https://juangil.com/>.
-    Copyright (C) 2017-2019 Juan Gil.
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-  ==============================================================================
-*/
-
 #include "TwonkDistortionProcessor.h"
 #include "TwonkDistortionEditor.h"
 #include "../PluginParameter.h"
 
 //==============================================================================
 
-DistortionAudioProcessor::DistortionAudioProcessor(const PluginDescription& descr): InternalPlugin (descr, true),
+DistortionAudioProcessor::DistortionAudioProcessor(const PluginDescription& descr): TwonkPlugin (descr),
     parameters (*this)
     , paramDistortionType (parameters, "Distortion type", distortionTypeItemsUI, distortionTypeFullWaveRectifier)
     , paramInputGain (parameters, "Input gain", "dB", -24.0f, 24.0f, 12.0f,

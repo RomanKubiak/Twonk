@@ -5,7 +5,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MidiLoop.h"
 #include "common/key.h"
-#include "../../Filters/InternalFilters.h"
+#include "../../Filters/InternalPlugins.h"
 
 #define final null
 //==============================================================================

@@ -38,17 +38,11 @@
     <Filter Include="Twonk\Source\FX\Robotization-Whisperization">
       <UniqueIdentifier>{D57EF017-DAD1-9172-084C-BA3894823F48}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Twonk\Source\FX\SequencerLinear">
-      <UniqueIdentifier>{E8F4A566-A874-FC8F-90EA-604288A236AD}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Twonk\Source\FX\SFZ\SFZero">
       <UniqueIdentifier>{0C827708-A0C5-BADC-2CEF-A2BDE3B4E03D}</UniqueIdentifier>
     </Filter>
     <Filter Include="Twonk\Source\FX\SFZ">
       <UniqueIdentifier>{C16F7C68-42D6-3033-A2E3-CF34FC7FBD69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Twonk\Source\FX\SineWaveSynth">
-      <UniqueIdentifier>{449558DF-FAA4-03F3-15AD-EF7C4D070B37}</UniqueIdentifier>
     </Filter>
     <Filter Include="Twonk\Source\FX\Tremolo">
       <UniqueIdentifier>{38EEF8D6-C163-B8CC-1393-B5C20D7F5376}</UniqueIdentifier>
@@ -577,12 +571,6 @@
     <ClCompile Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.cpp">
       <Filter>Twonk\Source\FX\Robotization-Whisperization</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\FX\SequencerLinear\SequencerLinearEditor.cpp">
-      <Filter>Twonk\Source\FX\SequencerLinear</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\SequencerLinear\SequencerLinearProcessor.cpp">
-      <Filter>Twonk\Source\FX\SequencerLinear</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\FX\SFZ\SFZero\SFZero.cpp">
       <Filter>Twonk\Source\FX\SFZ\SFZero</Filter>
     </ClCompile>
@@ -594,9 +582,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\SFZ\SFZeroEditor.cpp">
       <Filter>Twonk\Source\FX\SFZ</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.cpp">
-      <Filter>Twonk\Source\FX\SineWaveSynth</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\Tremolo\TwonkTremoloProcessor.cpp">
       <Filter>Twonk\Source\FX\Tremolo</Filter>
@@ -613,22 +598,22 @@
     <ClCompile Include="..\..\Source\FX\TwonkFilters.cpp">
       <Filter>Twonk\Source\FX</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Filters\FilterGraph.cpp">
+    <ClCompile Include="..\..\Source\Filters\InternalPlugins.cpp">
       <Filter>Twonk\Source\Filters</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Filters\FilterIOConfiguration.cpp">
+    <ClCompile Include="..\..\Source\Filters\IOConfigurationWindow.cpp">
       <Filter>Twonk\Source\Filters</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Filters\InternalFilters.cpp">
+    <ClCompile Include="..\..\Source\Filters\PluginGraph.cpp">
       <Filter>Twonk\Source\Filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkMidiKeyboard.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\TwonkTitleBarStatus.cpp">
+    <ClCompile Include="..\..\Source\UI\TwonkToolBarStatus.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\TwonkTitleBarButton.cpp">
+    <ClCompile Include="..\..\Source\UI\TwonkToolBarButton.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\PluginDefaultEditor.cpp">
@@ -637,16 +622,13 @@
     <ClCompile Include="..\..\Source\UI\PluginWindow.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\TwonkTitleBarComponent.cpp">
+    <ClCompile Include="..\..\Source\UI\TwonkToolBar.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkFilterPropertiesEditor.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkFilterComponent.cpp">
-      <Filter>Twonk\Source\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\TwonkFilterConnector.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkFilterComponentPin.cpp">
@@ -2730,12 +2712,6 @@
     <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.h">
       <Filter>Twonk\Source\FX\Robotization-Whisperization</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\FX\SequencerLinear\SequencerLinearEditor.h">
-      <Filter>Twonk\Source\FX\SequencerLinear</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\SequencerLinear\SequencerLinearProcessor.h">
-      <Filter>Twonk\Source\FX\SequencerLinear</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\FX\SFZ\SFZero\SFZero.h">
       <Filter>Twonk\Source\FX\SFZ\SFZero</Filter>
     </ClInclude>
@@ -2747,9 +2723,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\SFZ\SFZeroEditor.h">
       <Filter>Twonk\Source\FX\SFZ</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.h">
-      <Filter>Twonk\Source\FX\SineWaveSynth</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\Tremolo\TwonkTremoloEditor.h">
       <Filter>Twonk\Source\FX\Tremolo</Filter>
@@ -2769,37 +2742,34 @@
     <ClInclude Include="..\..\Source\FX\TwonkFilters.h">
       <Filter>Twonk\Source\FX</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Filters\FilterGraph.h">
+    <ClInclude Include="..\..\Source\Filters\InternalPlugins.h">
       <Filter>Twonk\Source\Filters</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Filters\FilterIOConfiguration.h">
+    <ClInclude Include="..\..\Source\Filters\IOConfigurationWindow.h">
       <Filter>Twonk\Source\Filters</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Filters\InternalFilters.h">
+    <ClInclude Include="..\..\Source\Filters\PluginGraph.h">
       <Filter>Twonk\Source\Filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkMidiKeyboard.h">
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\TwonkTitleBarStatus.h">
+    <ClInclude Include="..\..\Source\UI\TwonkToolBarStatus.h">
+      <Filter>Twonk\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkToolBarButton.h">
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\PluginDefaultEditor.h">
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\TwonkTitleBarButton.h">
-      <Filter>Twonk\Source\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\TwonkTitleBarComponent.h">
+    <ClInclude Include="..\..\Source\UI\TwonkToolBar.h">
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkFilterPropertiesEditor.h">
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkFilterComponent.h">
-      <Filter>Twonk\Source\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\TwonkFilterConnector.h">
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkFilterComponentPin.h">
@@ -5023,6 +4993,9 @@
     </None>
     <None Include="..\..\JUCE\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt">
       <Filter>JUCE Modules\juce_graphics\image_formats\pnglib</Filter>
+    </None>
+    <None Include=".\icon.ico">
+      <Filter>JUCE Library Code</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

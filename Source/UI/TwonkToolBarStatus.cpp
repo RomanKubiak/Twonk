@@ -8,9 +8,10 @@
   ==============================================================================
 */
 
-#include "TwonkTitleBarStatus.h"
+#include "TwonkToolBarStatus.h"
 #include "Twonk.h"
-TwonkTitleBarStatus::TwonkTitleBarStatus()
+
+TwonkToolBarStatus::TwonkToolBarStatus()
 {
 	baseColour = Colours::darkgrey;
 	statusLabel.reset(new Label("statusLabel"));
@@ -19,12 +20,12 @@ TwonkTitleBarStatus::TwonkTitleBarStatus()
 	statusLabel->setText("00:00:00", dontSendNotification);
 }
 
-TwonkTitleBarStatus::~TwonkTitleBarStatus()
+TwonkToolBarStatus::~TwonkToolBarStatus()
 {
 
 }
 
-void TwonkTitleBarStatus::paint(Graphics &g)
+void TwonkToolBarStatus::paint(Graphics &g)
 {
 	g.setColour(baseColour.contrasting(0.5f));
 	g.setFont(getDefaultTwonkSansFont());
@@ -34,7 +35,7 @@ void TwonkTitleBarStatus::paint(Graphics &g)
 	g.strokePath(roundingHexagon, PathStrokeType(TOOLBAR_BUTTON_SIZE * 0.02f));
 }
 
-void TwonkTitleBarStatus::resized()
+void TwonkToolBarStatus::resized()
 {
 	roundingHexagon.clear();
 	roundingHexagon.addRectangle(getLocalBounds());

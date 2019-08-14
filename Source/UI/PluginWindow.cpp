@@ -85,7 +85,7 @@ AudioProcessorEditor* PluginWindow::createProcessorEditor (AudioProcessor& proce
 			//return new ProgramAudioProcessorEditor (processor);
 
 	if (type == PluginWindow::Type::audioIO)
-		return new FilterIOConfigurationWindow (processor);
+		return new IOConfigurationWindow (processor);
 
 	jassertfalse;
 	return {};

@@ -45,7 +45,7 @@ AudioProcessorEditor::~AudioProcessorEditor()
 
     // if this fails, then the wrapper hasn't called editorBeingDeleted() on the
     // filter for some reason..
-    // jassert (processor.getActiveEditor() != this);
+    //jassert (processor.getActiveEditor() != this);
     removeComponentListener (resizeListener.get());
 }
 

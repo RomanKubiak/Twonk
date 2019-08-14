@@ -5,7 +5,7 @@
 
 //==============================================================================
 
-RingModulationAudioProcessor::RingModulationAudioProcessor(const PluginDescription& descr): InternalPlugin (descr, true),
+RingModulationAudioProcessor::RingModulationAudioProcessor(const PluginDescription& descr): TwonkPlugin (descr),
     parameters (*this)
     , paramDepth (parameters, "Depth", "", 0.0f, 1.0f, 0.5f)
     , paramFrequency (parameters, "Carrier frequency", "Hz", 10.0f, 1000.0f, 200.0f)

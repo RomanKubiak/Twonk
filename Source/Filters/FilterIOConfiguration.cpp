@@ -29,7 +29,6 @@
 #include "InternalFilters.h"
 #include "../UI/MainHostWindow.h"
 #include "FilterIOConfiguration.h"
-#include "../UI/GraphDocument.h"
 
 //==============================================================================
 struct NumberedBoxes  : public TableListBox,
@@ -547,7 +546,7 @@ GraphEditorPanel* FilterIOConfigurationWindow::getGraphEditor() const
 AudioProcessorGraph* FilterIOConfigurationWindow::getGraph() const
 {
     if (auto* graphEditor = getGraphEditor())
-        if (auto* panel = graphEditor->graph.get())
+        if (auto* panel = graphEditor->filterGraph.get())
             return &panel->graph;
 
     return nullptr;

@@ -3,12 +3,12 @@
 
 #include "JuceHeader.h"
 #include "SFZero/SFZero.h"
-#include "../../Filters/InternalFilters.h"
+#include "../../Filters/InternalPlugins.h"
 namespace sfzero
 {
 class Sound;
 
-class SFZeroAudioProcessor : public InternalPlugin
+class SFZeroAudioProcessor : public TwonkPlugin
 {
 public:
   SFZeroAudioProcessor(const PluginDescription& descr);

@@ -9,7 +9,7 @@
 */
 
 #pragma once
-#include "../Filters/InternalFilters.h"
+#include "../Filters/InternalPlugins.h"
 
 class TwonkFilter
 {
@@ -20,6 +20,6 @@ class TwonkFilter
 class TwonkFilters
 {
 	public:
-		static void getAllTypes(OwnedArray<PluginDescription>& results);
+		static void getAllTypes(Array<PluginDescription>& results);
 		static std::unique_ptr<AudioPluginInstance> createInstance (const String& name);
 };

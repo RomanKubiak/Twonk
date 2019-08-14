@@ -2,9 +2,10 @@
 
 <JUCERPROJECT id="NTe0XB0ij" name="Twonk" projectType="guiapp" version="1.0.0"
               juceFolder="../../../juce" vstFolderMac="~/SDKs/vstsdk2.4" vstFolderPC="c:\SDKs\vstsdk2.4"
-              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.3"
+              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.4"
               companyName="Instigator" displaySplashScreen="0" reportAppUsage="0"
-              headerPath="../../vst3sdk&#10;../../Source/FX/SFZ/SFZero/&#10;../../Source/">
+              headerPath="../../vst3sdk&#10;../../Source/FX/SFZ/SFZero/&#10;../../Source/&#10;../../JuceLibraryCode/"
+              companyWebsite="http://sciek.pl">
   <EXPORTFORMATS>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" vstFolder="" vst3Folder=""
                 smallIcon="c97aUr" bigIcon="c97aUr" extraCompilerFlags="-w">
@@ -30,7 +31,7 @@
         <MODULEPATH id="juce_dsp" path="../../modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
-    <VS2017 targetFolder="Builds/VisualStudio2017" smallIcon="c97aUr" bigIcon="c97aUr"
+    <VS2017 targetFolder="Builds/VisualStudio2017" smallIcon="Y2rI0S" bigIcon="HmV2EU"
             extraCompilerFlags="/w44265 /w45038 /w44062 /w44244" windowsTargetPlatformVersion="10.0.17763.0"
             extraDefs="_USE_MATH_DEFINES">
       <CONFIGURATIONS>
@@ -283,16 +284,6 @@
           <FILE id="eA6MDv" name="TwonkRWProcessor.h" compile="0" resource="0"
                 file="Source/FX/Robotization-Whisperization/TwonkRWProcessor.h"/>
         </GROUP>
-        <GROUP id="{41760642-0075-A9DA-02D1-3D08EFA3C54A}" name="SequencerLinear">
-          <FILE id="UnCMWA" name="SequencerLinearEditor.cpp" compile="1" resource="0"
-                file="Source/FX/SequencerLinear/SequencerLinearEditor.cpp"/>
-          <FILE id="TOF3PG" name="SequencerLinearEditor.h" compile="0" resource="0"
-                file="Source/FX/SequencerLinear/SequencerLinearEditor.h"/>
-          <FILE id="CgkzTW" name="SequencerLinearProcessor.cpp" compile="1" resource="0"
-                file="Source/FX/SequencerLinear/SequencerLinearProcessor.cpp"/>
-          <FILE id="Fy7MgM" name="SequencerLinearProcessor.h" compile="0" resource="0"
-                file="Source/FX/SequencerLinear/SequencerLinearProcessor.h"/>
-        </GROUP>
         <GROUP id="{1AD867F2-544A-C89A-BF57-3A924566D7B0}" name="SFZ">
           <GROUP id="{BE3691EB-E0DC-B47E-A964-369C3699B267}" name="SFZero">
             <FILE id="St2DJH" name="SFZero.cpp" compile="1" resource="0" file="Source/FX/SFZ/SFZero/SFZero.cpp"/>
@@ -309,11 +300,6 @@
           <FILE id="qhMj9N" name="SFZeroEditor.cpp" compile="1" resource="0"
                 file="Source/FX/SFZ/SFZeroEditor.cpp"/>
           <FILE id="YcquNI" name="SFZeroEditor.h" compile="0" resource="0" file="Source/FX/SFZ/SFZeroEditor.h"/>
-        </GROUP>
-        <GROUP id="{A594AB27-A86E-A115-E651-E3CC62EDB688}" name="SineWaveSynth">
-          <FILE id="qiD8bc" name="SineWaveSynth.cpp" compile="1" resource="0"
-                file="Source/FX/SineWaveSynth/SineWaveSynth.cpp"/>
-          <FILE id="E8VN7k" name="SineWaveSynth.h" compile="0" resource="0" file="Source/FX/SineWaveSynth/SineWaveSynth.h"/>
         </GROUP>
         <GROUP id="{064E2E72-9C31-0F33-0C54-6F722C4B5D27}" name="Tremolo">
           <FILE id="lOH2jw" name="TwonkTremoloEditor.h" compile="0" resource="0"
@@ -341,40 +327,39 @@
         <FILE id="YnA2wY" name="TwonkFilters.h" compile="0" resource="0" file="Source/FX/TwonkFilters.h"/>
       </GROUP>
       <GROUP id="{AE20356E-1F78-F99D-7D44-08529665AEDA}" name="Filters">
-        <FILE id="CogQ5Q" name="FilterGraph.cpp" compile="1" resource="0" file="Source/Filters/FilterGraph.cpp"/>
-        <FILE id="pfZWFw" name="FilterGraph.h" compile="0" resource="0" file="Source/Filters/FilterGraph.h"/>
-        <FILE id="BltUzI" name="FilterIOConfiguration.cpp" compile="1" resource="0"
-              file="Source/Filters/FilterIOConfiguration.cpp"/>
-        <FILE id="r9SuL8" name="FilterIOConfiguration.h" compile="0" resource="0"
-              file="Source/Filters/FilterIOConfiguration.h"/>
-        <FILE id="UcOOog" name="InternalFilters.cpp" compile="1" resource="0"
-              file="Source/Filters/InternalFilters.cpp"/>
-        <FILE id="Bll6sn" name="InternalFilters.h" compile="0" resource="0"
-              file="Source/Filters/InternalFilters.h"/>
+        <FILE id="YBUIps" name="InternalPlugins.cpp" compile="1" resource="0"
+              file="Source/Filters/InternalPlugins.cpp"/>
+        <FILE id="ILTO5u" name="InternalPlugins.h" compile="0" resource="0"
+              file="Source/Filters/InternalPlugins.h"/>
+        <FILE id="igTZCy" name="IOConfigurationWindow.cpp" compile="1" resource="0"
+              file="Source/Filters/IOConfigurationWindow.cpp"/>
+        <FILE id="Rjhh9s" name="IOConfigurationWindow.h" compile="0" resource="0"
+              file="Source/Filters/IOConfigurationWindow.h"/>
+        <FILE id="NGtIcX" name="PluginGraph.cpp" compile="1" resource="0" file="Source/Filters/PluginGraph.cpp"/>
+        <FILE id="LjuO1d" name="PluginGraph.h" compile="0" resource="0" file="Source/Filters/PluginGraph.h"/>
       </GROUP>
       <GROUP id="{D892BFB2-FE85-B70F-10D3-450F407E2B3D}" name="UI">
         <FILE id="Bm6VFp" name="TwonkMidiKeyboard.cpp" compile="1" resource="0"
               file="Source/UI/TwonkMidiKeyboard.cpp"/>
         <FILE id="HBO5P9" name="TwonkMidiKeyboard.h" compile="0" resource="0"
               file="Source/UI/TwonkMidiKeyboard.h"/>
-        <FILE id="FUFWKN" name="TwonkTitleBarStatus.cpp" compile="1" resource="0"
-              file="Source/UI/TwonkTitleBarStatus.cpp"/>
-        <FILE id="oawWon" name="TwonkTitleBarStatus.h" compile="0" resource="0"
-              file="Source/UI/TwonkTitleBarStatus.h"/>
-        <FILE id="U6CS1L" name="TwonkTitleBarButton.cpp" compile="1" resource="0"
-              file="Source/UI/TwonkTitleBarButton.cpp"/>
+        <FILE id="FUFWKN" name="TwonkToolBarStatus.cpp" compile="1" resource="0"
+              file="Source/UI/TwonkToolBarStatus.cpp"/>
+        <FILE id="oawWon" name="TwonkToolBarStatus.h" compile="0" resource="0"
+              file="Source/UI/TwonkToolBarStatus.h"/>
+        <FILE id="U6CS1L" name="TwonkToolBarButton.cpp" compile="1" resource="0"
+              file="Source/UI/TwonkToolBarButton.cpp"/>
         <FILE id="ak0JE8" name="PluginDefaultEditor.cpp" compile="1" resource="0"
               file="Source/UI/PluginDefaultEditor.cpp"/>
+        <FILE id="bG9wCX" name="TwonkToolBarButton.h" compile="0" resource="0"
+              file="Source/UI/TwonkToolBarButton.h"/>
         <FILE id="XxDCh4" name="PluginDefaultEditor.h" compile="0" resource="0"
               file="Source/UI/PluginDefaultEditor.h"/>
-        <FILE id="bG9wCX" name="TwonkTitleBarButton.h" compile="0" resource="0"
-              file="Source/UI/TwonkTitleBarButton.h"/>
         <FILE id="pvrmu7" name="PluginWindow.cpp" compile="1" resource="0"
               file="Source/UI/PluginWindow.cpp"/>
-        <FILE id="Lhw9Qp" name="TwonkTitleBarComponent.cpp" compile="1" resource="0"
-              file="Source/UI/TwonkTitleBarComponent.cpp"/>
-        <FILE id="N24pYf" name="TwonkTitleBarComponent.h" compile="0" resource="0"
-              file="Source/UI/TwonkTitleBarComponent.h"/>
+        <FILE id="Lhw9Qp" name="TwonkToolBar.cpp" compile="1" resource="0"
+              file="Source/UI/TwonkToolBar.cpp"/>
+        <FILE id="N24pYf" name="TwonkToolBar.h" compile="0" resource="0" file="Source/UI/TwonkToolBar.h"/>
         <FILE id="WE9Kzb" name="TwonkFilterPropertiesEditor.cpp" compile="1"
               resource="0" file="Source/UI/TwonkFilterPropertiesEditor.cpp"/>
         <FILE id="rxc1yx" name="TwonkFilterPropertiesEditor.h" compile="0"
@@ -383,10 +368,6 @@
               file="Source/UI/TwonkFilterComponent.cpp"/>
         <FILE id="xJvh7N" name="TwonkFilterComponent.h" compile="0" resource="0"
               file="Source/UI/TwonkFilterComponent.h"/>
-        <FILE id="hjEdYo" name="TwonkFilterConnector.cpp" compile="1" resource="0"
-              file="Source/UI/TwonkFilterConnector.cpp"/>
-        <FILE id="sa4yf3" name="TwonkFilterConnector.h" compile="0" resource="0"
-              file="Source/UI/TwonkFilterConnector.h"/>
         <FILE id="aSQVEf" name="TwonkFilterComponentPin.cpp" compile="1" resource="0"
               file="Source/UI/TwonkFilterComponentPin.cpp"/>
         <FILE id="QL7bD3" name="TwonkFilterComponentPin.h" compile="0" resource="0"

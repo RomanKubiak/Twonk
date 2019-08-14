@@ -1,22 +1,23 @@
-#include "TwonkTitleBarButton.h"
+#include "TwonkToolBarButton.h"
 #include "Twonk.h"
-TwonkTitleBarButton::TwonkTitleBarButton () : Button("toolbar")
+
+TwonkToolBarButton::TwonkToolBarButton () : Button("toolbar")
 {
 	baseColour = Colours::red;
     setSize (64, 64);
 }
 
-TwonkTitleBarButton::~TwonkTitleBarButton()
+TwonkToolBarButton::~TwonkToolBarButton()
 {
 }
 
-void TwonkTitleBarButton::resized()
+void TwonkToolBarButton::resized()
 {
 	roundingHexagon.clear();
 	roundingHexagon.addPolygon(getLocalBounds().getCentre().toFloat(), 6, TOOLBAR_BUTTON_SIZE * 0.45f, float_Pi*0.5f);
 }
 
-void TwonkTitleBarButton::paintButton(Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
+void TwonkToolBarButton::paintButton(Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
 	g.setColour(baseColour.contrasting(0.5f));
 	g.setFont(getDefaultTwonkSansFont());

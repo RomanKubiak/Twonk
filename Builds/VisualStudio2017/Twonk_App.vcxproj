@@ -63,7 +63,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>c:\devel\Twonk\vst3sdk;c:\devel\Twonk\vst2sdk;..\..\JuceLibraryCode;c:\devel\Twonk\JUCE\modules;../../vst3sdk;../../Source/FX/SFZ/SFZero/;../../Source/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\devel\Twonk\vst3sdk;c:\devel\Twonk\vst2sdk;..\..\JuceLibraryCode;c:\devel\Twonk\JUCE\modules;../../vst3sdk;../../Source/FX/SFZ/SFZero/;../../Source/;../../JuceLibraryCode/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;_USE_MATH_DEFINES;JUCER_VS2017_78A5024=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -105,7 +105,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>c:\devel\Twonk\vst3sdk;c:\devel\Twonk\vst2sdk;..\..\JuceLibraryCode;c:\devel\Twonk\JUCE\modules;../../vst3sdk;../../Source/FX/SFZ/SFZero/;../../Source/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\devel\Twonk\vst3sdk;c:\devel\Twonk\vst2sdk;..\..\JuceLibraryCode;c:\devel\Twonk\JUCE\modules;../../vst3sdk;../../Source/FX/SFZ/SFZero/;../../Source/;../../JuceLibraryCode/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;_USE_MATH_DEFINES;JUCER_VS2017_78A5024=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -172,30 +172,26 @@
     <ClCompile Include="..\..\Source\FX\Ring Modulator\TwonkRMProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.cpp"/>
-    <ClCompile Include="..\..\Source\FX\SequencerLinear\SequencerLinearEditor.cpp"/>
-    <ClCompile Include="..\..\Source\FX\SequencerLinear\SequencerLinearProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\SFZ\SFZero\SFZero.cpp"/>
     <ClCompile Include="..\..\Source\FX\SFZ\ClickableLabel.cpp"/>
     <ClCompile Include="..\..\Source\FX\SFZ\SFZeroAudioProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\SFZ\SFZeroEditor.cpp"/>
-    <ClCompile Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.cpp"/>
     <ClCompile Include="..\..\Source\FX\Tremolo\TwonkTremoloProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Tremolo\TwonkTremoloEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Wah-Wah\TwonkWWEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Wah-Wah\TwonkWWProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\TwonkFilters.cpp"/>
-    <ClCompile Include="..\..\Source\Filters\FilterGraph.cpp"/>
-    <ClCompile Include="..\..\Source\Filters\FilterIOConfiguration.cpp"/>
-    <ClCompile Include="..\..\Source\Filters\InternalFilters.cpp"/>
+    <ClCompile Include="..\..\Source\Filters\InternalPlugins.cpp"/>
+    <ClCompile Include="..\..\Source\Filters\IOConfigurationWindow.cpp"/>
+    <ClCompile Include="..\..\Source\Filters\PluginGraph.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkMidiKeyboard.cpp"/>
-    <ClCompile Include="..\..\Source\UI\TwonkTitleBarStatus.cpp"/>
-    <ClCompile Include="..\..\Source\UI\TwonkTitleBarButton.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkToolBarStatus.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkToolBarButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\PluginDefaultEditor.cpp"/>
     <ClCompile Include="..\..\Source\UI\PluginWindow.cpp"/>
-    <ClCompile Include="..\..\Source\UI\TwonkTitleBarComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkToolBar.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkFilterPropertiesEditor.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkFilterComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\TwonkFilterConnector.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkFilterComponentPin.cpp"/>
     <ClCompile Include="..\..\Source\UI\GraphEditorPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainHostWindow.cpp"/>
@@ -2040,30 +2036,26 @@
     <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\STFT.h"/>
     <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.h"/>
-    <ClInclude Include="..\..\Source\FX\SequencerLinear\SequencerLinearEditor.h"/>
-    <ClInclude Include="..\..\Source\FX\SequencerLinear\SequencerLinearProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\SFZ\SFZero\SFZero.h"/>
     <ClInclude Include="..\..\Source\FX\SFZ\ClickableLabel.h"/>
     <ClInclude Include="..\..\Source\FX\SFZ\SFZeroAudioProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\SFZ\SFZeroEditor.h"/>
-    <ClInclude Include="..\..\Source\FX\SineWaveSynth\SineWaveSynth.h"/>
     <ClInclude Include="..\..\Source\FX\Tremolo\TwonkTremoloEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Tremolo\TwonkTremoloProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\Wah-Wah\TwonkWWEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Wah-Wah\TwonkWWProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\PluginParameter.h"/>
     <ClInclude Include="..\..\Source\FX\TwonkFilters.h"/>
-    <ClInclude Include="..\..\Source\Filters\FilterGraph.h"/>
-    <ClInclude Include="..\..\Source\Filters\FilterIOConfiguration.h"/>
-    <ClInclude Include="..\..\Source\Filters\InternalFilters.h"/>
+    <ClInclude Include="..\..\Source\Filters\InternalPlugins.h"/>
+    <ClInclude Include="..\..\Source\Filters\IOConfigurationWindow.h"/>
+    <ClInclude Include="..\..\Source\Filters\PluginGraph.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkMidiKeyboard.h"/>
-    <ClInclude Include="..\..\Source\UI\TwonkTitleBarStatus.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkToolBarStatus.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkToolBarButton.h"/>
     <ClInclude Include="..\..\Source\UI\PluginDefaultEditor.h"/>
-    <ClInclude Include="..\..\Source\UI\TwonkTitleBarButton.h"/>
-    <ClInclude Include="..\..\Source\UI\TwonkTitleBarComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkToolBar.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkFilterPropertiesEditor.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkFilterComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\TwonkFilterConnector.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkFilterComponentPin.h"/>
     <ClInclude Include="..\..\Source\UI\GraphEditorPanel.h"/>
     <ClInclude Include="..\..\Source\UI\MainHostWindow.h"/>
@@ -2806,6 +2798,7 @@
     <None Include="..\..\JUCE\modules\juce_core\native\java\README.txt"/>
     <None Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt"/>
     <None Include="..\..\JUCE\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt"/>
+    <None Include=".\icon.ico"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc"/>

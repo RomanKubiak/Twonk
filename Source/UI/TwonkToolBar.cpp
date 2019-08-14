@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -19,54 +19,54 @@
 
 //[Headers] You can add your own extra header files here...
 #include "GraphEditorPanel.h"
-#include "TwonkTitleBarButton.h"
-#include "TwonkTitleBarStatus.h"
+#include "TwonkToolBarButton.h"
+#include "TwonkToolBarStatus.h"
 //[/Headers]
 
-#include "TwonkTitleBarComponent.h"
+#include "TwonkToolBar.h"
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 //[/MiscUserDefs]
 
 //==============================================================================
-TwonkTitleBarComponent::TwonkTitleBarComponent (GraphEditorPanel &_owner)
+TwonkToolBar::TwonkToolBar (GraphEditorPanel &_owner)
     : owner(_owner)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    buttonConfig.reset (new TwonkTitleBarButton());
+    buttonConfig.reset (new TwonkToolBarButton());
     addAndMakeVisible (buttonConfig.get());
     buttonConfig->setName ("Config");
 
     buttonConfig->setBounds (0, 0, 64, 64);
 
-    buttonFilters.reset (new TwonkTitleBarButton());
+    buttonFilters.reset (new TwonkToolBarButton());
     addAndMakeVisible (buttonFilters.get());
     buttonFilters->setName ("Filters");
 
     buttonFilters->setBounds (0, 64, 64, 64);
 
-    buttonMinMax.reset (new TwonkTitleBarButton());
+    buttonMinMax.reset (new TwonkToolBarButton());
     addAndMakeVisible (buttonMinMax.get());
     buttonMinMax->setName ("Minimize/Maximize");
 
     buttonMinMax->setBounds (0, 288, 64, 64);
 
-    buttonPlay.reset (new TwonkTitleBarButton());
+    buttonPlay.reset (new TwonkToolBarButton());
     addAndMakeVisible (buttonPlay.get());
     buttonPlay->setName ("Play");
 
     buttonPlay->setBounds (0, 192, 64, 64);
 
-    statusItem.reset (new TwonkTitleBarStatus());
+    statusItem.reset (new TwonkToolBarStatus());
     addAndMakeVisible (statusItem.get());
     statusItem->setName ("Status");
 
     statusItem->setBounds (0, 256, 64, 32);
 
-    buttonMidiKeyboard.reset (new TwonkTitleBarButton());
+    buttonMidiKeyboard.reset (new TwonkToolBarButton());
     addAndMakeVisible (buttonMidiKeyboard.get());
     buttonMidiKeyboard->setName ("Midi Keyboard");
 
@@ -92,7 +92,7 @@ TwonkTitleBarComponent::TwonkTitleBarComponent (GraphEditorPanel &_owner)
     //[/Constructor]
 }
 
-TwonkTitleBarComponent::~TwonkTitleBarComponent()
+TwonkToolBar::~TwonkToolBar()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
@@ -110,7 +110,7 @@ TwonkTitleBarComponent::~TwonkTitleBarComponent()
 }
 
 //==============================================================================
-void TwonkTitleBarComponent::paint (Graphics& g)
+void TwonkToolBar::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -134,7 +134,7 @@ void TwonkTitleBarComponent::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void TwonkTitleBarComponent::resized()
+void TwonkToolBar::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -146,7 +146,7 @@ void TwonkTitleBarComponent::resized()
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void TwonkTitleBarComponent::positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo)
+void TwonkToolBar::positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo)
 {
 	/*if (!positionInfo.isPlaying)
 	{
@@ -158,11 +158,11 @@ void TwonkTitleBarComponent::positionChanged(const AudioPlayHead::CurrentPositio
 	*/
 }
 
-void TwonkTitleBarComponent::transportStopped()
+void TwonkToolBar::transportStopped()
 {
 }
 
-void TwonkTitleBarComponent::buttonClicked (Button *b)
+void TwonkToolBar::buttonClicked (Button *b)
 {
 
 }
@@ -178,7 +178,7 @@ void TwonkTitleBarComponent::buttonClicked (Button *b)
 
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="TwonkTitleBarComponent" componentName=""
+<JUCER_COMPONENT documentType="Component" className="TwonkToolBar" componentName=""
                  parentClasses="public Component, public TwonkClockListener, public Button::Listener"
                  constructorParams="GraphEditorPanel &amp;_owner" variableInitialisers="owner(_owner)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -188,22 +188,22 @@ BEGIN_JUCER_METADATA
                hasStroke="0"/>
   </BACKGROUND>
   <GENERICCOMPONENT name="Config" id="d2fe4dda321d3109" memberName="buttonConfig"
-                    virtualName="" explicitFocusOrder="0" pos="0 0 64 64" class="TwonkTitleBarButton"
+                    virtualName="" explicitFocusOrder="0" pos="0 0 64 64" class="TwonkToolBarButton"
                     params=""/>
   <GENERICCOMPONENT name="Filters" id="fdd3b341895bc99a" memberName="buttonFilters"
-                    virtualName="" explicitFocusOrder="0" pos="0 64 64 64" class="TwonkTitleBarButton"
+                    virtualName="" explicitFocusOrder="0" pos="0 64 64 64" class="TwonkToolBarButton"
                     params=""/>
   <GENERICCOMPONENT name="Minimize/Maximize" id="4e7c3844d4c9b13f" memberName="buttonMinMax"
-                    virtualName="" explicitFocusOrder="0" pos="0 288 64 64" class="TwonkTitleBarButton"
+                    virtualName="" explicitFocusOrder="0" pos="0 288 64 64" class="TwonkToolBarButton"
                     params=""/>
   <GENERICCOMPONENT name="Play" id="2e128e40245c4550" memberName="buttonPlay" virtualName=""
-                    explicitFocusOrder="0" pos="0 192 64 64" class="TwonkTitleBarButton"
+                    explicitFocusOrder="0" pos="0 192 64 64" class="TwonkToolBarButton"
                     params=""/>
   <GENERICCOMPONENT name="Status" id="90f30f12e157b22" memberName="statusItem" virtualName=""
-                    explicitFocusOrder="0" pos="0 256 64 32" class="TwonkTitleBarStatus"
+                    explicitFocusOrder="0" pos="0 256 64 32" class="TwonkToolBarStatus"
                     params=""/>
   <GENERICCOMPONENT name="Midi Keyboard" id="ac2e75c6311a26ee" memberName="buttonMidiKeyboard"
-                    virtualName="" explicitFocusOrder="0" pos="0 128 64 64" class="TwonkTitleBarButton"
+                    virtualName="" explicitFocusOrder="0" pos="0 128 64 64" class="TwonkToolBarButton"
                     params=""/>
 </JUCER_COMPONENT>
 

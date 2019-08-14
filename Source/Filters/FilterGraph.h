@@ -28,7 +28,7 @@
 
 #include "../UI/PluginWindow.h"
 
-class TwonkPlayHead;
+
 //==============================================================================
 /**
     A collection of filters and some connections between them.
@@ -39,7 +39,7 @@ class FilterGraph   : public FileBasedDocument,
 {
 public:
     //==============================================================================
-    FilterGraph (AudioPluginFormatManager&, TwonkPlayHead &_twonkPlayHead);
+    FilterGraph (AudioPluginFormatManager&);
     ~FilterGraph() override;
 
     //==============================================================================
@@ -51,7 +51,7 @@ public:
 
     void setNodePosition (NodeID, Point<double>);
     Point<double> getNodePosition (NodeID) const;
-	AudioPlayHead *getTwonkPlayHead();
+
     //==============================================================================
     void clear();
 
@@ -64,7 +64,7 @@ public:
     void audioProcessorChanged (AudioProcessor*) override { changed(); }
 
     //==============================================================================
-    std::unique_ptr<XmlElement> createXml() const;
+    XmlElement* createXml() const;
     void restoreFromXml (const XmlElement& xml);
 
     static const char* getFilenameSuffix()      { return ".filtergraph"; }
@@ -77,12 +77,12 @@ public:
     Result saveDocument (const File& file) override;
     File getLastDocumentOpened() override;
     void setLastDocumentOpened (const File& file) override;
-	void addPluginCallback (std::unique_ptr<AudioPluginInstance> instance, const String& error, Point<double> pos);
+
     static File getDefaultGraphDocumentOnMobile();
 
     //==============================================================================
     AudioProcessorGraph graph;
-	TwonkPlayHead &twonkPlayHead;
+
 private:
     //==============================================================================
     AudioPluginFormatManager& formatManager;
@@ -92,7 +92,7 @@ private:
     NodeID getNextUID() noexcept;
 
     void createNodeFromXml (const XmlElement& xml);
-    void addFilterCallback (std::unique_ptr<AudioPluginInstance>, const String& error, Point<double>);
+    void addFilterCallback (AudioPluginInstance*, const String& error, Point<double>);
     void changeListenerCallback (ChangeBroadcaster*) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterGraph)

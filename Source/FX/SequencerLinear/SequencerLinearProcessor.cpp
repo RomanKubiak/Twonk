@@ -2,7 +2,7 @@
 #include "SequencerLinearEditor.h"
 #include "../PluginParameter.h"
 
-SequencerLinearProcessor::SequencerLinearProcessor(const PluginDescription& descr) : InternalPlugin (descr, true)
+SequencerLinearProcessor::SequencerLinearProcessor(const PluginDescription& descr) : TwonkPlugin (descr)
 {
 	lastPosInfo.resetToDefault();
 

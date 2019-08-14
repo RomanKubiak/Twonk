@@ -26,10 +26,10 @@
 #pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../PluginParameter.h"
-#include "../../Filters/InternalFilters.h"
+#include "../../Filters/InternalPlugins.h"
 //==============================================================================
 
-class CompressorExpanderAudioProcessor : public InternalPlugin
+class CompressorExpanderAudioProcessor : public TwonkPlugin
 {
 public:
     //==============================================================================

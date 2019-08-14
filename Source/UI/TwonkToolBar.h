@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.3
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -24,8 +24,8 @@
 #include "../TwonkPlayHead.h"
 
 class GraphEditorPanel;
-class TwonkTitleBarButton;
-class TwonkTitleBarStatus;
+class TwonkToolBarButton;
+class TwonkToolBarStatus;
 //[/Headers]
 
 
@@ -38,14 +38,14 @@ class TwonkTitleBarStatus;
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class TwonkTitleBarComponent  : public Component,
-                                public TwonkClockListener,
-                                public Button::Listener
+class TwonkToolBar  : public Component,
+                      public TwonkClockListener,
+                      public Button::Listener
 {
 public:
     //==============================================================================
-    TwonkTitleBarComponent (GraphEditorPanel &_owner);
-    ~TwonkTitleBarComponent();
+    TwonkToolBar (GraphEditorPanel &_owner);
+    ~TwonkToolBar();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -66,16 +66,16 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<TwonkTitleBarButton> buttonConfig;
-    std::unique_ptr<TwonkTitleBarButton> buttonFilters;
-    std::unique_ptr<TwonkTitleBarButton> buttonMinMax;
-    std::unique_ptr<TwonkTitleBarButton> buttonPlay;
-    std::unique_ptr<TwonkTitleBarStatus> statusItem;
-    std::unique_ptr<TwonkTitleBarButton> buttonMidiKeyboard;
+    std::unique_ptr<TwonkToolBarButton> buttonConfig;
+    std::unique_ptr<TwonkToolBarButton> buttonFilters;
+    std::unique_ptr<TwonkToolBarButton> buttonMinMax;
+    std::unique_ptr<TwonkToolBarButton> buttonPlay;
+    std::unique_ptr<TwonkToolBarStatus> statusItem;
+    std::unique_ptr<TwonkToolBarButton> buttonMidiKeyboard;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkTitleBarComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkToolBar)
 };
 
 //[EndFile] You can add extra defines here...

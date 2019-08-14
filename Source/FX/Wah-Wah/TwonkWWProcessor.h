@@ -27,10 +27,10 @@
 #include <cmath>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../PluginParameter.h"
-#include "../../Filters/InternalFilters.h"
+#include "../../Filters/InternalPlugins.h"
 //==============================================================================
 
-class WahWahAudioProcessor : public InternalPlugin
+class WahWahAudioProcessor : public TwonkPlugin
 {
 public:
     //==============================================================================
