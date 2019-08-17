@@ -1,29 +1,3 @@
-/*
-  ==============================================================================
-
-   This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
-
-   JUCE is an open source library subject to commercial or open-source
-   licensing.
-
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
-
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
-
-   Or: You may also use this code under the terms of the GPL v3 (see
-   www.gnu.org/licenses).
-
-   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
-   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
-   DISCLAIMED.
-
-  ==============================================================================
-*/
-
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MainHostWindow.h"
 #include "../Filters/InternalPlugins.h"
@@ -78,6 +52,7 @@ MainHostWindow::MainHostWindow()
                       LookAndFeel::getDefaultLookAndFeel().findColour (ResizableWindow::backgroundColourId),
                       DocumentWindow::allButtons)
 {
+	LookAndFeel::setDefaultLookAndFeel(&twonkLookAndFeel);
     formatManager.addDefaultFormats();
     formatManager.addFormat (new InternalPluginFormat());
 	formatManager.addFormat (new TwonkPluginFormat());
@@ -131,21 +106,12 @@ MainHostWindow::MainHostWindow()
 
     Process::setPriority (Process::HighPriority);
 
-  #if JUCE_IOS || JUCE_ANDROID
-    graphHolder->burgerMenu.setModel (this);
-  #else
-   #if JUCE_MAC
-    setMacMainMenu (this);
-   #else
-    //setMenuBar (this);
-   #endif
-  #endif
-
     getCommandManager().setFirstCommandTarget (this);
 }
 
 MainHostWindow::~MainHostWindow()
 {
+	LookAndFeel::setDefaultLookAndFeel(nullptr);
     pluginListWindow = nullptr;
     knownPluginList.removeChangeListener (this);
 
@@ -154,14 +120,6 @@ MainHostWindow::~MainHostWindow()
 
     getAppProperties().getUserSettings()->setValue ("mainWindowPos", getWindowStateAsString());
     clearContentComponent();
-
-  #if ! (JUCE_ANDROID || JUCE_IOS)
-   #if JUCE_MAC
-    setMacMainMenu (nullptr);
-   #else
-    setMenuBar (nullptr);
-   #endif
-  #endif
 
     graphHolder = nullptr;
 }
@@ -200,11 +158,6 @@ void MainHostWindow::tryToQuitApplication()
     {
         new AsyncQuitRetrier();
     }
-   #if JUCE_ANDROID || JUCE_IOS
-    else if (graphHolder == nullptr || graphHolder->graph->saveDocument (PluginGraph::getDefaultGraphDocumentOnMobile()))
-   #else
-    else if (graphHolder == nullptr || graphHolder->graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
-   #endif
     {
         // Some plug-ins do not want [NSApp stop] to be called
         // before the plug-ins are not deallocated.

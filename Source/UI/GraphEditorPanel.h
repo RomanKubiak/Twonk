@@ -3,7 +3,10 @@
 #include "../Filters/PluginGraph.h"
 class MainHostWindow;
 class TwonkToolBar;
-//==============================================================================
+class TwonkToolBarButton;
+class TwonkToolBarController;
+class TwonkMidiKeyboard;
+
 /**
     A panel that displays and edits a PluginGraph.
 */
@@ -31,17 +34,32 @@ public:
 
     //==============================================================================
     void showPopupMenu (Point<int> position);
-
+	Path getHexagonPath(Rectangle<int> area);
     //==============================================================================
     void beginConnectorDrag (AudioProcessorGraph::NodeAndChannel source,
                              AudioProcessorGraph::NodeAndChannel dest,
                              const MouseEvent&);
     void dragConnector (const MouseEvent&);
     void endDraggingConnector (const MouseEvent&);
-
+	void setKeyboardComponent(TwonkMidiKeyboard *_keyboardComponent);
+	TwonkMidiKeyboard *getTwonkMidiKeyboardComponent() { return keyboardComponent; }
     //==============================================================================
     PluginGraph& graph;
-
+	enum FilterType
+	{
+		InternalAudioInput,
+		InternalAudioOutput,
+		InternalMidiInput,
+		InternalMidiOutpout,
+		InternalEffect,
+		InternalSynth,
+		PluginAudioEffect,
+		PluginMidiEffect,
+		PluginSynth,
+		PluginSynthWithInput,
+		UnknownNode
+	};
+	
 private:
     struct PluginComponent;
     struct ConnectorComponent;
@@ -52,10 +70,13 @@ private:
     std::unique_ptr<ConnectorComponent> draggingConnector;
     std::unique_ptr<PopupMenu> menu;
 	std::unique_ptr<TwonkToolBar> toolBar;
+	
     PluginComponent* getComponentForPlugin (AudioProcessorGraph::NodeID) const;
     ConnectorComponent* getComponentForConnection (const AudioProcessorGraph::Connection&) const;
     PinComponent* findPinAt (Point<float>) const;
-
+	TwonkMidiKeyboard *keyboardComponent;
+	Image bgImage;
+	ComponentAnimator toolBarAnimator;
     //==============================================================================
     Point<int> originalTouchPos;
 
@@ -65,7 +86,6 @@ private:
 };
 
 
-//==============================================================================
 /**
     A panel that embeds a GraphEditorPanel with a midi keyboard at the bottom.
 
@@ -100,7 +120,7 @@ public:
 
     //==============================================================================
     std::unique_ptr<GraphEditorPanel> graphPanel;
-    std::unique_ptr<MidiKeyboardComponent> keyboardComp;
+    
 
     //==============================================================================
     void showSidePanel (bool isSettingsPanel);
@@ -114,13 +134,14 @@ private:
     KnownPluginList& pluginList;
 
     AudioProcessorPlayer graphPlayer;
-    MidiKeyboardState keyState;
+    
 
     struct TooltipBar;
     std::unique_ptr<TooltipBar> statusBar;
     class TitleBarComponent;
     std::unique_ptr<TitleBarComponent> titleBarComponent;
-
+	std::unique_ptr<TwonkMidiKeyboard> keyboardComp;
+	MidiKeyboardState keyState;
     //==============================================================================
     struct PluginListBoxModel;
     std::unique_ptr<PluginListBoxModel> pluginListBoxModel;

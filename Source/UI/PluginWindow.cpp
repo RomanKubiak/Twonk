@@ -78,14 +78,8 @@ AudioProcessorEditor* PluginWindow::createProcessorEditor (AudioProcessor& proce
 		type = PluginWindow::Type::generic;
 	}
 
-	if (type == PluginWindow::Type::generic)
-		return new TwonkFilterPropertiesEditor(&processor);
-
-		//if (type == PluginWindow::Type::programs)
-			//return new ProgramAudioProcessorEditor (processor);
-
-	if (type == PluginWindow::Type::audioIO)
-		return new IOConfigurationWindow (processor);
+	if (type == PluginWindow::Type::generic)  return new GenericAudioProcessorEditor (processor);
+	if (type == PluginWindow::Type::audioIO)  return new IOConfigurationWindow (processor);
 
 	jassertfalse;
 	return {};

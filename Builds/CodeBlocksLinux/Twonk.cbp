@@ -114,31 +114,67 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/hexagon.png">
+    <Unit filename="../../Source/Resources/audio_input.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/icon_block.png">
+    <Unit filename="../../Source/Resources/audio_output.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/icon_block_64.png">
+    <Unit filename="../../Source/Resources/bg_bee.jpg">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/icon_input.png">
+    <Unit filename="../../Source/Resources/bg_hexagons_3d.jpg">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/icon_input_32.png">
+    <Unit filename="../../Source/Resources/bg_hexagons_with_blue.jpg">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Resources/bg_hexagons_with_green.jpg">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Resources/bg1.jpg">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Resources/bg3.jpg">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Resources/icon_audio_dev.png">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Resources/icon_cog.png">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Resources/icon_effect.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -150,67 +186,55 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/icon_output.png">
+    <Unit filename="../../Source/Resources/icon_min_max.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/icon_output_32.png">
+    <Unit filename="../../Source/Resources/icon_pause.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/icon_speaker.png">
+    <Unit filename="../../Source/Resources/icon_piano.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/icon_speaker_64.png">
+    <Unit filename="../../Source/Resources/icon_play.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/iconfinder_icon-pause_211871.png">
+    <Unit filename="../../Source/Resources/icon_plugin_external.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/iconfinder_icon-play_211876.png">
+    <Unit filename="../../Source/Resources/icon_plugin_internal.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/iconfinder_icon-stop_211931.png">
+    <Unit filename="../../Source/Resources/icon_question.jpg">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/iconfinder_maximize-2_2561250.png">
+    <Unit filename="../../Source/Resources/icon_stop.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/iconfinder_minimize-2_2561246.png">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/Resources/iconfinder_piano_music_instrument_keyboard_musical_4593126.png">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/Resources/iconfinder_Streamline-75_185095.png">
+    <Unit filename="../../Source/Resources/icon_synth.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -228,19 +252,13 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/PianoKeyboard.svg.png">
+    <Unit filename="../../Source/Resources/midi_input.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/sync_off.png">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/Resources/sync_on.png">
+    <Unit filename="../../Source/Resources/midi_output.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -752,6 +770,16 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/UI/TwonkLookAndFeel.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkLookAndFeel.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/UI/TwonkMidiKeyboard.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -776,25 +804,11 @@
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/UI/PluginDefaultEditor.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
     <Unit filename="../../Source/UI/TwonkToolBarButton.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/UI/PluginDefaultEditor.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/UI/PluginWindow.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
     </Unit>
     <Unit filename="../../Source/UI/TwonkToolBar.cpp">
       <Option target="App | Debug"/>
@@ -806,35 +820,19 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkFilterPropertiesEditor.cpp">
+    <Unit filename="../../Source/UI/PluginDefaultEditor.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkFilterPropertiesEditor.h">
+    <Unit filename="../../Source/UI/PluginDefaultEditor.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkFilterComponent.cpp">
+    <Unit filename="../../Source/UI/PluginWindow.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/UI/TwonkFilterComponent.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/UI/TwonkFilterComponentPin.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/UI/TwonkFilterComponentPin.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/UI/GraphEditorPanel.cpp">
       <Option target="App | Debug"/>

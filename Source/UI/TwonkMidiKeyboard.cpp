@@ -1,116 +1,72 @@
-/*
-  ==============================================================================
-
-  This is an automatically generated GUI class created by the Projucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Projucer version: 5.4.4
-
-  ------------------------------------------------------------------------------
-
-  The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
-
-  ==============================================================================
-*/
-
-//[Headers] You can add your own extra header files here...
-//[/Headers]
-
 #include "TwonkMidiKeyboard.h"
-
-
-//[MiscUserDefs] You can add your own user definitions and misc code here...
-//[/MiscUserDefs]
-
-//==============================================================================
-TwonkMidiKeyboard::TwonkMidiKeyboard ()
+#include "TwonkToolBarButton.h"
+#include "Twonk.h"
+#define DRAGGING_HEX_SIZE 32
+TwonkMidiKeyboard::TwonkMidiKeyboard(MidiKeyboardState &state, MidiKeyboardComponent::Orientation orientation)
 {
-    //[Constructor_pre] You can add your own custom stuff here..
-    //[/Constructor_pre]
+	corner.reset(new ResizableCornerComponent(this, nullptr));
+	addAndMakeVisible(corner.get());
+	midiKeyboardComponent.reset(new MidiKeyboardComponent(state, orientation));
+	addAndMakeVisible(midiKeyboardComponent.get());
 
-    //midiKeyboard.reset (new MidiKeyboardComponent (keyState));
-    //addAndMakeVisible (midiKeyboard.get());
-    //midiKeyboard->setName ("Midi Keyboard");
+	keyHeight.reset(new Slider());
+	keyHeight->setColour(Slider::trackColourId, Colour(BUBBLE_COLOUR_INTERNAL_AUDIO_IN));
+	keyHeight->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+	keyHeight->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+	keyHeight->setColour(Slider::textBoxOutlineColourId, Colours::transparentBlack);
+	keyHeight->setRange(0.0, 1.0, 0.1);
+	keyHeight->addListener(this);
+	keyHeight->setValue(0.5, sendNotification);
 
-
-    //[UserPreSize]
-    //[/UserPreSize]
-
-    setSize (500, 100);
-
-
-    //[Constructor] You can add your own custom stuff here..
-    //[/Constructor]
+	keyWidth.reset(new Slider());
+	keyWidth->setColour(Slider::trackColourId, Colour(BUBBLE_COLOUR_INTERNAL_AUDIO_IN));
+	keyWidth->setSliderStyle(Slider::SliderStyle::LinearBar);
+	keyWidth->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+	keyWidth->setRange(16,64);
+	keyWidth->addListener(this);
+	keyWidth->setValue(20, sendNotification);
+	keyWidth->setColour(Slider::textBoxOutlineColourId, Colours::transparentBlack);
+	addAndMakeVisible(keyWidth.get());
+	addAndMakeVisible(keyHeight.get());
 }
 
 TwonkMidiKeyboard::~TwonkMidiKeyboard()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
-    //[/Destructor_pre]
-
-    midiKeyboard = nullptr;
-
-
-    //[Destructor]. You can add your own custom destruction code here..
-    //[/Destructor]
 }
 
-//==============================================================================
 void TwonkMidiKeyboard::paint (Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    g.fillAll (Colour (0xff323e44));
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
+	g.setColour(Colours::lightgrey.withAlpha(0.5f));
+	g.fillRect(Rectangle<float>(0, 0, getWidth() - 24, 22));
 }
 
 void TwonkMidiKeyboard::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    midiKeyboard->setBounds (32, 0, getWidth() - 32, getHeight() - 0);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+	corner->setBounds(getWidth() - 24, getHeight() - 24, 24, 24);
+	midiKeyboardComponent->setBounds(0, 24, getWidth() - 24, getHeight() - 48);
+	keyHeight->setBounds(getWidth() - 24, 0, 24, getHeight()-24);
+	keyWidth->setBounds(0, getHeight()-24, getWidth() - 24, 24);
 }
 
+void TwonkMidiKeyboard::mouseDown(const MouseEvent &e)
+{
+	dragger.startDraggingComponent (this, e);
+}
 
+void TwonkMidiKeyboard::mouseDrag(const MouseEvent &e)
+{
+	dragger.dragComponent (this, e, nullptr);
+}
 
-//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-//[/MiscUserCode]
+void TwonkMidiKeyboard::sliderValueChanged(Slider *slider)
+{
+	if (slider == keyWidth.get())
+	{
+		midiKeyboardComponent->setKeyWidth(keyWidth->getValue());
+	}
 
-
-//==============================================================================
-#if 0
-/*  -- Projucer information section --
-
-    This is where the Projucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="TwonkMidiKeyboard" componentName=""
-                 parentClasses="public Component" constructorParams="" variableInitialisers=""
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="500" initialHeight="100">
-  <BACKGROUND backgroundColour="ff323e44"/>
-  <GENERICCOMPONENT name="Midi Keyboard" id="ed1ef73ee9a8f069" memberName="midiKeyboard"
-                    virtualName="" explicitFocusOrder="0" pos="32 0 32M 0M" class="MidiKeyboardComponent"
-                    params="keyState"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
-
+	if (slider == keyHeight.get())
+	{
+		midiKeyboardComponent->setBlackNoteLengthProportion(keyHeight->getValue());
+	}
+}

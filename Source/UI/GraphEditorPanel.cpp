@@ -3,8 +3,14 @@
 #include "../Filters/InternalPlugins.h"
 #include "MainHostWindow.h"
 #include "TwonkToolBar.h"
+#include "TwonkToolBarButton.h"
+#include "TwonkMidiKeyboard.h"
+#include "TwonkFilterComponent.h"
 #include "Twonk.h"
-//==============================================================================
+
+/**
+  GraphEditorPanel
+ */
 struct GraphEditorPanel::PinComponent   : public Component,
                                           public SettableTooltipClient
 {
@@ -92,7 +98,9 @@ struct GraphEditorPanel::PinComponent   : public Component,
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PinComponent)
 };
 
-//==============================================================================
+/**
+  GraphEditorPanel::PluginComponent
+ */
 struct GraphEditorPanel::PluginComponent   : public Component,
                                              public Timer,
                                              private AudioProcessorParameter::Listener
@@ -188,6 +196,14 @@ struct GraphEditorPanel::PluginComponent   : public Component,
         }
     }
 
+	Path getHexagonPath(Rectangle<int> area)
+	{
+		Path hexagon;
+		hexagon.addPolygon(area.getCentre().toFloat(), 6, area.getWidth() * 0.3f, float_Pi*0.5f);
+
+		return (hexagon);
+	}
+
     bool hitTest (int x, int y) override
     {
         for (auto* child : getChildren())
@@ -197,25 +213,164 @@ struct GraphEditorPanel::PluginComponent   : public Component,
         return x >= 3 && x < getWidth() - 6 && y >= pinSize && y < getHeight() - pinSize;
     }
 
+	FilterType getFilterType(AudioProcessorGraph::Node *node)
+	{
+		FilterType type;
+		if (auto *processor = node->getProcessor())
+		{
+			if (auto internalIO = dynamic_cast<AudioProcessorGraph::AudioGraphIOProcessor *>(processor))
+			{
+				auto ioDeviceType = internalIO->getType();
+				switch (ioDeviceType)
+				{
+				case  AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode:
+					type = InternalAudioInput;
+					break;
+				case AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode:
+					type = InternalAudioOutput;
+					break;
+				case AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode:
+					type = InternalMidiInput;
+					break;
+				case AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode:
+					type = InternalMidiOutpout;
+					break;
+				default:
+					type = UnknownNode;
+					break;
+				}
+			}
+
+			if (processor->acceptsMidi() &&
+				processor->producesMidi() &&
+				processor->getTotalNumInputChannels() == 0 &&
+				processor->getTotalNumOutputChannels() == 0)
+			{
+				type = PluginMidiEffect;
+			}
+			if (processor->acceptsMidi() &&
+				!processor->producesMidi() &&
+				processor->getTotalNumInputChannels() > 0 &&
+				processor->getTotalNumOutputChannels() > 0)
+			{
+				type = PluginSynthWithInput;
+			}
+			if (processor->acceptsMidi() &&
+				!processor->producesMidi() &&
+				processor->getTotalNumInputChannels() == 0 &&
+				processor->getTotalNumOutputChannels() > 0)
+			{
+				type = PluginSynthWithInput;
+			}
+			if (!processor->acceptsMidi() &&
+				!processor->producesMidi() &&
+				processor->getTotalNumInputChannels() > 0 &&
+				processor->getTotalNumOutputChannels() > 0)
+			{
+				type = PluginAudioEffect;
+			}
+
+			if (processor->acceptsMidi() &&
+				processor->producesMidi() &&
+				processor->getTotalNumInputChannels() == 0 &&
+				processor->getTotalNumOutputChannels() > 0)
+			{
+				type = PluginSynth;
+			}
+		}
+
+		return (type);
+	}
+
+	Colour getColourForFilterType(FilterType type)
+	{
+		switch (type)
+		{
+			case InternalAudioInput:
+				return (Colour(BUBBLE_COLOUR_INTERNAL_AUDIO_IN));
+			case InternalAudioOutput:
+				return (Colour(BUBBLE_COLOUR_INTERNAL_AUDIO_OUT));
+			case InternalMidiInput:
+				return (Colour(BUBBLE_COLOUR_INTERNAL_MIDI_IN));
+			case InternalMidiOutpout:
+				return (Colour(BUBBLE_COLOUR_INTERNAL_MIDI_OUT));
+			case InternalEffect:
+				return (Colour(BUBBLE_COLOUR_INTERNAL_PLUGIN_FX));
+			case InternalSynth:
+				return (Colour(BUBBLE_COLOUR_INTERNAL_SYNTH));
+			case PluginAudioEffect:
+				return (Colour(BUBBLE_COLOUR_PLUGIN_FX));
+			case PluginSynth:
+				return (Colour(BUBBLE_COLOUR_PLUGIN_SYNTH));
+			case PluginSynthWithInput:
+				return (Colour(BUBBLE_COLOUR_PLUGIN_SYNTH_WITH_INPUT));
+			default:
+				return (Colours::violet);
+		}
+	}
+
+	Image getImageForFilter(FilterType type)
+	{
+
+		switch (type)
+		{
+		case InternalAudioInput:
+			return (ImageCache::getFromMemory(BinaryData::audio_input_png, BinaryData::audio_input_pngSize));
+		case InternalAudioOutput:
+			return (ImageCache::getFromMemory(BinaryData::audio_output_png, BinaryData::audio_output_pngSize));
+		case InternalMidiInput:
+			return (ImageCache::getFromMemory(BinaryData::midi_input_png, BinaryData::midi_input_pngSize));
+		case InternalMidiOutpout:
+			return (ImageCache::getFromMemory(BinaryData::midi_output_png, BinaryData::midi_output_pngSize));
+		case InternalEffect:
+			return (ImageCache::getFromMemory(BinaryData::icon_plugin_internal_png, BinaryData::icon_plugin_internal_pngSize));
+		case InternalSynth:
+			return (ImageCache::getFromMemory(BinaryData::icon_synth_png, BinaryData::icon_synth_pngSize));
+		case PluginAudioEffect:
+			return (ImageCache::getFromMemory(BinaryData::icon_effect_png, BinaryData::icon_effect_pngSize));
+		case PluginSynth:
+			return (ImageCache::getFromMemory(BinaryData::icon_synth_png, BinaryData::icon_synth_pngSize));
+		case PluginSynthWithInput:
+			return (ImageCache::getFromMemory(BinaryData::icon_synth_png, BinaryData::icon_synth_pngSize));
+		default:
+			return (ImageCache::getFromMemory(BinaryData::icon_question_jpg, BinaryData::icon_question_jpgSize));
+		}
+	}
+
     void paint (Graphics& g) override
     {
         auto boxArea = getLocalBounds().reduced (4, pinSize);
         bool isBypassed = false;
+		Colour boxColour;
 
-        if (auto* f = graph.graph.getNodeForId (pluginID))
-            isBypassed = f->isBypassed();
+		FilterType ft;
+		if (auto* f = graph.graph.getNodeForId (pluginID))
+		{
+			isBypassed = f->isBypassed();
+			ft = getFilterType(f);
+		}
 
-        auto boxColour = findColour (TextEditor::backgroundColourId);
+		if (auto* f = graph.graph.getNodeForId (pluginID))
+		{
+			boxColour = getColourForFilterType (ft);
 
-        if (isBypassed)
-            boxColour = boxColour.brighter();
+			if (isBypassed)
+				boxColour = boxColour.brighter();
 
-        g.setColour (boxColour);
-        g.fillRect (boxArea.toFloat());
+			g.setColour (boxColour);
+		}
+		
+		g.setColour(boxColour.contrasting(0.1f));
+		g.drawImage(getImageForFilter(ft), boxArea.toFloat(), RectanglePlacement::onlyReduceInSize, true);
+		Path hexagon = getHexagonPath(boxArea);
+		g.setColour(boxColour.withAlpha(0.3f));
+		g.fillPath(hexagon);
+		g.setColour(boxColour);
+		g.strokePath(hexagon, PathStrokeType(1.0f));
 
-        g.setColour (findColour (TextEditor::textColourId));
+        /*g.setColour (findColour (TextEditor::textColourId));
         g.setFont (font);
-        g.drawFittedText (getName(), boxArea, Justification::centred, 2);
+        g.drawFittedText (getName(), boxArea, Justification::centred, 2);*/
     }
 
     void resized() override
@@ -423,8 +578,9 @@ struct GraphEditorPanel::PluginComponent   : public Component,
     std::unique_ptr<PopupMenu> menu;
 };
 
-
-//==============================================================================
+/**
+GraphEditorPanel::ConnectorComponent
+*/
 struct GraphEditorPanel::ConnectorComponent   : public Component,
                                                 public SettableTooltipClient
 {
@@ -618,12 +774,18 @@ struct GraphEditorPanel::ConnectorComponent   : public Component,
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConnectorComponent)
 };
 
-
-//==============================================================================
-GraphEditorPanel::GraphEditorPanel (PluginGraph& g)  : graph (g)
+/**
+GraphEditorPanel
+*/
+GraphEditorPanel::GraphEditorPanel (PluginGraph& g)
+	: graph (g), keyboardComponent(nullptr)
 {
+	bgImage = ImageCache::getFromMemory(BinaryData::bg3_jpg, BinaryData::bg3_jpgSize);
 	toolBar.reset(new TwonkToolBar(*this));
 	addAndMakeVisible(toolBar.get());
+	toolBar->setVisible(true);
+	toolBar->setBounds(16, 64, 64, 532);
+	toolBar->setAlwaysOnTop(true);
     graph.addChangeListener (this);
     setOpaque (true);
 }
@@ -638,8 +800,7 @@ GraphEditorPanel::~GraphEditorPanel()
 
 void GraphEditorPanel::paint (Graphics& g)
 {
-	Image bg = ImageCache::getFromMemory(BinaryData::hexagon_png, BinaryData::hexagon_pngSize);
-	g.drawImage(bg, getLocalBounds().toFloat(), RectanglePlacement::centred);
+	g.drawImage(bgImage, getLocalBounds().toFloat(), RectanglePlacement::centred);
 }
 
 void GraphEditorPanel::mouseDown (const MouseEvent& e)
@@ -719,8 +880,10 @@ void GraphEditorPanel::changeListenerCallback (ChangeBroadcaster*)
 
 void GraphEditorPanel::updateComponents()
 {
-	toolBar->setBounds(16,16,64,534);
-
+	if (keyboardComponent)
+	{
+		keyboardComponent->setBounds(90, 300, 400, 150);
+	}
     for (int i = nodes.size(); --i >= 0;)
         if (graph.graph.getNodeForId (nodes.getUnchecked(i)->pluginID) == nullptr)
             nodes.remove (i);
@@ -739,7 +902,7 @@ void GraphEditorPanel::updateComponents()
     {
         if (getComponentForPlugin (f->nodeID) == nullptr)
         {
-            auto* comp = nodes.add (new PluginComponent (*this, f->nodeID));
+			PluginComponent* comp = nodes.add (new PluginComponent (*this, f->nodeID));
             addAndMakeVisible (comp);
             comp->update();
         }
@@ -875,7 +1038,16 @@ void GraphEditorPanel::timerCallback()
     showPopupMenu (originalTouchPos);
 }
 
-//==============================================================================
+void GraphEditorPanel::setKeyboardComponent(TwonkMidiKeyboard *_keyboardComponent)
+{
+	keyboardComponent = _keyboardComponent;
+	addAndMakeVisible(keyboardComponent);
+	updateComponents();
+}
+
+/*
+ * GraphDocumentComponent
+ */
 struct GraphDocumentComponent::TooltipBar   : public Component,
                                               private Timer
 {
@@ -912,7 +1084,6 @@ struct GraphDocumentComponent::TooltipBar   : public Component,
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TooltipBar)
 };
 
-//==============================================================================
 class GraphDocumentComponent::TitleBarComponent    : public Component,
                                                      private Button::Listener
 {
@@ -1008,7 +1179,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TitleBarComponent)
 };
 
-//==============================================================================
 struct GraphDocumentComponent::PluginListBoxModel    : public ListBoxModel,
                                                        public ChangeListener,
                                                        public MouseListener
@@ -1076,10 +1246,7 @@ struct GraphDocumentComponent::PluginListBoxModel    : public ListBoxModel,
     JUCE_DECLARE_NON_COPYABLE (PluginListBoxModel)
 };
 
-//==============================================================================
-GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm,
-                                                AudioDeviceManager& dm,
-                                                KnownPluginList& kpl)
+GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm, AudioDeviceManager& dm, KnownPluginList& kpl)
     : graph (new PluginGraph (fm)),
       deviceManager (dm),
       pluginList (kpl),
@@ -1096,11 +1263,13 @@ void GraphDocumentComponent::init()
 {
     graphPanel.reset (new GraphEditorPanel (*graph));
     addAndMakeVisible (graphPanel.get());
+	
     graphPlayer.setProcessor (&graph->graph);
 
-    //keyState.addListener (&graphPlayer.getMidiMessageCollector());
-    //keyboardComp.reset (new MidiKeyboardComponent (keyState, MidiKeyboardComponent::horizontalKeyboard));
-    //addAndMakeVisible (keyboardComp.get());
+	keyState.addListener (&graphPlayer.getMidiMessageCollector());
+	keyboardComp.reset (new TwonkMidiKeyboard (keyState, MidiKeyboardComponent::horizontalKeyboard));
+	addAndMakeVisible (keyboardComp.get());
+	graphPanel->setKeyboardComponent(keyboardComp.get());
     //statusBar.reset (new TooltipBar());
     //addAndMakeVisible (statusBar.get());
 

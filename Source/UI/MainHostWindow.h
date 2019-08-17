@@ -2,7 +2,7 @@
 
 #include "../Filters/PluginGraph.h"
 #include "GraphEditorPanel.h"
-
+#include "TwonkLookAndFeel.h"
 
 //==============================================================================
 namespace CommandIDs
@@ -78,7 +78,7 @@ private:
 	KnownPluginList knownPluginList;
     KnownPluginList::SortMethod pluginSortMethod;
     Array<PluginDescription> pluginDescriptions;
-
+	TwonkLookAndFeel twonkLookAndFeel;
     class PluginListWindow;
     std::unique_ptr<PluginListWindow> pluginListWindow;
 

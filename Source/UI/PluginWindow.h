@@ -25,7 +25,6 @@
 */
 
 #pragma once
-#include "TwonkFilterPropertiesEditor.h"
 #include "../Filters/IOConfigurationWindow.h"
 
 class PluginWindow : public DocumentWindow

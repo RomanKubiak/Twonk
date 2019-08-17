@@ -40,7 +40,8 @@ class TwonkToolBarStatus;
 */
 class TwonkToolBar  : public Component,
                       public TwonkClockListener,
-                      public Button::Listener
+                      Button::Listener,
+                      public Slider::Listener
 {
 public:
     //==============================================================================
@@ -49,11 +50,14 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-	void buttonClicked (Button *b) override;
+	void buttonClicked (Button *);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
+    void sliderValueChanged (Slider* sliderThatWasMoved) override;
+    void mouseDown (const MouseEvent& e) override;
+    void mouseDrag (const MouseEvent& e) override;
 
 
 
@@ -63,15 +67,21 @@ private:
 	void positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo);
 	void transportStopped();
 	Font labelFont;
+	ComponentAnimator toolbarAnimator;
+	ComponentDragger toolbarDragger;
     //[/UserVariables]
 
     //==============================================================================
     std::unique_ptr<TwonkToolBarButton> buttonConfig;
     std::unique_ptr<TwonkToolBarButton> buttonFilters;
-    std::unique_ptr<TwonkToolBarButton> buttonMinMax;
     std::unique_ptr<TwonkToolBarButton> buttonPlay;
     std::unique_ptr<TwonkToolBarStatus> statusItem;
     std::unique_ptr<TwonkToolBarButton> buttonMidiKeyboard;
+    std::unique_ptr<Slider> tempoSlider;
+    std::unique_ptr<Slider> volumeSlider;
+    std::unique_ptr<Label> tempoLabel;
+    std::unique_ptr<Label> volumeLabel;
+    std::unique_ptr<TwonkToolBarButton> buttonToggle;
 
 
     //==============================================================================

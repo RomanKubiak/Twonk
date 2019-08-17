@@ -1,6 +1,24 @@
 #pragma once
 #include "../../JuceLibraryCode/JuceHeader.h"
 
+/*
+ *	A button that controls the toolbar
+ */
+class TwonkToolBarController : public Button
+{
+public:
+	TwonkToolBarController();
+	~TwonkToolBarController();
+	void paintButton(Graphics &g, bool, bool) override;
+	void triggerClick();
+	void resized();
+
+private:
+	Path roundingHexagon;
+	Colour baseColour;
+	Image filterImage;
+};
+
 class TwonkToolBarButton : public Button
 {
 	public:
