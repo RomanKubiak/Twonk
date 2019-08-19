@@ -14,32 +14,41 @@ namespace BinaryData
     extern const char*   audio_output_png;
     const int            audio_output_pngSize = 9212;
 
-    extern const char*   bg_bee_jpg;
-    const int            bg_bee_jpgSize = 79526;
-
-    extern const char*   bg_hexagons_3d_jpg;
-    const int            bg_hexagons_3d_jpgSize = 135928;
-
-    extern const char*   bg_hexagons_with_blue_jpg;
-    const int            bg_hexagons_with_blue_jpgSize = 202519;
-
-    extern const char*   bg_hexagons_with_green_jpg;
-    const int            bg_hexagons_with_green_jpgSize = 80245;
+    extern const char*   bg0_jpg;
+    const int            bg0_jpgSize = 202519;
 
     extern const char*   bg1_jpg;
     const int            bg1_jpgSize = 91962;
 
+    extern const char*   bg2_jpg;
+    const int            bg2_jpgSize = 80245;
+
     extern const char*   bg3_jpg;
     const int            bg3_jpgSize = 93151;
+
+    extern const char*   bg4_jpg;
+    const int            bg4_jpgSize = 135928;
+
+    extern const char*   bg5_jpg;
+    const int            bg5_jpgSize = 79526;
 
     extern const char*   icon_audio_dev_png;
     const int            icon_audio_dev_pngSize = 2555;
 
+    extern const char*   icon_close_png;
+    const int            icon_close_pngSize = 6415;
+
     extern const char*   icon_cog_png;
     const int            icon_cog_pngSize = 2627;
 
+    extern const char*   icon_delete_png;
+    const int            icon_delete_pngSize = 4129;
+
     extern const char*   icon_effect_png;
     const int            icon_effect_pngSize = 14205;
+
+    extern const char*   icon_floppy_png;
+    const int            icon_floppy_pngSize = 3363;
 
     extern const char*   icon_midi_64_png;
     const int            icon_midi_64_pngSize = 6908;
@@ -62,8 +71,17 @@ namespace BinaryData
     extern const char*   icon_plugin_internal_png;
     const int            icon_plugin_internal_pngSize = 2439;
 
+    extern const char*   icon_project_png;
+    const int            icon_project_pngSize = 7672;
+
     extern const char*   icon_question_jpg;
     const int            icon_question_jpgSize = 51104;
+
+    extern const char*   icon_rename_png;
+    const int            icon_rename_pngSize = 4005;
+
+    extern const char*   icon_slide_right_png;
+    const int            icon_slide_right_pngSize = 22518;
 
     extern const char*   icon_stop_png;
     const int            icon_stop_pngSize = 563;
@@ -87,7 +105,7 @@ namespace BinaryData
     const int            terminess_ttfSize = 879176;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 26;
+    const int namedResourceListSize = 32;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

@@ -185,6 +185,7 @@ void PluginGraph::newDocument()
 
 Result PluginGraph::loadDocument (const File& file)
 {
+	DBG("PluginGraph::loadDocument");
     if (auto xml = parseXMLIfTagMatches (file, "FILTERGRAPH"))
     {
         graph.removeChangeListener (this);
@@ -214,6 +215,7 @@ Result PluginGraph::saveDocument (const File& file)
 
 File PluginGraph::getLastDocumentOpened()
 {
+	DBG("PluginGraph::getLastDocumentOpened");
     RecentlyOpenedFilesList recentFiles;
     recentFiles.restoreFromString (getAppProperties().getUserSettings()
                                         ->getValue ("recentFilterGraphFiles"));
@@ -233,7 +235,6 @@ void PluginGraph::setLastDocumentOpened (const File& file)
         ->setValue ("recentFilterGraphFiles", recentFiles.toString());
 }
 
-//==============================================================================
 static void readBusLayoutFromXml (AudioProcessor::BusesLayout& busesLayout, AudioProcessor& plugin,
                                   const XmlElement& xml, bool isInput)
 {
@@ -274,7 +275,6 @@ static void readBusLayoutFromXml (AudioProcessor::BusesLayout& busesLayout, Audi
     }
 }
 
-//==============================================================================
 static XmlElement* createBusLayoutXml (const AudioProcessor::BusesLayout& layout, const bool isInput)
 {
     auto& buses = isInput ? layout.inputBuses
@@ -443,5 +443,5 @@ void PluginGraph::restoreFromXml (const XmlElement& xml)
 File PluginGraph::getDefaultGraphDocumentOnMobile()
 {
     auto persistantStorageLocation = File::getSpecialLocation (File::userApplicationDataDirectory);
-    return persistantStorageLocation.getChildFile ("state.filtergraph");
+    return persistantStorageLocation.getChildFile ("state.twonk");
 }

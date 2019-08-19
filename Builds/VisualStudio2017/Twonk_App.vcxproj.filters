@@ -616,7 +616,16 @@
     <ClCompile Include="..\..\Source\UI\TwonkLookAndFeel.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkFileMenu.cpp">
+      <Filter>Twonk\Source\UI\Widgets</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkMidiKeyboard.cpp">
+      <Filter>Twonk\Source\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkProgramList.cpp">
+      <Filter>Twonk\Source\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkSaveFileDialog.cpp">
       <Filter>Twonk\Source\UI\Widgets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkToolBarStatus.cpp">
@@ -2754,7 +2763,16 @@
     <ClInclude Include="..\..\Source\UI\TwonkLookAndFeel.h">
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkFileMenu.h">
+      <Filter>Twonk\Source\UI\Widgets</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkMidiKeyboard.h">
+      <Filter>Twonk\Source\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkProgramList.h">
+      <Filter>Twonk\Source\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkSaveFileDialog.h">
       <Filter>Twonk\Source\UI\Widgets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkToolBarStatus.h">
@@ -4886,31 +4904,40 @@
     <None Include="..\..\Source\Resources\audio_output.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
-    <None Include="..\..\Source\Resources\bg_bee.jpg">
-      <Filter>Twonk\Source\Resources</Filter>
-    </None>
-    <None Include="..\..\Source\Resources\bg_hexagons_3d.jpg">
-      <Filter>Twonk\Source\Resources</Filter>
-    </None>
-    <None Include="..\..\Source\Resources\bg_hexagons_with_blue.jpg">
-      <Filter>Twonk\Source\Resources</Filter>
-    </None>
-    <None Include="..\..\Source\Resources\bg_hexagons_with_green.jpg">
+    <None Include="..\..\Source\Resources\bg0.jpg">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\bg1.jpg">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
+    <None Include="..\..\Source\Resources\bg2.jpg">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
     <None Include="..\..\Source\Resources\bg3.jpg">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\bg4.jpg">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\bg5.jpg">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\icon_audio_dev.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
+    <None Include="..\..\Source\Resources\icon_close.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
     <None Include="..\..\Source\Resources\icon_cog.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
+    <None Include="..\..\Source\Resources\icon_delete.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
     <None Include="..\..\Source\Resources\icon_effect.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_floppy.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\icon_midi_64.png">
@@ -4934,7 +4961,16 @@
     <None Include="..\..\Source\Resources\icon_plugin_internal.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
+    <None Include="..\..\Source\Resources\icon_project.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
     <None Include="..\..\Source\Resources\icon_question.jpg">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_rename.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_slide_right.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\icon_stop.png">

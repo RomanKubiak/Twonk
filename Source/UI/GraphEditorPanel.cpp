@@ -6,8 +6,9 @@
 #include "TwonkToolBarButton.h"
 #include "TwonkMidiKeyboard.h"
 #include "TwonkFilterComponent.h"
+#include "TwonkFileMenu.h"
 #include "Twonk.h"
-
+#include "TwonkProgramList.h"
 /**
   GraphEditorPanel
  */
@@ -778,7 +779,11 @@ struct GraphEditorPanel::ConnectorComponent   : public Component,
 GraphEditorPanel
 */
 GraphEditorPanel::GraphEditorPanel (PluginGraph& g)
-	: graph (g), keyboardComponent(nullptr)
+	: graph (g), keyboardComponent(nullptr),
+	directoryListThread("Twonk programs lister"),
+	twonkDocumentFileFilter("*.twonk", "", "Twonk programs"),
+	directoryContentsList(&twonkDocumentFileFilter, directoryListThread),
+	twonkProgramListWrapper(directoryContentsList, g)
 {
 	bgImage = ImageCache::getFromMemory(BinaryData::bg3_jpg, BinaryData::bg3_jpgSize);
 	toolBar.reset(new TwonkToolBar(*this));
@@ -786,8 +791,18 @@ GraphEditorPanel::GraphEditorPanel (PluginGraph& g)
 	toolBar->setVisible(true);
 	toolBar->setBounds(16, 64, 64, 532);
 	toolBar->setAlwaysOnTop(true);
+	
     graph.addChangeListener (this);
     setOpaque (true);
+	directoryContentsList.setDirectory(File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Twonk"), false, true);
+	directoryListThread.startThread(1);
+
+	addAndMakeVisible(twonkProgramListWrapper);
+	twonkProgramListWrapper.list.setVisible(true);
+	twonkProgramListWrapper.list.addListener(this);
+	twonkProgramListWrapper.list.setColour(ListBox::backgroundColourId, Colours::white.withAlpha(0.5f));
+	twonkProgramListWrapper.list.setRowHeight(48);
+	twonkProgramListWrapper.setVisible(false);
 }
 
 GraphEditorPanel::~GraphEditorPanel()
@@ -881,9 +896,10 @@ void GraphEditorPanel::changeListenerCallback (ChangeBroadcaster*)
 void GraphEditorPanel::updateComponents()
 {
 	if (keyboardComponent)
-	{
 		keyboardComponent->setBounds(90, 300, 400, 150);
-	}
+
+	twonkProgramListWrapper.setBounds(getWidth() - 248, 16, 248, getHeight() - 32);
+
     for (int i = nodes.size(); --i >= 0;)
         if (graph.graph.getNodeForId (nodes.getUnchecked(i)->pluginID) == nullptr)
             nodes.remove (i);
@@ -1042,9 +1058,37 @@ void GraphEditorPanel::setKeyboardComponent(TwonkMidiKeyboard *_keyboardComponen
 {
 	keyboardComponent = _keyboardComponent;
 	addAndMakeVisible(keyboardComponent);
+	keyboardComponent->setVisible(true);
+	
 	updateComponents();
 }
 
+void GraphEditorPanel::toggleProgramMenu()
+{
+	twonkProgramListWrapper.setVisible(!twonkProgramListWrapper.isVisible());
+}
+
+void GraphEditorPanel::selectionChanged()
+{
+
+}
+
+void GraphEditorPanel::fileClicked(const File &file, const MouseEvent &e)
+{
+
+}
+
+void GraphEditorPanel::fileDoubleClicked(const File &file)
+{
+}
+
+void GraphEditorPanel::toggleTwonkFileMenu()
+{
+	if (toolBar->getWidth() == 400)
+		toolBar->setSize(64, 384);
+	else
+		toolBar->setSize(400, 384);
+}
 /*
  * GraphDocumentComponent
  */
@@ -1269,10 +1313,11 @@ void GraphDocumentComponent::init()
 	keyState.addListener (&graphPlayer.getMidiMessageCollector());
 	keyboardComp.reset (new TwonkMidiKeyboard (keyState, MidiKeyboardComponent::horizontalKeyboard));
 	addAndMakeVisible (keyboardComp.get());
+	
 	graphPanel->setKeyboardComponent(keyboardComp.get());
-    //statusBar.reset (new TooltipBar());
-    //addAndMakeVisible (statusBar.get());
-
+    statusBar.reset (new TooltipBar());
+    addAndMakeVisible (statusBar.get());
+	tooltipWindow.reset(new TooltipWindow(this, 300));
     graphPanel->updateComponents();
 
     if (isOnTouchDevice())

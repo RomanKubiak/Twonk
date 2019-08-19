@@ -113,7 +113,7 @@
       <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)\</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)\</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level2</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/w44265 /w45038 /w44062 /w44244 %(AdditionalOptions)</AdditionalOptions>
@@ -185,7 +185,10 @@
     <ClCompile Include="..\..\Source\Filters\IOConfigurationWindow.cpp"/>
     <ClCompile Include="..\..\Source\Filters\PluginGraph.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkLookAndFeel.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkFileMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkMidiKeyboard.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkProgramList.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkSaveFileDialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkToolBarStatus.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkToolBarButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkToolBar.cpp"/>
@@ -2048,7 +2051,10 @@
     <ClInclude Include="..\..\Source\Filters\IOConfigurationWindow.h"/>
     <ClInclude Include="..\..\Source\Filters\PluginGraph.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkLookAndFeel.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkFileMenu.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkMidiKeyboard.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkProgramList.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkSaveFileDialog.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkToolBarStatus.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkToolBarButton.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkToolBar.h"/>
@@ -2760,15 +2766,18 @@
   <ItemGroup>
     <None Include="..\..\Source\Resources\audio_input.png"/>
     <None Include="..\..\Source\Resources\audio_output.png"/>
-    <None Include="..\..\Source\Resources\bg_bee.jpg"/>
-    <None Include="..\..\Source\Resources\bg_hexagons_3d.jpg"/>
-    <None Include="..\..\Source\Resources\bg_hexagons_with_blue.jpg"/>
-    <None Include="..\..\Source\Resources\bg_hexagons_with_green.jpg"/>
+    <None Include="..\..\Source\Resources\bg0.jpg"/>
     <None Include="..\..\Source\Resources\bg1.jpg"/>
+    <None Include="..\..\Source\Resources\bg2.jpg"/>
     <None Include="..\..\Source\Resources\bg3.jpg"/>
+    <None Include="..\..\Source\Resources\bg4.jpg"/>
+    <None Include="..\..\Source\Resources\bg5.jpg"/>
     <None Include="..\..\Source\Resources\icon_audio_dev.png"/>
+    <None Include="..\..\Source\Resources\icon_close.png"/>
     <None Include="..\..\Source\Resources\icon_cog.png"/>
+    <None Include="..\..\Source\Resources\icon_delete.png"/>
     <None Include="..\..\Source\Resources\icon_effect.png"/>
+    <None Include="..\..\Source\Resources\icon_floppy.png"/>
     <None Include="..\..\Source\Resources\icon_midi_64.png"/>
     <None Include="..\..\Source\Resources\icon_min_max.png"/>
     <None Include="..\..\Source\Resources\icon_pause.png"/>
@@ -2776,7 +2785,10 @@
     <None Include="..\..\Source\Resources\icon_play.png"/>
     <None Include="..\..\Source\Resources\icon_plugin_external.png"/>
     <None Include="..\..\Source\Resources\icon_plugin_internal.png"/>
+    <None Include="..\..\Source\Resources\icon_project.png"/>
     <None Include="..\..\Source\Resources\icon_question.jpg"/>
+    <None Include="..\..\Source\Resources\icon_rename.png"/>
+    <None Include="..\..\Source\Resources\icon_slide_right.png"/>
     <None Include="..\..\Source\Resources\icon_stop.png"/>
     <None Include="..\..\Source\Resources\icon_synth.png"/>
     <None Include="..\..\Source\Resources\LiberationSans-Bold.ttf"/>

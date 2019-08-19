@@ -10,7 +10,6 @@
 
 #pragma once
 #include "Twonk.h"
-#include "Filters/FilterGraph.h"
 #include "Filters/InternalPlugins.h"
 
 

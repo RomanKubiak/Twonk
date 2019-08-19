@@ -9,7 +9,6 @@
 */
 
 #pragma once
-#include "../Filters/FilterGraph.h"
 #include "GraphEditorPanel.h"
 
 class TwonkFilterComponent;

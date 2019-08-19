@@ -30,14 +30,4 @@
 
 #define MIDI_KEYBOARD_HEIGHT 0
 
-static const Font getDefaultTwonkSansFont()
-{
-	Typeface::Ptr t = Typeface::createSystemTypefaceFor(BinaryData::LiberationSansRegular_ttf, BinaryData::LiberationSansBold_ttfSize);
-	return (Font(t));
-}
-
-static const Font getDefaultTwonkMonoFont()
-{
-	Typeface::Ptr t = Typeface::createSystemTypefaceFor(BinaryData::terminess_ttf, BinaryData::terminess_ttfSize);
-	return (Font(t));
-}
+#define IMG(n) ImageCache::getFromMemory(BinaryData::n, BinaryData::n##Size)

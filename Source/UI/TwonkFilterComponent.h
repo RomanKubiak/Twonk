@@ -1,5 +1,4 @@
 #pragma once
-#include "../Filters/FilterGraph.h"
 #include "TwonkFilterComponentPin.h"
 #include "GraphEditorPanel.h"
 #include "Filters/InternalPlugins.h"

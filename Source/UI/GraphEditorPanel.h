@@ -1,18 +1,21 @@
 #pragma once
 
 #include "../Filters/PluginGraph.h"
+#include "TwonkProgramList.h"
 class MainHostWindow;
 class TwonkToolBar;
 class TwonkToolBarButton;
 class TwonkToolBarController;
 class TwonkMidiKeyboard;
+class TwonkFileMenu;
 
 /**
     A panel that displays and edits a PluginGraph.
 */
 class GraphEditorPanel   : public Component,
                            public ChangeListener,
-                           private Timer
+                           private Timer,
+						   public FileBrowserListener
 {
 public:
     GraphEditorPanel (PluginGraph& graph);
@@ -43,6 +46,13 @@ public:
     void endDraggingConnector (const MouseEvent&);
 	void setKeyboardComponent(TwonkMidiKeyboard *_keyboardComponent);
 	TwonkMidiKeyboard *getTwonkMidiKeyboardComponent() { return keyboardComponent; }
+	void toggleTwonkFileMenu();
+	void toggleProgramMenu();
+	void selectionChanged();
+	void fileClicked(const File &file, const MouseEvent &e);
+	void fileDoubleClicked(const File &file);
+	void browserRootChanged(const File &newRoot) {}
+	void updateTwonkDocuments() { directoryContentsList.refresh(); }
     //==============================================================================
     PluginGraph& graph;
 	enum FilterType
@@ -70,13 +80,16 @@ private:
     std::unique_ptr<ConnectorComponent> draggingConnector;
     std::unique_ptr<PopupMenu> menu;
 	std::unique_ptr<TwonkToolBar> toolBar;
-	
     PluginComponent* getComponentForPlugin (AudioProcessorGraph::NodeID) const;
     ConnectorComponent* getComponentForConnection (const AudioProcessorGraph::Connection&) const;
     PinComponent* findPinAt (Point<float>) const;
 	TwonkMidiKeyboard *keyboardComponent;
 	Image bgImage;
 	ComponentAnimator toolBarAnimator;
+	WildcardFileFilter twonkDocumentFileFilter;
+	TimeSliceThread directoryListThread;
+	DirectoryContentsList directoryContentsList;
+	TwonkProgramListWrapper twonkProgramListWrapper;
     //==============================================================================
     Point<int> originalTouchPos;
 
@@ -125,29 +138,24 @@ public:
     //==============================================================================
     void showSidePanel (bool isSettingsPanel);
     void hideLastSidePanel();
-
     BurgerMenuComponent burgerMenu;
 
 private:
     //==============================================================================
     AudioDeviceManager& deviceManager;
     KnownPluginList& pluginList;
-
     AudioProcessorPlayer graphPlayer;
-    
-
     struct TooltipBar;
     std::unique_ptr<TooltipBar> statusBar;
     class TitleBarComponent;
     std::unique_ptr<TitleBarComponent> titleBarComponent;
 	std::unique_ptr<TwonkMidiKeyboard> keyboardComp;
+	std::unique_ptr<TooltipWindow> tooltipWindow;
 	MidiKeyboardState keyState;
     //==============================================================================
     struct PluginListBoxModel;
     std::unique_ptr<PluginListBoxModel> pluginListBoxModel;
-
     ListBox pluginListBox;
-
     SidePanel mobileSettingsSidePanel { "Settings", 300, true };
     SidePanel pluginListSidePanel    { "Plugins", 250, false };
     SidePanel* lastOpenedSidePanel = nullptr;

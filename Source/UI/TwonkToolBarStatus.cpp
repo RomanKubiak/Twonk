@@ -9,6 +9,7 @@
 */
 
 #include "TwonkToolBarStatus.h"
+#include "MainHostWindow.h"
 #include "Twonk.h"
 
 TwonkToolBarStatus::TwonkToolBarStatus()

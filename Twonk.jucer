@@ -5,14 +5,14 @@
               bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.4"
               companyName="Instigator" displaySplashScreen="0" reportAppUsage="0"
               headerPath="../../vst3sdk&#10;../../Source/FX/SFZ/SFZero/&#10;../../Source/&#10;../../JuceLibraryCode/"
-              companyWebsite="http://sciek.pl">
+              companyWebsite="http://sciek.pl" includeBinaryInJuceHeader="0">
   <EXPORTFORMATS>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" vstFolder="" vst3Folder=""
                 smallIcon="c97aUr" bigIcon="c97aUr" extraCompilerFlags="-w" enableGNUExtensions="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" targetName="Twonk" libraryPath="/usr/X11R6/lib/"
                        headerPath="/home/atom/devel//Twonk/JUCE&#10;/home/atom/devel/Twonk/JUCE/modules"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="Twonk"
+        <CONFIGURATION name="Release" isDebug="0" optimisation="6" targetName="Twonk"
                        libraryPath="/usr/X11R6/lib/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -36,7 +36,8 @@
             extraDefs="_USE_MATH_DEFINES">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" targetName="Twonk" winWarningLevel="2"/>
-        <CONFIGURATION name="Release" isDebug="0" targetName="Twonk" debugInformationFormat="ProgramDatabase"/>
+        <CONFIGURATION name="Release" isDebug="0" targetName="Twonk" debugInformationFormat="ProgramDatabase"
+                       winWarningLevel="2"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../modules"/>
@@ -104,19 +105,19 @@
         <FILE id="H5ZAjx" name="audio_input.png" compile="0" resource="1" file="Source/Resources/audio_input.png"/>
         <FILE id="Oj2KSL" name="audio_output.png" compile="0" resource="1"
               file="Source/Resources/audio_output.png"/>
-        <FILE id="uctgvk" name="bg_bee.jpg" compile="0" resource="1" file="Source/Resources/bg_bee.jpg"/>
-        <FILE id="xrLEBZ" name="bg_hexagons_3d.jpg" compile="0" resource="1"
-              file="Source/Resources/bg_hexagons_3d.jpg"/>
-        <FILE id="LdSYGG" name="bg_hexagons_with_blue.jpg" compile="0" resource="1"
-              file="Source/Resources/bg_hexagons_with_blue.jpg"/>
-        <FILE id="OWfRKA" name="bg_hexagons_with_green.jpg" compile="0" resource="1"
-              file="Source/Resources/bg_hexagons_with_green.jpg"/>
+        <FILE id="Gs1Nvc" name="bg0.jpg" compile="0" resource="1" file="Source/Resources/bg0.jpg"/>
         <FILE id="mCSsmv" name="bg1.jpg" compile="0" resource="1" file="Source/Resources/bg1.jpg"/>
+        <FILE id="Ww6TsD" name="bg2.jpg" compile="0" resource="1" file="Source/Resources/bg2.jpg"/>
         <FILE id="mbcba2" name="bg3.jpg" compile="0" resource="1" file="Source/Resources/bg3.jpg"/>
+        <FILE id="kzNruT" name="bg4.jpg" compile="0" resource="1" file="Source/Resources/bg4.jpg"/>
+        <FILE id="OFf4Xi" name="bg5.jpg" compile="0" resource="1" file="Source/Resources/bg5.jpg"/>
         <FILE id="FjHJuC" name="icon_audio_dev.png" compile="0" resource="1"
               file="Source/Resources/icon_audio_dev.png"/>
+        <FILE id="mykT67" name="icon_close.png" compile="0" resource="1" file="Source/Resources/icon_close.png"/>
         <FILE id="Q6aGS5" name="icon_cog.png" compile="0" resource="1" file="Source/Resources/icon_cog.png"/>
+        <FILE id="Whhw2e" name="icon_delete.png" compile="0" resource="1" file="Source/Resources/icon_delete.png"/>
         <FILE id="H4G6Hv" name="icon_effect.png" compile="0" resource="1" file="Source/Resources/icon_effect.png"/>
+        <FILE id="G5xVDO" name="icon_floppy.png" compile="0" resource="1" file="Source/Resources/icon_floppy.png"/>
         <FILE id="LAGaTo" name="icon_midi_64.png" compile="0" resource="1"
               file="Source/Resources/icon_midi_64.png"/>
         <FILE id="D0HAK8" name="icon_min_max.png" compile="0" resource="1"
@@ -128,8 +129,13 @@
               file="Source/Resources/icon_plugin_external.png"/>
         <FILE id="pxdYXH" name="icon_plugin_internal.png" compile="0" resource="1"
               file="Source/Resources/icon_plugin_internal.png"/>
+        <FILE id="eq9UHQ" name="icon_project.png" compile="0" resource="1"
+              file="Source/Resources/icon_project.png"/>
         <FILE id="QSOoL8" name="icon_question.jpg" compile="0" resource="1"
               file="Source/Resources/icon_question.jpg"/>
+        <FILE id="R71z15" name="icon_rename.png" compile="0" resource="1" file="Source/Resources/icon_rename.png"/>
+        <FILE id="QBwYOR" name="icon_slide_right.png" compile="0" resource="1"
+              file="Source/Resources/icon_slide_right.png"/>
         <FILE id="d5P41I" name="icon_stop.png" compile="0" resource="1" file="Source/Resources/icon_stop.png"/>
         <FILE id="XLhCGj" name="icon_synth.png" compile="0" resource="1" file="Source/Resources/icon_synth.png"/>
         <FILE id="FipRpv" name="LiberationSans-Bold.ttf" compile="0" resource="1"
@@ -343,10 +349,21 @@
         <FILE id="c70QW5" name="TwonkLookAndFeel.h" compile="0" resource="0"
               file="Source/UI/TwonkLookAndFeel.h"/>
         <GROUP id="{71FF4B59-9276-84A2-0856-BCB1D3B35E2F}" name="Widgets">
+          <FILE id="km2XlS" name="TwonkFileMenu.cpp" compile="1" resource="0"
+                file="Source/UI/TwonkFileMenu.cpp"/>
+          <FILE id="cVhdmv" name="TwonkFileMenu.h" compile="0" resource="0" file="Source/UI/TwonkFileMenu.h"/>
           <FILE id="Bm6VFp" name="TwonkMidiKeyboard.cpp" compile="1" resource="0"
                 file="Source/UI/TwonkMidiKeyboard.cpp"/>
           <FILE id="HBO5P9" name="TwonkMidiKeyboard.h" compile="0" resource="0"
                 file="Source/UI/TwonkMidiKeyboard.h"/>
+          <FILE id="LsJ9GG" name="TwonkProgramList.cpp" compile="1" resource="0"
+                file="Source/UI/TwonkProgramList.cpp"/>
+          <FILE id="aW23li" name="TwonkProgramList.h" compile="0" resource="0"
+                file="Source/UI/TwonkProgramList.h"/>
+          <FILE id="jEIsLL" name="TwonkSaveFileDialog.cpp" compile="1" resource="0"
+                file="Source/UI/TwonkSaveFileDialog.cpp"/>
+          <FILE id="EuFUlW" name="TwonkSaveFileDialog.h" compile="0" resource="0"
+                file="Source/UI/TwonkSaveFileDialog.h"/>
         </GROUP>
         <GROUP id="{AF79F64E-CEFE-4B2E-D2D0-D3E3AD79AD10}" name="ToolBar">
           <FILE id="FUFWKN" name="TwonkToolBarStatus.cpp" compile="1" resource="0"

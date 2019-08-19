@@ -28,6 +28,7 @@ class TwonkToolBarButton;
 class TwonkToolBarStatus;
 //[/Headers]
 
+#include "TwonkFileMenu.h"
 
 
 //==============================================================================
@@ -40,8 +41,7 @@ class TwonkToolBarStatus;
 */
 class TwonkToolBar  : public Component,
                       public TwonkClockListener,
-                      Button::Listener,
-                      public Slider::Listener
+                      Button::Listener
 {
 public:
     //==============================================================================
@@ -55,7 +55,6 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
 
@@ -77,11 +76,9 @@ private:
     std::unique_ptr<TwonkToolBarButton> buttonPlay;
     std::unique_ptr<TwonkToolBarStatus> statusItem;
     std::unique_ptr<TwonkToolBarButton> buttonMidiKeyboard;
-    std::unique_ptr<Slider> tempoSlider;
-    std::unique_ptr<Slider> volumeSlider;
-    std::unique_ptr<Label> tempoLabel;
-    std::unique_ptr<Label> volumeLabel;
     std::unique_ptr<TwonkToolBarButton> buttonToggle;
+    std::unique_ptr<TwonkToolBarButton> buttonFile;
+    std::unique_ptr<TwonkFileMenu> twonkFileMenu;
 
 
     //==============================================================================

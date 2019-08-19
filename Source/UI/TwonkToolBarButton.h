@@ -28,6 +28,7 @@ class TwonkToolBarButton : public Button
 		void setIcon(Image _icon) { icon = _icon;  }
 		void setBaseColour(Colour _baseColour) { baseColour = _baseColour;  }
 		void resized() override;
+
 	private:
 		Colour baseColour;
 		Path roundingHexagon;

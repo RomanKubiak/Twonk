@@ -60,7 +60,7 @@ ifeq ($(CONFIG),Release)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_TARGET_APP := Twonk
 
-  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -Os -w $(CFLAGS)
+  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -Ofast -w $(CFLAGS)
   JUCE_CXXFLAGS += $(JUCE_CFLAGS) -std=gnu++14 $(CXXFLAGS)
   JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -L/usr/X11R6/lib/ $(shell pkg-config --libs alsa x11 xinerama xext freetype2 libcurl) -fvisibility=hidden -lrt -ldl -lpthread $(LDFLAGS)
 
@@ -113,7 +113,10 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/IOConfigurationWindow_beb677cd.o \
   $(JUCE_OBJDIR)/PluginGraph_1fc57488.o \
   $(JUCE_OBJDIR)/TwonkLookAndFeel_5aa9c071.o \
+  $(JUCE_OBJDIR)/TwonkFileMenu_d3daab2.o \
   $(JUCE_OBJDIR)/TwonkMidiKeyboard_ca27245f.o \
+  $(JUCE_OBJDIR)/TwonkProgramList_f2921f35.o \
+  $(JUCE_OBJDIR)/TwonkSaveFileDialog_dd504478.o \
   $(JUCE_OBJDIR)/TwonkToolBarStatus_6bd5820.o \
   $(JUCE_OBJDIR)/TwonkToolBarButton_d540f60.o \
   $(JUCE_OBJDIR)/TwonkToolBar_fcb3ebce.o \
@@ -375,9 +378,24 @@ $(JUCE_OBJDIR)/TwonkLookAndFeel_5aa9c071.o: ../../Source/UI/TwonkLookAndFeel.cpp
 	@echo "Compiling TwonkLookAndFeel.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/TwonkFileMenu_d3daab2.o: ../../Source/UI/TwonkFileMenu.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkFileMenu.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/TwonkMidiKeyboard_ca27245f.o: ../../Source/UI/TwonkMidiKeyboard.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkMidiKeyboard.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkProgramList_f2921f35.o: ../../Source/UI/TwonkProgramList.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkProgramList.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkSaveFileDialog_dd504478.o: ../../Source/UI/TwonkSaveFileDialog.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkSaveFileDialog.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkToolBarStatus_6bd5820.o: ../../Source/UI/TwonkToolBarStatus.cpp

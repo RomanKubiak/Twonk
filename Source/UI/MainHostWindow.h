@@ -3,6 +3,19 @@
 #include "../Filters/PluginGraph.h"
 #include "GraphEditorPanel.h"
 #include "TwonkLookAndFeel.h"
+#include "BinaryData.h"
+
+static const Font getDefaultTwonkSansFont()
+{
+	Typeface::Ptr t = Typeface::createSystemTypefaceFor(BinaryData::LiberationSansRegular_ttf, BinaryData::LiberationSansBold_ttfSize);
+	return (Font(t));
+}
+
+static const Font getDefaultTwonkMonoFont()
+{
+	Typeface::Ptr t = Typeface::createSystemTypefaceFor(BinaryData::terminess_ttf, BinaryData::terminess_ttfSize);
+	return (Font(t));
+}
 
 //==============================================================================
 namespace CommandIDs
@@ -18,6 +31,7 @@ namespace CommandIDs
     static const int aboutBox               = 0x30300;
     static const int allWindowsForward      = 0x30400;
     static const int toggleDoublePrecision  = 0x30500;
+	static const int toggleProgramPanel		= 0x30600;
 }
 
 ApplicationCommandManager& getCommandManager();
@@ -72,7 +86,6 @@ private:
     //==============================================================================
     AudioDeviceManager deviceManager;
     AudioPluginFormatManager formatManager;
-
     Array<PluginDescription> internalTypes;
 	Array<PluginDescription> twonkTypes;
 	KnownPluginList knownPluginList;
@@ -81,7 +94,7 @@ private:
 	TwonkLookAndFeel twonkLookAndFeel;
     class PluginListWindow;
     std::unique_ptr<PluginListWindow> pluginListWindow;
-
+	
     void showAudioSettings();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainHostWindow)

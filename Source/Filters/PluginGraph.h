@@ -27,8 +27,8 @@ public:
     void audioProcessorChanged (AudioProcessor*) override { changed(); }
     std::unique_ptr<XmlElement> createXml() const;
     void restoreFromXml (const XmlElement&);
-    static const char* getFilenameSuffix()      { return ".filtergraph"; }
-    static const char* getFilenameWildcard()    { return "*.filtergraph"; }
+    static const char* getFilenameSuffix()      { return ".twonk"; }
+    static const char* getFilenameWildcard()    { return "*.twonk"; }
     void newDocument();
     String getDocumentTitle() override;
     Result loadDocument (const File& file) override;

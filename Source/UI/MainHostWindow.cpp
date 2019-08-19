@@ -257,7 +257,7 @@ PopupMenu MainHostWindow::getMenuForIndex (int topLevelMenuIndex, const String& 
         menu.addSeparator();
         menu.addCommandItem (&getCommandManager(), CommandIDs::showAudioSettings);
         menu.addCommandItem (&getCommandManager(), CommandIDs::toggleDoublePrecision);
-
+		menu.addCommandItem (&getCommandManager(), CommandIDs::toggleProgramPanel);
         menu.addSeparator();
         menu.addCommandItem (&getCommandManager(), CommandIDs::aboutBox);
     }
@@ -366,6 +366,7 @@ void MainHostWindow::getAllCommands (Array<CommandID>& commands)
                               CommandIDs::showPluginListEditor,
                               CommandIDs::showAudioSettings,
                               CommandIDs::toggleDoublePrecision,
+							  CommandIDs::toggleProgramPanel,
                               CommandIDs::aboutBox,
                               CommandIDs::allWindowsForward
                             };
@@ -417,6 +418,11 @@ void MainHostWindow::getCommandInfo (const CommandID commandID, ApplicationComma
         updatePrecisionMenuItem (result);
         break;
 
+	case CommandIDs::toggleProgramPanel:
+		result.setInfo("Toggles stored Twonk programs to load", String(), category, 0);
+		result.addDefaultKeypress ('v', ModifierKeys::commandModifier);
+		break;
+		
     case CommandIDs::aboutBox:
         result.setInfo ("About...", String(), category, 0);
         break;
@@ -453,7 +459,7 @@ bool MainHostWindow::perform (const InvocationInfo& info)
 
     case CommandIDs::saveAs:
         if (graphHolder != nullptr && graphHolder->graph != nullptr)
-            graphHolder->graph->saveAs (File(), true, true, true);
+            graphHolder->graph->saveAs (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Twonk"), true, true, true);
         break;
    #endif
 
@@ -484,6 +490,13 @@ bool MainHostWindow::perform (const InvocationInfo& info)
                 graphHolder->setDoublePrecision (newIsDoublePrecision);
         }
         break;
+
+	case CommandIDs::toggleProgramPanel:
+		if (graphHolder != nullptr)
+		{
+			graphHolder->graphPanel->toggleProgramMenu();
+		}
+		break;
 
     case CommandIDs::aboutBox:
         // TODO

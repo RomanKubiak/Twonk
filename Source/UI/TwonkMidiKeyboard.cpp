@@ -2,6 +2,10 @@
 #include "TwonkToolBarButton.h"
 #include "Twonk.h"
 #define DRAGGING_HEX_SIZE 32
+
+/**
+  holds the actual keyboard with resizing sliders etc
+*/
 TwonkMidiKeyboard::TwonkMidiKeyboard(MidiKeyboardState &state, MidiKeyboardComponent::Orientation orientation)
 {
 	corner.reset(new ResizableCornerComponent(this, nullptr));
