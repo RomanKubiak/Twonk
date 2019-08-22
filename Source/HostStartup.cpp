@@ -1,7 +1,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "UI/MainHostWindow.h"
 #include "Filters/InternalPlugins.h"
-
+#include "Twonk.h"
 #if ! (JUCE_PLUGINHOST_VST || JUCE_PLUGINHOST_VST3 || JUCE_PLUGINHOST_AU)
  #error "If you're building the audio plugin host, you probably want to enable VST and/or AU support"
 #endif
@@ -25,7 +25,7 @@ public:
 
         appProperties.reset (new ApplicationProperties());
         appProperties->setStorageParameters (options);
-
+		appProperties->getUserSettings()->setValue("lastPluginScanPath_VST", GET_TWONK_PLUGINS_DIR().getFullPathName());
         mainWindow.reset (new MainHostWindow());
         mainWindow->setUsingNativeTitleBar (true);
 
@@ -47,11 +47,9 @@ public:
 
     void handleAsyncUpdate() override
     {
+		DBG("PluginHostApp::handleAsyncUpdate");
         File fileToOpen;
 
-       #if JUCE_ANDROID || JUCE_IOS
-        fileToOpen = PluginGraph::getDefaultGraphDocumentOnMobile();
-       #else
         for (int i = 0; i < getCommandLineParameterArray().size(); ++i)
         {
             fileToOpen = File::getCurrentWorkingDirectory().getChildFile (getCommandLineParameterArray()[i]);
@@ -59,21 +57,49 @@ public:
             if (fileToOpen.existsAsFile())
                 break;
         }
-       #endif
 
+		
         if (! fileToOpen.existsAsFile())
         {
             RecentlyOpenedFilesList recentFiles;
             recentFiles.restoreFromString (getAppProperties().getUserSettings()->getValue ("recentFilterGraphFiles"));
 
-            if (recentFiles.getNumFiles() > 0)
-                fileToOpen = recentFiles.getFile (0);
+			if (recentFiles.getNumFiles() > 0)
+			{
+				fileToOpen = recentFiles.getFile (0);
+			}
         }
 
-        if (fileToOpen.existsAsFile())
-            if (auto* graph = mainWindow->graphHolder.get())
-                if (auto* ioGraph = graph->graph.get())
-                    ioGraph->loadFrom (fileToOpen, true);
+		if (fileToOpen.existsAsFile())
+		{
+			if (auto* graph = mainWindow->graphHolder.get())
+			{
+				if (auto* ioGraph = graph->graph.get())
+				{
+					ioGraph->loadFrom (fileToOpen, true);
+				}
+			}
+		}
+		else
+		{
+			fileToOpen = GET_TWONK_PROGRAM_DIR().getChildFile("Program.generic.twonk");
+
+			if (!fileToOpen.existsAsFile())
+			{
+				fileToOpen.replaceWithData(BinaryData::Default_generic_twonk, BinaryData::Default_generic_twonkSize);
+			}
+
+			if (auto* graph = mainWindow->graphHolder.get())
+			{
+				if (auto* ioGraph = graph->graph.get())
+				{
+					ioGraph->loadFrom (fileToOpen, true);
+				}
+			}
+		}
+		
+
+		DBG("PluginHostApp::handleAsyncUpdate fileToOpen: " + fileToOpen.getFullPathName());
     }
 
     void shutdown() override
@@ -102,8 +128,6 @@ public:
 
     void backButtonPressed() override
     {
-        if (mainWindow->graphHolder != nullptr)
-            mainWindow->graphHolder->hideLastSidePanel();
     }
 
     const String getApplicationName() override       { return "Twonk"; }

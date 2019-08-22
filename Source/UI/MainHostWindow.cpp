@@ -1,50 +1,6 @@
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "PluginListWindow.h"
 #include "MainHostWindow.h"
 #include "../Filters/InternalPlugins.h"
-
-
-//==============================================================================
-class MainHostWindow::PluginListWindow  : public DocumentWindow
-{
-public:
-    PluginListWindow (MainHostWindow& mw, AudioPluginFormatManager& pluginFormatManager)
-        : DocumentWindow ("Available Plugins",
-                          LookAndFeel::getDefaultLookAndFeel().findColour (ResizableWindow::backgroundColourId),
-                          DocumentWindow::minimiseButton | DocumentWindow::closeButton),
-          owner (mw)
-    {
-        auto deadMansPedalFile = getAppProperties().getUserSettings()
-                                   ->getFile().getSiblingFile ("RecentlyCrashedPluginsList");
-
-        setContentOwned (new PluginListComponent (pluginFormatManager,
-                                                  owner.knownPluginList,
-                                                  deadMansPedalFile,
-                                                  getAppProperties().getUserSettings(), true), true);
-
-        setResizable (true, false);
-        setResizeLimits (300, 400, 800, 1500);
-        setTopLeftPosition (60, 60);
-
-        restoreWindowStateFromString (getAppProperties().getUserSettings()->getValue ("listWindowPos"));
-        setVisible (true);
-    }
-
-    ~PluginListWindow() override
-    {
-        getAppProperties().getUserSettings()->setValue ("listWindowPos", getWindowStateAsString());
-        clearContentComponent();
-    }
-
-    void closeButtonPressed() override
-    {
-        owner.pluginListWindow = nullptr;
-    }
-
-private:
-    MainHostWindow& owner;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginListWindow)
-};
 
 //==============================================================================
 MainHostWindow::MainHostWindow()
@@ -63,21 +19,10 @@ MainHostWindow::MainHostWindow()
                                      auto savedState = getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState");
                                      safeThis->deviceManager.initialise (granted ? 256 : 0, 256, savedState.get(), true);
                                  });
-
-   #if JUCE_IOS || JUCE_ANDROID
-    setFullScreen (true);
-   #else
-    setResizable (true, false);
-    setResizeLimits (500, 400, 10000, 10000);
     centreWithSize (1024, 600);
-   #endif
-
     graphHolder.reset (new GraphDocumentComponent (formatManager, deviceManager, knownPluginList));
-
     setContentNonOwned (graphHolder.get(), false);
-
     restoreWindowStateFromString (getAppProperties().getUserSettings()->getValue ("mainWindowPos"));
-
     setVisible (true);
 
     InternalPluginFormat internalFormat;
@@ -107,6 +52,8 @@ MainHostWindow::MainHostWindow()
     Process::setPriority (Process::HighPriority);
 
     getCommandManager().setFirstCommandTarget (this);
+
+	initPaths();
 }
 
 MainHostWindow::~MainHostWindow()
@@ -122,6 +69,34 @@ MainHostWindow::~MainHostWindow()
     clearContentComponent();
 
     graphHolder = nullptr;
+}
+
+
+void MainHostWindow::initPaths()
+{
+	bool anyFailed = false;
+	Result res = checkIfExistsAndCreateIfNot(GET_TWONK_PROGRAM_DIR());
+	if (res.failed())
+	{
+		AlertWindow::showMessageBox(AlertWindow::WarningIcon, "Critical error", res.getErrorMessage(), "Fuck Me!");
+		anyFailed = true;
+	}
+	res = checkIfExistsAndCreateIfNot(GET_TWONK_PLUGINS_DIR());
+	if (res.failed())
+	{
+		AlertWindow::showMessageBox(AlertWindow::WarningIcon, "Critical error", res.getErrorMessage(), "Fuck Me!");
+		anyFailed = true;
+	}
+
+	res = checkIfExistsAndCreateIfNot(GET_TWONK_SETTINGS_DIR());
+	if (res.failed())
+	{
+		AlertWindow::showMessageBox(AlertWindow::WarningIcon, "Critical error", res.getErrorMessage(), "Fuck Me!");
+		anyFailed = true;
+	}
+
+	if (anyFailed)
+		JUCEApplication::quit();
 }
 
 void MainHostWindow::closeButtonPressed()
@@ -158,6 +133,7 @@ void MainHostWindow::tryToQuitApplication()
     {
         new AsyncQuitRetrier();
     }
+	else if (graphHolder == nullptr || graphHolder->graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
     {
         // Some plug-ins do not want [NSApp stop] to be called
         // before the plug-ins are not deallocated.
@@ -312,8 +288,6 @@ void MainHostWindow::menuItemSelected (int menuItemID, int /*topLevelMenuIndex*/
 
 void MainHostWindow::menuBarActivated (bool isActivated)
 {
-    if (isActivated && graphHolder != nullptr)
-        graphHolder->unfocusKeyboardComponent();
 }
 
 void MainHostWindow::createPlugin (const PluginDescription& desc, Point<int> pos)
@@ -328,9 +302,10 @@ void MainHostWindow::addPluginsToMenu (PopupMenu& m)
     {
         int i = 0;
 
-        for (auto& t : internalTypes)
-            m.addItem (++i, t.name + " (" + t.pluginFormatName + ")",
-                       graphHolder->graph->getNodeForName (t.name) == nullptr);
+		for (auto& t : internalTypes)
+		{
+			m.addItem (++i, t.name + " (" + t.pluginFormatName + ")", true);
+		}
     }
 
     m.addSeparator();

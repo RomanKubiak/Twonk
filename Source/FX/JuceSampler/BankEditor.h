@@ -20,7 +20,8 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
-#include "../../JuceLibraryCode/JuceHeader.h"
+#include "../../../JuceLibraryCode/JuceHeader.h"
+class JucesamplerAudioProcessor;
 //[/Headers]
 
 
@@ -33,14 +34,15 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class TwonkSaveFileDialog  : public Component,
-                             public Button::Listener,
-                             public Label::Listener
+class BankEditor  : public AudioProcessorEditor,
+                    public Slider::Listener,
+                    public Button::Listener,
+                    public ComboBox::Listener
 {
 public:
     //==============================================================================
-    TwonkSaveFileDialog ();
-    ~TwonkSaveFileDialog();
+    BankEditor (JucesamplerAudioProcessor &_processor);
+    ~BankEditor();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -48,35 +50,40 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void sliderValueChanged (Slider* sliderThatWasMoved) override;
     void buttonClicked (Button* buttonThatWasClicked) override;
-    void labelTextChanged (Label* labelThatHasChanged) override;
+    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+    void mouseDown (const MouseEvent& e) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-	enum ProgramType
-	{
-		Synth,
-		Effect,
-		MIDI,
-		General
-	};
-	ProgramType programType;
+	JucesamplerAudioProcessor &processor;
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<TextButton> saveButton;
-    std::unique_ptr<TextButton> cancelButton;
-    std::unique_ptr<Label> programName;
-    std::unique_ptr<ImageButton> fxProgamType;
-    std::unique_ptr<ImageButton> generatorProgram;
-    std::unique_ptr<ImageButton> midiProgram;
-    std::unique_ptr<ImageButton> generalProgram;
+    std::unique_ptr<Component> component;
+    std::unique_ptr<Slider> slider;
+    std::unique_ptr<Slider> slider2;
+    std::unique_ptr<Slider> slider3;
+    std::unique_ptr<Slider> slider4;
+    std::unique_ptr<Slider> slider5;
+    std::unique_ptr<TextButton> textButton;
+    std::unique_ptr<TextButton> textButton2;
+    std::unique_ptr<ComboBox> comboBox;
+    std::unique_ptr<Component> component2;
+    std::unique_ptr<Component> component3;
+    std::unique_ptr<Component> component4;
+    std::unique_ptr<Component> component5;
+    std::unique_ptr<Component> component6;
+    std::unique_ptr<Component> component7;
+    std::unique_ptr<Component> component8;
+    std::unique_ptr<Component> component9;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkSaveFileDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BankEditor)
 };
 
 //[EndFile] You can add extra defines here...

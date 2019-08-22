@@ -33,6 +33,7 @@ public:
     String getDocumentTitle() override;
     Result loadDocument (const File& file) override;
     Result saveDocument (const File& file) override;
+	File getSuggestedSaveAsFile (const File &defaultFile) override;
     File getLastDocumentOpened() override;
     void setLastDocumentOpened (const File& file) override;
     static File getDefaultGraphDocumentOnMobile();

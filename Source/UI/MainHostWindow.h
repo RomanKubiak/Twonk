@@ -5,6 +5,8 @@
 #include "TwonkLookAndFeel.h"
 #include "BinaryData.h"
 
+class PluginListWindow;
+
 static const Font getDefaultTwonkSansFont()
 {
 	Typeface::Ptr t = Typeface::createSystemTypefaceFor(BinaryData::LiberationSansRegular_ttf, BinaryData::LiberationSansBold_ttfSize);
@@ -15,6 +17,23 @@ static const Font getDefaultTwonkMonoFont()
 {
 	Typeface::Ptr t = Typeface::createSystemTypefaceFor(BinaryData::terminess_ttf, BinaryData::terminess_ttfSize);
 	return (Font(t));
+}
+
+static const Result checkIfExistsAndCreateIfNot(const File &path)
+{
+	if (!path.isDirectory())
+	{
+		if (!path.createDirectory())
+		{
+			return (Result::fail("Can't make this directory"));
+		}
+
+		if (path.existsAsFile())
+		{
+			return (Result::fail("This path exists as a file"));
+		}
+	}
+	return (Result::ok());
 }
 
 //==============================================================================
@@ -69,7 +88,7 @@ public:
     void getAllCommands (Array<CommandID>&) override;
     void getCommandInfo (CommandID, ApplicationCommandInfo&) override;
     bool perform (const InvocationInfo&) override;
-
+	void initPaths();
     void tryToQuitApplication();
 
     void createPlugin (const PluginDescription&, Point<int> pos);
@@ -79,8 +98,9 @@ public:
 
     bool isDoublePrecisionProcessing();
     void updatePrecisionMenuItem (ApplicationCommandInfo& info);
-
     std::unique_ptr<GraphDocumentComponent> graphHolder;
+	KnownPluginList knownPluginList;
+	std::unique_ptr<PluginListWindow> pluginListWindow;
 
 private:
     //==============================================================================
@@ -88,13 +108,11 @@ private:
     AudioPluginFormatManager formatManager;
     Array<PluginDescription> internalTypes;
 	Array<PluginDescription> twonkTypes;
-	KnownPluginList knownPluginList;
+	
     KnownPluginList::SortMethod pluginSortMethod;
     Array<PluginDescription> pluginDescriptions;
 	TwonkLookAndFeel twonkLookAndFeel;
-    class PluginListWindow;
-    std::unique_ptr<PluginListWindow> pluginListWindow;
-	
+    
     void showAudioSettings();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainHostWindow)

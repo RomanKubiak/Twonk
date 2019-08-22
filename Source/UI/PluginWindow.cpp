@@ -9,25 +9,28 @@
 */
 
 #include "PluginWindow.h"
+#include "Filters/PluginGraph.h"
 
-PluginWindow::PluginWindow (AudioProcessorGraph::Node* n, Type t, OwnedArray<PluginWindow>& windowList)
+PluginWindow::PluginWindow (AudioProcessorGraph::Node* n, Type t, OwnedArray<PluginWindow>& windowList, PluginGraph &_owner)
 	: DocumentWindow (n->getProcessor()->getName(),
 		LookAndFeel::getDefaultLookAndFeel().findColour (ResizableWindow::backgroundColourId),
-		DocumentWindow::minimiseButton | DocumentWindow::closeButton),
+		DocumentWindow::minimiseButton | DocumentWindow::closeButton, false),
 		activeWindowList (windowList),
-		node (n), type (t)
-{
-	setSize (400, 300);
-	DBG("create plugin window");
-	
+		node (n), type (t), owner(_owner)
+{	
 	if (auto* ui = createProcessorEditor (*node->getProcessor(), type))
+	{
+		ui->setSize(node->properties.getWithDefault(getLastWidthProp (type), 400),
+			(int)node->properties.getWithDefault(getLastHeightProp (type), 200) - getTitleBarHeight());
 		setContentOwned (ui, true);
+	}
 
+	DBG("PluginWindow::ctor lastWidth: " + node->properties.getWithDefault(getLastWidthProp (type), -1).toString());
 	setTopLeftPosition (node->properties.getWithDefault (getLastXProp (type), Random::getSystemRandom().nextInt (500)),
 		node->properties.getWithDefault (getLastYProp (type), Random::getSystemRandom().nextInt (500)));
 
 	node->properties.set (getOpenProp (type), true);
-
+	addToDesktop();
 	setVisible (true);
 }
 
@@ -38,8 +41,12 @@ PluginWindow::~PluginWindow()
 
 void PluginWindow::moved()
 {
+	DBG("PluginWindow::moved");
 	node->properties.set (getLastXProp (type), getX());
 	node->properties.set (getLastYProp (type), getY());
+	node->properties.set (getLastWidthProp (type), getWidth());
+	node->properties.set (getLastHeightProp (type), getHeight());
+	owner.setChangedFlag(true);
 }
 
 void PluginWindow::closeButtonPressed()
@@ -58,6 +65,16 @@ String PluginWindow::getLastYProp (Type type)
 	return "uiLastY_" + getTypeName (type);
 }
 
+String PluginWindow::getLastWidthProp (Type type)
+{
+	return "uiLastWidth_" + getTypeName (type);
+}
+
+String PluginWindow::getLastHeightProp (Type type)
+{
+	return "uiLastHeight_" + getTypeName (type);
+}
+
 String PluginWindow::getOpenProp  (Type type)
 {
 	return "uiopen_" + getTypeName (type);
@@ -70,6 +87,7 @@ float PluginWindow::getDesktopScaleFactor() const
 
 AudioProcessorEditor* PluginWindow::createProcessorEditor (AudioProcessor& processor, PluginWindow::Type type)
 {
+	DBG("PluginWindow::createProcessorEditor");
 	if (type == PluginWindow::Type::normal)
 	{
 		if (auto* ui = processor.createEditorIfNeeded())
@@ -96,4 +114,11 @@ String PluginWindow::getTypeName (Type type)
 		case Type::debug:      return "Debug";
 		default:               return {};
 	}
+}
+
+int PluginWindow::getDesktopWindowStyleFlags () const
+{
+	int flags = DocumentWindow::getDesktopWindowStyleFlags();
+	flags &= ~(ComponentPeer::windowAppearsOnTaskbar);
+	return (flags);
 }

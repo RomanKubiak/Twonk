@@ -246,7 +246,6 @@ std::unique_ptr<AudioPluginInstance> InternalPluginFormat::createInstance (const
 
     if (name == SineWaveSynth::getIdentifier()) return std::make_unique<SineWaveSynth> (SineWaveSynth::getPluginDescription());
     if (name == ReverbPlugin::getIdentifier())  return std::make_unique<ReverbPlugin>  (ReverbPlugin::getPluginDescription());
-
     return {};
 }
 
@@ -282,9 +281,7 @@ std::unique_ptr<AudioPluginInstance> TwonkPluginFormat::createInstance (const St
 	return TwonkFilters::createInstance(name);
 }
 
-void TwonkPluginFormat::createPluginInstance (const PluginDescription& desc,
-	double /*initialSampleRate*/, int /*initialBufferSize*/,
-	PluginCreationCallback callback)
+void TwonkPluginFormat::createPluginInstance (const PluginDescription& desc, double /*initialSampleRate*/, int /*initialBufferSize*/, PluginCreationCallback callback)
 {
 	if (auto p = createInstance (desc.name))
 		callback (std::move (p), {});

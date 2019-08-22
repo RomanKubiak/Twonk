@@ -21,12 +21,12 @@ void TwonkLookAndFeel::drawLinearSlider (Graphics& g, int x, int y, int width, i
 	if (slider.isBar())
 	{
 		Colour sliderColour = slider.findColour (Slider::trackColourId);
-		
+		Colour thumbColour = slider.findColour (Slider::thumbColourId);
 		float dashes[4] = { 4.0f, 4.0f };
 		if (slider.isHorizontal())
 		{
 			g.setColour(sliderColour.withAlpha(0.5f));
-			g.drawDashedLine(Line<float>(4, height / 2, width-2, height / 2), dashes, 2, height * 0.5f);
+			g.drawDashedLine(Line<float>(2, height / 2, width-2, height / 2), dashes, 2, height * 0.5f);
 			g.drawRect(x, y + 2, width, height-4);
 
 			g.setColour(sliderColour);
@@ -37,9 +37,10 @@ void TwonkLookAndFeel::drawLinearSlider (Graphics& g, int x, int y, int width, i
 			if (sliderPos <= minSliderPos)
 				sliderPos = minSliderPos;
 
+			g.setColour(thumbColour);
 			g.drawRoundedRectangle(sliderPos, 0.0f, (float)height, (float)height, height * 0.15f, height*0.08f);
 
-			g.setColour(sliderColour.withAlpha(0.7f));
+			g.setColour(thumbColour.withAlpha(0.7f));
 			g.fillRect(sliderPos, 0.0f, (float)height, (float)height);
 		}
 		else
@@ -133,40 +134,8 @@ void TwonkLookAndFeel::drawLinearSlider (Graphics& g, int x, int y, int width, i
 	}
 }
 
-void TwonkLookAndFeel::drawLinearSliderBackground (Graphics& g, int x, int y, int width, int height,
-	float /*sliderPos*/,
-	float /*minSliderPos*/,
-	float /*maxSliderPos*/,
-	const Slider::SliderStyle /*style*/, Slider& slider)
+void TwonkLookAndFeel::drawLinearSliderBackground (Graphics& g, int x, int y, int width, int height,float /*sliderPos*/,float /*minSliderPos*/,float /*maxSliderPos*/,const Slider::SliderStyle /*style*/, Slider& slider)
 {
-	const float sliderRadius = (float)(getSliderThumbRadius (slider) - 2);
-
-	const Colour trackColour (slider.findColour (Slider::trackColourId));
-	const Colour gradCol1 (trackColour.overlaidWith (Colour (slider.isEnabled() ? 0x13000000 : 0x09000000)));
-	const Colour gradCol2 (trackColour.overlaidWith (Colour (0x06000000)));
-	Path indent;
-
-	if (slider.isHorizontal())
-	{
-		auto iy = y + height * 0.5f - sliderRadius * 0.5f;
-
-		g.setGradientFill (ColourGradient::vertical (gradCol1, iy, gradCol2, iy + sliderRadius));
-
-		indent.addRoundedRectangle (x - sliderRadius * 0.5f, iy, width + sliderRadius, sliderRadius, 5.0f);
-	}
-	else
-	{
-		auto ix = x + width * 0.5f - sliderRadius * 0.5f;
-
-		g.setGradientFill (ColourGradient::horizontal (gradCol1, ix, gradCol2, ix + sliderRadius));
-
-		indent.addRoundedRectangle (ix, y - sliderRadius * 0.5f, sliderRadius, height + sliderRadius, 5.0f);
-	}
-
-	g.fillPath (indent);
-
-	g.setColour (trackColour.contrasting (0.5f));
-	g.strokePath (indent, PathStrokeType (0.5f));
 }
 
 void TwonkLookAndFeel::drawResizableFrame (Graphics &g, int w, int h, const BorderSize<int> &border)
@@ -189,7 +158,116 @@ void TwonkLookAndFeel::drawResizableFrame (Graphics &g, int w, int h, const Bord
 	}
 }
 
-Font TwonkLookAndFeel::getLabelFont (Label &)
+Font TwonkLookAndFeel::getTextButtonFont (TextButton&, int buttonHeight)
 {
-	return getDefaultTwonkMonoFont();
+	Font f = getDefaultTwonkSansFont();
+	return (f.withHeight(jmin (16.0f, buttonHeight * 0.6f)));
+}
+
+void TwonkLookAndFeel::drawButtonBackground (Graphics& g, Button& button, const Colour& backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
+{
+	auto baseColour = backgroundColour.withMultipliedSaturation (button.hasKeyboardFocus (true) ? 1.3f : 0.9f)
+		.withMultipliedAlpha (button.isEnabled() ? 1.0f : 0.5f);
+
+	if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
+		baseColour = baseColour.contrasting (shouldDrawButtonAsDown ? 0.2f : 0.05f);
+
+	Path roundingHexagon;
+	roundingHexagon.addPolygon(button.getLocalBounds().getCentre().toFloat(), 6, button.getWidth() * 0.5f, float_Pi*0.5f);
+	g.setColour(baseColour);
+	g.fillPath(roundingHexagon);
+}
+
+AlertWindow* TwonkLookAndFeel::createAlertWindow (const String& title, const String& message,
+	const String& button1, const String& button2, const String& button3,
+	AlertWindow::AlertIconType iconType,
+	int numButtons, Component* associatedComponent)
+{
+	auto boundsOffset = 50;
+
+	auto* aw = LookAndFeel_V2::createAlertWindow (title, message, button1, button2, button3,
+		iconType, numButtons, associatedComponent);
+
+	auto bounds = aw->getBounds();
+	bounds = bounds.withSizeKeepingCentre (bounds.getWidth() + boundsOffset, bounds.getHeight() + boundsOffset);
+	aw->setBounds (bounds);
+
+	for (auto* child : aw->getChildren())
+		if (auto* button = dynamic_cast<TextButton*> (child))
+			button->setBounds (button->getBounds() + Point<int> (25, 40));
+
+	return aw;
+}
+
+void TwonkLookAndFeel::drawAlertBox (Graphics& g, AlertWindow& alert,
+	const Rectangle<int>& textArea, TextLayout& textLayout)
+{
+	auto cornerSize = 4.0f;
+
+	g.setColour (alert.findColour (AlertWindow::outlineColourId));
+	g.drawRoundedRectangle (alert.getLocalBounds().toFloat(), cornerSize, 2.0f);
+
+	auto bounds = alert.getLocalBounds().reduced (1);
+	g.reduceClipRegion (bounds);
+
+	g.setColour (Colours::black);
+	g.fillRoundedRectangle (bounds.toFloat(), cornerSize);
+
+	auto iconSpaceUsed = 0;
+
+	auto iconWidth = 80;
+	auto iconSize = jmin (iconWidth + 50, bounds.getHeight() + 20);
+
+	if (alert.containsAnyExtraComponents() || alert.getNumButtons() > 2)
+		iconSize = jmin (iconSize, textArea.getHeight() + 50);
+
+	Rectangle<int> iconRect (iconSize / -10, iconSize / -10,
+		iconSize, iconSize);
+
+	if (alert.getAlertType() != AlertWindow::NoIcon)
+	{
+		Path icon;
+		char character;
+		uint32 colour;
+
+		if (alert.getAlertType() == AlertWindow::WarningIcon)
+		{
+			character = '!';
+
+			icon.addTriangle (iconRect.getX() + iconRect.getWidth() * 0.5f, (float)iconRect.getY(),
+				static_cast<float> (iconRect.getRight()), static_cast<float> (iconRect.getBottom()),
+				static_cast<float> (iconRect.getX()), static_cast<float> (iconRect.getBottom()));
+
+			icon = icon.createPathWithRoundedCorners (5.0f);
+			colour = 0x66ff2a00;
+		}
+		else
+		{
+			colour = Colour (0xff00b0b9).withAlpha (0.4f).getARGB();
+			character = alert.getAlertType() == AlertWindow::InfoIcon ? 'i' : '?';
+
+			icon.addEllipse (iconRect.toFloat());
+		}
+
+		GlyphArrangement ga;
+		ga.addFittedText ({ iconRect.getHeight() * 0.9f, Font::bold },
+			String::charToString ((juce_wchar)(uint8)character),
+			static_cast<float> (iconRect.getX()), static_cast<float> (iconRect.getY()),
+			static_cast<float> (iconRect.getWidth()), static_cast<float> (iconRect.getHeight()),
+			Justification::centred, false);
+		ga.createPath (icon);
+
+		icon.setUsingNonZeroWinding (false);
+		g.setColour (Colour (colour));
+		g.fillPath (icon);
+
+		iconSpaceUsed = iconWidth;
+	}
+
+	g.setColour (alert.findColour (AlertWindow::textColourId));
+
+	Rectangle<int> alertBounds (bounds.getX() + iconSpaceUsed, 30,
+		bounds.getWidth(), bounds.getHeight() - getAlertWindowButtonHeight() - 20);
+
+	textLayout.draw (g, alertBounds.toFloat());
 }

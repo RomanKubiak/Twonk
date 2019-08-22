@@ -20,10 +20,9 @@
 //[Headers] You can add your own extra header files here...
 #include "GraphEditorPanel.h"
 #include "TwonkToolBarButton.h"
-#include "TwonkToolBarStatus.h"
 #include "TwonkMidiKeyboard.h"
 #include "MainHostWindow.h"
-#include "TwonkFileMenu.h"
+#include "TwonkProgramMenu.h"
 #include "BinaryData.h"
 //[/Headers]
 
@@ -43,28 +42,12 @@ TwonkToolBar::TwonkToolBar (GraphEditorPanel &_owner)
     buttonConfig.reset (new TwonkToolBarButton());
     addAndMakeVisible (buttonConfig.get());
 
-    buttonConfig->setBounds (0, 128, 64, 64);
+    buttonConfig->setBounds (0, 96, 64, 64);
 
     buttonFilters.reset (new TwonkToolBarButton());
     addAndMakeVisible (buttonFilters.get());
 
-    buttonFilters->setBounds (0, 192, 64, 64);
-
-    buttonPlay.reset (new TwonkToolBarButton());
-    addAndMakeVisible (buttonPlay.get());
-
-    buttonPlay->setBounds (0, 320, 64, 64);
-
-    statusItem.reset (new TwonkToolBarStatus());
-    addAndMakeVisible (statusItem.get());
-    statusItem->setName ("Status");
-
-    statusItem->setBounds (0, 32, 64, 32);
-
-    buttonMidiKeyboard.reset (new TwonkToolBarButton());
-    addAndMakeVisible (buttonMidiKeyboard.get());
-
-    buttonMidiKeyboard->setBounds (0, 256, 64, 64);
+    buttonFilters->setBounds (0, 160, 64, 64);
 
     buttonToggle.reset (new TwonkToolBarButton());
     addAndMakeVisible (buttonToggle.get());
@@ -74,26 +57,24 @@ TwonkToolBar::TwonkToolBar (GraphEditorPanel &_owner)
     buttonFile.reset (new TwonkToolBarButton());
     addAndMakeVisible (buttonFile.get());
 
-    buttonFile->setBounds (0, 64, 64, 64);
+    buttonFile->setBounds (0, 32, 64, 64);
 
-    twonkFileMenu.reset (new TwonkFileMenu (owner));
-    addAndMakeVisible (twonkFileMenu.get());
-    twonkFileMenu->setBounds (72, 64, 210, 80);
+    twonkProgramMenu.reset (new TwonkProgramMenu (owner));
+    addAndMakeVisible (twonkProgramMenu.get());
+    twonkProgramMenu->setBounds (72, 32, 210, 64);
+
+    audioSettingsMenu.reset (new TwonkAudioSettingsMenu (owner));
+    addAndMakeVisible (audioSettingsMenu.get());
+    audioSettingsMenu->setBounds (72, 96, 136, 64);
 
 
     //[UserPreSize]
-	buttonConfig->setIcon(ImageCache::getFromMemory(BinaryData::icon_audio_dev_png, BinaryData::icon_audio_dev_pngSize));
+	buttonConfig->setIcon(IMG(icon_preferences_png));
 	buttonConfig->addListener(this);
 	buttonConfig->setTooltip("Audio settings");
 	buttonFilters->setIcon(ImageCache::getFromMemory(BinaryData::icon_plugin_internal_png, BinaryData::icon_plugin_internal_pngSize));
 	buttonFilters->setBaseColour(Colour(BUBBLE_COLOUR_PLUGIN_FX));
 	buttonFilters->setTooltip("Plugins and internal filters");
-	buttonPlay->setBaseColour(Colours::green);
-	buttonPlay->setIcon(ImageCache::getFromMemory(BinaryData::icon_play_png, BinaryData::icon_play_pngSize));
-	buttonMidiKeyboard->setBaseColour(Colours::aqua);
-	buttonMidiKeyboard->setIcon(ImageCache::getFromMemory(BinaryData::icon_piano_png, BinaryData::icon_piano_pngSize));
-	buttonMidiKeyboard->addListener(this);
-	buttonMidiKeyboard->setTooltip("Toggle on-screen MIDI keyboard");
 	buttonToggle->setIcon(ImageCache::getFromMemory(BinaryData::icon_min_max_png, BinaryData::icon_min_max_pngSize));
 	buttonToggle->setSize(32, 32);
 	buttonToggle->addListener(this);
@@ -102,9 +83,11 @@ TwonkToolBar::TwonkToolBar (GraphEditorPanel &_owner)
 	buttonFile->setBaseColour(Colours::lightgreen);
 	buttonFile->addListener(this);
 	buttonFile->setTooltip("File operations");
+	audioSettingsMenu->setVisible(false);
+	twonkProgramMenu->setVisible(false);
     //[/UserPreSize]
 
-    setSize (400, 384);
+    setSize (280, 226);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -118,12 +101,10 @@ TwonkToolBar::~TwonkToolBar()
 
     buttonConfig = nullptr;
     buttonFilters = nullptr;
-    buttonPlay = nullptr;
-    statusItem = nullptr;
-    buttonMidiKeyboard = nullptr;
     buttonToggle = nullptr;
     buttonFile = nullptr;
-    twonkFileMenu = nullptr;
+    twonkProgramMenu = nullptr;
+    audioSettingsMenu = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -195,24 +176,37 @@ void TwonkToolBar::buttonClicked(Button *button)
 
 	if (button == buttonConfig.get())
 	{
-		if (auto target = ApplicationCommandManager::findDefaultComponentTarget())
+		if (audioSettingsMenu->isVisible())
 		{
-			target->invoke (ApplicationCommandTarget::InvocationInfo(CommandIDs::showAudioSettings), true);
+			audioSettingsMenu->setVisible(false);
+			return;
 		}
-	}
 
-	if (button == buttonMidiKeyboard.get())
-	{
-		if (auto keys = owner.getTwonkMidiKeyboardComponent())
-		{
-			keys->setVisible(!keys->isVisible());
-		}
+		hideAllMenusButLeaveOne(audioSettingsMenu.get());
+		setSize(136 + 64 + 8, getHeight());
 	}
 
 	if (button == buttonFile.get())
 	{
-		owner.toggleTwonkFileMenu();
+		if (twonkProgramMenu->isVisible())
+		{
+			twonkProgramMenu->setVisible(false);
+			return;
+		}
+
+		hideAllMenusButLeaveOne(twonkProgramMenu.get());
+		setSize(210 + 64 + 8, getHeight());
 	}
+}
+
+void TwonkToolBar::hideAllMenusButLeaveOne(Component *menuToLeaveVisible)
+{
+	setSize(64, getHeight());
+	audioSettingsMenu->setVisible(false);
+	twonkProgramMenu->setVisible(false);
+
+	if (menuToLeaveVisible)
+		menuToLeaveVisible->setVisible(true);
 }
 //[/MiscUserCode]
 
@@ -230,35 +224,29 @@ BEGIN_JUCER_METADATA
                  parentClasses="public Component, public TwonkClockListener, Button::Listener"
                  constructorParams="GraphEditorPanel &amp;_owner" variableInitialisers="owner(_owner)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="400" initialHeight="384">
+                 fixedSize="1" initialWidth="280" initialHeight="226">
   <METHODS>
     <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="d2fe4dda321d3109" memberName="buttonConfig" virtualName=""
-                    explicitFocusOrder="0" pos="0 128 64 64" class="TwonkToolBarButton"
+                    explicitFocusOrder="0" pos="0 96 64 64" class="TwonkToolBarButton"
                     params=""/>
   <GENERICCOMPONENT name="" id="fdd3b341895bc99a" memberName="buttonFilters" virtualName=""
-                    explicitFocusOrder="0" pos="0 192 64 64" class="TwonkToolBarButton"
-                    params=""/>
-  <GENERICCOMPONENT name="" id="2e128e40245c4550" memberName="buttonPlay" virtualName=""
-                    explicitFocusOrder="0" pos="0 320 64 64" class="TwonkToolBarButton"
-                    params=""/>
-  <GENERICCOMPONENT name="Status" id="90f30f12e157b22" memberName="statusItem" virtualName=""
-                    explicitFocusOrder="0" pos="0 32 64 32" class="TwonkToolBarStatus"
-                    params=""/>
-  <GENERICCOMPONENT name="" id="ac2e75c6311a26ee" memberName="buttonMidiKeyboard"
-                    virtualName="" explicitFocusOrder="0" pos="0 256 64 64" class="TwonkToolBarButton"
+                    explicitFocusOrder="0" pos="0 160 64 64" class="TwonkToolBarButton"
                     params=""/>
   <GENERICCOMPONENT name="" id="9f2837463eea4df0" memberName="buttonToggle" virtualName=""
                     explicitFocusOrder="0" pos="0 0 64 32" class="TwonkToolBarButton"
                     params=""/>
   <GENERICCOMPONENT name="" id="face426d9e5a53b" memberName="buttonFile" virtualName=""
-                    explicitFocusOrder="0" pos="0 64 64 64" class="TwonkToolBarButton"
+                    explicitFocusOrder="0" pos="0 32 64 64" class="TwonkToolBarButton"
                     params=""/>
-  <JUCERCOMP name="" id="eb3cc73fd1410a00" memberName="twonkFileMenu" virtualName=""
-             explicitFocusOrder="0" pos="72 64 210 80" sourceFile="TwonkFileMenu.cpp"
+  <JUCERCOMP name="" id="eb3cc73fd1410a00" memberName="twonkProgramMenu" virtualName=""
+             explicitFocusOrder="0" pos="72 32 210 64" sourceFile="TwonkProgramMenu.cpp"
+             constructorParams="owner"/>
+  <JUCERCOMP name="" id="efc1d74909dca7bb" memberName="audioSettingsMenu"
+             virtualName="" explicitFocusOrder="0" pos="72 96 136 64" sourceFile="TwonkAudioSettingsMenu.cpp"
              constructorParams="owner"/>
 </JUCER_COMPONENT>
 

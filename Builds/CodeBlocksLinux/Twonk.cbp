@@ -162,6 +162,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/Resources/Default.generic.twonk">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/Resources/icon_audio_dev.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -174,13 +180,13 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/icon_cog.png">
+    <Unit filename="../../Source/Resources/icon_delete.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Resources/icon_delete.png">
+    <Unit filename="../../Source/Resources/icon_dock_on_bottom.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -235,6 +241,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Resources/icon_plugin_internal.png">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Resources/icon_plugin_midi.png">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Resources/icon_preferences.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -396,179 +414,131 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/CCSlider.h">
+    <Unit filename="../../Source/FX/JuceSampler/BankEditor.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/JuceSampler/BankEditor.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/ChannelSlider.h">
+    <Unit filename="../../Source/FX/JuceSampler/CTAGSampler.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/JuceSampler/CTAGSampler.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/ChordFunctions.cpp">
+    <Unit filename="../../Source/FX/JuceSampler/CTAGSamplerSound.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/ChordFunctions.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/ClickableLabel.h">
+    <Unit filename="../../Source/FX/JuceSampler/CTAGSamplerSound.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/GuitarNeckComponent.cpp">
+    <Unit filename="../../Source/FX/JuceSampler/CTAGSamplerVoice.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/GuitarNeckComponent.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/juce_FakeMouseMoveGenerator.h">
+    <Unit filename="../../Source/FX/JuceSampler/CTAGSamplerVoice.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/key.h">
+    <Unit filename="../../Source/FX/JuceSampler/EnvelopeGenerator.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/JuceSampler/EnvelopeGenerator.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/log.h">
+    <Unit filename="../../Source/FX/JuceSampler/Filter.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/JuceSampler/Filter.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/MIDI.h">
+    <Unit filename="../../Source/FX/JuceSampler/OnePoleFilter.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/JuceSampler/OnePoleFilter.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/midistuff.h">
+    <Unit filename="../../Source/FX/JuceSampler/PanPos.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/JuceSampler/PanPos.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/NoteSlider.h">
+    <Unit filename="../../Source/FX/JuceSampler/PitchRateConversion.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/JuceSampler/PitchRateConversion.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/piz_LookAndFeel.cpp">
+    <Unit filename="../../Source/FX/JuceSampler/PluginProcessor.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/piz_LookAndFeel.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/PizAudioProcessor.h">
+    <Unit filename="../../Source/FX/JuceSampler/PluginProcessor.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/PizButton.cpp">
+    <Unit filename="../../Source/FX/JuceSampler/WaveShaper.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/common/PizButton.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/LookAndFeel.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/LookAndFeel.h">
+    <Unit filename="../../Source/FX/JuceSampler/WaveShaper.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/MidiLoop.cpp">
+    <Unit filename="../../Source/FX/MIDI Controller/MidiControllerEditor.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/MidiLoop.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/PianoRoll.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/PianoRoll.h">
+    <Unit filename="../../Source/FX/MIDI Controller/MidiControllerEditor.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/piz_MidiMessageSequence.cpp">
+    <Unit filename="../../Source/FX/MIDI Controller/MidiControllerProcessor.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/FX/midiLooper/piz_MidiMessageSequence.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/PizLooper.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/PizLooper.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/PizLooperEditor.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/PizLooperEditor.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/PizLooperProcessing.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/Timeline.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/VSTSlider.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/midiLooper/VSTSlider.h">
+    <Unit filename="../../Source/FX/MIDI Controller/MidiControllerProcessor.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -680,46 +650,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/SFZ/SFZero/SFZero.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/SFZ/SFZero/SFZero.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/SFZ/ClickableLabel.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/SFZ/ClickableLabel.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/SFZ/SFZeroAudioProcessor.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/SFZ/SFZeroAudioProcessor.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/FX/SFZ/SFZeroEditor.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/SFZ/SFZeroEditor.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/FX/Tremolo/TwonkTremoloEditor.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -806,6 +736,16 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/UI/PluginListWindow.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/UI/PluginListWindow.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/UI/TwonkLookAndFeel.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -816,21 +756,11 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkFileMenu.cpp">
+    <Unit filename="../../Source/UI/TwonkAudioSettingsMenu.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkFileMenu.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/UI/TwonkMidiKeyboard.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/UI/TwonkMidiKeyboard.h">
+    <Unit filename="../../Source/UI/TwonkAudioSettingsMenu.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -846,21 +776,21 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkSaveFileDialog.cpp">
+    <Unit filename="../../Source/UI/TwonkProgramMenu.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkSaveFileDialog.h">
+    <Unit filename="../../Source/UI/TwonkProgramMenu.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkToolBarStatus.cpp">
+    <Unit filename="../../Source/UI/TwonkSaveProgramDialog.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkToolBarStatus.h">
+    <Unit filename="../../Source/UI/TwonkSaveProgramDialog.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>

@@ -4,9 +4,8 @@
 #include "MainHostWindow.h"
 #include "TwonkToolBar.h"
 #include "TwonkToolBarButton.h"
-#include "TwonkMidiKeyboard.h"
 #include "TwonkFilterComponent.h"
-#include "TwonkFileMenu.h"
+#include "TwonkProgramMenu.h"
 #include "Twonk.h"
 #include "TwonkProgramList.h"
 /**
@@ -24,11 +23,22 @@ struct GraphEditorPanel::PinComponent   : public Component,
 
             if (pin.isMIDI())
             {
+				if (isInput)
+					baseColour = Colours::red;
+				else
+					baseColour = Colours::red.brighter(0.5f);
+
                 tip = isInput ? "MIDI Input"
                               : "MIDI Output";
+				
             }
             else
             {
+				if (isInput)
+					baseColour = Colours::green;
+				else
+					baseColour = Colours::green.brighter(0.5f);
+
                 auto& processor = *node->getProcessor();
                 auto channel = processor.getOffsetInBusBufferForAbsoluteChannelIndex (isInput, pin.channelIndex, busIdx);
 
@@ -48,25 +58,11 @@ struct GraphEditorPanel::PinComponent   : public Component,
 
     void paint (Graphics& g) override
     {
-        /*auto w = (float) getWidth();
-        auto h = (float) getHeight();
-
-        Path p;
-        p.addEllipse (w * 0.25f, h * 0.25f, w * 0.5f, h * 0.5f);
-        p.addRectangle (w * 0.4f, isInput ? (0.5f * h) : 0.0f, w * 0.2f, h * 0.5f);
-
-        auto colour = (pin.isMIDI() ? Colours::red : Colours::green);
-
-        g.setColour (colour.withRotatedHue (busIdx / 5.0f));
-        g.fillPath (p);*/
-
 		Path hexagon;
-		hexagon.addPolygon(getLocalBounds().getCentre().toFloat(), 6, getWidth() * 0.45f, float_Pi*0.5f);
-		g.setColour(currentColour.contrasting(0.1f));
-		g.drawImage(pinImage, getLocalBounds().toFloat().reduced(NODE_SIZE * 0.15f), RectanglePlacement::stretchToFit, true);
-		g.setColour(currentColour.withAlpha(0.3f));
+		hexagon.addPolygon(getLocalBounds().getCentre().toFloat(), 6, getWidth() * 0.5f, float_Pi*0.5f);
+		g.setColour(baseColour.withAlpha(0.4f));
 		g.fillPath(hexagon);
-		g.setColour(currentColour);
+		g.setColour(baseColour.withAlpha(0.5f));
 		g.strokePath(hexagon, PathStrokeType(NODE_SIZE * 0.1f));
     }
 
@@ -94,7 +90,7 @@ struct GraphEditorPanel::PinComponent   : public Component,
     AudioProcessorGraph::NodeAndChannel pin;
     const bool isInput;
     int busIdx = 0;
-	Colour currentColour;
+	Colour baseColour;
 	Image pinImage;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PinComponent)
 };
@@ -189,6 +185,7 @@ struct GraphEditorPanel::PluginComponent   : public Component,
         {
             graph.setChangedFlag (true);
         }
+
         else if (e.getNumberOfClicks() == 2)
         {
             if (auto f = graph.graph.getNodeForId (pluginID))
@@ -200,7 +197,7 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 	Path getHexagonPath(Rectangle<int> area)
 	{
 		Path hexagon;
-		hexagon.addPolygon(area.getCentre().toFloat(), 6, area.getWidth() * 0.3f, float_Pi*0.5f);
+		hexagon.addPolygon(area.getCentre().toFloat(), 6, area.getWidth() * 0.28f, float_Pi*0.5f);
 
 		return (hexagon);
 	}
@@ -237,33 +234,30 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 					type = InternalMidiOutpout;
 					break;
 				default:
-					type = UnknownNode;
+					type = FuckIfIKnow;
 					break;
 				}
 			}
 
-			if (processor->acceptsMidi() &&
-				processor->producesMidi() &&
-				processor->getTotalNumInputChannels() == 0 &&
-				processor->getTotalNumOutputChannels() == 0)
+			if (processor->isMidiEffect())
 			{
 				type = PluginMidiEffect;
 			}
-			if (processor->acceptsMidi() &&
+			else if (processor->acceptsMidi() &&
 				!processor->producesMidi() &&
 				processor->getTotalNumInputChannels() > 0 &&
 				processor->getTotalNumOutputChannels() > 0)
 			{
 				type = PluginSynthWithInput;
 			}
-			if (processor->acceptsMidi() &&
+			else if (processor->acceptsMidi() &&
 				!processor->producesMidi() &&
 				processor->getTotalNumInputChannels() == 0 &&
 				processor->getTotalNumOutputChannels() > 0)
 			{
 				type = PluginSynthWithInput;
 			}
-			if (!processor->acceptsMidi() &&
+			else if (!processor->acceptsMidi() &&
 				!processor->producesMidi() &&
 				processor->getTotalNumInputChannels() > 0 &&
 				processor->getTotalNumOutputChannels() > 0)
@@ -271,12 +265,16 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 				type = PluginAudioEffect;
 			}
 
-			if (processor->acceptsMidi() &&
+			else if (processor->acceptsMidi() &&
 				processor->producesMidi() &&
 				processor->getTotalNumInputChannels() == 0 &&
 				processor->getTotalNumOutputChannels() > 0)
 			{
 				type = PluginSynth;
+			}
+			else
+			{
+				type = FuckIfIKnow;
 			}
 		}
 
@@ -316,31 +314,35 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 		switch (type)
 		{
 		case InternalAudioInput:
-			return (ImageCache::getFromMemory(BinaryData::audio_input_png, BinaryData::audio_input_pngSize));
+			return (IMG(audio_input_png));
 		case InternalAudioOutput:
-			return (ImageCache::getFromMemory(BinaryData::audio_output_png, BinaryData::audio_output_pngSize));
+			return (IMG(audio_output_png));
 		case InternalMidiInput:
-			return (ImageCache::getFromMemory(BinaryData::midi_input_png, BinaryData::midi_input_pngSize));
+			return (IMG(midi_input_png));
 		case InternalMidiOutpout:
-			return (ImageCache::getFromMemory(BinaryData::midi_output_png, BinaryData::midi_output_pngSize));
+			return (IMG(midi_output_png));
 		case InternalEffect:
-			return (ImageCache::getFromMemory(BinaryData::icon_plugin_internal_png, BinaryData::icon_plugin_internal_pngSize));
+			return (IMG(icon_plugin_internal_png));
 		case InternalSynth:
-			return (ImageCache::getFromMemory(BinaryData::icon_synth_png, BinaryData::icon_synth_pngSize));
+			return (IMG(icon_synth_png));
 		case PluginAudioEffect:
-			return (ImageCache::getFromMemory(BinaryData::icon_effect_png, BinaryData::icon_effect_pngSize));
+			return (IMG(icon_effect_png));
 		case PluginSynth:
-			return (ImageCache::getFromMemory(BinaryData::icon_synth_png, BinaryData::icon_synth_pngSize));
+			return (IMG(icon_synth_png));
 		case PluginSynthWithInput:
-			return (ImageCache::getFromMemory(BinaryData::icon_synth_png, BinaryData::icon_synth_pngSize));
+			return (IMG(icon_synth_png));
+		case PluginMidiEffect:
+			return (IMG(icon_plugin_midi_png));
+		case FuckIfIKnow:
+			return(IMG(icon_plugin_external_png));
 		default:
-			return (ImageCache::getFromMemory(BinaryData::icon_question_jpg, BinaryData::icon_question_jpgSize));
+			return (IMG(icon_question_jpg));
 		}
 	}
 
     void paint (Graphics& g) override
     {
-        auto boxArea = getLocalBounds().reduced (4, pinSize);
+		auto boxArea = getLocalBounds();
         bool isBypassed = false;
 		Colour boxColour;
 
@@ -356,46 +358,82 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 			boxColour = getColourForFilterType (ft);
 
 			if (isBypassed)
-				boxColour = boxColour.brighter();
+				boxColour = boxColour.overlaidWith(Colours::white).brighter();
 
 			g.setColour (boxColour);
 		}
-		
+		//g.setColour(Colours::red);
+		//g.drawRect(getLocalBounds(), 1.0f);
+		g.setColour (Colours::white);
+		g.setFont (getDefaultTwonkSansFont());
+		g.drawFittedText (getName(), boxArea, Justification::centredBottom, 2);
 		g.setColour(boxColour.contrasting(0.1f));
-		g.drawImage(getImageForFilter(ft), boxArea.toFloat(), RectanglePlacement::onlyReduceInSize, true);
+
+		g.drawImage(getImageForFilter(ft), boxArea.reduced(getWidth() * 0.35f).toFloat(), RectanglePlacement::onlyReduceInSize, true);
 		Path hexagon = getHexagonPath(boxArea);
 		g.setColour(boxColour.withAlpha(0.3f));
 		g.fillPath(hexagon);
 		g.setColour(boxColour);
 		g.strokePath(hexagon, PathStrokeType(1.0f));
-
-        /*g.setColour (findColour (TextEditor::textColourId));
-        g.setFont (font);
-        g.drawFittedText (getName(), boxArea, Justification::centred, 2);*/
     }
 
     void resized() override
     {
+		bool hasMidiInputPin = false;
+		bool hasMidiOutputPin = false;
         if (auto f = graph.graph.getNodeForId (pluginID))
         {
             if (auto* processor = f->getProcessor())
             {
                 for (auto* pin : pins)
                 {
-                    const bool isInput = pin->isInput;
-                    auto channelIndex = pin->pin.channelIndex;
-                    int busIdx = 0;
-                    processor->getOffsetInBusBufferForAbsoluteChannelIndex (isInput, channelIndex, busIdx);
+					if (pin->pin.isMIDI())
+					{
+						if (pin->isInput)
+						{
+							pin->setBounds(0, 0, NODE_SIZE, NODE_SIZE);
+						}
+						else
+						{
+							pin->setBounds(BUBBLE_SIZE - NODE_SIZE, BUBBLE_SIZE - NODE_SIZE, NODE_SIZE, NODE_SIZE);
+						}
+					}
+					else
+					{
+						if (processor->isMidiEffect())
+						{
+							pin->setVisible(false);
+							continue;
+						}
 
-                    const int total = isInput ? numIns : numOuts;
-                    const int index = pin->pin.isMIDI() ? (total - 1) : channelIndex;
-
-                    auto totalSpaces = static_cast<float> (total) + (static_cast<float> (jmax (0, processor->getBusCount (isInput) - 1)) * 0.5f);
-                    auto indexPos = static_cast<float> (index) + (static_cast<float> (busIdx) * 0.5f);
-
-                    pin->setBounds (proportionOfWidth ((1.0f + indexPos) / (totalSpaces + 1.0f)) - pinSize / 2,
-                                    pin->isInput ? 0 : (getHeight() - pinSize),
-                                    pinSize, pinSize);
+						auto channelIndex = pin->pin.channelIndex;
+						if (pin->isInput)
+						{
+							if (processor->getTotalNumInputChannels() <= 4)
+							{
+								pin->setBounds(0, processor->acceptsMidi() ? (NODE_SIZE * (channelIndex + 1)) : (NODE_SIZE * (channelIndex)), NODE_SIZE, NODE_SIZE);
+							}
+						}
+						else
+						{
+							if (processor->getTotalNumOutputChannels() <= 4)
+							{
+								pin->setBounds(BUBBLE_SIZE - NODE_SIZE, processor->producesMidi() ? 0 : (BUBBLE_SIZE - (NODE_SIZE * (channelIndex+1))), NODE_SIZE, NODE_SIZE);
+							}
+							else if (processor->getTotalNumOutputChannels() > 4)
+							{
+								if (channelIndex < 4)
+								{
+									pin->setBounds(BUBBLE_SIZE - NODE_SIZE, processor->producesMidi() ? 0 : (BUBBLE_SIZE - (NODE_SIZE * (channelIndex + 1))), NODE_SIZE, NODE_SIZE);
+									DBG("Weird: " + String((BUBBLE_SIZE - (NODE_SIZE * (channelIndex + 1)))));
+								}
+								else if (channelIndex < 6)
+									pin->setBounds((channelIndex - 3)*NODE_SIZE, BUBBLE_SIZE - NODE_SIZE, NODE_SIZE, NODE_SIZE);
+								else if (channelIndex < 8)
+									pin->setBounds((channelIndex - 5)*NODE_SIZE, 0, NODE_SIZE, NODE_SIZE);
+							}
+						}
+					}
                 }
             }
         }
@@ -423,15 +461,8 @@ struct GraphEditorPanel::PluginComponent   : public Component,
         if (f->getProcessor()->producesMidi())
             ++numOuts;
 
-        int w = 100;
-        int h = 60;
-
-        w = jmax (w, (jmax (numIns, numOuts) + 1) * 20);
-
-        const int textWidth = font.getStringWidth (f->getProcessor()->getName());
-        w = jmax (w, 16 + jmin (textWidth, 300));
-        if (textWidth > 300)
-            h = 100;
+		int w = BUBBLE_SIZE;
+		int h = BUBBLE_SIZE;
 
         setSize (w, h);
 
@@ -779,13 +810,13 @@ struct GraphEditorPanel::ConnectorComponent   : public Component,
 GraphEditorPanel
 */
 GraphEditorPanel::GraphEditorPanel (PluginGraph& g)
-	: graph (g), keyboardComponent(nullptr),
+	: graph (g),
 	directoryListThread("Twonk programs lister"),
 	twonkDocumentFileFilter("*.twonk", "", "Twonk programs"),
 	directoryContentsList(&twonkDocumentFileFilter, directoryListThread),
 	twonkProgramListWrapper(directoryContentsList, g)
 {
-	bgImage = ImageCache::getFromMemory(BinaryData::bg3_jpg, BinaryData::bg3_jpgSize);
+	bgImage = IMG(bg1_jpg);
 	toolBar.reset(new TwonkToolBar(*this));
 	addAndMakeVisible(toolBar.get());
 	toolBar->setVisible(true);
@@ -794,7 +825,7 @@ GraphEditorPanel::GraphEditorPanel (PluginGraph& g)
 	
     graph.addChangeListener (this);
     setOpaque (true);
-	directoryContentsList.setDirectory(File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Twonk"), false, true);
+	directoryContentsList.setDirectory(GET_TWONK_PROGRAM_DIR(), false, true);
 	directoryListThread.startThread(1);
 
 	addAndMakeVisible(twonkProgramListWrapper);
@@ -895,10 +926,7 @@ void GraphEditorPanel::changeListenerCallback (ChangeBroadcaster*)
 
 void GraphEditorPanel::updateComponents()
 {
-	if (keyboardComponent)
-		keyboardComponent->setBounds(90, 300, 400, 150);
-
-	twonkProgramListWrapper.setBounds(getWidth() - 248, 16, 248, getHeight() - 32);
+	twonkProgramListWrapper.setBounds(getWidth() - 300, 16, 300, getHeight() - 32);
 
     for (int i = nodes.size(); --i >= 0;)
         if (graph.graph.getNodeForId (nodes.getUnchecked(i)->pluginID) == nullptr)
@@ -1054,15 +1082,6 @@ void GraphEditorPanel::timerCallback()
     showPopupMenu (originalTouchPos);
 }
 
-void GraphEditorPanel::setKeyboardComponent(TwonkMidiKeyboard *_keyboardComponent)
-{
-	keyboardComponent = _keyboardComponent;
-	addAndMakeVisible(keyboardComponent);
-	keyboardComponent->setVisible(true);
-	
-	updateComponents();
-}
-
 void GraphEditorPanel::toggleProgramMenu()
 {
 	twonkProgramListWrapper.setVisible(!twonkProgramListWrapper.isVisible());
@@ -1082,214 +1101,9 @@ void GraphEditorPanel::fileDoubleClicked(const File &file)
 {
 }
 
-void GraphEditorPanel::toggleTwonkFileMenu()
-{
-	if (toolBar->getWidth() == 400)
-		toolBar->setSize(64, 384);
-	else
-		toolBar->setSize(400, 384);
-}
 /*
  * GraphDocumentComponent
  */
-struct GraphDocumentComponent::TooltipBar   : public Component,
-                                              private Timer
-{
-    TooltipBar()
-    {
-        startTimer (100);
-    }
-
-    void paint (Graphics& g) override
-    {
-        g.setFont (Font (getHeight() * 0.7f, Font::bold));
-        g.setColour (Colours::black);
-        g.drawFittedText (tip, 10, 0, getWidth() - 12, getHeight(), Justification::centredLeft, 1);
-    }
-
-    void timerCallback() override
-    {
-        String newTip;
-
-        if (auto* underMouse = Desktop::getInstance().getMainMouseSource().getComponentUnderMouse())
-            if (auto* ttc = dynamic_cast<TooltipClient*> (underMouse))
-                if (! (underMouse->isMouseButtonDown() || underMouse->isCurrentlyBlockedByAnotherModalComponent()))
-                    newTip = ttc->getTooltip();
-
-        if (newTip != tip)
-        {
-            tip = newTip;
-            repaint();
-        }
-    }
-
-    String tip;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TooltipBar)
-};
-
-class GraphDocumentComponent::TitleBarComponent    : public Component,
-                                                     private Button::Listener
-{
-public:
-    TitleBarComponent (GraphDocumentComponent& graphDocumentComponent)
-        : owner (graphDocumentComponent)
-    {
-        static const unsigned char burgerMenuPathData[]
-            = { 110,109,0,0,128,64,0,0,32,65,108,0,0,224,65,0,0,32,65,98,254,212,232,65,0,0,32,65,0,0,240,65,252,
-                169,17,65,0,0,240,65,0,0,0,65,98,0,0,240,65,8,172,220,64,254,212,232,65,0,0,192,64,0,0,224,65,0,0,
-                192,64,108,0,0,128,64,0,0,192,64,98,16,88,57,64,0,0,192,64,0,0,0,64,8,172,220,64,0,0,0,64,0,0,0,65,
-                98,0,0,0,64,252,169,17,65,16,88,57,64,0,0,32,65,0,0,128,64,0,0,32,65,99,109,0,0,224,65,0,0,96,65,108,
-                0,0,128,64,0,0,96,65,98,16,88,57,64,0,0,96,65,0,0,0,64,4,86,110,65,0,0,0,64,0,0,128,65,98,0,0,0,64,
-                254,212,136,65,16,88,57,64,0,0,144,65,0,0,128,64,0,0,144,65,108,0,0,224,65,0,0,144,65,98,254,212,232,
-                65,0,0,144,65,0,0,240,65,254,212,136,65,0,0,240,65,0,0,128,65,98,0,0,240,65,4,86,110,65,254,212,232,
-                65,0,0,96,65,0,0,224,65,0,0,96,65,99,109,0,0,224,65,0,0,176,65,108,0,0,128,64,0,0,176,65,98,16,88,57,
-                64,0,0,176,65,0,0,0,64,2,43,183,65,0,0,0,64,0,0,192,65,98,0,0,0,64,254,212,200,65,16,88,57,64,0,0,208,
-                65,0,0,128,64,0,0,208,65,108,0,0,224,65,0,0,208,65,98,254,212,232,65,0,0,208,65,0,0,240,65,254,212,
-                200,65,0,0,240,65,0,0,192,65,98,0,0,240,65,2,43,183,65,254,212,232,65,0,0,176,65,0,0,224,65,0,0,176,
-                65,99,101,0,0 };
-
-        static const unsigned char pluginListPathData[]
-            = { 110,109,193,202,222,64,80,50,21,64,108,0,0,48,65,0,0,0,0,108,160,154,112,65,80,50,21,64,108,0,0,48,65,80,
-                50,149,64,108,193,202,222,64,80,50,21,64,99,109,0,0,192,64,251,220,127,64,108,160,154,32,65,165,135,202,
-                64,108,160,154,32,65,250,220,47,65,108,0,0,192,64,102,144,10,65,108,0,0,192,64,251,220,127,64,99,109,0,0,
-                128,65,251,220,127,64,108,0,0,128,65,103,144,10,65,108,96,101,63,65,251,220,47,65,108,96,101,63,65,166,135,
-                202,64,108,0,0,128,65,251,220,127,64,99,109,96,101,79,65,148,76,69,65,108,0,0,136,65,0,0,32,65,108,80,
-                77,168,65,148,76,69,65,108,0,0,136,65,40,153,106,65,108,96,101,79,65,148,76,69,65,99,109,0,0,64,65,63,247,
-                95,65,108,80,77,128,65,233,161,130,65,108,80,77,128,65,125,238,167,65,108,0,0,64,65,51,72,149,65,108,0,0,64,
-                65,63,247,95,65,99,109,0,0,176,65,63,247,95,65,108,0,0,176,65,51,72,149,65,108,176,178,143,65,125,238,167,65,
-                108,176,178,143,65,233,161,130,65,108,0,0,176,65,63,247,95,65,99,109,12,86,118,63,148,76,69,65,108,0,0,160,
-                64,0,0,32,65,108,159,154,16,65,148,76,69,65,108,0,0,160,64,40,153,106,65,108,12,86,118,63,148,76,69,65,99,
-                109,0,0,0,0,63,247,95,65,108,62,53,129,64,233,161,130,65,108,62,53,129,64,125,238,167,65,108,0,0,0,0,51,
-                72,149,65,108,0,0,0,0,63,247,95,65,99,109,0,0,32,65,63,247,95,65,108,0,0,32,65,51,72,149,65,108,193,202,190,
-                64,125,238,167,65,108,193,202,190,64,233,161,130,65,108,0,0,32,65,63,247,95,65,99,101,0,0 };
-
-        {
-            Path p;
-            p.loadPathFromData (burgerMenuPathData, sizeof (burgerMenuPathData));
-            burgerButton.setShape (p, true, true, false);
-        }
-
-        {
-            Path p;
-            p.loadPathFromData (pluginListPathData, sizeof (pluginListPathData));
-            pluginButton.setShape (p, true, true, false);
-        }
-
-        burgerButton.addListener (this);
-        addAndMakeVisible (burgerButton);
-
-        pluginButton.addListener (this);
-        addAndMakeVisible (pluginButton);
-
-        titleLabel.setJustificationType (Justification::centredLeft);
-        addAndMakeVisible (titleLabel);
-
-        setOpaque (true);
-    }
-
-private:
-    void paint (Graphics& g) override
-    {
-        auto titleBarBackgroundColour = getLookAndFeel().findColour (ResizableWindow::backgroundColourId).darker();
-
-        g.setColour (titleBarBackgroundColour);
-        g.fillRect (getLocalBounds());
-    }
-
-    void resized() override
-    {
-        auto r = getLocalBounds();
-
-        burgerButton.setBounds (r.removeFromLeft (40).withSizeKeepingCentre (20, 20));
-
-        pluginButton.setBounds (r.removeFromRight (40).withSizeKeepingCentre (20, 20));
-
-        titleLabel.setFont (Font (static_cast<float> (getHeight()) * 0.5f, Font::plain));
-        titleLabel.setBounds (r);
-    }
-
-    void buttonClicked (Button* b) override
-    {
-        owner.showSidePanel (b == &burgerButton);
-    }
-
-    GraphDocumentComponent& owner;
-
-    Label titleLabel {"titleLabel", "Plugin Host"};
-    ShapeButton burgerButton {"burgerButton", Colours::lightgrey, Colours::lightgrey, Colours::white};
-    ShapeButton pluginButton {"pluginButton", Colours::lightgrey, Colours::lightgrey, Colours::white};
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TitleBarComponent)
-};
-
-struct GraphDocumentComponent::PluginListBoxModel    : public ListBoxModel,
-                                                       public ChangeListener,
-                                                       public MouseListener
-{
-    PluginListBoxModel (ListBox& lb, KnownPluginList& kpl)
-        : owner (lb),
-          knownPlugins (kpl)
-    {
-        knownPlugins.addChangeListener (this);
-        owner.addMouseListener (this, true);
-
-       #if JUCE_IOS
-        scanner.reset (new AUScanner (knownPlugins));
-       #endif
-    }
-
-    int getNumRows() override
-    {
-        return knownPlugins.getNumTypes();
-    }
-
-    void paintListBoxItem (int rowNumber, Graphics& g,
-                           int width, int height, bool rowIsSelected) override
-    {
-        g.fillAll (rowIsSelected ? Colour (0xff42A2C8)
-                                 : Colour (0xff263238));
-
-        g.setColour (rowIsSelected ? Colours::black : Colours::white);
-
-        if (rowNumber < knownPlugins.getNumTypes())
-            g.drawFittedText (knownPlugins.getTypes()[rowNumber].name, { 0, 0, width, height - 2 }, Justification::centred, 1);
-
-        g.setColour (Colours::black.withAlpha (0.4f));
-        g.drawRect (0, height - 1, width, 1);
-    }
-
-    var getDragSourceDescription (const SparseSet<int>& selectedRows) override
-    {
-        if (! isOverSelectedRow)
-            return var();
-
-        return String ("PLUGIN: " + String (selectedRows[0]));
-    }
-
-    void changeListenerCallback (ChangeBroadcaster*) override
-    {
-        owner.updateContent();
-    }
-
-    void mouseDown (const MouseEvent& e) override
-    {
-        isOverSelectedRow = owner.getRowPosition (owner.getSelectedRow(), true)
-                                 .contains (e.getEventRelativeTo (&owner).getMouseDownPosition());
-    }
-
-    ListBox& owner;
-    KnownPluginList& knownPlugins;
-
-    bool isOverSelectedRow = false;
-
-   #if JUCE_IOS
-    std::unique_ptr<AUScanner> scanner;
-   #endif
-
-    JUCE_DECLARE_NON_COPYABLE (PluginListBoxModel)
-};
-
 GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm, AudioDeviceManager& dm, KnownPluginList& kpl)
     : graph (new PluginGraph (fm)),
       deviceManager (dm),
@@ -1309,75 +1123,22 @@ void GraphDocumentComponent::init()
     addAndMakeVisible (graphPanel.get());
 	
     graphPlayer.setProcessor (&graph->graph);
-
-	keyState.addListener (&graphPlayer.getMidiMessageCollector());
-	keyboardComp.reset (new TwonkMidiKeyboard (keyState, MidiKeyboardComponent::horizontalKeyboard));
-	addAndMakeVisible (keyboardComp.get());
-	
-	graphPanel->setKeyboardComponent(keyboardComp.get());
-    statusBar.reset (new TooltipBar());
-    addAndMakeVisible (statusBar.get());
-	tooltipWindow.reset(new TooltipWindow(this, 300));
     graphPanel->updateComponents();
-
-    if (isOnTouchDevice())
-    {
-        if (isOnTouchDevice())
-        {
-            titleBarComponent.reset (new TitleBarComponent (*this));
-            addAndMakeVisible (titleBarComponent.get());
-        }
-
-        pluginListBoxModel.reset (new PluginListBoxModel (pluginListBox, pluginList));
-
-        pluginListBox.setModel (pluginListBoxModel.get());
-        pluginListBox.setRowHeight (40);
-
-        pluginListSidePanel.setContent (&pluginListBox, false);
-
-        mobileSettingsSidePanel.setContent (new AudioDeviceSelectorComponent (deviceManager,
-                                                                              0, 2, 0, 2,
-                                                                              true, true, true, false));
-
-        if (isOnTouchDevice())
-        {
-            addAndMakeVisible (pluginListSidePanel);
-            addAndMakeVisible (mobileSettingsSidePanel);
-        }
-    }
 }
 
 GraphDocumentComponent::~GraphDocumentComponent()
 {
     releaseGraph();
-    keyState.removeListener (&graphPlayer.getMidiMessageCollector());
 }
 
 void GraphDocumentComponent::resized()
 {
-    auto r = getLocalBounds();
-    const int titleBarHeight = 40;
-    const int keysHeight = 60;
-    const int statusHeight = 20;
-
-    if (isOnTouchDevice())
-        titleBarComponent->setBounds (r.removeFromTop(titleBarHeight));
-
-    //keyboardComp->setBounds (r.removeFromBottom (keysHeight));
-    //statusBar->setBounds (r.removeFromBottom (statusHeight));
-    graphPanel->setBounds (r);
-
-    checkAvailableWidth();
+    graphPanel->setBounds (getLocalBounds());
 }
 
 void GraphDocumentComponent::createNewPlugin (const PluginDescription& desc, Point<int> pos)
 {
     graphPanel->createNewPlugin (desc, pos);
-}
-
-void GraphDocumentComponent::unfocusKeyboardComponent()
-{
-    keyboardComp->unfocusAllComponents();
 }
 
 void GraphDocumentComponent::releaseGraph()
@@ -1391,9 +1152,6 @@ void GraphDocumentComponent::releaseGraph()
         graphPanel = nullptr;
     }
 
-    keyboardComp = nullptr;
-    statusBar = nullptr;
-
     graphPlayer.setProcessor (nullptr);
     graph = nullptr;
 }
@@ -1406,10 +1164,6 @@ bool GraphDocumentComponent::isInterestedInDragSource (const SourceDetails& deta
 
 void GraphDocumentComponent::itemDropped (const SourceDetails& details)
 {
-    // don't allow items to be dropped behind the sidebar
-    if (pluginListSidePanel.getBounds().contains (details.localPosition))
-        return;
-
     auto pluginTypeIndex = details.description.toString()
                                  .fromFirstOccurrenceOf ("PLUGIN: ", false, false)
                                  .getIntValue();
@@ -1418,38 +1172,6 @@ void GraphDocumentComponent::itemDropped (const SourceDetails& details)
     jassert (isPositiveAndBelow (pluginTypeIndex, pluginList.getNumTypes()));
 
     createNewPlugin (pluginList.getTypes()[pluginTypeIndex], details.localPosition);
-}
-
-void GraphDocumentComponent::showSidePanel (bool showSettingsPanel)
-{
-    if (showSettingsPanel)
-        mobileSettingsSidePanel.showOrHide (true);
-    else
-        pluginListSidePanel.showOrHide (true);
-
-    checkAvailableWidth();
-
-    lastOpenedSidePanel = showSettingsPanel ? &mobileSettingsSidePanel
-                                            : &pluginListSidePanel;
-}
-
-void GraphDocumentComponent::hideLastSidePanel()
-{
-    if (lastOpenedSidePanel != nullptr)
-        lastOpenedSidePanel->showOrHide (false);
-
-    if      (mobileSettingsSidePanel.isPanelShowing())    lastOpenedSidePanel = &mobileSettingsSidePanel;
-    else if (pluginListSidePanel.isPanelShowing())        lastOpenedSidePanel = &pluginListSidePanel;
-    else                                                  lastOpenedSidePanel = nullptr;
-}
-
-void GraphDocumentComponent::checkAvailableWidth()
-{
-    if (mobileSettingsSidePanel.isPanelShowing() && pluginListSidePanel.isPanelShowing())
-    {
-        if (getWidth() - (mobileSettingsSidePanel.getWidth() + pluginListSidePanel.getWidth()) < 150)
-            hideLastSidePanel();
-    }
 }
 
 void GraphDocumentComponent::setDoublePrecision (bool doublePrecision)

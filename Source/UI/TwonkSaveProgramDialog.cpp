@@ -19,16 +19,17 @@
 
 //[Headers] You can add your own extra header files here...
 #include "BinaryData.h"
+#include "MainHostWindow.h"
 //[/Headers]
 
-#include "TwonkSaveFileDialog.h"
+#include "TwonkSaveProgramDialog.h"
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 //[/MiscUserDefs]
 
 //==============================================================================
-TwonkSaveFileDialog::TwonkSaveFileDialog ()
+TwonkSaveProgramDialog::TwonkSaveProgramDialog ()
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -46,10 +47,10 @@ TwonkSaveFileDialog::TwonkSaveFileDialog ()
     programName.reset (new Label ("Program Name",
                                   TRANS("Program Name")));
     addAndMakeVisible (programName.get());
-    programName->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular").withExtraKerningFactor (0.013f));
+    programName->setFont (Font (24.00f, Font::plain).withTypefaceStyle ("Regular"));
     programName->setJustificationType (Justification::centred);
     programName->setEditable (true, true, false);
-    programName->setColour (Label::backgroundColourId, Colour (0x4d4cdcff));
+    programName->setColour (Label::backgroundColourId, Colour (0x4d000000));
     programName->setColour (Label::outlineColourId, Colour (0xf4ffffff));
     programName->setColour (TextEditor::textColourId, Colours::black);
     programName->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
@@ -105,6 +106,8 @@ TwonkSaveFileDialog::TwonkSaveFileDialog ()
 	midiProgram->setRadioGroupId(1, dontSendNotification);
 	generalProgram->setClickingTogglesState(true);
 	generalProgram->setRadioGroupId(1, dontSendNotification);
+	generalProgram->setToggleState(true, sendNotification);
+	programName->setFont(getDefaultTwonkSansFont().withHeight(24.0f));
     //[/UserPreSize]
 
     setSize (320, 320);
@@ -114,7 +117,7 @@ TwonkSaveFileDialog::TwonkSaveFileDialog ()
     //[/Constructor]
 }
 
-TwonkSaveFileDialog::~TwonkSaveFileDialog()
+TwonkSaveProgramDialog::~TwonkSaveProgramDialog()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
@@ -133,37 +136,16 @@ TwonkSaveFileDialog::~TwonkSaveFileDialog()
 }
 
 //==============================================================================
-void TwonkSaveFileDialog::paint (Graphics& g)
+void TwonkSaveProgramDialog::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
-
-    g.fillAll (Colour (0x51000000));
-
-    {
-        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        Colour fillColour1 = Colour (0xff898989), fillColour2 = Colour (0xff5e5e5e);
-        Colour strokeColour = Colour (0xb0000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       160.0f - 0.0f + x,
-                                       200.0f - 0.0f + y,
-                                       fillColour2,
-                                       160.0f - 0.0f + x,
-                                       8.0f - 0.0f + y,
-                                       false));
-        g.fillRect (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 2);
-
-    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
 
-void TwonkSaveFileDialog::resized()
+void TwonkSaveProgramDialog::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -179,7 +161,7 @@ void TwonkSaveFileDialog::resized()
     //[/UserResized]
 }
 
-void TwonkSaveFileDialog::buttonClicked (Button* buttonThatWasClicked)
+void TwonkSaveProgramDialog::buttonClicked (Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
@@ -219,7 +201,7 @@ void TwonkSaveFileDialog::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == generalProgram.get())
     {
         //[UserButtonCode_generalProgram] -- add your button handler code here..
-		programType = General;
+		programType = Generic;
         //[/UserButtonCode_generalProgram]
     }
 
@@ -227,7 +209,7 @@ void TwonkSaveFileDialog::buttonClicked (Button* buttonThatWasClicked)
     //[/UserbuttonClicked_Post]
 }
 
-void TwonkSaveFileDialog::labelTextChanged (Label* labelThatHasChanged)
+void TwonkSaveProgramDialog::labelTextChanged (Label* labelThatHasChanged)
 {
     //[UserlabelTextChanged_Pre]
     //[/UserlabelTextChanged_Pre]
@@ -245,6 +227,10 @@ void TwonkSaveFileDialog::labelTextChanged (Label* labelThatHasChanged)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void TwonkSaveProgramDialog::editorShown (Label *l, TextEditor &e)
+{
+	e.setInputRestrictions(64, "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_");
+}
 //[/MiscUserCode]
 
 
@@ -257,14 +243,11 @@ void TwonkSaveFileDialog::labelTextChanged (Label* labelThatHasChanged)
 
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="TwonkSaveFileDialog" componentName=""
+<JUCER_COMPONENT documentType="Component" className="TwonkSaveProgramDialog" componentName=""
                  parentClasses="public Component" constructorParams="" variableInitialisers=""
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="320" initialHeight="320">
-  <BACKGROUND backgroundColour="51000000">
-    <RECT pos="0 0 0M 0M" fill="linear: 160 200, 160 8, 0=ff898989, 1=ff5e5e5e"
-          hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: b0000000"/>
-  </BACKGROUND>
+  <BACKGROUND backgroundColour="0"/>
   <TEXTBUTTON name="Save" id="857d207ba7463537" memberName="saveButton" virtualName=""
               explicitFocusOrder="0" pos="10% 85% 30% 10%" bgColOff="dc0bdd40"
               buttonText="Save" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
@@ -272,10 +255,10 @@ BEGIN_JUCER_METADATA
               virtualName="" explicitFocusOrder="0" pos="60% 85% 30% 10%" bgColOff="ffdf5454"
               buttonText="Cancel" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <LABEL name="Program Name" id="11eb7b7779af829" memberName="programName"
-         virtualName="" explicitFocusOrder="0" pos="10% 10% 80% 15%" bkgCol="4d4cdcff"
+         virtualName="" explicitFocusOrder="0" pos="10% 10% 80% 15%" bkgCol="4d000000"
          outlineCol="f4ffffff" edTextCol="ff000000" edBkgCol="0" labelText="Program Name"
          editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="18.0" kerning="0.013" bold="0"
+         fontname="Default font" fontsize="24.0" kerning="0.0" bold="0"
          italic="0" justification="36"/>
   <IMAGEBUTTON name="Effect Program" id="c5541012848f3159" memberName="fxProgamType"
                virtualName="" explicitFocusOrder="0" pos="22.5% 30% 20% 20%"

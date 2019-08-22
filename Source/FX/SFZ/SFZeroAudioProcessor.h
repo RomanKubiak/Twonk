@@ -51,7 +51,6 @@ public:
 
   MidiKeyboardState keyboardState;
   double loadProgress;
-
   Sound *getSound();
   int numVoicesUsed();
   String voiceInfoString();

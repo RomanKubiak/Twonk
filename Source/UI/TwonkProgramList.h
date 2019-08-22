@@ -45,6 +45,7 @@ class TwonkProgramList :	public ListBox,
 			(and if the file isn't in the list, all other items will be deselected). */
 		void setSelectedFile (const File&) override;
 		void sendDoubleClickMessage(const File &);
+		void refresh();
 	private:
 		File lastDirectory, fileWaitingToBeSelected;
 		class ItemComponent;
@@ -73,5 +74,7 @@ class TwonkProgramListWrapper : public Component, public Button::Listener
 		TwonkProgramList list;
 
 	private:
-		std::unique_ptr<ImageButton> closeButton;
+		std::unique_ptr<TwonkToolBarButton> closeButton;
+		std::unique_ptr<TwonkToolBarButton> deleteProgramButton;
+		std::unique_ptr<TwonkToolBarButton> renameProgramButton;
 };

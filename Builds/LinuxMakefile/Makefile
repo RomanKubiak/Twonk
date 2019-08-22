@@ -77,19 +77,19 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkDistortionProcessor_23d1d60a.o \
   $(JUCE_OBJDIR)/TwonkFlangerEditor_997d0a31.o \
   $(JUCE_OBJDIR)/TwonkFlangerProcessor_8195a358.o \
-  $(JUCE_OBJDIR)/ChordFunctions_2c2d3c84.o \
-  $(JUCE_OBJDIR)/GuitarNeckComponent_6480b6f9.o \
-  $(JUCE_OBJDIR)/piz_LookAndFeel_171b70e5.o \
-  $(JUCE_OBJDIR)/PizButton_2150fcb8.o \
-  $(JUCE_OBJDIR)/LookAndFeel_2ea9b2ff.o \
-  $(JUCE_OBJDIR)/MidiLoop_dbccb24e.o \
-  $(JUCE_OBJDIR)/PianoRoll_ed6ae6e7.o \
-  $(JUCE_OBJDIR)/piz_MidiMessageSequence_9e0efaea.o \
-  $(JUCE_OBJDIR)/PizLooper_f3ca46d3.o \
-  $(JUCE_OBJDIR)/PizLooperEditor_4955b760.o \
-  $(JUCE_OBJDIR)/PizLooperProcessing_fc417306.o \
-  $(JUCE_OBJDIR)/Timeline_139bd32a.o \
-  $(JUCE_OBJDIR)/VSTSlider_cec8a599.o \
+  $(JUCE_OBJDIR)/BankEditor_5080e79b.o \
+  $(JUCE_OBJDIR)/CTAGSampler_e7279309.o \
+  $(JUCE_OBJDIR)/CTAGSamplerSound_b8172050.o \
+  $(JUCE_OBJDIR)/CTAGSamplerVoice_e7626ef3.o \
+  $(JUCE_OBJDIR)/EnvelopeGenerator_6b1668db.o \
+  $(JUCE_OBJDIR)/Filter_982d234a.o \
+  $(JUCE_OBJDIR)/OnePoleFilter_9278c44e.o \
+  $(JUCE_OBJDIR)/PanPos_f168a8c9.o \
+  $(JUCE_OBJDIR)/PitchRateConversion_939e832e.o \
+  $(JUCE_OBJDIR)/PluginProcessor_5e93f157.o \
+  $(JUCE_OBJDIR)/WaveShaper_21468d9c.o \
+  $(JUCE_OBJDIR)/MidiControllerEditor_7468531c.o \
+  $(JUCE_OBJDIR)/MidiControllerProcessor_5bf02e8d.o \
   $(JUCE_OBJDIR)/TwonkPhaserEditor_561d44b3.o \
   $(JUCE_OBJDIR)/TwonkPhaserProcessor_1b8e4196.o \
   $(JUCE_OBJDIR)/TwonkPPDelayEditor_ed313ffe.o \
@@ -100,10 +100,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkRMProcessor_9ab88bca.o \
   $(JUCE_OBJDIR)/TwonkRWEditor_fd6adaed.o \
   $(JUCE_OBJDIR)/TwonkRWProcessor_596b491c.o \
-  $(JUCE_OBJDIR)/SFZero_844de053.o \
-  $(JUCE_OBJDIR)/ClickableLabel_9159dc58.o \
-  $(JUCE_OBJDIR)/SFZeroAudioProcessor_d66bcd9d.o \
-  $(JUCE_OBJDIR)/SFZeroEditor_c14f092e.o \
   $(JUCE_OBJDIR)/TwonkTremoloProcessor_36282d78.o \
   $(JUCE_OBJDIR)/TwonkTremoloEditor_63b411.o \
   $(JUCE_OBJDIR)/TwonkWWEditor_409921e2.o \
@@ -112,12 +108,12 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/InternalPlugins_577454d0.o \
   $(JUCE_OBJDIR)/IOConfigurationWindow_beb677cd.o \
   $(JUCE_OBJDIR)/PluginGraph_1fc57488.o \
+  $(JUCE_OBJDIR)/PluginListWindow_f200207d.o \
   $(JUCE_OBJDIR)/TwonkLookAndFeel_5aa9c071.o \
-  $(JUCE_OBJDIR)/TwonkFileMenu_d3daab2.o \
-  $(JUCE_OBJDIR)/TwonkMidiKeyboard_ca27245f.o \
+  $(JUCE_OBJDIR)/TwonkAudioSettingsMenu_5902978b.o \
   $(JUCE_OBJDIR)/TwonkProgramList_f2921f35.o \
-  $(JUCE_OBJDIR)/TwonkSaveFileDialog_dd504478.o \
-  $(JUCE_OBJDIR)/TwonkToolBarStatus_6bd5820.o \
+  $(JUCE_OBJDIR)/TwonkProgramMenu_7e603b76.o \
+  $(JUCE_OBJDIR)/TwonkSaveProgramDialog_cddd4f62.o \
   $(JUCE_OBJDIR)/TwonkToolBarButton_d540f60.o \
   $(JUCE_OBJDIR)/TwonkToolBar_fcb3ebce.o \
   $(JUCE_OBJDIR)/PluginDefaultEditor_eea7f1e9.o \
@@ -198,69 +194,69 @@ $(JUCE_OBJDIR)/TwonkFlangerProcessor_8195a358.o: ../../Source/FX/Flanger/TwonkFl
 	@echo "Compiling TwonkFlangerProcessor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/ChordFunctions_2c2d3c84.o: ../../Source/FX/midiLooper/common/ChordFunctions.cpp
+$(JUCE_OBJDIR)/BankEditor_5080e79b.o: ../../Source/FX/JuceSampler/BankEditor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ChordFunctions.cpp"
+	@echo "Compiling BankEditor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/GuitarNeckComponent_6480b6f9.o: ../../Source/FX/midiLooper/common/GuitarNeckComponent.cpp
+$(JUCE_OBJDIR)/CTAGSampler_e7279309.o: ../../Source/FX/JuceSampler/CTAGSampler.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling GuitarNeckComponent.cpp"
+	@echo "Compiling CTAGSampler.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/piz_LookAndFeel_171b70e5.o: ../../Source/FX/midiLooper/common/piz_LookAndFeel.cpp
+$(JUCE_OBJDIR)/CTAGSamplerSound_b8172050.o: ../../Source/FX/JuceSampler/CTAGSamplerSound.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling piz_LookAndFeel.cpp"
+	@echo "Compiling CTAGSamplerSound.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/PizButton_2150fcb8.o: ../../Source/FX/midiLooper/common/PizButton.cpp
+$(JUCE_OBJDIR)/CTAGSamplerVoice_e7626ef3.o: ../../Source/FX/JuceSampler/CTAGSamplerVoice.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PizButton.cpp"
+	@echo "Compiling CTAGSamplerVoice.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/LookAndFeel_2ea9b2ff.o: ../../Source/FX/midiLooper/LookAndFeel.cpp
+$(JUCE_OBJDIR)/EnvelopeGenerator_6b1668db.o: ../../Source/FX/JuceSampler/EnvelopeGenerator.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling LookAndFeel.cpp"
+	@echo "Compiling EnvelopeGenerator.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/MidiLoop_dbccb24e.o: ../../Source/FX/midiLooper/MidiLoop.cpp
+$(JUCE_OBJDIR)/Filter_982d234a.o: ../../Source/FX/JuceSampler/Filter.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling MidiLoop.cpp"
+	@echo "Compiling Filter.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/PianoRoll_ed6ae6e7.o: ../../Source/FX/midiLooper/PianoRoll.cpp
+$(JUCE_OBJDIR)/OnePoleFilter_9278c44e.o: ../../Source/FX/JuceSampler/OnePoleFilter.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PianoRoll.cpp"
+	@echo "Compiling OnePoleFilter.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/piz_MidiMessageSequence_9e0efaea.o: ../../Source/FX/midiLooper/piz_MidiMessageSequence.cpp
+$(JUCE_OBJDIR)/PanPos_f168a8c9.o: ../../Source/FX/JuceSampler/PanPos.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling piz_MidiMessageSequence.cpp"
+	@echo "Compiling PanPos.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/PizLooper_f3ca46d3.o: ../../Source/FX/midiLooper/PizLooper.cpp
+$(JUCE_OBJDIR)/PitchRateConversion_939e832e.o: ../../Source/FX/JuceSampler/PitchRateConversion.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PizLooper.cpp"
+	@echo "Compiling PitchRateConversion.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/PizLooperEditor_4955b760.o: ../../Source/FX/midiLooper/PizLooperEditor.cpp
+$(JUCE_OBJDIR)/PluginProcessor_5e93f157.o: ../../Source/FX/JuceSampler/PluginProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PizLooperEditor.cpp"
+	@echo "Compiling PluginProcessor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/PizLooperProcessing_fc417306.o: ../../Source/FX/midiLooper/PizLooperProcessing.cpp
+$(JUCE_OBJDIR)/WaveShaper_21468d9c.o: ../../Source/FX/JuceSampler/WaveShaper.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PizLooperProcessing.cpp"
+	@echo "Compiling WaveShaper.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/Timeline_139bd32a.o: ../../Source/FX/midiLooper/Timeline.cpp
+$(JUCE_OBJDIR)/MidiControllerEditor_7468531c.o: ../../Source/FX/MIDI\ Controller/MidiControllerEditor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling Timeline.cpp"
+	@echo "Compiling MidiControllerEditor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/VSTSlider_cec8a599.o: ../../Source/FX/midiLooper/VSTSlider.cpp
+$(JUCE_OBJDIR)/MidiControllerProcessor_5bf02e8d.o: ../../Source/FX/MIDI\ Controller/MidiControllerProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling VSTSlider.cpp"
+	@echo "Compiling MidiControllerProcessor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkPhaserEditor_561d44b3.o: ../../Source/FX/Phaser/TwonkPhaserEditor.cpp
@@ -313,26 +309,6 @@ $(JUCE_OBJDIR)/TwonkRWProcessor_596b491c.o: ../../Source/FX/Robotization-Whisper
 	@echo "Compiling TwonkRWProcessor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/SFZero_844de053.o: ../../Source/FX/SFZ/SFZero/SFZero.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling SFZero.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/ClickableLabel_9159dc58.o: ../../Source/FX/SFZ/ClickableLabel.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ClickableLabel.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/SFZeroAudioProcessor_d66bcd9d.o: ../../Source/FX/SFZ/SFZeroAudioProcessor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling SFZeroAudioProcessor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/SFZeroEditor_c14f092e.o: ../../Source/FX/SFZ/SFZeroEditor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling SFZeroEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/TwonkTremoloProcessor_36282d78.o: ../../Source/FX/Tremolo/TwonkTremoloProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkTremoloProcessor.cpp"
@@ -373,19 +349,19 @@ $(JUCE_OBJDIR)/PluginGraph_1fc57488.o: ../../Source/Filters/PluginGraph.cpp
 	@echo "Compiling PluginGraph.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/PluginListWindow_f200207d.o: ../../Source/UI/PluginListWindow.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PluginListWindow.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/TwonkLookAndFeel_5aa9c071.o: ../../Source/UI/TwonkLookAndFeel.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkLookAndFeel.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TwonkFileMenu_d3daab2.o: ../../Source/UI/TwonkFileMenu.cpp
+$(JUCE_OBJDIR)/TwonkAudioSettingsMenu_5902978b.o: ../../Source/UI/TwonkAudioSettingsMenu.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkFileMenu.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/TwonkMidiKeyboard_ca27245f.o: ../../Source/UI/TwonkMidiKeyboard.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkMidiKeyboard.cpp"
+	@echo "Compiling TwonkAudioSettingsMenu.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkProgramList_f2921f35.o: ../../Source/UI/TwonkProgramList.cpp
@@ -393,14 +369,14 @@ $(JUCE_OBJDIR)/TwonkProgramList_f2921f35.o: ../../Source/UI/TwonkProgramList.cpp
 	@echo "Compiling TwonkProgramList.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TwonkSaveFileDialog_dd504478.o: ../../Source/UI/TwonkSaveFileDialog.cpp
+$(JUCE_OBJDIR)/TwonkProgramMenu_7e603b76.o: ../../Source/UI/TwonkProgramMenu.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkSaveFileDialog.cpp"
+	@echo "Compiling TwonkProgramMenu.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TwonkToolBarStatus_6bd5820.o: ../../Source/UI/TwonkToolBarStatus.cpp
+$(JUCE_OBJDIR)/TwonkSaveProgramDialog_cddd4f62.o: ../../Source/UI/TwonkSaveProgramDialog.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkToolBarStatus.cpp"
+	@echo "Compiling TwonkSaveProgramDialog.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkToolBarButton_d540f60.o: ../../Source/UI/TwonkToolBarButton.cpp

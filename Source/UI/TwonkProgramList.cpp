@@ -30,6 +30,11 @@ TwonkProgramList::~TwonkProgramList()
 	directoryContentsList.removeChangeListener (this);
 }
 
+void TwonkProgramList::refresh()
+{
+	directoryContentsList.refresh();
+}
+
 int TwonkProgramList::getNumSelectedFiles() const
 {
 	return getNumSelectedRows();
@@ -104,10 +109,13 @@ public:
 	//==============================================================================
 	void paint (Graphics& g) override
 	{
-		Colour baseColour = Colours::black;
-		g.drawImage (icon, Rectangle<float>(2, 2, 44, 44));
 		Font fontToDrawWith = getDefaultTwonkSansFont().withHeight(20.0f);
-		String nameToDraw = file.getFileNameWithoutExtension();
+		String nameToDraw = file.getFileNameWithoutExtension().upToFirstOccurrenceOf(".", false, false);
+		String type = file.getFileNameWithoutExtension().fromFirstOccurrenceOf(".", false, false);
+		icon = getIconForType(descriptorToProgramType(type));
+		Colour baseColour = Colours::black;
+		g.drawImage (icon, Rectangle<float>(4, 4, 40, 40));
+
 		if (fontToDrawWith.getStringWidth(nameToDraw) < getWidth() - 48)
 		{
 			g.setFont(fontToDrawWith.withHeight(14.0f));
@@ -120,7 +128,8 @@ public:
 		}
 		g.setFont(getDefaultTwonkSansFont().withHeight(14.0f));
 		g.setColour(baseColour.brighter());
-		g.drawText (modTime, 48, 34, getWidth() - 48, 14, Justification::centred);
+
+		g.drawText (modTime + "  (" + fileSize + ")", 48, 34, getWidth() - 48, 14, Justification::centred);
 	}
 
 	void mouseDown (const MouseEvent& e) override
@@ -268,7 +277,6 @@ void TwonkProgramList::deleteKeyPressed (int /*currentSelectedRow*/)
 void TwonkProgramList::listBoxItemDoubleClicked (int row, const MouseEvent &e)
 {
 	File fileToLoad = directoryContentsList.getFile (row);
-	DBG("trying to load file: "+ fileToLoad.getFullPathName());
 	pluginGraph.loadDocument(fileToLoad);
 }
 
@@ -284,13 +292,26 @@ TwonkProgramListWrapper::TwonkProgramListWrapper(DirectoryContentsList& listToSh
 	: list(listToShow, g)
 {
 	addAndMakeVisible(&list);
-	closeButton.reset(new ImageButton("Close program list"));
-	closeButton->setImages(false, true, true,
-		IMG(icon_slide_right_png), 0.2f, Colours::black,
-		IMG(icon_slide_right_png), 0.5f, Colours::black,
-		IMG(icon_slide_right_png), 1.0f, Colours::black);
+	closeButton.reset(new TwonkToolBarButton());
+	closeButton->setIcon(IMG(icon_close_png));
+	closeButton->setBaseColour(Colours::black);
+	closeButton->setTooltip("Close list");
 	addAndMakeVisible(closeButton.get());
 	closeButton->addListener(this);
+
+	deleteProgramButton.reset(new TwonkToolBarButton());
+	deleteProgramButton->setIcon(IMG(icon_delete_png));
+	deleteProgramButton->setBaseColour(Colours::black);
+	deleteProgramButton->setTooltip("Delete selected program");
+	addAndMakeVisible(deleteProgramButton.get());
+	deleteProgramButton->addListener(this);
+
+	renameProgramButton.reset(new TwonkToolBarButton());
+	renameProgramButton->setIcon(IMG(icon_rename_png));
+	renameProgramButton->setTooltip("Rename selected program");
+	renameProgramButton->setBaseColour(Colours::black);
+	addAndMakeVisible(renameProgramButton.get());
+	renameProgramButton->addListener(this);
 }
 
 TwonkProgramListWrapper::~TwonkProgramListWrapper()
@@ -309,13 +330,14 @@ void TwonkProgramListWrapper::buttonClicked(Button *b)
 }
 void TwonkProgramListWrapper::paint(Graphics &g)
 {
-	g.setColour(Colours::black);
-	g.drawLine(48, 0, 48, getHeight(), 3.0f);
 	g.setColour(list.findColour(ListBox::backgroundColourId).brighter());
-	g.fillRect(0, 0, 48, getHeight());
+	g.fillRect(0, 0, 48, 140);
 }
+
 void TwonkProgramListWrapper::resized()
 {
 	list.setBounds(48, 0, getWidth()-48, getHeight());
-	closeButton->setBounds(0, getHeight() / 2, 48, 48);
+	closeButton->setBounds(8, 8, 32, 32);
+	deleteProgramButton->setBounds(8, 48, 32, 32);
+	renameProgramButton->setBounds(8, 88, 32, 32);
 }

@@ -6,7 +6,6 @@ class MainHostWindow;
 class TwonkToolBar;
 class TwonkToolBarButton;
 class TwonkToolBarController;
-class TwonkMidiKeyboard;
 class TwonkFileMenu;
 
 /**
@@ -44,9 +43,6 @@ public:
                              const MouseEvent&);
     void dragConnector (const MouseEvent&);
     void endDraggingConnector (const MouseEvent&);
-	void setKeyboardComponent(TwonkMidiKeyboard *_keyboardComponent);
-	TwonkMidiKeyboard *getTwonkMidiKeyboardComponent() { return keyboardComponent; }
-	void toggleTwonkFileMenu();
 	void toggleProgramMenu();
 	void selectionChanged();
 	void fileClicked(const File &file, const MouseEvent &e);
@@ -67,7 +63,7 @@ public:
 		PluginMidiEffect,
 		PluginSynth,
 		PluginSynthWithInput,
-		UnknownNode
+		FuckIfIKnow
 	};
 	
 private:
@@ -83,7 +79,6 @@ private:
     PluginComponent* getComponentForPlugin (AudioProcessorGraph::NodeID) const;
     ConnectorComponent* getComponentForConnection (const AudioProcessorGraph::Connection&) const;
     PinComponent* findPinAt (Point<float>) const;
-	TwonkMidiKeyboard *keyboardComponent;
 	Image bgImage;
 	ComponentAnimator toolBarAnimator;
 	WildcardFileFilter twonkDocumentFileFilter;
@@ -114,56 +109,20 @@ public:
                             KnownPluginList& pluginList);
 
     ~GraphDocumentComponent() override;
-
-    //==============================================================================
     void createNewPlugin (const PluginDescription&, Point<int> position);
     void setDoublePrecision (bool doublePrecision);
     bool closeAnyOpenPluginWindows();
-
-    //==============================================================================
     std::unique_ptr<PluginGraph> graph;
-
     void resized() override;
-    void unfocusKeyboardComponent();
     void releaseGraph();
-
-    //==============================================================================
     bool isInterestedInDragSource (const SourceDetails&) override;
     void itemDropped (const SourceDetails&) override;
-
-    //==============================================================================
     std::unique_ptr<GraphEditorPanel> graphPanel;
-    
-
-    //==============================================================================
-    void showSidePanel (bool isSettingsPanel);
-    void hideLastSidePanel();
-    BurgerMenuComponent burgerMenu;
 
 private:
-    //==============================================================================
     AudioDeviceManager& deviceManager;
     KnownPluginList& pluginList;
     AudioProcessorPlayer graphPlayer;
-    struct TooltipBar;
-    std::unique_ptr<TooltipBar> statusBar;
-    class TitleBarComponent;
-    std::unique_ptr<TitleBarComponent> titleBarComponent;
-	std::unique_ptr<TwonkMidiKeyboard> keyboardComp;
-	std::unique_ptr<TooltipWindow> tooltipWindow;
-	MidiKeyboardState keyState;
-    //==============================================================================
-    struct PluginListBoxModel;
-    std::unique_ptr<PluginListBoxModel> pluginListBoxModel;
-    ListBox pluginListBox;
-    SidePanel mobileSettingsSidePanel { "Settings", 300, true };
-    SidePanel pluginListSidePanel    { "Plugins", 250, false };
-    SidePanel* lastOpenedSidePanel = nullptr;
-
-    //==============================================================================
     void init();
-    void checkAvailableWidth();
-
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphDocumentComponent)
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PluginGraph.h"
+#include "UI/TwonkLookAndFeel.h"
 
 class InternalPluginFormat   : public AudioPluginFormat
 {
@@ -165,7 +166,6 @@ private:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InternalPlugin)
 };
 
-//==================================================================================
 class TwonkPlugin : public AudioPluginInstance
 {
 protected:
@@ -243,6 +243,7 @@ public:
 
 		return descr;
 	}
+
 private:
 	static BusesProperties getBusProperties (bool registerAsGenerator,
 		const AudioChannelSet& channelSetToUse)

@@ -7,31 +7,35 @@
   holds the actual keyboard with resizing sliders etc
 */
 TwonkMidiKeyboard::TwonkMidiKeyboard(MidiKeyboardState &state, MidiKeyboardComponent::Orientation orientation)
+	: optionsVisible(false)
 {
-	corner.reset(new ResizableCornerComponent(this, nullptr));
+	resizeBounds.reset(new ComponentBoundsConstrainer());
+	resizeBounds->setMinimumHeight(64);
+	resizeBounds->setMinimumWidth(128);
+	resizeBounds->setMaximumWidth(1024);
+	resizeBounds->setMaximumHeight(600);
+
+	corner.reset(new ResizableCornerComponent(this, resizeBounds.get()));
 	addAndMakeVisible(corner.get());
+	corner->setAlwaysOnTop(true);
+
+	dockToBottom.reset(new TwonkToolBarButton());
+	dockToBottom->setBaseColour(Colours::lightgrey);
+	dockToBottom->setIcon(IMG(icon_dock_on_bottom_png));
+	addAndMakeVisible(dockToBottom.get());
+
+	positionOnKeyboard.reset(new Slider());
+	positionOnKeyboard->setSliderStyle(Slider::LinearBar);
+	positionOnKeyboard->setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
+	positionOnKeyboard->setRange(0, 127, 1);
+	positionOnKeyboard->setColour(Slider::textBoxOutlineColourId, Colours::transparentBlack);
+	positionOnKeyboard->setColour(Slider::trackColourId, Colours::aqua);
+	positionOnKeyboard->setColour(Slider::thumbColourId, Colours::aquamarine);
+	positionOnKeyboard->addListener(this);
+	
+	//addAndMakeVisible(positionOnKeyboard.get());
 	midiKeyboardComponent.reset(new MidiKeyboardComponent(state, orientation));
 	addAndMakeVisible(midiKeyboardComponent.get());
-
-	keyHeight.reset(new Slider());
-	keyHeight->setColour(Slider::trackColourId, Colour(BUBBLE_COLOUR_INTERNAL_AUDIO_IN));
-	keyHeight->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
-	keyHeight->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
-	keyHeight->setColour(Slider::textBoxOutlineColourId, Colours::transparentBlack);
-	keyHeight->setRange(0.0, 1.0, 0.1);
-	keyHeight->addListener(this);
-	keyHeight->setValue(0.5, sendNotification);
-
-	keyWidth.reset(new Slider());
-	keyWidth->setColour(Slider::trackColourId, Colour(BUBBLE_COLOUR_INTERNAL_AUDIO_IN));
-	keyWidth->setSliderStyle(Slider::SliderStyle::LinearBar);
-	keyWidth->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
-	keyWidth->setRange(16,64);
-	keyWidth->addListener(this);
-	keyWidth->setValue(20, sendNotification);
-	keyWidth->setColour(Slider::textBoxOutlineColourId, Colours::transparentBlack);
-	addAndMakeVisible(keyWidth.get());
-	addAndMakeVisible(keyHeight.get());
 }
 
 TwonkMidiKeyboard::~TwonkMidiKeyboard()
@@ -40,16 +44,31 @@ TwonkMidiKeyboard::~TwonkMidiKeyboard()
 
 void TwonkMidiKeyboard::paint (Graphics& g)
 {
-	g.setColour(Colours::lightgrey.withAlpha(0.5f));
-	g.fillRect(Rectangle<float>(0, 0, getWidth() - 24, 22));
+	if (!optionsVisible)
+	{
+		{
+			float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = 40.0f;
+			Colour fillColour1 = Colour (0xd75a5a5a), fillColour2 = Colour (0xd7000000);
+			//[UserPaintCustomArguments] Customize the painting arguments here..
+			//[/UserPaintCustomArguments]
+			g.setGradientFill (ColourGradient (fillColour1,
+				0.0f - 0.0f + x,
+				0.0f - 0.0f + y,
+				fillColour2,
+				0.0f - 0.0f + x,
+				static_cast<float> (getHeight()) - 0.0f + y,
+				false));
+			g.fillRoundedRectangle (x, y, width, height, 7.000f);
+		}
+	}
 }
 
 void TwonkMidiKeyboard::resized()
 {
+	positionOnKeyboard->setBounds(0, 0, getWidth(), 32);
 	corner->setBounds(getWidth() - 24, getHeight() - 24, 24, 24);
-	midiKeyboardComponent->setBounds(0, 24, getWidth() - 24, getHeight() - 48);
-	keyHeight->setBounds(getWidth() - 24, 0, 24, getHeight()-24);
-	keyWidth->setBounds(0, getHeight()-24, getWidth() - 24, 24);
+	midiKeyboardComponent->setBounds(0, 32, getWidth(), getHeight()-32);
+	dockToBottom->setBounds(2, 2, 30, 30);
 }
 
 void TwonkMidiKeyboard::mouseDown(const MouseEvent &e)
@@ -64,13 +83,8 @@ void TwonkMidiKeyboard::mouseDrag(const MouseEvent &e)
 
 void TwonkMidiKeyboard::sliderValueChanged(Slider *slider)
 {
-	if (slider == keyWidth.get())
+	if (slider == positionOnKeyboard.get())
 	{
-		midiKeyboardComponent->setKeyWidth(keyWidth->getValue());
-	}
-
-	if (slider == keyHeight.get())
-	{
-		midiKeyboardComponent->setBlackNoteLengthProportion(keyHeight->getValue());
+		midiKeyboardComponent->setLowestVisibleKey(slider->getValue());
 	}
 }

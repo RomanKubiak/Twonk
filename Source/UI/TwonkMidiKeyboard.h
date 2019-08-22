@@ -18,8 +18,10 @@ private:
 	ComponentDragger dragger;
 	std::unique_ptr <ResizableCornerComponent> corner;
 	std::unique_ptr <MidiKeyboardComponent> midiKeyboardComponent;
-	std::unique_ptr <Slider> keyWidth;
-	std::unique_ptr <Slider> keyHeight;
+	std::unique_ptr <Slider> positionOnKeyboard;
+	std::unique_ptr <ComponentBoundsConstrainer> resizeBounds;
+	std::unique_ptr <TwonkToolBarButton> dockToBottom;
+	bool optionsVisible;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TwonkMidiKeyboard)
 };
 

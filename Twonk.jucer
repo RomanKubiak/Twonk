@@ -111,11 +111,14 @@
         <FILE id="mbcba2" name="bg3.jpg" compile="0" resource="1" file="Source/Resources/bg3.jpg"/>
         <FILE id="kzNruT" name="bg4.jpg" compile="0" resource="1" file="Source/Resources/bg4.jpg"/>
         <FILE id="OFf4Xi" name="bg5.jpg" compile="0" resource="1" file="Source/Resources/bg5.jpg"/>
+        <FILE id="jGvTo3" name="Default.generic.twonk" compile="0" resource="1"
+              file="Source/Resources/Default.generic.twonk"/>
         <FILE id="FjHJuC" name="icon_audio_dev.png" compile="0" resource="1"
               file="Source/Resources/icon_audio_dev.png"/>
         <FILE id="mykT67" name="icon_close.png" compile="0" resource="1" file="Source/Resources/icon_close.png"/>
-        <FILE id="Q6aGS5" name="icon_cog.png" compile="0" resource="1" file="Source/Resources/icon_cog.png"/>
         <FILE id="Whhw2e" name="icon_delete.png" compile="0" resource="1" file="Source/Resources/icon_delete.png"/>
+        <FILE id="tmifG2" name="icon_dock_on_bottom.png" compile="0" resource="1"
+              file="Source/Resources/icon_dock_on_bottom.png"/>
         <FILE id="H4G6Hv" name="icon_effect.png" compile="0" resource="1" file="Source/Resources/icon_effect.png"/>
         <FILE id="G5xVDO" name="icon_floppy.png" compile="0" resource="1" file="Source/Resources/icon_floppy.png"/>
         <FILE id="LAGaTo" name="icon_midi_64.png" compile="0" resource="1"
@@ -129,6 +132,10 @@
               file="Source/Resources/icon_plugin_external.png"/>
         <FILE id="pxdYXH" name="icon_plugin_internal.png" compile="0" resource="1"
               file="Source/Resources/icon_plugin_internal.png"/>
+        <FILE id="W8UBRS" name="icon_plugin_midi.png" compile="0" resource="1"
+              file="Source/Resources/icon_plugin_midi.png"/>
+        <FILE id="sm4qFC" name="icon_preferences.png" compile="0" resource="1"
+              file="Source/Resources/icon_preferences.png"/>
         <FILE id="eq9UHQ" name="icon_project.png" compile="0" resource="1"
               file="Source/Resources/icon_project.png"/>
         <FILE id="QSOoL8" name="icon_question.jpg" compile="0" resource="1"
@@ -189,57 +196,50 @@
           <FILE id="RJ8kTR" name="TwonkFlangerProcessor.h" compile="0" resource="0"
                 file="Source/FX/Flanger/TwonkFlangerProcessor.h"/>
         </GROUP>
-        <GROUP id="{A5911F53-44CA-35F3-46FA-1B5FB7CC11B6}" name="midiLooper">
-          <GROUP id="{4C4375F6-C2B6-B193-B5C4-709036B08D2C}" name="common">
-            <FILE id="XBCA0b" name="CCSlider.h" compile="0" resource="0" file="Source/FX/midiLooper/common/CCSlider.h"/>
-            <FILE id="dJLuX5" name="ChannelSlider.h" compile="0" resource="0" file="Source/FX/midiLooper/common/ChannelSlider.h"/>
-            <FILE id="Z9aWV9" name="ChordFunctions.cpp" compile="1" resource="0"
-                  file="Source/FX/midiLooper/common/ChordFunctions.cpp"/>
-            <FILE id="F89vKT" name="ChordFunctions.h" compile="0" resource="0"
-                  file="Source/FX/midiLooper/common/ChordFunctions.h"/>
-            <FILE id="dLHNfX" name="ClickableLabel.h" compile="0" resource="0"
-                  file="Source/FX/midiLooper/common/ClickableLabel.h"/>
-            <FILE id="PTdSCG" name="GuitarNeckComponent.cpp" compile="1" resource="0"
-                  file="Source/FX/midiLooper/common/GuitarNeckComponent.cpp"/>
-            <FILE id="g4CFZG" name="GuitarNeckComponent.h" compile="0" resource="0"
-                  file="Source/FX/midiLooper/common/GuitarNeckComponent.h"/>
-            <FILE id="kkKUXv" name="juce_FakeMouseMoveGenerator.h" compile="0"
-                  resource="0" file="Source/FX/midiLooper/common/juce_FakeMouseMoveGenerator.h"/>
-            <FILE id="xSC2lD" name="key.h" compile="0" resource="0" file="Source/FX/midiLooper/common/key.h"/>
-            <FILE id="cRnTgL" name="log.h" compile="0" resource="0" file="Source/FX/midiLooper/common/log.h"/>
-            <FILE id="hZL0vC" name="MIDI.h" compile="0" resource="0" file="Source/FX/midiLooper/common/MIDI.h"/>
-            <FILE id="CdqKSP" name="midistuff.h" compile="0" resource="0" file="Source/FX/midiLooper/common/midistuff.h"/>
-            <FILE id="BPuz4q" name="NoteSlider.h" compile="0" resource="0" file="Source/FX/midiLooper/common/NoteSlider.h"/>
-            <FILE id="sptqVm" name="piz_LookAndFeel.cpp" compile="1" resource="0"
-                  file="Source/FX/midiLooper/common/piz_LookAndFeel.cpp"/>
-            <FILE id="HIDlkF" name="piz_LookAndFeel.h" compile="0" resource="0"
-                  file="Source/FX/midiLooper/common/piz_LookAndFeel.h"/>
-            <FILE id="qAsrvM" name="PizAudioProcessor.h" compile="0" resource="0"
-                  file="Source/FX/midiLooper/common/PizAudioProcessor.h"/>
-            <FILE id="iFUbTo" name="PizButton.cpp" compile="1" resource="0" file="Source/FX/midiLooper/common/PizButton.cpp"/>
-            <FILE id="FguRgT" name="PizButton.h" compile="0" resource="0" file="Source/FX/midiLooper/common/PizButton.h"/>
-          </GROUP>
-          <FILE id="p3fWoP" name="LookAndFeel.cpp" compile="1" resource="0" file="Source/FX/midiLooper/LookAndFeel.cpp"/>
-          <FILE id="CNazgG" name="LookAndFeel.h" compile="0" resource="0" file="Source/FX/midiLooper/LookAndFeel.h"/>
-          <FILE id="WK3TMG" name="MidiLoop.cpp" compile="1" resource="0" file="Source/FX/midiLooper/MidiLoop.cpp"/>
-          <FILE id="qnGvwl" name="MidiLoop.h" compile="0" resource="0" file="Source/FX/midiLooper/MidiLoop.h"/>
-          <FILE id="kyucZb" name="PianoRoll.cpp" compile="1" resource="0" file="Source/FX/midiLooper/PianoRoll.cpp"/>
-          <FILE id="B5RHGl" name="PianoRoll.h" compile="0" resource="0" file="Source/FX/midiLooper/PianoRoll.h"/>
-          <FILE id="dZTM60" name="piz_MidiMessageSequence.cpp" compile="1" resource="0"
-                file="Source/FX/midiLooper/piz_MidiMessageSequence.cpp"/>
-          <FILE id="Yqs8vK" name="piz_MidiMessageSequence.h" compile="0" resource="0"
-                file="Source/FX/midiLooper/piz_MidiMessageSequence.h"/>
-          <FILE id="GahylV" name="PizLooper.cpp" compile="1" resource="0" file="Source/FX/midiLooper/PizLooper.cpp"/>
-          <FILE id="pSwdaK" name="PizLooper.h" compile="0" resource="0" file="Source/FX/midiLooper/PizLooper.h"/>
-          <FILE id="eZg5dv" name="PizLooperEditor.cpp" compile="1" resource="0"
-                file="Source/FX/midiLooper/PizLooperEditor.cpp"/>
-          <FILE id="z7TaRr" name="PizLooperEditor.h" compile="0" resource="0"
-                file="Source/FX/midiLooper/PizLooperEditor.h"/>
-          <FILE id="YW8uxK" name="PizLooperProcessing.cpp" compile="1" resource="0"
-                file="Source/FX/midiLooper/PizLooperProcessing.cpp"/>
-          <FILE id="B6UbLC" name="Timeline.cpp" compile="1" resource="0" file="Source/FX/midiLooper/Timeline.cpp"/>
-          <FILE id="ZTc4JT" name="VSTSlider.cpp" compile="1" resource="0" file="Source/FX/midiLooper/VSTSlider.cpp"/>
-          <FILE id="oylTDw" name="VSTSlider.h" compile="0" resource="0" file="Source/FX/midiLooper/VSTSlider.h"/>
+        <GROUP id="{B8D14227-C467-3AEC-6351-64BF68843F10}" name="JuceSampler">
+          <FILE id="EVl7n9" name="BankEditor.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/BankEditor.cpp"/>
+          <FILE id="zEVjl8" name="BankEditor.h" compile="0" resource="0" file="Source/FX/JuceSampler/BankEditor.h"/>
+          <FILE id="ZDcNPD" name="CTAGSampler.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/CTAGSampler.cpp"/>
+          <FILE id="QRcmet" name="CTAGSampler.h" compile="0" resource="0" file="Source/FX/JuceSampler/CTAGSampler.h"/>
+          <FILE id="PhKaNH" name="CTAGSamplerSound.cpp" compile="1" resource="0"
+                file="Source/FX/JuceSampler/CTAGSamplerSound.cpp"/>
+          <FILE id="OScE8D" name="CTAGSamplerSound.h" compile="0" resource="0"
+                file="Source/FX/JuceSampler/CTAGSamplerSound.h"/>
+          <FILE id="UO8uCz" name="CTAGSamplerVoice.cpp" compile="1" resource="0"
+                file="Source/FX/JuceSampler/CTAGSamplerVoice.cpp"/>
+          <FILE id="l83nzR" name="CTAGSamplerVoice.h" compile="0" resource="0"
+                file="Source/FX/JuceSampler/CTAGSamplerVoice.h"/>
+          <FILE id="UKiRke" name="EnvelopeGenerator.cpp" compile="1" resource="0"
+                file="Source/FX/JuceSampler/EnvelopeGenerator.cpp"/>
+          <FILE id="kFUSkS" name="EnvelopeGenerator.h" compile="0" resource="0"
+                file="Source/FX/JuceSampler/EnvelopeGenerator.h"/>
+          <FILE id="OtycMA" name="Filter.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/Filter.cpp"/>
+          <FILE id="GnBOlC" name="Filter.h" compile="0" resource="0" file="Source/FX/JuceSampler/Filter.h"/>
+          <FILE id="YIa7H4" name="OnePoleFilter.cpp" compile="1" resource="0"
+                file="Source/FX/JuceSampler/OnePoleFilter.cpp"/>
+          <FILE id="Fsu10q" name="OnePoleFilter.h" compile="0" resource="0" file="Source/FX/JuceSampler/OnePoleFilter.h"/>
+          <FILE id="hoyTjt" name="PanPos.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/PanPos.cpp"/>
+          <FILE id="euRMiI" name="PanPos.h" compile="0" resource="0" file="Source/FX/JuceSampler/PanPos.h"/>
+          <FILE id="uyBNjb" name="PitchRateConversion.cpp" compile="1" resource="0"
+                file="Source/FX/JuceSampler/PitchRateConversion.cpp"/>
+          <FILE id="fWXWDc" name="PitchRateConversion.h" compile="0" resource="0"
+                file="Source/FX/JuceSampler/PitchRateConversion.h"/>
+          <FILE id="KllhnP" name="PluginProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/JuceSampler/PluginProcessor.cpp"/>
+          <FILE id="qiREoH" name="PluginProcessor.h" compile="0" resource="0"
+                file="Source/FX/JuceSampler/PluginProcessor.h"/>
+          <FILE id="Mnu9F0" name="WaveShaper.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/WaveShaper.cpp"/>
+          <FILE id="ZgHySf" name="WaveShaper.h" compile="0" resource="0" file="Source/FX/JuceSampler/WaveShaper.h"/>
+        </GROUP>
+        <GROUP id="{E22755B0-25F5-F956-3236-55B594EA1EE2}" name="MIDI Controller">
+          <FILE id="NXe3Iv" name="MidiControllerEditor.cpp" compile="1" resource="0"
+                file="Source/FX/MIDI Controller/MidiControllerEditor.cpp"/>
+          <FILE id="wZfFJO" name="MidiControllerEditor.h" compile="0" resource="0"
+                file="Source/FX/MIDI Controller/MidiControllerEditor.h"/>
+          <FILE id="OFpevq" name="MidiControllerProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/MIDI Controller/MidiControllerProcessor.cpp"/>
+          <FILE id="Rh4L18" name="MidiControllerProcessor.h" compile="0" resource="0"
+                file="Source/FX/MIDI Controller/MidiControllerProcessor.h"/>
         </GROUP>
         <GROUP id="{40DAC0BA-6E03-1CD4-4245-CCFC33ACAC56}" name="Phaser">
           <FILE id="RfnU0h" name="TwonkPhaserEditor.cpp" compile="1" resource="0"
@@ -289,23 +289,6 @@
           <FILE id="eA6MDv" name="TwonkRWProcessor.h" compile="0" resource="0"
                 file="Source/FX/Robotization-Whisperization/TwonkRWProcessor.h"/>
         </GROUP>
-        <GROUP id="{1AD867F2-544A-C89A-BF57-3A924566D7B0}" name="SFZ">
-          <GROUP id="{BE3691EB-E0DC-B47E-A964-369C3699B267}" name="SFZero">
-            <FILE id="St2DJH" name="SFZero.cpp" compile="1" resource="0" file="Source/FX/SFZ/SFZero/SFZero.cpp"/>
-            <FILE id="ANbvU9" name="SFZero.h" compile="0" resource="0" file="Source/FX/SFZ/SFZero/SFZero.h"/>
-          </GROUP>
-          <FILE id="nvgYho" name="ClickableLabel.cpp" compile="1" resource="0"
-                file="Source/FX/SFZ/ClickableLabel.cpp"/>
-          <FILE id="R1MA8D" name="ClickableLabel.h" compile="0" resource="0"
-                file="Source/FX/SFZ/ClickableLabel.h"/>
-          <FILE id="Mcs6uc" name="SFZeroAudioProcessor.cpp" compile="1" resource="0"
-                file="Source/FX/SFZ/SFZeroAudioProcessor.cpp"/>
-          <FILE id="q7iI17" name="SFZeroAudioProcessor.h" compile="0" resource="0"
-                file="Source/FX/SFZ/SFZeroAudioProcessor.h"/>
-          <FILE id="qhMj9N" name="SFZeroEditor.cpp" compile="1" resource="0"
-                file="Source/FX/SFZ/SFZeroEditor.cpp"/>
-          <FILE id="YcquNI" name="SFZeroEditor.h" compile="0" resource="0" file="Source/FX/SFZ/SFZeroEditor.h"/>
-        </GROUP>
         <GROUP id="{064E2E72-9C31-0F33-0C54-6F722C4B5D27}" name="Tremolo">
           <FILE id="lOH2jw" name="TwonkTremoloEditor.h" compile="0" resource="0"
                 file="Source/FX/Tremolo/TwonkTremoloEditor.h"/>
@@ -344,32 +327,33 @@
         <FILE id="LjuO1d" name="PluginGraph.h" compile="0" resource="0" file="Source/Filters/PluginGraph.h"/>
       </GROUP>
       <GROUP id="{D892BFB2-FE85-B70F-10D3-450F407E2B3D}" name="UI">
+        <FILE id="yQc2Kt" name="PluginListWindow.cpp" compile="1" resource="0"
+              file="Source/UI/PluginListWindow.cpp"/>
+        <FILE id="UOBRNC" name="PluginListWindow.h" compile="0" resource="0"
+              file="Source/UI/PluginListWindow.h"/>
         <FILE id="Sqq4L5" name="TwonkLookAndFeel.cpp" compile="1" resource="0"
               file="Source/UI/TwonkLookAndFeel.cpp"/>
         <FILE id="c70QW5" name="TwonkLookAndFeel.h" compile="0" resource="0"
               file="Source/UI/TwonkLookAndFeel.h"/>
         <GROUP id="{71FF4B59-9276-84A2-0856-BCB1D3B35E2F}" name="Widgets">
-          <FILE id="km2XlS" name="TwonkFileMenu.cpp" compile="1" resource="0"
-                file="Source/UI/TwonkFileMenu.cpp"/>
-          <FILE id="cVhdmv" name="TwonkFileMenu.h" compile="0" resource="0" file="Source/UI/TwonkFileMenu.h"/>
-          <FILE id="Bm6VFp" name="TwonkMidiKeyboard.cpp" compile="1" resource="0"
-                file="Source/UI/TwonkMidiKeyboard.cpp"/>
-          <FILE id="HBO5P9" name="TwonkMidiKeyboard.h" compile="0" resource="0"
-                file="Source/UI/TwonkMidiKeyboard.h"/>
+          <FILE id="LV3X8P" name="TwonkAudioSettingsMenu.cpp" compile="1" resource="0"
+                file="Source/UI/TwonkAudioSettingsMenu.cpp"/>
+          <FILE id="jDGZG8" name="TwonkAudioSettingsMenu.h" compile="0" resource="0"
+                file="Source/UI/TwonkAudioSettingsMenu.h"/>
           <FILE id="LsJ9GG" name="TwonkProgramList.cpp" compile="1" resource="0"
                 file="Source/UI/TwonkProgramList.cpp"/>
           <FILE id="aW23li" name="TwonkProgramList.h" compile="0" resource="0"
                 file="Source/UI/TwonkProgramList.h"/>
-          <FILE id="jEIsLL" name="TwonkSaveFileDialog.cpp" compile="1" resource="0"
-                file="Source/UI/TwonkSaveFileDialog.cpp"/>
-          <FILE id="EuFUlW" name="TwonkSaveFileDialog.h" compile="0" resource="0"
-                file="Source/UI/TwonkSaveFileDialog.h"/>
+          <FILE id="FrASuN" name="TwonkProgramMenu.cpp" compile="1" resource="0"
+                file="Source/UI/TwonkProgramMenu.cpp"/>
+          <FILE id="XvXTRO" name="TwonkProgramMenu.h" compile="0" resource="0"
+                file="Source/UI/TwonkProgramMenu.h"/>
+          <FILE id="E87e5Z" name="TwonkSaveProgramDialog.cpp" compile="1" resource="0"
+                file="Source/UI/TwonkSaveProgramDialog.cpp"/>
+          <FILE id="fGLR3d" name="TwonkSaveProgramDialog.h" compile="0" resource="0"
+                file="Source/UI/TwonkSaveProgramDialog.h"/>
         </GROUP>
         <GROUP id="{AF79F64E-CEFE-4B2E-D2D0-D3E3AD79AD10}" name="ToolBar">
-          <FILE id="FUFWKN" name="TwonkToolBarStatus.cpp" compile="1" resource="0"
-                file="Source/UI/TwonkToolBarStatus.cpp"/>
-          <FILE id="oawWon" name="TwonkToolBarStatus.h" compile="0" resource="0"
-                file="Source/UI/TwonkToolBarStatus.h"/>
           <FILE id="U6CS1L" name="TwonkToolBarButton.cpp" compile="1" resource="0"
                 file="Source/UI/TwonkToolBarButton.cpp"/>
           <FILE id="bG9wCX" name="TwonkToolBarButton.h" compile="0" resource="0"
