@@ -29,7 +29,6 @@ void MidiControllerEditor::paint (Graphics& g)
 
 void MidiControllerEditor::resized()
 {
-	DBG("MidiControllerEditor::resized " + getLocalBounds().toString());
 	midiKeyboard->setBounds(getLocalBounds());
 	cornerResizer->setBounds(getWidth() - 32, getHeight() - 32, 32, 32);
 }

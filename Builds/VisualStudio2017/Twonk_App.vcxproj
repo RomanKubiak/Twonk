@@ -149,7 +149,9 @@
     <ClCompile Include="..\..\Source\FX\Distortion\TwonkDistortionProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Flanger\TwonkFlangerEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Flanger\TwonkFlangerProcessor.cpp"/>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\BankEditor.cpp"/>
+    <ClCompile Include="..\..\Source\FX\JuceSampler\InstrumentWaveViewer.cpp"/>
+    <ClCompile Include="..\..\Source\FX\JuceSampler\InstrumentButton.cpp"/>
+    <ClCompile Include="..\..\Source\FX\JuceSampler\JuceSamplerAudioProcessorEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\JuceSampler\CTAGSampler.cpp"/>
     <ClCompile Include="..\..\Source\FX\JuceSampler\CTAGSamplerSound.cpp"/>
     <ClCompile Include="..\..\Source\FX\JuceSampler\CTAGSamplerVoice.cpp"/>
@@ -158,7 +160,7 @@
     <ClCompile Include="..\..\Source\FX\JuceSampler\OnePoleFilter.cpp"/>
     <ClCompile Include="..\..\Source\FX\JuceSampler\PanPos.cpp"/>
     <ClCompile Include="..\..\Source\FX\JuceSampler\PitchRateConversion.cpp"/>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\PluginProcessor.cpp"/>
+    <ClCompile Include="..\..\Source\FX\JuceSampler\JuceSamplerAudioProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\JuceSampler\WaveShaper.cpp"/>
     <ClCompile Include="..\..\Source\FX\MIDI Controller\MidiControllerEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\MIDI Controller\MidiControllerProcessor.cpp"/>
@@ -2001,7 +2003,9 @@
     <ClInclude Include="..\..\Source\FX\Distortion\TwonkDistortionProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\Flanger\TwonkFlangerEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Flanger\TwonkFlangerProcessor.h"/>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\BankEditor.h"/>
+    <ClInclude Include="..\..\Source\FX\JuceSampler\InstrumentWaveViewer.h"/>
+    <ClInclude Include="..\..\Source\FX\JuceSampler\InstrumentButton.h"/>
+    <ClInclude Include="..\..\Source\FX\JuceSampler\JuceSamplerAudioProcessorEditor.h"/>
     <ClInclude Include="..\..\Source\FX\JuceSampler\CTAGSampler.h"/>
     <ClInclude Include="..\..\Source\FX\JuceSampler\CTAGSamplerSound.h"/>
     <ClInclude Include="..\..\Source\FX\JuceSampler\CTAGSamplerVoice.h"/>
@@ -2010,7 +2014,7 @@
     <ClInclude Include="..\..\Source\FX\JuceSampler\OnePoleFilter.h"/>
     <ClInclude Include="..\..\Source\FX\JuceSampler\PanPos.h"/>
     <ClInclude Include="..\..\Source\FX\JuceSampler\PitchRateConversion.h"/>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\PluginProcessor.h"/>
+    <ClInclude Include="..\..\Source\FX\JuceSampler\JuceSamplerAudioProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\JuceSampler\WaveShaper.h"/>
     <ClInclude Include="..\..\Source\FX\MIDI Controller\MidiControllerEditor.h"/>
     <ClInclude Include="..\..\Source\FX\MIDI Controller\MidiControllerProcessor.h"/>
@@ -2767,6 +2771,7 @@
     <None Include="..\..\Source\Resources\icon_min_max.png"/>
     <None Include="..\..\Source\Resources\icon_pause.png"/>
     <None Include="..\..\Source\Resources\icon_piano.png"/>
+    <None Include="..\..\Source\Resources\icon_pin.png"/>
     <None Include="..\..\Source\Resources\icon_play.png"/>
     <None Include="..\..\Source\Resources\icon_plugin_external.png"/>
     <None Include="..\..\Source\Resources\icon_plugin_internal.png"/>

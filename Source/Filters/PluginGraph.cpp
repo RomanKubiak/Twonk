@@ -6,12 +6,12 @@
 #include "Twonk.h"
 
 //==============================================================================
-PluginGraph::PluginGraph (AudioPluginFormatManager& fm)
+PluginGraph::PluginGraph (AudioPluginFormatManager& fm, GraphDocumentComponent &_documentOwner)
     : FileBasedDocument (getFilenameSuffix(),
                          getFilenameWildcard(),
                          "Load a graph",
                          "Save a graph"),
-      formatManager (fm)
+      formatManager (fm), documentOwner(_documentOwner)
 {
     newDocument();
     graph.addListener (this);
@@ -144,7 +144,6 @@ bool PluginGraph::closeAnyOpenPluginWindows()
 //==============================================================================
 String PluginGraph::getDocumentTitle()
 {
-	DBG("PluginGraph::getDocumentTitle " + getFile().getFullPathName());
     if (! getFile().exists())
         return "Program.generic.twonk";
 
@@ -172,7 +171,6 @@ void PluginGraph::newDocument()
 
 Result PluginGraph::loadDocument (const File& file)
 {
-	DBG("PluginGraph::loadDocument file:" + file.getFullPathName());
     if (auto xml = parseXMLIfTagMatches (file, "FILTERGRAPH"))
     {
         graph.removeChangeListener (this);
@@ -193,7 +191,6 @@ Result PluginGraph::loadDocument (const File& file)
 
 Result PluginGraph::saveDocument (const File& file)
 {
-	DBG("PluginGraph::saveDocument file:" + file.getFullPathName());
     auto xml = createXml();
 
     if (! xml->writeTo (file, {}))
@@ -209,7 +206,6 @@ File PluginGraph::getSuggestedSaveAsFile (const File &defaultFile)
 
 File PluginGraph::getLastDocumentOpened()
 {
-	DBG("PluginGraph::getLastDocumentOpened");
     RecentlyOpenedFilesList recentFiles;
     recentFiles.restoreFromString (getAppProperties().getUserSettings()
                                         ->getValue ("recentFilterGraphFiles"));
@@ -308,8 +304,7 @@ static XmlElement* createNodeXml (AudioProcessorGraph::Node* const node) noexcep
 				e->setAttribute (PluginWindow::getLastWidthProp (type), node->properties[PluginWindow::getLastWidthProp (type)].toString());
 				e->setAttribute (PluginWindow::getLastHeightProp (type), node->properties[PluginWindow::getLastHeightProp (type)].toString());
                 e->setAttribute (PluginWindow::getOpenProp (type),  node->properties[PluginWindow::getOpenProp (type)].toString());
-
-				DBG("static XmlElement* createNodeXml lastWidth=" + node->properties[PluginWindow::getLastWidthProp (type)].toString());
+				e->setAttribute (PluginWindow::getLastStickyProp (type), node->properties[PluginWindow::getLastStickyProp (type)].toString());
             }
         }
 
@@ -387,7 +382,8 @@ void PluginGraph::createNodeFromXml (const XmlElement& xml)
 					node->properties.set (PluginWindow::getLastWidthProp (type), xml.getIntAttribute (PluginWindow::getLastWidthProp (type)));
 					node->properties.set (PluginWindow::getLastHeightProp (type), xml.getIntAttribute (PluginWindow::getLastHeightProp (type)));
                     node->properties.set (PluginWindow::getOpenProp  (type), xml.getIntAttribute (PluginWindow::getOpenProp (type)));
-                    
+					node->properties.set (PluginWindow::getLastStickyProp  (type), xml.getIntAttribute (PluginWindow::getLastStickyProp (type)));
+					DBG("PluginGraph::createNodeFromXml lastSticky:" + String(xml.getIntAttribute (PluginWindow::getLastStickyProp (type))));
 					if (node->properties[PluginWindow::getOpenProp (type)])
                     {
                         jassert (node->getProcessor() != nullptr);

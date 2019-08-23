@@ -1,45 +1,22 @@
 #include "CTAGSampler.h"
 
-#define NUM_VOICES 4
+#define NUM_VOICES 8
 
-void CTAGSampler::setup()
+CTAGSampler::CTAGSampler(){}
+
+void CTAGSampler::init()
 {
-	samplesFolder = File::getSpecialLocation(File::userDesktopDirectory).getChildFile("Samples");
-	instruments = {"Kick", "Snare", "Clap", "Tom", "Perc", "OpHat", "ClHat", "Crash", "Ride"};
-	isChokeGroupActive = false;
 	for (int i = 0; i < NUM_VOICES; i++)
 	{
-		auto* voice = new CTAGSamplerVoice(i);
-
-		switch(i)
-		{
-		case KICK:
-			voice->setMidiNote(36);
-			break;
-		case SNARE:
-			voice->setMidiNote(38);
-			break;
-		case CLAP:
-			voice->setMidiNote(39);
-			break;
-		case TOM:
-			voice->setMidiNote(41);
-			break;
-		default:
-			break;
-		}
-		
-		addVoice(voice);
+		addVoice(new CTAGSamplerVoice(i));
 	}
-	
+
 	formatManager.registerBasicFormats();
-	loadSamples("Kit 1", "C");
 }
 
+CTAGSampler::~CTAGSampler(){}
 
-void CTAGSampler::noteOn(int midiChannel,
-	int midiNoteNumber,
-	float velocity)
+void CTAGSampler::noteOn(int midiChannel, int midiNoteNumber, float velocity)
 {
 	const ScopedLock sl(lock);
 	
@@ -108,13 +85,11 @@ void CTAGSampler::noteOn(int midiChannel,
 	}
 }
 
-void CTAGSampler::loadSamples(String kit, String rootNote)
+void CTAGSampler::loadSamples(ZipFile instrumentBank)
 {
-	String number = String( String(0) + String(0) + kit.trimCharactersAtStart("Kit "));
-	
 	const ScopedLock sl(lock);
 
-	if(getNumSounds() != 0)
+	if (getNumSounds() != 0)
 	{
 		for(int i = 0; i < getNumSounds(); i++)
 		{
@@ -122,64 +97,22 @@ void CTAGSampler::loadSamples(String kit, String rootNote)
 		}
 	}
 	
-
-	
+	/*
 	for(int i = 0; i < instruments.size(); i++)
 	{
-		addCTAGSound(instruments[i], String(instruments[i] + "_" + number + "_" + rootNote + ".wav"), kit);
-		
-	}
-	
-	
-	
+		addCTAGSound(instruments[i], String(instruments[i] + "_" + number + "_" + rootNote + ".wav"), kit, 36+i);
+	}*/
 }
 
-
-void CTAGSampler::addCTAGSound(String instrument, String fileName, String kit)
+void CTAGSampler::addCTAGSound(BankInstrumentEntry instrumentToAdd)
 {
-	int midiNote;
-	if(instrument == String("Kick"))
-	{
-		midiNote = 36;
-	}
-	else if( instrument == String("Snare"))
-	{
-		midiNote = 38;
-	}
-	else if(instrument == String ("Clap"))
-	{
-		midiNote = 39;
-	}
-	else if (instrument == String("Tom"))
-	{
-		midiNote = 41;
-	}
+	//File* file = new File(samplesFolder.getChildFile(instrument).getChildFile(kit).getChildFile(fileName));
+	//ScopedPointer<AudioFormatReader> fileReader = formatManager.createReaderFor(*file);
+	//BigInteger note;
+	//note.setBit(midiNote);
 
-	File* file = new File(samplesFolder.getChildFile(instrument).getChildFile(kit).getChildFile(fileName));
-	
-	//Logger::outputDebugString(file->getFullPathName());
-	
-	ScopedPointer<AudioFormatReader> fileReader = formatManager.createReaderFor(*file);
-	BigInteger note;
-	note.setBit(midiNote);
+	//addSound(new CTAGSamplerSound(instrument, *fileReader, note, midiNote, 0.0f, 10.0f, 10.0f));
 
-	addSound(new CTAGSamplerSound(instrument, *fileReader, note, midiNote, 0.0f, 10.0f, 10.0f));
-
-	fileReader = nullptr;
-	delete file;
-
-	
-}
-
-void CTAGSampler::parameterChanged(const String &parameterID, float newValue)
-{
-	if (parameterID == String("Choke ON/OFF"))
-	{
-		isChokeGroupActive = static_cast<bool> (newValue);
-		
-		//For Debugging Purposes
-		/*String value;
-		value = (isChokeGroupActive == true) ? "true" : "false";
- 		Logger::outputDebugString(value);*/
-	}
+	//fileReader = nullptr;
+	//delete file;
 }

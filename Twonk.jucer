@@ -127,6 +127,7 @@
               file="Source/Resources/icon_min_max.png"/>
         <FILE id="LP1pzv" name="icon_pause.png" compile="0" resource="1" file="Source/Resources/icon_pause.png"/>
         <FILE id="owTzSk" name="icon_piano.png" compile="0" resource="1" file="Source/Resources/icon_piano.png"/>
+        <FILE id="mTQzxr" name="icon_pin.png" compile="0" resource="1" file="Source/Resources/icon_pin.png"/>
         <FILE id="tkTx3f" name="icon_play.png" compile="0" resource="1" file="Source/Resources/icon_play.png"/>
         <FILE id="z4YcdE" name="icon_plugin_external.png" compile="0" resource="1"
               file="Source/Resources/icon_plugin_external.png"/>
@@ -197,8 +198,18 @@
                 file="Source/FX/Flanger/TwonkFlangerProcessor.h"/>
         </GROUP>
         <GROUP id="{B8D14227-C467-3AEC-6351-64BF68843F10}" name="JuceSampler">
-          <FILE id="EVl7n9" name="BankEditor.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/BankEditor.cpp"/>
-          <FILE id="zEVjl8" name="BankEditor.h" compile="0" resource="0" file="Source/FX/JuceSampler/BankEditor.h"/>
+          <FILE id="oF6ba9" name="InstrumentWaveViewer.cpp" compile="1" resource="0"
+                file="Source/FX/JuceSampler/InstrumentWaveViewer.cpp"/>
+          <FILE id="UUmfW7" name="InstrumentWaveViewer.h" compile="0" resource="0"
+                file="Source/FX/JuceSampler/InstrumentWaveViewer.h"/>
+          <FILE id="eActRZ" name="InstrumentButton.cpp" compile="1" resource="0"
+                file="Source/FX/JuceSampler/InstrumentButton.cpp"/>
+          <FILE id="nP6RdH" name="InstrumentButton.h" compile="0" resource="0"
+                file="Source/FX/JuceSampler/InstrumentButton.h"/>
+          <FILE id="EVl7n9" name="JuceSamplerAudioProcessorEditor.cpp" compile="1"
+                resource="0" file="Source/FX/JuceSampler/JuceSamplerAudioProcessorEditor.cpp"/>
+          <FILE id="zEVjl8" name="JuceSamplerAudioProcessorEditor.h" compile="0"
+                resource="0" file="Source/FX/JuceSampler/JuceSamplerAudioProcessorEditor.h"/>
           <FILE id="ZDcNPD" name="CTAGSampler.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/CTAGSampler.cpp"/>
           <FILE id="QRcmet" name="CTAGSampler.h" compile="0" resource="0" file="Source/FX/JuceSampler/CTAGSampler.h"/>
           <FILE id="PhKaNH" name="CTAGSamplerSound.cpp" compile="1" resource="0"
@@ -224,10 +235,10 @@
                 file="Source/FX/JuceSampler/PitchRateConversion.cpp"/>
           <FILE id="fWXWDc" name="PitchRateConversion.h" compile="0" resource="0"
                 file="Source/FX/JuceSampler/PitchRateConversion.h"/>
-          <FILE id="KllhnP" name="PluginProcessor.cpp" compile="1" resource="0"
-                file="Source/FX/JuceSampler/PluginProcessor.cpp"/>
-          <FILE id="qiREoH" name="PluginProcessor.h" compile="0" resource="0"
-                file="Source/FX/JuceSampler/PluginProcessor.h"/>
+          <FILE id="KllhnP" name="JuceSamplerAudioProcessor.cpp" compile="1"
+                resource="0" file="Source/FX/JuceSampler/JuceSamplerAudioProcessor.cpp"/>
+          <FILE id="qiREoH" name="JuceSamplerAudioProcessor.h" compile="0" resource="0"
+                file="Source/FX/JuceSampler/JuceSamplerAudioProcessor.h"/>
           <FILE id="Mnu9F0" name="WaveShaper.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/WaveShaper.cpp"/>
           <FILE id="ZgHySf" name="WaveShaper.h" compile="0" resource="0" file="Source/FX/JuceSampler/WaveShaper.h"/>
         </GROUP>

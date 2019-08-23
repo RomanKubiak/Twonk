@@ -502,7 +502,13 @@
     <ClCompile Include="..\..\Source\FX\Flanger\TwonkFlangerProcessor.cpp">
       <Filter>Twonk\Source\FX\Flanger</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\BankEditor.cpp">
+    <ClCompile Include="..\..\Source\FX\JuceSampler\InstrumentWaveViewer.cpp">
+      <Filter>Twonk\Source\FX\JuceSampler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\JuceSampler\InstrumentButton.cpp">
+      <Filter>Twonk\Source\FX\JuceSampler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\JuceSampler\JuceSamplerAudioProcessorEditor.cpp">
       <Filter>Twonk\Source\FX\JuceSampler</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\JuceSampler\CTAGSampler.cpp">
@@ -529,7 +535,7 @@
     <ClCompile Include="..\..\Source\FX\JuceSampler\PitchRateConversion.cpp">
       <Filter>Twonk\Source\FX\JuceSampler</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\PluginProcessor.cpp">
+    <ClCompile Include="..\..\Source\FX\JuceSampler\JuceSamplerAudioProcessor.cpp">
       <Filter>Twonk\Source\FX\JuceSampler</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\JuceSampler\WaveShaper.cpp">
@@ -2607,7 +2613,13 @@
     <ClInclude Include="..\..\Source\FX\Flanger\TwonkFlangerProcessor.h">
       <Filter>Twonk\Source\FX\Flanger</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\BankEditor.h">
+    <ClInclude Include="..\..\Source\FX\JuceSampler\InstrumentWaveViewer.h">
+      <Filter>Twonk\Source\FX\JuceSampler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\JuceSampler\InstrumentButton.h">
+      <Filter>Twonk\Source\FX\JuceSampler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\JuceSampler\JuceSamplerAudioProcessorEditor.h">
       <Filter>Twonk\Source\FX\JuceSampler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\JuceSampler\CTAGSampler.h">
@@ -2634,7 +2646,7 @@
     <ClInclude Include="..\..\Source\FX\JuceSampler\PitchRateConversion.h">
       <Filter>Twonk\Source\FX\JuceSampler</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\PluginProcessor.h">
+    <ClInclude Include="..\..\Source\FX\JuceSampler\JuceSamplerAudioProcessor.h">
       <Filter>Twonk\Source\FX\JuceSampler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\JuceSampler\WaveShaper.h">
@@ -4899,6 +4911,9 @@
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\icon_piano.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_pin.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\icon_play.png">

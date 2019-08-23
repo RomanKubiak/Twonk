@@ -115,6 +115,8 @@ TwonkToolBar::~TwonkToolBar()
 void TwonkToolBar::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+	g.setColour(Colours::darkgrey.darker());
+	g.fillRoundedRectangle(0, 0, 64, 32, 2);
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
@@ -178,6 +180,7 @@ void TwonkToolBar::buttonClicked(Button *button)
 	{
 		if (audioSettingsMenu->isVisible())
 		{
+			setSize(64, getHeight());
 			audioSettingsMenu->setVisible(false);
 			return;
 		}
@@ -190,6 +193,7 @@ void TwonkToolBar::buttonClicked(Button *button)
 	{
 		if (twonkProgramMenu->isVisible())
 		{
+			setSize(64, getHeight());
 			twonkProgramMenu->setVisible(false);
 			return;
 		}

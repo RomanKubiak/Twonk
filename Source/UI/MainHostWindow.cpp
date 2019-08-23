@@ -95,6 +95,13 @@ void MainHostWindow::initPaths()
 		anyFailed = true;
 	}
 
+	res = checkIfExistsAndCreateIfNot(GET_TWONK_SAMPLES_DIR());
+	if (res.failed())
+	{
+		AlertWindow::showMessageBox(AlertWindow::WarningIcon, "Critical error", res.getErrorMessage(), "Fuck Me!");
+		anyFailed = true;
+	}
+
 	if (anyFailed)
 		JUCEApplication::quit();
 }

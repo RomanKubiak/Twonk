@@ -10,6 +10,7 @@
 
 #include "PluginWindow.h"
 #include "Filters/PluginGraph.h"
+#include "UI/GraphEditorPanel.h"
 
 PluginWindow::PluginWindow (AudioProcessorGraph::Node* n, Type t, OwnedArray<PluginWindow>& windowList, PluginGraph &_owner)
 	: DocumentWindow (n->getProcessor()->getName(),
@@ -18,34 +19,50 @@ PluginWindow::PluginWindow (AudioProcessorGraph::Node* n, Type t, OwnedArray<Plu
 		activeWindowList (windowList),
 		node (n), type (t), owner(_owner)
 {	
+	int lastWidth=-1, lastHeight=-1;
+	bool lastSticky;
 	if (auto* ui = createProcessorEditor (*node->getProcessor(), type))
 	{
-		ui->setSize(node->properties.getWithDefault(getLastWidthProp (type), 400),
-			(int)node->properties.getWithDefault(getLastHeightProp (type), 200) - getTitleBarHeight());
+		DBG("PluginWindow::ctor" + String((int)node->properties.getWithDefault(getLastStickyProp (type), -1)));
+		lastSticky = (int)node->properties.getWithDefault(getLastStickyProp (type), -1) ? true : false;
+
+		if ((int)node->properties.getWithDefault(getLastWidthProp (type), -1) != -1)
+			lastWidth = node->properties.getWithDefault(getLastWidthProp (type), -1);
+
+		if ((int)node->properties.getWithDefault(getLastHeightProp (type), -1) != -1)
+			lastHeight = node->properties.getWithDefault(getLastHeightProp (type), -1);
+
+		if (lastWidth > 0 && lastHeight > 0)
+			ui->setSize(lastWidth, lastHeight - getTitleBarHeight());
+
 		setContentOwned (ui, true);
 	}
 
-	DBG("PluginWindow::ctor lastWidth: " + node->properties.getWithDefault(getLastWidthProp (type), -1).toString());
-	setTopLeftPosition (node->properties.getWithDefault (getLastXProp (type), Random::getSystemRandom().nextInt (500)),
-		node->properties.getWithDefault (getLastYProp (type), Random::getSystemRandom().nextInt (500)));
-
+	int possibleX = owner.getDocumentOwner().getScreenBounds().getCentreX();
+	int possibleY = owner.getDocumentOwner().getScreenBounds().getCentreY();
+	setTopLeftPosition (node->properties.getWithDefault (getLastXProp (type), possibleX),
+		node->properties.getWithDefault (getLastYProp (type), possibleY));
+	
 	node->properties.set (getOpenProp (type), true);
+	setAlwaysOnTop(lastSticky);
+	setLookAndFeel(&lf);
 	addToDesktop();
 	setVisible (true);
 }
 
 PluginWindow::~PluginWindow()
 {
+	setLookAndFeel(nullptr);
 	clearContentComponent();
 }
 
 void PluginWindow::moved()
 {
-	DBG("PluginWindow::moved");
 	node->properties.set (getLastXProp (type), getX());
 	node->properties.set (getLastYProp (type), getY());
 	node->properties.set (getLastWidthProp (type), getWidth());
 	node->properties.set (getLastHeightProp (type), getHeight());
+	node->properties.set (getLastStickyProp (type), isAlwaysOnTop());
 	owner.setChangedFlag(true);
 }
 
@@ -55,6 +72,11 @@ void PluginWindow::closeButtonPressed()
 	activeWindowList.removeObject (this);
 }
 	
+String PluginWindow::getLastStickyProp (Type type)
+{
+	return "uiLastSicky_" + getTypeName(type);
+}
+
 String PluginWindow::getLastXProp (Type type)
 {
 	return "uiLastX_" + getTypeName (type);

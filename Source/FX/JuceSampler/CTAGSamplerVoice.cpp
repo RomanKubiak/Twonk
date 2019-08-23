@@ -1,16 +1,25 @@
 #include "CTAGSamplerVoice.h"
 
+CTAGSamplerVoice::CTAGSamplerVoice(int i) : index(i), pitchVal(0), currSampRate(44100), levelSlider(1)
+{
+	pan.setPosition(0.0);
+	shaperAmp.reset(44100, 0.01);
+	shaperAmp.setValue(0.2);
+	levelAmp.reset(44100, 0.01);
+	levelAmp.setValue(1.0);
+	panAmp.reset(44100, 0.01);
+	panAmp.setValue(0);
+	isVelocityFilterActive = false;
+	isVelocityVolumeActive = false;
+}
 
 bool CTAGSamplerVoice::canPlaySound(SynthesiserSound* sampSound)
 {
 	return ((dynamic_cast<CTAGSamplerSound*>(sampSound)) != nullptr);
 }
 
-
 void CTAGSamplerVoice::startNote(int midiNoteNumber, float velocity, SynthesiserSound * sampSound, int pitchWheel)
 {
-	
-
 	if (auto* sound = dynamic_cast<CTAGSamplerSound*> (sampSound))
 	{
 		
@@ -28,8 +37,6 @@ void CTAGSamplerVoice::startNote(int midiNoteNumber, float velocity, Synthesiser
 				filterLeft.cutoffControl *= lgain;
 				filterRight.cutoffControl *= rgain;
 			}
-		
-		
 	}
 	else
 	{
@@ -38,17 +45,12 @@ void CTAGSamplerVoice::startNote(int midiNoteNumber, float velocity, Synthesiser
 	
 }
 
-void CTAGSamplerVoice::pitchWheelMoved(int newValue)
-{
-}
+void CTAGSamplerVoice::pitchWheelMoved(int newValue){}
 
-void CTAGSamplerVoice::controllerMoved(int controllerNumber, int newValue)
-{
-}
+void CTAGSamplerVoice::controllerMoved(int controllerNumber, int newValue){}
 
 void CTAGSamplerVoice::stopNote(float velocity, bool allowTailOff)
 {
-		
 		if (allowTailOff)
 		{
 			if (env.canNoteOff())
@@ -61,7 +63,6 @@ void CTAGSamplerVoice::stopNote(float velocity, bool allowTailOff)
 			if(isVelocityFilterActive)
 				setCutoffFreq(filterCutoff);
 		}
-
 		else if (!allowTailOff && velocity == 1.0f)
 		{
 			
@@ -70,15 +71,10 @@ void CTAGSamplerVoice::stopNote(float velocity, bool allowTailOff)
 			if (isVelocityFilterActive)
 				setCutoffFreq(filterCutoff);
 		}
-			
-	
-
 }
 
 void CTAGSamplerVoice::renderNextBlock(AudioBuffer< float > &outputBuffer, int startSample, int numSamples)
 {
-	
-	
 	if (auto* playingSound = dynamic_cast<CTAGSamplerSound*> (getCurrentlyPlayingSound().get()))
 	{
 		auto& data = *playingSound->getAudioData();
@@ -131,12 +127,10 @@ void CTAGSamplerVoice::renderNextBlock(AudioBuffer< float > &outputBuffer, int s
 
 			//Logger::outputDebugString("velocity left: " + std::to_string(lgain) + " filterCutoff: " + std::to_string(filterLeft.getCutofff()));
 
-
 			*outL++ += l;
 
 			sourceSamplePosition += pitchRatio;
 			
-				
 			if (env.getState() == 0 || sourceSamplePosition > playingSound->length)
 			{
 				if (isVelocityFilterActive)
@@ -144,18 +138,13 @@ void CTAGSamplerVoice::renderNextBlock(AudioBuffer< float > &outputBuffer, int s
 				clearCurrentNote();
 				break;
 			}
-
-			
 		}
-		
 	}
-
 }
 
 void CTAGSamplerVoice::setMidiNote(int note) { midiNote.setBit(note); }
 
 bool CTAGSamplerVoice::canPlayCTAGSound(int note) const { return midiNote[note]; }
-
 
 void CTAGSamplerVoice::parameterChanged(const String &parameterID, float newValue) 
 {
@@ -215,5 +204,20 @@ void CTAGSamplerVoice::parameterChanged(const String &parameterID, float newValu
 	if (parameterID == String("pan" + String(index)))
 	{
 		panAmp.setValue(newValue);
+	}
+}
+
+void CTAGSamplerVoice::setCurrentPlaybackSampleRate(double newRate)
+{
+	SamplerVoice::setCurrentPlaybackSampleRate(newRate);
+	if (currSampRate != newRate && newRate != 0)
+	{
+		currSampRate = newRate;
+		shaperAmp.reset(currSampRate, 0.01);
+		levelAmp.reset(currSampRate, 0.01);
+		panAmp.reset(currSampRate, 0.01);
+		env.setSampleRate(currSampRate);
+		filterLeft.setSampleRate(currSampRate);
+		filterRight.setSampleRate(currSampRate);
 	}
 }

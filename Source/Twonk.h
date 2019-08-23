@@ -32,6 +32,7 @@
 #define MIDI_KEYBOARD_HEIGHT 0
 #define GET_TWONK_PROGRAM_DIR() File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Twonk").getChildFile("Programs")
 #define GET_TWONK_PLUGINS_DIR() File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Twonk").getChildFile("Plugins")
+#define GET_TWONK_SAMPLES_DIR() File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Twonk").getChildFile("Samples")
 #define GET_TWONK_SETTINGS_DIR() File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Twonk")
 
 #define IMG(n) ImageCache::getFromMemory(BinaryData::n, BinaryData::n##Size)

@@ -60,11 +60,20 @@ struct GraphEditorPanel::PinComponent   : public Component,
     {
 		Path hexagon;
 		hexagon.addPolygon(getLocalBounds().getCentre().toFloat(), 6, getWidth() * 0.5f, float_Pi*0.5f);
+		g.setColour(baseColour.contrasting(0.1f));
+		g.setFont(getDefaultTwonkMonoFont().withHeight((float)(NODE_SIZE * 0.7f)));
+		g.drawText(text, getLocalBounds(), Justification::centred, false);
 		g.setColour(baseColour.withAlpha(0.4f));
 		g.fillPath(hexagon);
 		g.setColour(baseColour.withAlpha(0.5f));
 		g.strokePath(hexagon, PathStrokeType(NODE_SIZE * 0.1f));
     }
+
+	void setText(const String &_text)
+	{
+		text = _text;
+		repaint();
+	}
 
     void mouseDown (const MouseEvent& e) override
     {
@@ -92,6 +101,7 @@ struct GraphEditorPanel::PinComponent   : public Component,
     int busIdx = 0;
 	Colour baseColour;
 	Image pinImage;
+	String text;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PinComponent)
 };
 
@@ -407,6 +417,8 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 						}
 
 						auto channelIndex = pin->pin.channelIndex;
+						pin->setText(String(channelIndex));
+
 						if (pin->isInput)
 						{
 							if (processor->getTotalNumInputChannels() <= 4)
@@ -425,7 +437,6 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 								if (channelIndex < 4)
 								{
 									pin->setBounds(BUBBLE_SIZE - NODE_SIZE, processor->producesMidi() ? 0 : (BUBBLE_SIZE - (NODE_SIZE * (channelIndex + 1))), NODE_SIZE, NODE_SIZE);
-									DBG("Weird: " + String((BUBBLE_SIZE - (NODE_SIZE * (channelIndex + 1)))));
 								}
 								else if (channelIndex < 6)
 									pin->setBounds((channelIndex - 3)*NODE_SIZE, BUBBLE_SIZE - NODE_SIZE, NODE_SIZE, NODE_SIZE);
@@ -1105,7 +1116,7 @@ void GraphEditorPanel::fileDoubleClicked(const File &file)
  * GraphDocumentComponent
  */
 GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm, AudioDeviceManager& dm, KnownPluginList& kpl)
-    : graph (new PluginGraph (fm)),
+    : graph (new PluginGraph (fm, *this)),
       deviceManager (dm),
       pluginList (kpl),
       graphPlayer (getAppProperties().getUserSettings()->getBoolValue ("doublePrecisionProcessing", false))

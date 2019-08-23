@@ -2,7 +2,7 @@
 
 #include "../UI/PluginWindow.h"
 
-
+class GraphEditorDocument;
 //==============================================================================
 /**
     A collection of plugins and some connections between them.
@@ -12,7 +12,7 @@ class PluginGraph   : public FileBasedDocument,
                       private ChangeListener
 {
 public:
-    PluginGraph (AudioPluginFormatManager&);
+    PluginGraph (AudioPluginFormatManager &fm, GraphDocumentComponent &_documentOwner);
     ~PluginGraph() override;
     using NodeID = AudioProcessorGraph::NodeID;
     void addPlugin (const PluginDescription&, Point<double>);
@@ -37,10 +37,11 @@ public:
     File getLastDocumentOpened() override;
     void setLastDocumentOpened (const File& file) override;
     static File getDefaultGraphDocumentOnMobile();
-
+	GraphDocumentComponent &getDocumentOwner() { return (documentOwner); }
     AudioProcessorGraph graph;
 
 private:
+	GraphDocumentComponent &documentOwner;
     AudioPluginFormatManager& formatManager;
     OwnedArray<PluginWindow> activePluginWindows;
 

@@ -228,6 +228,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/Resources/icon_pin.png">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/Resources/icon_play.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -414,11 +420,31 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/JuceSampler/BankEditor.cpp">
+    <Unit filename="../../Source/FX/JuceSampler/InstrumentWaveViewer.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/FX/JuceSampler/BankEditor.h">
+    <Unit filename="../../Source/FX/JuceSampler/InstrumentWaveViewer.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/FX/JuceSampler/InstrumentButton.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/JuceSampler/InstrumentButton.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/FX/JuceSampler/JuceSamplerAudioProcessorEditor.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/FX/JuceSampler/JuceSamplerAudioProcessorEditor.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -504,11 +530,11 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/JuceSampler/PluginProcessor.cpp">
+    <Unit filename="../../Source/FX/JuceSampler/JuceSamplerAudioProcessor.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
-    <Unit filename="../../Source/FX/JuceSampler/PluginProcessor.h">
+    <Unit filename="../../Source/FX/JuceSampler/JuceSamplerAudioProcessor.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>

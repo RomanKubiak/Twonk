@@ -181,21 +181,29 @@ protected:
 		jassert (channelSetToUse.size() == descr.numOutputChannels);
 	}
 
+	TwonkPlugin (const PluginDescription& descr, const BusesProperties &ioLayouts)
+		: AudioPluginInstance (ioLayouts), 
+		name  (descr.fileOrIdentifier.upToFirstOccurrenceOf (":", false, false)),
+		state (descr.fileOrIdentifier.fromFirstOccurrenceOf (":", false, false)),
+		isGenerator (descr.numInputChannels == 0),
+		hasMidi (descr.isInstrument)
+	{
+	}
 public:
 	//==============================================================================
-	const String getName() const override { return name; }
-	double getTailLengthSeconds() const override { return 0.0; }
-	bool acceptsMidi() const override { return hasMidi; }
-	bool producesMidi() const override { return hasMidi; }
-	AudioProcessorEditor* createEditor() override { return nullptr; }
-	bool hasEditor() const override { return false; }
-	int getNumPrograms() override { return 0; }
-	int getCurrentProgram() override { return 0; }
-	void setCurrentProgram (int) override {}
-	const String getProgramName (int) override { return {}; }
-	void changeProgramName (int, const String&) override {}
-	void getStateInformation (juce::MemoryBlock&) override {}
-	void setStateInformation (const void*, int) override {}
+	virtual const String getName() const override { return name; }
+	virtual double getTailLengthSeconds() const override { return 0.0; }
+	virtual bool acceptsMidi() const override { return hasMidi; }
+	virtual bool producesMidi() const override { return hasMidi; }
+	virtual AudioProcessorEditor* createEditor() override { return nullptr; }
+	virtual bool hasEditor() const override { return false; }
+	virtual int getNumPrograms() override { return 0; }
+	virtual int getCurrentProgram() override { return 0; }
+	virtual void setCurrentProgram (int) override {}
+	virtual const String getProgramName (int) override { return {}; }
+	virtual void changeProgramName (int, const String&) override {}
+	virtual void getStateInformation (juce::MemoryBlock&) override {}
+	virtual void setStateInformation (const void*, int) override {}
 
 	//==============================================================================
 	bool isBusesLayoutSupported (const BusesLayout& layout) const override

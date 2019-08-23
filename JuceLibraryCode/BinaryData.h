@@ -65,6 +65,9 @@ namespace BinaryData
     extern const char*   icon_piano_png;
     const int            icon_piano_pngSize = 593;
 
+    extern const char*   icon_pin_png;
+    const int            icon_pin_pngSize = 1566;
+
     extern const char*   icon_play_png;
     const int            icon_play_pngSize = 1439;
 
@@ -114,7 +117,7 @@ namespace BinaryData
     const int            terminess_ttfSize = 879176;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 35;
+    const int namedResourceListSize = 36;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
