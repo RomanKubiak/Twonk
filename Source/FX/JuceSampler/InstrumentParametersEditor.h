@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.3.0
+  Created with Projucer version: 5.4.4
 
   ------------------------------------------------------------------------------
 
@@ -20,8 +20,8 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "PluginProcessor.h"
+#include "../../../JuceLibraryCode/JuceHeader.h"
+#include "UI/TwonkLookAndFeel.h"
 //[/Headers]
 
 
@@ -34,14 +34,14 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class CTAGMainControls  : public Component,
-                          public ComboBox::Listener,
-                          public Button::Listener
+class InstrumentParametersEditor  : public Component,
+                                    public Slider::Listener,
+                                    public Button::Listener
 {
 public:
     //==============================================================================
-    CTAGMainControls (JucesamplerAudioProcessor &p);
-    ~CTAGMainControls();
+    InstrumentParametersEditor ();
+    ~InstrumentParametersEditor();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -49,33 +49,37 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+    void sliderValueChanged (Slider* sliderThatWasMoved) override;
     void buttonClicked (Button* buttonThatWasClicked) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-	JucesamplerAudioProcessor& processor;
-	void loadSampleData();
-	int indexRootNote, indexMode, indexKit;
-	ScopedPointer<ToggleButton> chokeGroupActive;
-	ScopedPointer<AudioProcessorValueTreeState::ButtonAttachment> chokeGroupActiveAttachment;
+	TwonkLookAndFeel twonkLookAndFeel;
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<Label> kitLabel;
-    ScopedPointer<ComboBox> kitComboBox;
-    ScopedPointer<Label> rootNoteLabel;
-    ScopedPointer<ComboBox> rootNoteComboBox;
-    ScopedPointer<ComboBox> scaleComboBox;
-    ScopedPointer<Label> modeLabel;
-    ScopedPointer<TextButton> loadSamplesButton;
+    std::unique_ptr<Slider> envelopeAttack;
+    std::unique_ptr<ToggleButton> toggleButton;
+    std::unique_ptr<ToggleButton> toggleButton2;
+    std::unique_ptr<Slider> envelopeAttack5;
+    std::unique_ptr<Slider> envelopeAttack2;
+    std::unique_ptr<Slider> envelopeAttack3;
+    std::unique_ptr<Slider> envelopeAttack4;
+    std::unique_ptr<Slider> envelopeAttack6;
+    std::unique_ptr<Label> label;
+    std::unique_ptr<Label> label2;
+    std::unique_ptr<Label> label3;
+    std::unique_ptr<Label> label4;
+    std::unique_ptr<Slider> envelopeAttack7;
+    std::unique_ptr<Label> label5;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CTAGMainControls)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InstrumentParametersEditor)
 };
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

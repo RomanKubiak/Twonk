@@ -198,6 +198,31 @@
                 file="Source/FX/Flanger/TwonkFlangerProcessor.h"/>
         </GROUP>
         <GROUP id="{B8D14227-C467-3AEC-6351-64BF68843F10}" name="JuceSampler">
+          <FILE id="AMmMfi" name="InstrumentParametersEditor.cpp" compile="1"
+                resource="0" file="Source/FX/JuceSampler/InstrumentParametersEditor.cpp"/>
+          <FILE id="ZjcQ39" name="InstrumentParametersEditor.h" compile="0" resource="0"
+                file="Source/FX/JuceSampler/InstrumentParametersEditor.h"/>
+          <FILE id="iQiCmW" name="InstrumentButtonsPanel.cpp" compile="1" resource="0"
+                file="Source/FX/JuceSampler/InstrumentButtonsPanel.cpp"/>
+          <FILE id="LGJhhO" name="InstrumentButtonsPanel.h" compile="0" resource="0"
+                file="Source/FX/JuceSampler/InstrumentButtonsPanel.h"/>
+          <FILE id="wGlZJn" name="EnvelopeGenerator.cpp" compile="1" resource="0"
+                file="Source/FX/JuceSampler/EnvelopeGenerator.cpp"/>
+          <FILE id="o6DGEj" name="EnvelopeGenerator.h" compile="0" resource="0"
+                file="Source/FX/JuceSampler/EnvelopeGenerator.h"/>
+          <FILE id="hP7SV7" name="Filter.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/Filter.cpp"/>
+          <FILE id="CMOApE" name="Filter.h" compile="0" resource="0" file="Source/FX/JuceSampler/Filter.h"/>
+          <FILE id="R5GyTV" name="OnePoleFilter.cpp" compile="1" resource="0"
+                file="Source/FX/JuceSampler/OnePoleFilter.cpp"/>
+          <FILE id="IpiffD" name="OnePoleFilter.h" compile="0" resource="0" file="Source/FX/JuceSampler/OnePoleFilter.h"/>
+          <FILE id="lwI1zm" name="PanPos.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/PanPos.cpp"/>
+          <FILE id="gTJoFU" name="PanPos.h" compile="0" resource="0" file="Source/FX/JuceSampler/PanPos.h"/>
+          <FILE id="wvIT9w" name="PitchRateConversion.cpp" compile="1" resource="0"
+                file="Source/FX/JuceSampler/PitchRateConversion.cpp"/>
+          <FILE id="RVSpZC" name="PitchRateConversion.h" compile="0" resource="0"
+                file="Source/FX/JuceSampler/PitchRateConversion.h"/>
+          <FILE id="IF6q6G" name="WaveShaper.h" compile="0" resource="0" file="Source/FX/JuceSampler/WaveShaper.h"/>
+          <FILE id="oGtOcG" name="WaveShaper.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/WaveShaper.cpp"/>
           <FILE id="oF6ba9" name="InstrumentWaveViewer.cpp" compile="1" resource="0"
                 file="Source/FX/JuceSampler/InstrumentWaveViewer.cpp"/>
           <FILE id="UUmfW7" name="InstrumentWaveViewer.h" compile="0" resource="0"
@@ -220,27 +245,10 @@
                 file="Source/FX/JuceSampler/CTAGSamplerVoice.cpp"/>
           <FILE id="l83nzR" name="CTAGSamplerVoice.h" compile="0" resource="0"
                 file="Source/FX/JuceSampler/CTAGSamplerVoice.h"/>
-          <FILE id="UKiRke" name="EnvelopeGenerator.cpp" compile="1" resource="0"
-                file="Source/FX/JuceSampler/EnvelopeGenerator.cpp"/>
-          <FILE id="kFUSkS" name="EnvelopeGenerator.h" compile="0" resource="0"
-                file="Source/FX/JuceSampler/EnvelopeGenerator.h"/>
-          <FILE id="OtycMA" name="Filter.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/Filter.cpp"/>
-          <FILE id="GnBOlC" name="Filter.h" compile="0" resource="0" file="Source/FX/JuceSampler/Filter.h"/>
-          <FILE id="YIa7H4" name="OnePoleFilter.cpp" compile="1" resource="0"
-                file="Source/FX/JuceSampler/OnePoleFilter.cpp"/>
-          <FILE id="Fsu10q" name="OnePoleFilter.h" compile="0" resource="0" file="Source/FX/JuceSampler/OnePoleFilter.h"/>
-          <FILE id="hoyTjt" name="PanPos.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/PanPos.cpp"/>
-          <FILE id="euRMiI" name="PanPos.h" compile="0" resource="0" file="Source/FX/JuceSampler/PanPos.h"/>
-          <FILE id="uyBNjb" name="PitchRateConversion.cpp" compile="1" resource="0"
-                file="Source/FX/JuceSampler/PitchRateConversion.cpp"/>
-          <FILE id="fWXWDc" name="PitchRateConversion.h" compile="0" resource="0"
-                file="Source/FX/JuceSampler/PitchRateConversion.h"/>
           <FILE id="KllhnP" name="JuceSamplerAudioProcessor.cpp" compile="1"
                 resource="0" file="Source/FX/JuceSampler/JuceSamplerAudioProcessor.cpp"/>
           <FILE id="qiREoH" name="JuceSamplerAudioProcessor.h" compile="0" resource="0"
                 file="Source/FX/JuceSampler/JuceSamplerAudioProcessor.h"/>
-          <FILE id="Mnu9F0" name="WaveShaper.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/WaveShaper.cpp"/>
-          <FILE id="ZgHySf" name="WaveShaper.h" compile="0" resource="0" file="Source/FX/JuceSampler/WaveShaper.h"/>
         </GROUP>
         <GROUP id="{E22755B0-25F5-F956-3236-55B594EA1EE2}" name="MIDI Controller">
           <FILE id="NXe3Iv" name="MidiControllerEditor.cpp" compile="1" resource="0"

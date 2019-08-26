@@ -21,6 +21,8 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "../../../JuceLibraryCode/JuceHeader.h"
+struct SamplerInstrument;
+class JuceSamplerAudioProcessorEditor;
 //[/Headers]
 
 
@@ -38,28 +40,40 @@ class InstrumentButton  : public Component,
 {
 public:
     //==============================================================================
-    InstrumentButton ();
+    InstrumentButton (JuceSamplerAudioProcessorEditor &_owner);
     ~InstrumentButton();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+	void setInfo(SamplerInstrument *instrument);
+	void setSelected(const bool _selected);
+	void toggleSelected() { setSelected(!selected); repaint(); }
+	bool isSelected() { return (selected); }
+	void previewAudio();
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
     void buttonClicked (Button* buttonThatWasClicked) override;
+    void mouseDown (const MouseEvent& e) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+	JuceSamplerAudioProcessorEditor &owner;
+	bool selected;
+	int midiNote;
+	int midiChannel;
+	int audioChannel;
+	String name;
     //[/UserVariables]
 
     //==============================================================================
     std::unique_ptr<Label> instrumentName;
     std::unique_ptr<TextButton> muteButton;
-    std::unique_ptr<TextButton> textButton2;
-    std::unique_ptr<Label> label;
+    std::unique_ptr<TextButton> soloButton;
+    std::unique_ptr<Label> instrumentNote;
 
 
     //==============================================================================

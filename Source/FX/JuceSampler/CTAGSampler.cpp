@@ -1,8 +1,12 @@
 #include "CTAGSampler.h"
 
-#define NUM_VOICES 8
+#define NUM_VOICES 16
 
-CTAGSampler::CTAGSampler(){}
+CTAGSampler::CTAGSampler(OwnedArray<SamplerInstrument> &_instrumentArray)
+	: instrumentArray(_instrumentArray)
+{
+	formatManager.registerBasicFormats();
+}
 
 void CTAGSampler::init()
 {
@@ -10,8 +14,6 @@ void CTAGSampler::init()
 	{
 		addVoice(new CTAGSamplerVoice(i));
 	}
-
-	formatManager.registerBasicFormats();
 }
 
 CTAGSampler::~CTAGSampler(){}
@@ -19,7 +21,7 @@ CTAGSampler::~CTAGSampler(){}
 void CTAGSampler::noteOn(int midiChannel, int midiNoteNumber, float velocity)
 {
 	const ScopedLock sl(lock);
-	
+
 	for(int j = 0; j < getNumSounds(); j++)
 	{
 		auto sound = getSound(j);
@@ -42,42 +44,7 @@ void CTAGSampler::noteOn(int midiChannel, int midiNoteNumber, float velocity)
 				{
 					if(voice->canPlayCTAGSound(midiNoteNumber) && !voice->getCurrentlyPlayingSound())
 					{
-						//Logger::outputDebugString("Start Voice: " + std::to_string(i) + " with Sound: " + std::to_string(j));
-						
-						if(isChokeGroupActive && (midiNoteNumber == 42 || midiNoteNumber == 46))
-						{
-								switch(midiNoteNumber)
-								{
-								case 42:
-									for(int i = 0; i < getNumVoices(); i++)
-									{
-										if(auto* voice = dynamic_cast<CTAGSamplerVoice*>(getVoice(i)))
-										{
-											if(voice->canPlayCTAGSound(46))
-											{
-												stopVoice(voice, 0.0f, false);
-												break;
-											}
-										}
-									}
-								case 46:
-									for (int i = 0; i < getNumVoices(); i++)
-									{
-										if (auto* voice = dynamic_cast<CTAGSamplerVoice*>(getVoice(i)))
-										{
-											if (voice->canPlayCTAGSound(42))
-											{
-												stopVoice(voice, 0.0f, false);
-												break;
-											}
-										}
-									}
-								default:
-									break;
-								}
-						}
-						
-						startVoice(voice, sound, midiChannel, midiNoteNumber, velocity);
+						playSampleOnVoice(voice, sound, midiChannel, midiNoteNumber, velocity);
 					}
 				}
 			}
@@ -85,34 +52,47 @@ void CTAGSampler::noteOn(int midiChannel, int midiNoteNumber, float velocity)
 	}
 }
 
-void CTAGSampler::loadSamples(ZipFile instrumentBank)
+void CTAGSampler::reloadInstruments()
+{
+	ScopedLock sl(lock);
+	for (int i = 0; i < instrumentArray.size(); i++)
+	{
+		addCTAGSound(instrumentArray[i]);
+	}
+}
+
+void CTAGSampler::addCTAGSound(SamplerInstrument *instrumentToAdd)
 {
 	const ScopedLock sl(lock);
-
-	if (getNumSounds() != 0)
+	for (int i = 0; i < instrumentToAdd->fileList.size(); i++)
 	{
-		for(int i = 0; i < getNumSounds(); i++)
+		File file = instrumentToAdd->fileList[i];
+		std::unique_ptr<AudioFormatReader> fileReader (formatManager.createReaderFor(file));
+		BigInteger note;
+		note.setBit(instrumentToAdd->midiNote);
+		CTAGSamplerSound *sound = new CTAGSamplerSound(instrumentToAdd->name, *fileReader, note, instrumentToAdd->midiNote, 0.0f, 10.0f, 10.0f, instrumentToAdd->audioOutputChannel);
+		addSound(sound);
+		instrumentToAdd->assosiatedSound.add(sound);
+	}
+}
+
+void CTAGSampler::playSampleOnVoice(SynthesiserVoice *voice, SynthesiserSound *sound, int ch, int note, float velo)
+{
+	SamplerSound *firstSound = dynamic_cast<SamplerSound *>(sound);
+	SynthesiserSound *soundToPlay = nullptr;
+	for (int i = 0; i < instrumentArray.size(); i++)
+	{
+		if (instrumentArray[i]->midiNote == note && instrumentArray[i]->midiChannel == ch)
 		{
-			removeSound(i);
+			int lastSample = instrumentArray[i]->assosiatedSound.size() - 1;
+			int sampleNum = velo * lastSample;
+			//DBG("CTAGSampler::playSampleOnVoice velo:" + String(velo) + " sampleNum:" + String(sampleNum) +" lastSample:"+String(lastSample));
+
+			soundToPlay = instrumentArray[i]->assosiatedSound[sampleNum];
+
+			break;
 		}
 	}
-	
-	/*
-	for(int i = 0; i < instruments.size(); i++)
-	{
-		addCTAGSound(instruments[i], String(instruments[i] + "_" + number + "_" + rootNote + ".wav"), kit, 36+i);
-	}*/
-}
 
-void CTAGSampler::addCTAGSound(BankInstrumentEntry instrumentToAdd)
-{
-	//File* file = new File(samplesFolder.getChildFile(instrument).getChildFile(kit).getChildFile(fileName));
-	//ScopedPointer<AudioFormatReader> fileReader = formatManager.createReaderFor(*file);
-	//BigInteger note;
-	//note.setBit(midiNote);
-
-	//addSound(new CTAGSamplerSound(instrument, *fileReader, note, midiNote, 0.0f, 10.0f, 10.0f));
-
-	//fileReader = nullptr;
-	//delete file;
-}
+	startVoice(voice, soundToPlay, ch, note, velo);
+} 

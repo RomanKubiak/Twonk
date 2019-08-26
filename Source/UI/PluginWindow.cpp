@@ -1,17 +1,87 @@
-/*
-  ==============================================================================
-
-    PluginWindow.cpp
-    Created: 10 Aug 2019 3:40:23pm
-    Author:  atom
-
-  ==============================================================================
-*/
-
 #include "PluginWindow.h"
 #include "Filters/PluginGraph.h"
 #include "UI/GraphEditorPanel.h"
+#include "MainHostWindow.h"
 
+PluginWindowLookAndFeel::PluginWindowLookAndFeel() : owner(nullptr)
+{
+	stickyButton.reset(new ImageButton("STicky"));
+	stickyButton->setClickingTogglesState(true);
+	stickyButton->setImages(true, true, true,
+		IMG(icon_pin_png), 0.200f, Colour (0x00000000),
+		IMG(icon_pin_png), 0.661f, Colour (0xffffffff),
+		IMG(icon_pin_png), 1.000f, Colour (0xffffffff));
+}
+
+void PluginWindowLookAndFeel::buttonClicked(Button *b)
+{
+	if (owner)
+	{
+		owner->setAlwaysOnTop(stickyButton->getToggleState());
+	}
+}
+void PluginWindowLookAndFeel::drawDocumentWindowTitleBar (DocumentWindow& window, Graphics& g,
+	int w, int h, int titleSpaceX, int titleSpaceW,
+	const Image* icon, bool drawTitleTextOnLeft)
+{
+	if (w * h == 0)
+		return;
+
+	auto isActive = window.isActiveWindow();
+
+	g.setColour (getCurrentColourScheme().getUIColour (ColourScheme::widgetBackground));
+	g.fillAll();
+
+	Font font = getDefaultTwonkSansFont().withHeight(h * 0.65f);
+	g.setFont (font);
+
+	auto textW = font.getStringWidth (window.getName());
+	auto iconW = 0;
+	auto iconH = 0;
+
+	if (icon != nullptr)
+	{
+		iconH = static_cast<int> (font.getHeight());
+		iconW = icon->getWidth() * iconH / icon->getHeight() + 4;
+	}
+
+	textW = jmin (titleSpaceW, textW + iconW);
+	auto textX = drawTitleTextOnLeft ? titleSpaceX
+		: jmax (titleSpaceX, (w - textW) / 2);
+
+	if (textX + textW > titleSpaceX + titleSpaceW)
+		textX = titleSpaceX + titleSpaceW - textW;
+
+	if (icon != nullptr)
+	{
+		g.setOpacity (isActive ? 1.0f : 0.6f);
+		g.drawImageWithin (*icon, textX, (h - iconH) / 2, iconW, iconH,
+			RectanglePlacement::centred, false);
+		textX += iconW;
+		textW -= iconW;
+	}
+
+	if (window.isColourSpecified (DocumentWindow::textColourId) || isColourSpecified (DocumentWindow::textColourId))
+		g.setColour (window.findColour (DocumentWindow::textColourId));
+	else
+		g.setColour (getCurrentColourScheme().getUIColour (ColourScheme::defaultText));
+
+	g.drawText (window.getName(), textX, 0, textW, h, Justification::centredLeft, true);
+	Component *c = dynamic_cast<Component*>(&window);
+	owner = &window;
+	stickyButton->setBounds(0, 0, 24, 24);
+	stickyButton->addListener(this);
+	if (owner->isAlwaysOnTop())
+	{
+		stickyButton->setToggleState(true, dontSendNotification);
+	}
+
+	c->addAndMakeVisible(stickyButton.get());
+}
+
+/**
+	Window that holds the plugin editor
+*/
 PluginWindow::PluginWindow (AudioProcessorGraph::Node* n, Type t, OwnedArray<PluginWindow>& windowList, PluginGraph &_owner)
 	: DocumentWindow (n->getProcessor()->getName(),
 		LookAndFeel::getDefaultLookAndFeel().findColour (ResizableWindow::backgroundColourId),

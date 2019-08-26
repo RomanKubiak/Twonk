@@ -22,7 +22,7 @@ class PanPos
 	const float root2ovr2;
 
 public:
-	PanPos() : piovr2(float_Pi * 0.5f), root2ovr2(sqrt(2.0f) * 0.5) { setPosition(0.0f); }
+	PanPos() : piovr2(float_Pi * 0.5f), root2ovr2(sqrt(2.0f) * 0.5f) { setPosition(0.0f); }
 	float getPosition() { return position; }
 	void setPosition(float _position);
 

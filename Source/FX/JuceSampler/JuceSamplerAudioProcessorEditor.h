@@ -20,29 +20,36 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
-#include "../../../JuceLibraryCode/JuceHeader.h"
 class JucesamplerAudioProcessor;
+class InstrumentButtonsPanel;
+#include "CTAGSampler.h"
+#include "InstrumentButton.h"
+#include "UI/MainHostWindow.h"
+
+class SamplerLookAndFeel : public LookAndFeel_V4
+{
+	void SamplerLookAndFeel::drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
+		bool isMouseOver, bool /*isMouseDown*/,
+		ConcertinaPanel& concertina, Component& panel)
+	{
+		auto bounds = area.toFloat().reduced (0.5f);
+		auto cornerSize = 4.0f;
+		auto isTopPanel = (concertina.getPanel (0) == &panel);
+
+		Path p;
+		p.addRoundedRectangle (bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(),
+			cornerSize, cornerSize, isTopPanel, isTopPanel, false, false);
+
+		g.setGradientFill (ColourGradient::vertical (Colours::white.withAlpha (isMouseOver ? 0.4f : 0.2f), static_cast<float> (area.getY()),
+			Colours::darkgrey.withAlpha (0.1f), static_cast<float> (area.getBottom())));
+		g.fillPath (p);
+		g.setColour(Colours::white);
+		g.setFont(getDefaultTwonkSansFont().withHeight(bounds.getHeight() * 0.55f));
+		g.drawText(panel.getName(), bounds.withLeft(8), Justification::left);
+	}
+};
 //[/Headers]
 
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentButton.h"
-#include "InstrumentWaveViewer.h"
 
 
 //==============================================================================
@@ -65,7 +72,9 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
 	void changeListenerCallback (ChangeBroadcaster* source);
-	void loadBank(ZipFile &z);
+	void loadInstrumentsToGui();
+	void currentInstrumentSelectionChanged(InstrumentButton *buttonSelected);
+	JucesamplerAudioProcessor &getNamedProcessor() { return (processor); }
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -78,35 +87,18 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
 	JucesamplerAudioProcessor &processor;
-
-	TimeSliceThread directoryThread{ "Image File Scanner Thread" };
-	WildcardFileFilter zipWildcard{ "*.zip", "", "ZIP files" };
-	DirectoryContentsList programList{ &zipWildcard, directoryThread };
+	TimeSliceThread directoryThread{ "Bank scanner thread" };
+	WildcardFileFilter twonkWildcard{ "", "*.twonk", "Twonk sample banks" };
+	DirectoryContentsList programList{ &twonkWildcard, directoryThread };
+	std::unique_ptr<ResizableCornerComponent> cornerResizer;
+	std::unique_ptr<ComponentBoundsConstrainer> sizeConstrainer;
+	SamplerLookAndFeel samplerLookAndFeel;
+	InstrumentButtonsPanel *buttonsPanel;
     //[/UserVariables]
 
     //==============================================================================
     std::unique_ptr<ComboBox> bankListCombo;
-    std::unique_ptr<InstrumentButton> instrumentButton1;
-    std::unique_ptr<InstrumentButton> instrumentButton2;
-    std::unique_ptr<InstrumentButton> instrumentButton3;
-    std::unique_ptr<InstrumentButton> instrumentButton4;
-    std::unique_ptr<InstrumentButton> instrumentButton5;
-    std::unique_ptr<InstrumentButton> instrumentButton6;
-    std::unique_ptr<InstrumentButton> instrumentButton7;
-    std::unique_ptr<InstrumentButton> instrumentButton8;
-    std::unique_ptr<InstrumentButton> instrumentButton9;
-    std::unique_ptr<InstrumentButton> instrumentButton10;
-    std::unique_ptr<InstrumentButton> instrumentButton11;
-    std::unique_ptr<InstrumentButton> instrumentButton12;
-    std::unique_ptr<InstrumentButton> instrumentButton13;
-    std::unique_ptr<InstrumentButton> instrumentButton14;
-    std::unique_ptr<InstrumentButton> instrumentButton15;
-    std::unique_ptr<InstrumentButton> instrumentButton16;
-    std::unique_ptr<InstrumentButton> instrumentButton17;
-    std::unique_ptr<InstrumentButton> instrumentButton18;
-    std::unique_ptr<InstrumentWaveViewer> component;
-    std::unique_ptr<Label> bankInfo;
-    std::unique_ptr<HyperlinkButton> bankUrl;
+    std::unique_ptr<ConcertinaPanel> panel;
 
 
     //==============================================================================

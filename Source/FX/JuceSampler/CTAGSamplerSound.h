@@ -17,10 +17,13 @@ class CTAGSamplerSound : public SamplerSound
 
 		CTAGSamplerSound(const String &name, AudioFormatReader &source,
 			const BigInteger &midiNotes, int midiNoteForNormalPitch,
-			double attackTimeSecs, double releaseTimeSecs, double maxSampleLengthSeconds);
-
+			double attackTimeSecs, double releaseTimeSecs, double maxSampleLengthSeconds, int _audioOutputChannel);
+		const int getAudioOutputChannel() { return (audioOutputChannel); }
+		void setAudioOutputChannel(int _audioOutputChannel) { audioOutputChannel = _audioOutputChannel; }
+	
 	private:
 		int midiRootNote = 0;
 		int length = 0;
 		double sourceSampleRate;
+		int audioOutputChannel = 0;
 };

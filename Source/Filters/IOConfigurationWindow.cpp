@@ -436,6 +436,7 @@ IOConfigurationWindow::IOConfigurationWindow (AudioProcessor& p)
    : AudioProcessorEditor (&p),
      title ("title", p.getName())
 {
+	setLookAndFeel(nullptr);
     setOpaque (true);
 
     title.setFont (title.getFont().withStyle (Font::bold));

@@ -77,19 +77,21 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkDistortionProcessor_23d1d60a.o \
   $(JUCE_OBJDIR)/TwonkFlangerEditor_997d0a31.o \
   $(JUCE_OBJDIR)/TwonkFlangerProcessor_8195a358.o \
+  $(JUCE_OBJDIR)/InstrumentParametersEditor_daa02650.o \
+  $(JUCE_OBJDIR)/InstrumentButtonsPanel_c8799d5c.o \
+  $(JUCE_OBJDIR)/EnvelopeGenerator_6b1668db.o \
+  $(JUCE_OBJDIR)/Filter_982d234a.o \
+  $(JUCE_OBJDIR)/OnePoleFilter_9278c44e.o \
+  $(JUCE_OBJDIR)/PanPos_f168a8c9.o \
+  $(JUCE_OBJDIR)/PitchRateConversion_939e832e.o \
+  $(JUCE_OBJDIR)/WaveShaper_21468d9c.o \
   $(JUCE_OBJDIR)/InstrumentWaveViewer_b73291c4.o \
   $(JUCE_OBJDIR)/InstrumentButton_3293dd0b.o \
   $(JUCE_OBJDIR)/JuceSamplerAudioProcessorEditor_f5d57d1c.o \
   $(JUCE_OBJDIR)/CTAGSampler_e7279309.o \
   $(JUCE_OBJDIR)/CTAGSamplerSound_b8172050.o \
   $(JUCE_OBJDIR)/CTAGSamplerVoice_e7626ef3.o \
-  $(JUCE_OBJDIR)/EnvelopeGenerator_6b1668db.o \
-  $(JUCE_OBJDIR)/Filter_982d234a.o \
-  $(JUCE_OBJDIR)/OnePoleFilter_9278c44e.o \
-  $(JUCE_OBJDIR)/PanPos_f168a8c9.o \
-  $(JUCE_OBJDIR)/PitchRateConversion_939e832e.o \
   $(JUCE_OBJDIR)/JuceSamplerAudioProcessor_d610098f.o \
-  $(JUCE_OBJDIR)/WaveShaper_21468d9c.o \
   $(JUCE_OBJDIR)/MidiControllerEditor_7468531c.o \
   $(JUCE_OBJDIR)/MidiControllerProcessor_5bf02e8d.o \
   $(JUCE_OBJDIR)/TwonkPhaserEditor_561d44b3.o \
@@ -196,6 +198,46 @@ $(JUCE_OBJDIR)/TwonkFlangerProcessor_8195a358.o: ../../Source/FX/Flanger/TwonkFl
 	@echo "Compiling TwonkFlangerProcessor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/InstrumentParametersEditor_daa02650.o: ../../Source/FX/JuceSampler/InstrumentParametersEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling InstrumentParametersEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/InstrumentButtonsPanel_c8799d5c.o: ../../Source/FX/JuceSampler/InstrumentButtonsPanel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling InstrumentButtonsPanel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/EnvelopeGenerator_6b1668db.o: ../../Source/FX/JuceSampler/EnvelopeGenerator.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling EnvelopeGenerator.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/Filter_982d234a.o: ../../Source/FX/JuceSampler/Filter.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling Filter.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/OnePoleFilter_9278c44e.o: ../../Source/FX/JuceSampler/OnePoleFilter.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling OnePoleFilter.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PanPos_f168a8c9.o: ../../Source/FX/JuceSampler/PanPos.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PanPos.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PitchRateConversion_939e832e.o: ../../Source/FX/JuceSampler/PitchRateConversion.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PitchRateConversion.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/WaveShaper_21468d9c.o: ../../Source/FX/JuceSampler/WaveShaper.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling WaveShaper.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/InstrumentWaveViewer_b73291c4.o: ../../Source/FX/JuceSampler/InstrumentWaveViewer.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling InstrumentWaveViewer.cpp"
@@ -226,39 +268,9 @@ $(JUCE_OBJDIR)/CTAGSamplerVoice_e7626ef3.o: ../../Source/FX/JuceSampler/CTAGSamp
 	@echo "Compiling CTAGSamplerVoice.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/EnvelopeGenerator_6b1668db.o: ../../Source/FX/JuceSampler/EnvelopeGenerator.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling EnvelopeGenerator.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/Filter_982d234a.o: ../../Source/FX/JuceSampler/Filter.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling Filter.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/OnePoleFilter_9278c44e.o: ../../Source/FX/JuceSampler/OnePoleFilter.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling OnePoleFilter.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/PanPos_f168a8c9.o: ../../Source/FX/JuceSampler/PanPos.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PanPos.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/PitchRateConversion_939e832e.o: ../../Source/FX/JuceSampler/PitchRateConversion.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PitchRateConversion.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/JuceSamplerAudioProcessor_d610098f.o: ../../Source/FX/JuceSampler/JuceSamplerAudioProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling JuceSamplerAudioProcessor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/WaveShaper_21468d9c.o: ../../Source/FX/JuceSampler/WaveShaper.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling WaveShaper.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/MidiControllerEditor_7468531c.o: ../../Source/FX/MIDI\ Controller/MidiControllerEditor.cpp

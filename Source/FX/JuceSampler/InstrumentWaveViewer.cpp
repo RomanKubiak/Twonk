@@ -31,6 +31,8 @@ InstrumentWaveViewer::InstrumentWaveViewer ()
     : thumbnailCache (5), thumbnail (512, formatManager, thumbnailCache)
 {
     //[Constructor_pre] You can add your own custom stuff here..
+	formatManager.registerBasicFormats();
+	thumbnail.addChangeListener (this);
     //[/Constructor_pre]
 
 
@@ -47,6 +49,7 @@ InstrumentWaveViewer::InstrumentWaveViewer ()
 InstrumentWaveViewer::~InstrumentWaveViewer()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
+	thumbnail.setSource(nullptr);
     //[/Destructor_pre]
 
 
@@ -118,12 +121,12 @@ void InstrumentWaveViewer::thumbnailChanged()
 	repaint();
 }
 
-void InstrumentWaveViewer::loadData(InputStream *dataInputStream)
+void InstrumentWaveViewer::loadFile(const File &file)
 {
-	auto* reader = formatManager.createReaderFor(dataInputStream);
-	if (reader != nullptr)
+	if (auto* reader = formatManager.createReaderFor (file))
 	{
-		thumbnail.setReader(reader, 0);
+		thumbnail.setSource (new FileInputSource (file));
+		delete reader;
 	}
 }
 //[/MiscUserCode]

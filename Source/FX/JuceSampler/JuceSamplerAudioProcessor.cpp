@@ -25,7 +25,8 @@ JucesamplerAudioProcessor::JucesamplerAudioProcessor(const PluginDescription& de
 						   .withOutput ("Output", AudioChannelSet::stereo(), true)
 						   .withOutput ("Output", AudioChannelSet::stereo(), true)
 						   .withOutput ("Output", AudioChannelSet::stereo(), true)
-						   .withOutput ("Output", AudioChannelSet::stereo(), true))
+						   .withOutput ("Output", AudioChannelSet::stereo(), true)),
+	sampler(instrumentsLoaded)
 {
 	undoManager = new UndoManager();
 	valueTree = new AudioProcessorValueTreeState(*this, undoManager);
@@ -144,9 +145,9 @@ void JucesamplerAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     // initialisation that you need..
 	sampler.setCurrentPlaybackSampleRate(sampleRate);
 
-	for(int i = 0; i < sampler.getNumVoices(); i++)
+	for (int i = 0; i < sampler.getNumVoices(); i++)
 	{
-		if(auto* voice = dynamic_cast<CTAGSamplerVoice*>(sampler.getVoice(i)))
+		if (auto* voice = dynamic_cast<CTAGSamplerVoice*>(sampler.getVoice(i)))
 		{
 			voice->getEnvelope().setSampleRate(sampleRate);
 			voice->getFilterLeft().setSampleRate(sampleRate);
@@ -159,6 +160,94 @@ void JucesamplerAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
+}
+
+void JucesamplerAudioProcessor::loadBank(const File &bank)
+{
+	if (bank.getChildFile("info.json").existsAsFile())
+	{
+		var result;
+		Result res = JSON::parse(bank.getChildFile("info.json").loadFileAsString(), result);
+		if (res.failed())
+		{
+			AlertWindow::showMessageBox(AlertWindow::WarningIcon, "Bank loading failed", "Can't parse the json file inside", "Fuck!");
+			return;
+		}
+		else
+		{
+			if (res.wasOk())
+			{
+				// this is a known bank so we can parse the rest of the json and assign
+				// samples as described in it
+				loadSamples(bank, result);
+			}
+			else
+			{
+				// this is just a directory of samples, hopefuly it has subdirectories
+				// treat each subdirectory with the extension .instrument as a set of samples
+				// for one drum sound
+				// if not just load the first 16 found samples
+				// TODO
+			}
+		}
+	}
+}
+
+Result JucesamplerAudioProcessor::loadSamples(const File &bank, var &bankJsonInfo)
+{
+	DBG("JucesamplerAudioProcessor::loadSamples:");
+	if (!bankJsonInfo.getProperty("bank", var()).isArray())
+		return Result::fail("Can't parse the bank array in json");
+
+	clearInstruments();
+
+	for (int i = 0; i < bankJsonInfo.getProperty("bank", var()).getArray()->size(); i++)
+	{
+		bool firstInstrument = true;
+		var instrument = bankJsonInfo.getProperty("bank", var()).getArray()->getReference(i);
+		String instrumentWildcard = instrument.getDynamicObject()->getProperty("files").toString();
+		String instrumentName = instrument.getDynamicObject()->getProperty("name").toString();
+		String instrumentVelocityCurve = instrument.getDynamicObject()->getProperty("velocity").toString();
+		int midiNoteNumber = instrument.getDynamicObject()->getProperty("midiNote");
+		int midiChannel = instrument.getDynamicObject()->getProperty("midiChannel");
+		int audioOutputChannel = instrument.getDynamicObject()->getProperty("audioOutputChannel");
+
+		DBG("name: " + instrumentName);
+		DBG("\tvelocityCurve: " + instrumentVelocityCurve);
+		DBG("\tfilenameWildcard: " + instrumentWildcard);
+		DBG("\tmidiNote: " + String(midiNoteNumber));
+		{
+			DirectoryIterator it (bank, false, instrumentWildcard);
+			SamplerInstrument *instrument = new SamplerInstrument;
+			instrument->name = instrumentName;
+			instrument->midiNote = midiNoteNumber;
+			instrument->velocityCurve = instrumentVelocityCurve;
+			instrument->midiChannel = midiChannel;
+			instrument->audioOutputChannel = audioOutputChannel;
+			while (it.next())
+			{
+				instrument->fileList.add(it.getFile());
+			}
+
+			getInstrumentsArray().add(instrument);
+		}
+	}
+
+	reloadInstruments();
+	return Result::ok();
+}
+
+void JucesamplerAudioProcessor::clearInstruments()
+{
+	sampler.clearSounds();
+	sampler.clearVoices();
+	sampler.init();
+	instrumentsLoaded.clear();
+}
+
+void JucesamplerAudioProcessor::reloadInstruments()
+{
+	sampler.reloadInstruments();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -200,8 +289,22 @@ void JucesamplerAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
-	
+
+	midiMessages.addEvents(additionalMessagesToConsider, 0, buffer.getNumSamples(), 0);
+
+	if (midiMessages.getNumEvents() > 0)
+	{
+		MidiMessage m;
+		int samplePosition;
+		MidiBuffer::Iterator it(midiMessages);
+		while (it.getNextEvent(m, samplePosition))
+		{
+			DBG(String::formatted("note:%d velo:%d", m.getNoteNumber(), m.getVelocity()));
+		}
+	}
+
 	sampler.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+	additionalMessagesToConsider.clear();
 }
 
 //==============================================================================

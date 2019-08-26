@@ -29,10 +29,17 @@ class JucesamplerAudioProcessor  : public TwonkPlugin
 		void setStateInformation (const void* data, int sizeInBytes) override;
 		AudioProcessorValueTreeState& getValueTree() { return *valueTree; }
 		CTAGSampler& getSampler() { return sampler; }
+		OwnedArray<SamplerInstrument> &getInstrumentsArray() { return instrumentsLoaded; }
+		void clearInstruments();
+		void reloadInstruments();
+		Result loadSamples(const File &bank, var &bankJsonInfo);
+		void loadBank(const File &bank);
+		MidiBuffer &getAdditionalMidiBuffer() { return additionalMessagesToConsider;  }
 	private:
+		OwnedArray<SamplerInstrument> instrumentsLoaded;
 		CTAGSampler sampler;
 		ScopedPointer<AudioProcessorValueTreeState> valueTree;
 		ScopedPointer<UndoManager> undoManager;
-
+		MidiBuffer additionalMessagesToConsider;
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JucesamplerAudioProcessor)
 };

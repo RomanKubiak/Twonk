@@ -10,7 +10,14 @@
 
 #include "TwonkLookAndFeel.h"
 #include "MainHostWindow.h"
+// height = minSliderPos
+// y = maxSliderPos
 
+int TwonkLookAndFeel::getSliderThumbRadius (Slider& slider)
+{
+	return jmin (48, slider.isHorizontal() ? static_cast<int> (slider.getHeight() * 0.5f)
+		: static_cast<int> (slider.getWidth()  * 0.5f));
+}
 
 void TwonkLookAndFeel::drawLinearSlider (Graphics& g, int x, int y, int width, int height,
 	float sliderPos,
@@ -20,42 +27,16 @@ void TwonkLookAndFeel::drawLinearSlider (Graphics& g, int x, int y, int width, i
 {
 	if (slider.isBar())
 	{
-		Colour sliderColour = slider.findColour (Slider::trackColourId);
-		Colour thumbColour = slider.findColour (Slider::thumbColourId);
-		float dashes[4] = { 4.0f, 4.0f };
-		if (slider.isHorizontal())
-		{
-			g.setColour(sliderColour.withAlpha(0.5f));
-			g.drawDashedLine(Line<float>(2, height / 2, width-2, height / 2), dashes, 2, height * 0.5f);
-			g.drawRect(x, y + 2, width, height-4);
-
-			g.setColour(sliderColour);
-
-			if (sliderPos > height*0.5f)
-				sliderPos = sliderPos - height;
-			
-			if (sliderPos <= minSliderPos)
-				sliderPos = minSliderPos;
-
-			g.setColour(thumbColour);
-			g.drawRoundedRectangle(sliderPos, 0.0f, (float)height, (float)height, height * 0.15f, height*0.08f);
-
-			g.setColour(thumbColour.withAlpha(0.7f));
-			g.fillRect(sliderPos, 0.0f, (float)height, (float)height);
-		}
-		else
-		{
-			g.drawDashedLine(Line<float>(width/2, 0, width/2, height), dashes, 2, width * 0.8f);	
-		}
-		
-		
+		g.setColour (slider.findColour (Slider::trackColourId));
+		g.fillRect (slider.isHorizontal() ? Rectangle<float> (static_cast<float> (x), y + 0.5f, sliderPos - x, height - 1.0f)
+			: Rectangle<float> (x + 0.5f, sliderPos, width - 1.0f, y + (height - sliderPos)));
 	}
 	else
 	{
 		auto isTwoVal = (style == Slider::SliderStyle::TwoValueVertical || style == Slider::SliderStyle::TwoValueHorizontal);
 		auto isThreeVal = (style == Slider::SliderStyle::ThreeValueVertical || style == Slider::SliderStyle::ThreeValueHorizontal);
 
-		auto trackWidth = jmin (6.0f, slider.isHorizontal() ? height * 0.25f : width * 0.25f);
+		auto trackWidth = slider.isHorizontal() ? height * 0.3f : width * 0.3f;
 
 		Point<float> startPoint (slider.isHorizontal() ? x : x + width * 0.5f,
 			slider.isHorizontal() ? y + height * 0.5f : height + y);
@@ -97,13 +78,17 @@ void TwonkLookAndFeel::drawLinearSlider (Graphics& g, int x, int y, int width, i
 
 		valueTrack.startNewSubPath (minPoint);
 		valueTrack.lineTo (isThreeVal ? thumbPoint : maxPoint);
-		g.setColour (slider.findColour (Slider::trackColourId));
+		g.setColour (slider.findColour (Slider::backgroundColourId));
 		g.strokePath (valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
 		if (!isTwoVal)
 		{
+			Rectangle<float> thumb = Rectangle<float> (static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre (isThreeVal ? thumbPoint : maxPoint);
+			float cornerSize = slider.isHorizontal() ? height * 0.15f : width * 0.15f;
 			g.setColour (slider.findColour (Slider::thumbColourId));
-			g.fillEllipse (Rectangle<float> (static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre (isThreeVal ? thumbPoint : maxPoint));
+			g.drawRoundedRectangle(thumb, cornerSize, 1.0f);
+			g.setColour (slider.findColour (Slider::thumbColourId).withAlpha(0.5f));
+			g.fillRoundedRectangle(thumb, cornerSize);
 		}
 
 		if (isTwoVal || isThreeVal)
@@ -132,6 +117,22 @@ void TwonkLookAndFeel::drawLinearSlider (Graphics& g, int x, int y, int width, i
 			}
 		}
 	}
+}
+
+void TwonkLookAndFeel::drawPointer (Graphics& g, const float x, const float y, const float diameter, const Colour& colour, const int direction) noexcept
+{
+	Path p;
+	p.startNewSubPath (x + diameter * 0.5f, y);
+	p.lineTo (x + diameter, y + diameter * 0.6f);
+	p.lineTo (x + diameter, y + diameter);
+	p.lineTo (x, y + diameter);
+	p.lineTo (x, y + diameter * 0.6f);
+	p.closeSubPath();
+
+	p.applyTransform (AffineTransform::rotation (direction * MathConstants<float>::halfPi,
+		x + diameter * 0.5f, y + diameter * 0.5f));
+	g.setColour (colour);
+	g.fillPath (p);
 }
 
 void TwonkLookAndFeel::drawLinearSliderBackground (Graphics& g, int x, int y, int width, int height,float /*sliderPos*/,float /*minSliderPos*/,float /*maxSliderPos*/,const Slider::SliderStyle /*style*/, Slider& slider)

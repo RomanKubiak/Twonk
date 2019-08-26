@@ -15,7 +15,6 @@
 #include "OnePoleFilter.h"
 #include "WaveShaper.h"
 #include "PanPos.h"
-
 class CTAGSamplerVoice : public SamplerVoice,  public AudioProcessorValueTreeState::Listener
 {
 	public:
@@ -53,7 +52,6 @@ class CTAGSamplerVoice : public SamplerVoice,  public AudioProcessorValueTreeSta
 		bool isWaveShaperActive() { return shaper.isActive(); }
 		void setWaveShaperActive(bool val) { shaper.setActive(val); }
 		void setWaveShaperSymmetrical(double amp) { shaper.setAmplificationSymmetrical(amp); }
-
 	private:
 		int pitchVal;
 		BigInteger midiNote;
