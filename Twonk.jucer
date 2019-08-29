@@ -13,7 +13,7 @@
         <CONFIGURATION name="Debug" isDebug="1" targetName="Twonk" libraryPath="/usr/X11R6/lib/"
                        headerPath="/home/atom/devel//Twonk/JUCE&#10;/home/atom/devel/Twonk/JUCE/modules"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="6" targetName="Twonk"
-                       libraryPath="/usr/X11R6/lib/"/>
+                       libraryPath="/usr/X11R6/lib/" headerPath="/home/atom/devel//Twonk/JUCE&#10;/home/atom/devel/Twonk/JUCE/modules"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../modules"/>
