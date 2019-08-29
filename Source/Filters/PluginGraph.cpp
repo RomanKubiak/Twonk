@@ -383,7 +383,7 @@ void PluginGraph::createNodeFromXml (const XmlElement& xml)
 					node->properties.set (PluginWindow::getLastHeightProp (type), xml.getIntAttribute (PluginWindow::getLastHeightProp (type)));
                     node->properties.set (PluginWindow::getOpenProp  (type), xml.getIntAttribute (PluginWindow::getOpenProp (type)));
 					node->properties.set (PluginWindow::getLastStickyProp  (type), xml.getIntAttribute (PluginWindow::getLastStickyProp (type)));
-					DBG("PluginGraph::createNodeFromXml lastSticky:" + String(xml.getIntAttribute (PluginWindow::getLastStickyProp (type))));
+					//DBG("PluginGraph::createNodeFromXml lastSticky:" + String(xml.getIntAttribute (PluginWindow::getLastStickyProp (type))));
 					if (node->properties[PluginWindow::getOpenProp (type)])
                     {
                         jassert (node->getProcessor() != nullptr);

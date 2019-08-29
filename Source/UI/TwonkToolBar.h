@@ -30,6 +30,7 @@ class TwonkToolBarStatus;
 
 #include "TwonkProgramMenu.h"
 #include "TwonkAudioSettingsMenu.h"
+#include "TwonkToolBarHeader.h"
 
 
 //==============================================================================
@@ -53,6 +54,7 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
 	void buttonClicked (Button *);
 	void hideAllMenusButLeaveOne(Component *menuToLeaveVisible);
+	void toggleMenu();
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -75,10 +77,10 @@ private:
     //==============================================================================
     std::unique_ptr<TwonkToolBarButton> buttonConfig;
     std::unique_ptr<TwonkToolBarButton> buttonFilters;
-    std::unique_ptr<TwonkToolBarButton> buttonToggle;
     std::unique_ptr<TwonkToolBarButton> buttonFile;
     std::unique_ptr<TwonkProgramMenu> twonkProgramMenu;
     std::unique_ptr<TwonkAudioSettingsMenu> audioSettingsMenu;
+    std::unique_ptr<TwonkToolBarHeader> toolbarHeader;
 
 
     //==============================================================================

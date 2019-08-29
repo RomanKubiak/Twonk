@@ -93,7 +93,6 @@ PluginWindow::PluginWindow (AudioProcessorGraph::Node* n, Type t, OwnedArray<Plu
 	bool lastSticky;
 	if (auto* ui = createProcessorEditor (*node->getProcessor(), type))
 	{
-		DBG("PluginWindow::ctor" + String((int)node->properties.getWithDefault(getLastStickyProp (type), -1)));
 		lastSticky = (int)node->properties.getWithDefault(getLastStickyProp (type), -1) ? true : false;
 
 		if ((int)node->properties.getWithDefault(getLastWidthProp (type), -1) != -1)
@@ -179,7 +178,6 @@ float PluginWindow::getDesktopScaleFactor() const
 
 AudioProcessorEditor* PluginWindow::createProcessorEditor (AudioProcessor& processor, PluginWindow::Type type)
 {
-	DBG("PluginWindow::createProcessorEditor");
 	if (type == PluginWindow::Type::normal)
 	{
 		if (auto* ui = processor.createEditorIfNeeded())

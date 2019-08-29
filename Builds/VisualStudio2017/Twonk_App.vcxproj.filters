@@ -2,6 +2,12 @@
 
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Twonk\Source\Platform\Windows">
+      <UniqueIdentifier>{A8465CE8-A57E-588A-B069-06EE2C9EEBA0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\Platform">
+      <UniqueIdentifier>{A01E3879-C410-A132-41CE-4B4E0449BA59}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Twonk\Source\Resources">
       <UniqueIdentifier>{F89FAB94-3D2B-4A05-1609-FF5080A31DCE}</UniqueIdentifier>
     </Filter>
@@ -16,9 +22,6 @@
     </Filter>
     <Filter Include="Twonk\Source\FX\Flanger">
       <UniqueIdentifier>{AD44E9BE-45D2-DCEA-6BA3-B26AF6FB0ECC}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Twonk\Source\FX\JuceSampler">
-      <UniqueIdentifier>{FF9A142D-96EC-2628-DDBF-BF74145E11E9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Twonk\Source\FX\MIDI Controller">
       <UniqueIdentifier>{FA433D01-CFB4-7354-23C3-559A7CD40982}</UniqueIdentifier>
@@ -37,6 +40,9 @@
     </Filter>
     <Filter Include="Twonk\Source\FX\Robotization-Whisperization">
       <UniqueIdentifier>{D57EF017-DAD1-9172-084C-BA3894823F48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twonk\Source\FX\Simpler">
+      <UniqueIdentifier>{EE2DE391-208D-EC4B-3552-F314A4608757}</UniqueIdentifier>
     </Filter>
     <Filter Include="Twonk\Source\FX\Tremolo">
       <UniqueIdentifier>{38EEF8D6-C163-B8CC-1393-B5C20D7F5376}</UniqueIdentifier>
@@ -475,6 +481,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Platform\Windows\CpuUsage.cpp">
+      <Filter>Twonk\Source\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Platform\TwonkPlatformSpecific.cpp">
+      <Filter>Twonk\Source\Platform</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\TwonkPlayHead.cpp">
       <Filter>Twonk\Source</Filter>
     </ClCompile>
@@ -502,55 +514,16 @@
     <ClCompile Include="..\..\Source\FX\Flanger\TwonkFlangerProcessor.cpp">
       <Filter>Twonk\Source\FX\Flanger</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\InstrumentParametersEditor.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\InstrumentButtonsPanel.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\EnvelopeGenerator.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\Filter.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\OnePoleFilter.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\PanPos.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\PitchRateConversion.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\WaveShaper.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\InstrumentWaveViewer.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\InstrumentButton.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\JuceSamplerAudioProcessorEditor.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\CTAGSampler.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\CTAGSamplerSound.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\CTAGSamplerVoice.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FX\JuceSampler\JuceSamplerAudioProcessor.cpp">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
+    <ClCompile Include="..\..\Source\FX\MIDI Controller\HexagonController.cpp">
+      <Filter>Twonk\Source\FX\MIDI Controller</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\MIDI Controller\MidiControllerEditor.cpp">
       <Filter>Twonk\Source\FX\MIDI Controller</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\MIDI Controller\MidiControllerProcessor.cpp">
+      <Filter>Twonk\Source\FX\MIDI Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\MIDI Controller\PianoKeys.cpp">
       <Filter>Twonk\Source\FX\MIDI Controller</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\Phaser\TwonkPhaserEditor.cpp">
@@ -582,6 +555,36 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.cpp">
       <Filter>Twonk\Source\FX\Robotization-Whisperization</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Simpler\InstrumentButton.cpp">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Simpler\InstrumentButtonsPanel.cpp">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Simpler\InstrumentParametersEditor.cpp">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Simpler\InstrumentWaveViewer.cpp">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Simpler\PanPos.cpp">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Simpler\SimplerEditor.cpp">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Simpler\SimplerProcessor.cpp">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Simpler\SimplerSound.cpp">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Simpler\SimplerSynthesiser.cpp">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\Simpler\SimplerVoice.cpp">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\FX\Tremolo\TwonkTremoloProcessor.cpp">
       <Filter>Twonk\Source\FX\Tremolo</Filter>
@@ -624,6 +627,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkSaveProgramDialog.cpp">
       <Filter>Twonk\Source\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkToolBarHeader.cpp">
+      <Filter>Twonk\Source\UI\ToolBar</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkToolBarButton.cpp">
       <Filter>Twonk\Source\UI\ToolBar</Filter>
@@ -2589,6 +2595,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Platform\Windows\CpuUsage.h">
+      <Filter>Twonk\Source\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Platform\TwonkPlatformSpecific.h">
+      <Filter>Twonk\Source\Platform</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Twonk.h">
       <Filter>Twonk\Source</Filter>
     </ClInclude>
@@ -2619,55 +2631,16 @@
     <ClInclude Include="..\..\Source\FX\Flanger\TwonkFlangerProcessor.h">
       <Filter>Twonk\Source\FX\Flanger</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\InstrumentParametersEditor.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\InstrumentButtonsPanel.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\EnvelopeGenerator.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\Filter.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\OnePoleFilter.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\PanPos.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\PitchRateConversion.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\WaveShaper.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\InstrumentWaveViewer.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\InstrumentButton.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\JuceSamplerAudioProcessorEditor.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\CTAGSampler.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\CTAGSamplerSound.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\CTAGSamplerVoice.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\JuceSampler\JuceSamplerAudioProcessor.h">
-      <Filter>Twonk\Source\FX\JuceSampler</Filter>
+    <ClInclude Include="..\..\Source\FX\MIDI Controller\HexagonController.h">
+      <Filter>Twonk\Source\FX\MIDI Controller</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\MIDI Controller\MidiControllerEditor.h">
       <Filter>Twonk\Source\FX\MIDI Controller</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\MIDI Controller\MidiControllerProcessor.h">
+      <Filter>Twonk\Source\FX\MIDI Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\MIDI Controller\PianoKeys.h">
       <Filter>Twonk\Source\FX\MIDI Controller</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\Phaser\TwonkPhaserEditor.h">
@@ -2702,6 +2675,39 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\Robotization-Whisperization\TwonkRWProcessor.h">
       <Filter>Twonk\Source\FX\Robotization-Whisperization</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Simpler\InstrumentButton.h">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Simpler\InstrumentButtonsPanel.h">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Simpler\InstrumentParametersEditor.h">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Simpler\InstrumentWaveViewer.h">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Simpler\PanPos.h">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Simpler\SimplerEditor.h">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Simpler\SimplerProcessor.h">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Simpler\SimplerSound.h">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Simpler\SimplerSynthesiser.h">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Simpler\SimplerVoice.h">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\Simpler\Utils.h">
+      <Filter>Twonk\Source\FX\Simpler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\Tremolo\TwonkTremoloEditor.h">
       <Filter>Twonk\Source\FX\Tremolo</Filter>
@@ -2747,6 +2753,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkSaveProgramDialog.h">
       <Filter>Twonk\Source\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkToolBarHeader.h">
+      <Filter>Twonk\Source\UI\ToolBar</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkToolBarButton.h">
       <Filter>Twonk\Source\UI\ToolBar</Filter>
@@ -4874,22 +4883,7 @@
     <None Include="..\..\Source\Resources\audio_output.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
-    <None Include="..\..\Source\Resources\bg0.jpg">
-      <Filter>Twonk\Source\Resources</Filter>
-    </None>
     <None Include="..\..\Source\Resources\bg1.jpg">
-      <Filter>Twonk\Source\Resources</Filter>
-    </None>
-    <None Include="..\..\Source\Resources\bg2.jpg">
-      <Filter>Twonk\Source\Resources</Filter>
-    </None>
-    <None Include="..\..\Source\Resources\bg3.jpg">
-      <Filter>Twonk\Source\Resources</Filter>
-    </None>
-    <None Include="..\..\Source\Resources\bg4.jpg">
-      <Filter>Twonk\Source\Resources</Filter>
-    </None>
-    <None Include="..\..\Source\Resources\bg5.jpg">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\Default.generic.twonk">
@@ -4971,6 +4965,9 @@
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\midi_output.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\sampler_bg.jpg">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\terminess.ttf">

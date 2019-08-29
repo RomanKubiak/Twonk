@@ -14,23 +14,8 @@ namespace BinaryData
     extern const char*   audio_output_png;
     const int            audio_output_pngSize = 9212;
 
-    extern const char*   bg0_jpg;
-    const int            bg0_jpgSize = 202519;
-
     extern const char*   bg1_jpg;
     const int            bg1_jpgSize = 91962;
-
-    extern const char*   bg2_jpg;
-    const int            bg2_jpgSize = 80245;
-
-    extern const char*   bg3_jpg;
-    const int            bg3_jpgSize = 93151;
-
-    extern const char*   bg4_jpg;
-    const int            bg4_jpgSize = 135928;
-
-    extern const char*   bg5_jpg;
-    const int            bg5_jpgSize = 79526;
 
     extern const char*   Default_generic_twonk;
     const int            Default_generic_twonkSize = 1714;
@@ -113,11 +98,14 @@ namespace BinaryData
     extern const char*   midi_output_png;
     const int            midi_output_pngSize = 15080;
 
+    extern const char*   sampler_bg_jpg;
+    const int            sampler_bg_jpgSize = 750695;
+
     extern const char*   terminess_ttf;
     const int            terminess_ttfSize = 879176;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 36;
+    const int namedResourceListSize = 32;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

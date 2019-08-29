@@ -47,7 +47,6 @@ public:
 
     void handleAsyncUpdate() override
     {
-		DBG("PluginHostApp::handleAsyncUpdate");
         File fileToOpen;
 
         for (int i = 0; i < getCommandLineParameterArray().size(); ++i)
@@ -97,10 +96,7 @@ public:
 				}
 			}
 		}
-		
-
-		DBG("PluginHostApp::handleAsyncUpdate fileToOpen: " + fileToOpen.getFullPathName());
-    }
+	}
 
     void shutdown() override
     {

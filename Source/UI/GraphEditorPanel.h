@@ -17,7 +17,7 @@ class GraphEditorPanel   : public Component,
 						   public FileBrowserListener
 {
 public:
-    GraphEditorPanel (PluginGraph& graph);
+    GraphEditorPanel (PluginGraph& graph, AudioDeviceManager &_dm);
     ~GraphEditorPanel() override;
 
     void createNewPlugin (const PluginDescription&, Point<int> position);
@@ -49,6 +49,7 @@ public:
 	void fileDoubleClicked(const File &file);
 	void browserRootChanged(const File &newRoot) {}
 	void updateTwonkDocuments() { directoryContentsList.refresh(); }
+	AudioDeviceManager &getAudioDeviceManager() { return (dm); }
     //==============================================================================
     PluginGraph& graph;
 	enum FilterType
@@ -85,6 +86,7 @@ private:
 	TimeSliceThread directoryListThread;
 	DirectoryContentsList directoryContentsList;
 	TwonkProgramListWrapper twonkProgramListWrapper;
+	AudioDeviceManager &dm;
     //==============================================================================
     Point<int> originalTouchPos;
 

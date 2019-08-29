@@ -13,22 +13,7 @@
 class TwonkLookAndFeel : public LookAndFeel_V4
 {
 	public:
-		int getSliderThumbRadius (Slider& slider);
-		void drawLinearSlider (Graphics& g, int x, int y, int width, int height,
-			float sliderPos,
-			float minSliderPos,
-			float maxSliderPos,
-			const Slider::SliderStyle style, Slider& slider);
-
-		void drawLinearSliderBackground (Graphics&, int x, int y, int width, int height,
-			float sliderPos, float minSliderPos, float maxSliderPos,
-			const Slider::SliderStyle, Slider&);
-
 		void drawResizableFrame (Graphics&, int w, int h, const BorderSize<int>&) override;
-
-		void TwonkLookAndFeel::drawPointer (Graphics& g, const float x, const float y, const float diameter,
-			const Colour& colour, const int direction) noexcept;
-
 		int getScrollbarButtonSize (ScrollBar &) { return (32); }
 		int getDefaultScrollbarWidth () { return (32); }
 		Font getTextButtonFont (TextButton&, int buttonHeight);

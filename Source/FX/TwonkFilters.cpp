@@ -22,7 +22,7 @@
 #include "DebugInfo/TwonkDebugInfoProcessor.h"
 #include "SequencerLinear/SequencerLinearProcessor.h"
 #include "MIDI Controller/MidiControllerProcessor.h"
-#include "JuceSampler/JuceSamplerAudioProcessor.h"
+#include "Simpler/SimplerProcessor.h"
 
 void TwonkFilters::getAllTypes(Array<PluginDescription>& results)
 {
@@ -38,7 +38,7 @@ void TwonkFilters::getAllTypes(Array<PluginDescription>& results)
 	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Phaser", false, true)));
 	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Debug Info", false, true)));
 	results.add (PluginDescription (TwonkPlugin::getPluginDescription("MIDI Controller", true, true)));
-	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Sampler", true, true)));
+	results.add (PluginDescription (TwonkPlugin::getPluginDescription("Simpler", true, true)));
 }
 
 std::unique_ptr<AudioPluginInstance> TwonkFilters::createInstance (const String& name)
@@ -68,8 +68,8 @@ std::unique_ptr<AudioPluginInstance> TwonkFilters::createInstance (const String&
 		return std::make_unique <DebugInfoProcessor> (TwonkPlugin::getPluginDescription("Debug Info", false, true));
 	if (name == "MIDI Controller")
 		return std::make_unique <MidiControllerProcessor> (TwonkPlugin::getPluginDescription("MIDI Controller", true, true));
-	if (name == "Sampler")
-		return std::make_unique <JucesamplerAudioProcessor> (TwonkPlugin::getPluginDescription("Sampler", true, true));
+	if (name == "Simpler")
+		return std::make_unique <SimplerProcessor> (TwonkPlugin::getPluginDescription("Simpler", true, true));
 	DBG("TwonkFilters::createInstance don't know how to create instance for: " + name);
 	return nullptr;
 }

@@ -100,17 +100,22 @@
   </EXPORTFORMATS>
   <MAINGROUP id="YdWL7hi7p" name="Twonk">
     <GROUP id="{CFED5B3D-D1D8-0F3F-4D67-B2A810D057EF}" name="Source">
+      <GROUP id="{1D52FA2E-C680-12AC-5470-1C407F168637}" name="Platform">
+        <GROUP id="{BC2D6D94-8EA7-42D9-0A57-9958C51DBC44}" name="Windows">
+          <FILE id="AYyKIQ" name="CpuUsage.cpp" compile="1" resource="0" file="Source/Platform/Windows/CpuUsage.cpp"/>
+          <FILE id="QbzW7v" name="CpuUsage.h" compile="0" resource="0" file="Source/Platform/Windows/CpuUsage.h"/>
+        </GROUP>
+        <FILE id="b7nqdc" name="TwonkPlatformSpecific.cpp" compile="1" resource="0"
+              file="Source/Platform/TwonkPlatformSpecific.cpp"/>
+        <FILE id="wr8cMN" name="TwonkPlatformSpecific.h" compile="0" resource="0"
+              file="Source/Platform/TwonkPlatformSpecific.h"/>
+      </GROUP>
       <FILE id="OtV7Up" name="Twonk.h" compile="0" resource="0" file="Source/Twonk.h"/>
       <GROUP id="{2A443038-39E2-452E-37A0-3AD92CBC82C3}" name="Resources">
         <FILE id="H5ZAjx" name="audio_input.png" compile="0" resource="1" file="Source/Resources/audio_input.png"/>
         <FILE id="Oj2KSL" name="audio_output.png" compile="0" resource="1"
               file="Source/Resources/audio_output.png"/>
-        <FILE id="Gs1Nvc" name="bg0.jpg" compile="0" resource="1" file="Source/Resources/bg0.jpg"/>
         <FILE id="mCSsmv" name="bg1.jpg" compile="0" resource="1" file="Source/Resources/bg1.jpg"/>
-        <FILE id="Ww6TsD" name="bg2.jpg" compile="0" resource="1" file="Source/Resources/bg2.jpg"/>
-        <FILE id="mbcba2" name="bg3.jpg" compile="0" resource="1" file="Source/Resources/bg3.jpg"/>
-        <FILE id="kzNruT" name="bg4.jpg" compile="0" resource="1" file="Source/Resources/bg4.jpg"/>
-        <FILE id="OFf4Xi" name="bg5.jpg" compile="0" resource="1" file="Source/Resources/bg5.jpg"/>
         <FILE id="jGvTo3" name="Default.generic.twonk" compile="0" resource="1"
               file="Source/Resources/Default.generic.twonk"/>
         <FILE id="FjHJuC" name="icon_audio_dev.png" compile="0" resource="1"
@@ -152,6 +157,7 @@
               file="Source/Resources/LiberationSans-Regular.ttf"/>
         <FILE id="WioInm" name="midi_input.png" compile="0" resource="1" file="Source/Resources/midi_input.png"/>
         <FILE id="JS01vo" name="midi_output.png" compile="0" resource="1" file="Source/Resources/midi_output.png"/>
+        <FILE id="knanSC" name="sampler_bg.jpg" compile="0" resource="1" file="Source/Resources/sampler_bg.jpg"/>
         <FILE id="Q9cREJ" name="terminess.ttf" compile="0" resource="1" file="Source/Resources/terminess.ttf"/>
       </GROUP>
       <FILE id="DeRA1G" name="TwonkPlayHead.cpp" compile="1" resource="0"
@@ -197,68 +203,21 @@
           <FILE id="RJ8kTR" name="TwonkFlangerProcessor.h" compile="0" resource="0"
                 file="Source/FX/Flanger/TwonkFlangerProcessor.h"/>
         </GROUP>
-        <GROUP id="{B8D14227-C467-3AEC-6351-64BF68843F10}" name="JuceSampler">
-          <FILE id="AMmMfi" name="InstrumentParametersEditor.cpp" compile="1"
-                resource="0" file="Source/FX/JuceSampler/InstrumentParametersEditor.cpp"/>
-          <FILE id="ZjcQ39" name="InstrumentParametersEditor.h" compile="0" resource="0"
-                file="Source/FX/JuceSampler/InstrumentParametersEditor.h"/>
-          <FILE id="iQiCmW" name="InstrumentButtonsPanel.cpp" compile="1" resource="0"
-                file="Source/FX/JuceSampler/InstrumentButtonsPanel.cpp"/>
-          <FILE id="LGJhhO" name="InstrumentButtonsPanel.h" compile="0" resource="0"
-                file="Source/FX/JuceSampler/InstrumentButtonsPanel.h"/>
-          <FILE id="wGlZJn" name="EnvelopeGenerator.cpp" compile="1" resource="0"
-                file="Source/FX/JuceSampler/EnvelopeGenerator.cpp"/>
-          <FILE id="o6DGEj" name="EnvelopeGenerator.h" compile="0" resource="0"
-                file="Source/FX/JuceSampler/EnvelopeGenerator.h"/>
-          <FILE id="hP7SV7" name="Filter.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/Filter.cpp"/>
-          <FILE id="CMOApE" name="Filter.h" compile="0" resource="0" file="Source/FX/JuceSampler/Filter.h"/>
-          <FILE id="R5GyTV" name="OnePoleFilter.cpp" compile="1" resource="0"
-                file="Source/FX/JuceSampler/OnePoleFilter.cpp"/>
-          <FILE id="IpiffD" name="OnePoleFilter.h" compile="0" resource="0" file="Source/FX/JuceSampler/OnePoleFilter.h"/>
-          <FILE id="lwI1zm" name="PanPos.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/PanPos.cpp"/>
-          <FILE id="gTJoFU" name="PanPos.h" compile="0" resource="0" file="Source/FX/JuceSampler/PanPos.h"/>
-          <FILE id="wvIT9w" name="PitchRateConversion.cpp" compile="1" resource="0"
-                file="Source/FX/JuceSampler/PitchRateConversion.cpp"/>
-          <FILE id="RVSpZC" name="PitchRateConversion.h" compile="0" resource="0"
-                file="Source/FX/JuceSampler/PitchRateConversion.h"/>
-          <FILE id="IF6q6G" name="WaveShaper.h" compile="0" resource="0" file="Source/FX/JuceSampler/WaveShaper.h"/>
-          <FILE id="oGtOcG" name="WaveShaper.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/WaveShaper.cpp"/>
-          <FILE id="oF6ba9" name="InstrumentWaveViewer.cpp" compile="1" resource="0"
-                file="Source/FX/JuceSampler/InstrumentWaveViewer.cpp"/>
-          <FILE id="UUmfW7" name="InstrumentWaveViewer.h" compile="0" resource="0"
-                file="Source/FX/JuceSampler/InstrumentWaveViewer.h"/>
-          <FILE id="eActRZ" name="InstrumentButton.cpp" compile="1" resource="0"
-                file="Source/FX/JuceSampler/InstrumentButton.cpp"/>
-          <FILE id="nP6RdH" name="InstrumentButton.h" compile="0" resource="0"
-                file="Source/FX/JuceSampler/InstrumentButton.h"/>
-          <FILE id="EVl7n9" name="JuceSamplerAudioProcessorEditor.cpp" compile="1"
-                resource="0" file="Source/FX/JuceSampler/JuceSamplerAudioProcessorEditor.cpp"/>
-          <FILE id="zEVjl8" name="JuceSamplerAudioProcessorEditor.h" compile="0"
-                resource="0" file="Source/FX/JuceSampler/JuceSamplerAudioProcessorEditor.h"/>
-          <FILE id="ZDcNPD" name="CTAGSampler.cpp" compile="1" resource="0" file="Source/FX/JuceSampler/CTAGSampler.cpp"/>
-          <FILE id="QRcmet" name="CTAGSampler.h" compile="0" resource="0" file="Source/FX/JuceSampler/CTAGSampler.h"/>
-          <FILE id="PhKaNH" name="CTAGSamplerSound.cpp" compile="1" resource="0"
-                file="Source/FX/JuceSampler/CTAGSamplerSound.cpp"/>
-          <FILE id="OScE8D" name="CTAGSamplerSound.h" compile="0" resource="0"
-                file="Source/FX/JuceSampler/CTAGSamplerSound.h"/>
-          <FILE id="UO8uCz" name="CTAGSamplerVoice.cpp" compile="1" resource="0"
-                file="Source/FX/JuceSampler/CTAGSamplerVoice.cpp"/>
-          <FILE id="l83nzR" name="CTAGSamplerVoice.h" compile="0" resource="0"
-                file="Source/FX/JuceSampler/CTAGSamplerVoice.h"/>
-          <FILE id="KllhnP" name="JuceSamplerAudioProcessor.cpp" compile="1"
-                resource="0" file="Source/FX/JuceSampler/JuceSamplerAudioProcessor.cpp"/>
-          <FILE id="qiREoH" name="JuceSamplerAudioProcessor.h" compile="0" resource="0"
-                file="Source/FX/JuceSampler/JuceSamplerAudioProcessor.h"/>
-        </GROUP>
         <GROUP id="{E22755B0-25F5-F956-3236-55B594EA1EE2}" name="MIDI Controller">
-          <FILE id="NXe3Iv" name="MidiControllerEditor.cpp" compile="1" resource="0"
+          <FILE id="DrKtFZ" name="HexagonController.cpp" compile="1" resource="0"
+                file="Source/FX/MIDI Controller/HexagonController.cpp"/>
+          <FILE id="YZrXXP" name="HexagonController.h" compile="0" resource="0"
+                file="Source/FX/MIDI Controller/HexagonController.h"/>
+          <FILE id="zHoyJr" name="MidiControllerEditor.cpp" compile="1" resource="0"
                 file="Source/FX/MIDI Controller/MidiControllerEditor.cpp"/>
-          <FILE id="wZfFJO" name="MidiControllerEditor.h" compile="0" resource="0"
+          <FILE id="yrabk1" name="MidiControllerEditor.h" compile="0" resource="0"
                 file="Source/FX/MIDI Controller/MidiControllerEditor.h"/>
           <FILE id="OFpevq" name="MidiControllerProcessor.cpp" compile="1" resource="0"
                 file="Source/FX/MIDI Controller/MidiControllerProcessor.cpp"/>
           <FILE id="Rh4L18" name="MidiControllerProcessor.h" compile="0" resource="0"
                 file="Source/FX/MIDI Controller/MidiControllerProcessor.h"/>
+          <FILE id="PtcFwl" name="PianoKeys.cpp" compile="1" resource="0" file="Source/FX/MIDI Controller/PianoKeys.cpp"/>
+          <FILE id="likj9L" name="PianoKeys.h" compile="0" resource="0" file="Source/FX/MIDI Controller/PianoKeys.h"/>
         </GROUP>
         <GROUP id="{40DAC0BA-6E03-1CD4-4245-CCFC33ACAC56}" name="Phaser">
           <FILE id="RfnU0h" name="TwonkPhaserEditor.cpp" compile="1" resource="0"
@@ -307,6 +266,44 @@
                 file="Source/FX/Robotization-Whisperization/TwonkRWProcessor.cpp"/>
           <FILE id="eA6MDv" name="TwonkRWProcessor.h" compile="0" resource="0"
                 file="Source/FX/Robotization-Whisperization/TwonkRWProcessor.h"/>
+        </GROUP>
+        <GROUP id="{8263B2D9-4632-DC86-BD62-8337359D7572}" name="Simpler">
+          <FILE id="KEXOyg" name="InstrumentButton.cpp" compile="1" resource="0"
+                file="Source/FX/Simpler/InstrumentButton.cpp"/>
+          <FILE id="Gy67nX" name="InstrumentButton.h" compile="0" resource="0"
+                file="Source/FX/Simpler/InstrumentButton.h"/>
+          <FILE id="YhEXJe" name="InstrumentButtonsPanel.cpp" compile="1" resource="0"
+                file="Source/FX/Simpler/InstrumentButtonsPanel.cpp"/>
+          <FILE id="Fb8MvE" name="InstrumentButtonsPanel.h" compile="0" resource="0"
+                file="Source/FX/Simpler/InstrumentButtonsPanel.h"/>
+          <FILE id="F4lcNB" name="InstrumentParametersEditor.cpp" compile="1"
+                resource="0" file="Source/FX/Simpler/InstrumentParametersEditor.cpp"/>
+          <FILE id="byUE1B" name="InstrumentParametersEditor.h" compile="0" resource="0"
+                file="Source/FX/Simpler/InstrumentParametersEditor.h"/>
+          <FILE id="V2p9zf" name="InstrumentWaveViewer.cpp" compile="1" resource="0"
+                file="Source/FX/Simpler/InstrumentWaveViewer.cpp"/>
+          <FILE id="sIb4kG" name="InstrumentWaveViewer.h" compile="0" resource="0"
+                file="Source/FX/Simpler/InstrumentWaveViewer.h"/>
+          <FILE id="Y7YhM7" name="PanPos.cpp" compile="1" resource="0" file="Source/FX/Simpler/PanPos.cpp"/>
+          <FILE id="nlTU5o" name="PanPos.h" compile="0" resource="0" file="Source/FX/Simpler/PanPos.h"/>
+          <FILE id="iJquVI" name="SimplerEditor.cpp" compile="1" resource="0"
+                file="Source/FX/Simpler/SimplerEditor.cpp"/>
+          <FILE id="QfJFgs" name="SimplerEditor.h" compile="0" resource="0" file="Source/FX/Simpler/SimplerEditor.h"/>
+          <FILE id="FIi37s" name="SimplerProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/Simpler/SimplerProcessor.cpp"/>
+          <FILE id="NaxHgh" name="SimplerProcessor.h" compile="0" resource="0"
+                file="Source/FX/Simpler/SimplerProcessor.h"/>
+          <FILE id="t4BDIp" name="SimplerSound.cpp" compile="1" resource="0"
+                file="Source/FX/Simpler/SimplerSound.cpp"/>
+          <FILE id="shtkUC" name="SimplerSound.h" compile="0" resource="0" file="Source/FX/Simpler/SimplerSound.h"/>
+          <FILE id="eyWcd8" name="SimplerSynthesiser.cpp" compile="1" resource="0"
+                file="Source/FX/Simpler/SimplerSynthesiser.cpp"/>
+          <FILE id="LIzR9j" name="SimplerSynthesiser.h" compile="0" resource="0"
+                file="Source/FX/Simpler/SimplerSynthesiser.h"/>
+          <FILE id="Jd0tD5" name="SimplerVoice.cpp" compile="1" resource="0"
+                file="Source/FX/Simpler/SimplerVoice.cpp"/>
+          <FILE id="zDd2Y7" name="SimplerVoice.h" compile="0" resource="0" file="Source/FX/Simpler/SimplerVoice.h"/>
+          <FILE id="heTMe0" name="Utils.h" compile="0" resource="0" file="Source/FX/Simpler/Utils.h"/>
         </GROUP>
         <GROUP id="{064E2E72-9C31-0F33-0C54-6F722C4B5D27}" name="Tremolo">
           <FILE id="lOH2jw" name="TwonkTremoloEditor.h" compile="0" resource="0"
@@ -373,6 +370,10 @@
                 file="Source/UI/TwonkSaveProgramDialog.h"/>
         </GROUP>
         <GROUP id="{AF79F64E-CEFE-4B2E-D2D0-D3E3AD79AD10}" name="ToolBar">
+          <FILE id="ScmMF5" name="TwonkToolBarHeader.cpp" compile="1" resource="0"
+                file="Source/UI/TwonkToolBarHeader.cpp"/>
+          <FILE id="g0Y72i" name="TwonkToolBarHeader.h" compile="0" resource="0"
+                file="Source/UI/TwonkToolBarHeader.h"/>
           <FILE id="U6CS1L" name="TwonkToolBarButton.cpp" compile="1" resource="0"
                 file="Source/UI/TwonkToolBarButton.cpp"/>
           <FILE id="bG9wCX" name="TwonkToolBarButton.h" compile="0" resource="0"

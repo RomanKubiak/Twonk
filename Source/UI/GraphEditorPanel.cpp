@@ -820,8 +820,8 @@ struct GraphEditorPanel::ConnectorComponent   : public Component,
 /**
 GraphEditorPanel
 */
-GraphEditorPanel::GraphEditorPanel (PluginGraph& g)
-	: graph (g),
+GraphEditorPanel::GraphEditorPanel (PluginGraph& g, AudioDeviceManager &_dm)
+	: graph (g), dm(_dm),
 	directoryListThread("Twonk programs lister"),
 	twonkDocumentFileFilter("*.twonk", "", "Twonk programs"),
 	directoryContentsList(&twonkDocumentFileFilter, directoryListThread),
@@ -1130,7 +1130,7 @@ GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm, Au
 
 void GraphDocumentComponent::init()
 {
-    graphPanel.reset (new GraphEditorPanel (*graph));
+    graphPanel.reset (new GraphEditorPanel (*graph, deviceManager));
     addAndMakeVisible (graphPanel.get());
 	
     graphPlayer.setProcessor (&graph->graph);

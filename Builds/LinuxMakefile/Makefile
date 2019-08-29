@@ -68,6 +68,8 @@ ifeq ($(CONFIG),Release)
 endif
 
 OBJECTS_APP := \
+  $(JUCE_OBJDIR)/CpuUsage_d698222.o \
+  $(JUCE_OBJDIR)/TwonkPlatformSpecific_6b0edfbb.o \
   $(JUCE_OBJDIR)/TwonkPlayHead_1245343e.o \
   $(JUCE_OBJDIR)/TwonkCEEditor_b150544c.o \
   $(JUCE_OBJDIR)/TwonkCEProcessor_16925f5d.o \
@@ -77,23 +79,10 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkDistortionProcessor_23d1d60a.o \
   $(JUCE_OBJDIR)/TwonkFlangerEditor_997d0a31.o \
   $(JUCE_OBJDIR)/TwonkFlangerProcessor_8195a358.o \
-  $(JUCE_OBJDIR)/InstrumentParametersEditor_daa02650.o \
-  $(JUCE_OBJDIR)/InstrumentButtonsPanel_c8799d5c.o \
-  $(JUCE_OBJDIR)/EnvelopeGenerator_6b1668db.o \
-  $(JUCE_OBJDIR)/Filter_982d234a.o \
-  $(JUCE_OBJDIR)/OnePoleFilter_9278c44e.o \
-  $(JUCE_OBJDIR)/PanPos_f168a8c9.o \
-  $(JUCE_OBJDIR)/PitchRateConversion_939e832e.o \
-  $(JUCE_OBJDIR)/WaveShaper_21468d9c.o \
-  $(JUCE_OBJDIR)/InstrumentWaveViewer_b73291c4.o \
-  $(JUCE_OBJDIR)/InstrumentButton_3293dd0b.o \
-  $(JUCE_OBJDIR)/JuceSamplerAudioProcessorEditor_f5d57d1c.o \
-  $(JUCE_OBJDIR)/CTAGSampler_e7279309.o \
-  $(JUCE_OBJDIR)/CTAGSamplerSound_b8172050.o \
-  $(JUCE_OBJDIR)/CTAGSamplerVoice_e7626ef3.o \
-  $(JUCE_OBJDIR)/JuceSamplerAudioProcessor_d610098f.o \
+  $(JUCE_OBJDIR)/HexagonController_1475d7b4.o \
   $(JUCE_OBJDIR)/MidiControllerEditor_7468531c.o \
   $(JUCE_OBJDIR)/MidiControllerProcessor_5bf02e8d.o \
+  $(JUCE_OBJDIR)/PianoKeys_6a164735.o \
   $(JUCE_OBJDIR)/TwonkPhaserEditor_561d44b3.o \
   $(JUCE_OBJDIR)/TwonkPhaserProcessor_1b8e4196.o \
   $(JUCE_OBJDIR)/TwonkPPDelayEditor_ed313ffe.o \
@@ -104,6 +93,16 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkRMProcessor_9ab88bca.o \
   $(JUCE_OBJDIR)/TwonkRWEditor_fd6adaed.o \
   $(JUCE_OBJDIR)/TwonkRWProcessor_596b491c.o \
+  $(JUCE_OBJDIR)/InstrumentButton_9fe8fe06.o \
+  $(JUCE_OBJDIR)/InstrumentButtonsPanel_c732d617.o \
+  $(JUCE_OBJDIR)/InstrumentParametersEditor_f448898b.o \
+  $(JUCE_OBJDIR)/InstrumentWaveViewer_42c8bd3f.o \
+  $(JUCE_OBJDIR)/PanPos_b9e8b784.o \
+  $(JUCE_OBJDIR)/SimplerEditor_df5133ea.o \
+  $(JUCE_OBJDIR)/SimplerProcessor_8e38f2ff.o \
+  $(JUCE_OBJDIR)/SimplerSound_ae9d04fc.o \
+  $(JUCE_OBJDIR)/SimplerSynthesiser_398cc42e.o \
+  $(JUCE_OBJDIR)/SimplerVoice_dde8539f.o \
   $(JUCE_OBJDIR)/TwonkTremoloProcessor_36282d78.o \
   $(JUCE_OBJDIR)/TwonkTremoloEditor_63b411.o \
   $(JUCE_OBJDIR)/TwonkWWEditor_409921e2.o \
@@ -118,6 +117,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkProgramList_f2921f35.o \
   $(JUCE_OBJDIR)/TwonkProgramMenu_7e603b76.o \
   $(JUCE_OBJDIR)/TwonkSaveProgramDialog_cddd4f62.o \
+  $(JUCE_OBJDIR)/TwonkToolBarHeader_6dd3a53b.o \
   $(JUCE_OBJDIR)/TwonkToolBarButton_d540f60.o \
   $(JUCE_OBJDIR)/TwonkToolBar_fcb3ebce.o \
   $(JUCE_OBJDIR)/PluginDefaultEditor_eea7f1e9.o \
@@ -152,6 +152,16 @@ $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) : $(OBJECTS_APP) $(RESOURCES)
 	-$(V_AT)mkdir -p $(JUCE_LIBDIR)
 	-$(V_AT)mkdir -p $(JUCE_OUTDIR)
 	$(V_AT)$(CXX) -o $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) $(OBJECTS_APP) $(JUCE_LDFLAGS) $(JUCE_LDFLAGS_APP) $(RESOURCES) $(TARGET_ARCH)
+
+$(JUCE_OBJDIR)/CpuUsage_d698222.o: ../../Source/Platform/Windows/CpuUsage.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling CpuUsage.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkPlatformSpecific_6b0edfbb.o: ../../Source/Platform/TwonkPlatformSpecific.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkPlatformSpecific.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkPlayHead_1245343e.o: ../../Source/TwonkPlayHead.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
@@ -198,79 +208,9 @@ $(JUCE_OBJDIR)/TwonkFlangerProcessor_8195a358.o: ../../Source/FX/Flanger/TwonkFl
 	@echo "Compiling TwonkFlangerProcessor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/InstrumentParametersEditor_daa02650.o: ../../Source/FX/JuceSampler/InstrumentParametersEditor.cpp
+$(JUCE_OBJDIR)/HexagonController_1475d7b4.o: ../../Source/FX/MIDI\ Controller/HexagonController.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling InstrumentParametersEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/InstrumentButtonsPanel_c8799d5c.o: ../../Source/FX/JuceSampler/InstrumentButtonsPanel.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling InstrumentButtonsPanel.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/EnvelopeGenerator_6b1668db.o: ../../Source/FX/JuceSampler/EnvelopeGenerator.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling EnvelopeGenerator.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/Filter_982d234a.o: ../../Source/FX/JuceSampler/Filter.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling Filter.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/OnePoleFilter_9278c44e.o: ../../Source/FX/JuceSampler/OnePoleFilter.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling OnePoleFilter.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/PanPos_f168a8c9.o: ../../Source/FX/JuceSampler/PanPos.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PanPos.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/PitchRateConversion_939e832e.o: ../../Source/FX/JuceSampler/PitchRateConversion.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PitchRateConversion.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/WaveShaper_21468d9c.o: ../../Source/FX/JuceSampler/WaveShaper.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling WaveShaper.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/InstrumentWaveViewer_b73291c4.o: ../../Source/FX/JuceSampler/InstrumentWaveViewer.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling InstrumentWaveViewer.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/InstrumentButton_3293dd0b.o: ../../Source/FX/JuceSampler/InstrumentButton.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling InstrumentButton.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/JuceSamplerAudioProcessorEditor_f5d57d1c.o: ../../Source/FX/JuceSampler/JuceSamplerAudioProcessorEditor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling JuceSamplerAudioProcessorEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/CTAGSampler_e7279309.o: ../../Source/FX/JuceSampler/CTAGSampler.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling CTAGSampler.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/CTAGSamplerSound_b8172050.o: ../../Source/FX/JuceSampler/CTAGSamplerSound.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling CTAGSamplerSound.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/CTAGSamplerVoice_e7626ef3.o: ../../Source/FX/JuceSampler/CTAGSamplerVoice.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling CTAGSamplerVoice.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/JuceSamplerAudioProcessor_d610098f.o: ../../Source/FX/JuceSampler/JuceSamplerAudioProcessor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling JuceSamplerAudioProcessor.cpp"
+	@echo "Compiling HexagonController.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/MidiControllerEditor_7468531c.o: ../../Source/FX/MIDI\ Controller/MidiControllerEditor.cpp
@@ -281,6 +221,11 @@ $(JUCE_OBJDIR)/MidiControllerEditor_7468531c.o: ../../Source/FX/MIDI\ Controller
 $(JUCE_OBJDIR)/MidiControllerProcessor_5bf02e8d.o: ../../Source/FX/MIDI\ Controller/MidiControllerProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling MidiControllerProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PianoKeys_6a164735.o: ../../Source/FX/MIDI\ Controller/PianoKeys.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PianoKeys.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkPhaserEditor_561d44b3.o: ../../Source/FX/Phaser/TwonkPhaserEditor.cpp
@@ -331,6 +276,56 @@ $(JUCE_OBJDIR)/TwonkRWEditor_fd6adaed.o: ../../Source/FX/Robotization-Whisperiza
 $(JUCE_OBJDIR)/TwonkRWProcessor_596b491c.o: ../../Source/FX/Robotization-Whisperization/TwonkRWProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkRWProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/InstrumentButton_9fe8fe06.o: ../../Source/FX/Simpler/InstrumentButton.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling InstrumentButton.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/InstrumentButtonsPanel_c732d617.o: ../../Source/FX/Simpler/InstrumentButtonsPanel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling InstrumentButtonsPanel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/InstrumentParametersEditor_f448898b.o: ../../Source/FX/Simpler/InstrumentParametersEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling InstrumentParametersEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/InstrumentWaveViewer_42c8bd3f.o: ../../Source/FX/Simpler/InstrumentWaveViewer.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling InstrumentWaveViewer.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PanPos_b9e8b784.o: ../../Source/FX/Simpler/PanPos.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PanPos.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SimplerEditor_df5133ea.o: ../../Source/FX/Simpler/SimplerEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SimplerEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SimplerProcessor_8e38f2ff.o: ../../Source/FX/Simpler/SimplerProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SimplerProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SimplerSound_ae9d04fc.o: ../../Source/FX/Simpler/SimplerSound.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SimplerSound.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SimplerSynthesiser_398cc42e.o: ../../Source/FX/Simpler/SimplerSynthesiser.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SimplerSynthesiser.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SimplerVoice_dde8539f.o: ../../Source/FX/Simpler/SimplerVoice.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SimplerVoice.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkTremoloProcessor_36282d78.o: ../../Source/FX/Tremolo/TwonkTremoloProcessor.cpp
@@ -401,6 +396,11 @@ $(JUCE_OBJDIR)/TwonkProgramMenu_7e603b76.o: ../../Source/UI/TwonkProgramMenu.cpp
 $(JUCE_OBJDIR)/TwonkSaveProgramDialog_cddd4f62.o: ../../Source/UI/TwonkSaveProgramDialog.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkSaveProgramDialog.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkToolBarHeader_6dd3a53b.o: ../../Source/UI/TwonkToolBarHeader.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkToolBarHeader.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkToolBarButton_d540f60.o: ../../Source/UI/TwonkToolBarButton.cpp
