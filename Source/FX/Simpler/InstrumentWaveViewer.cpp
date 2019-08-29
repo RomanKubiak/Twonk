@@ -199,6 +199,15 @@ void InstrumentWaveViewer::mouseDown (const MouseEvent& e)
     //[UserCode_mouseDown] -- Add your code here...
 	if (e.eventComponent == this && lastSelectedSound)
 	{
+		lastSelectedSound->getVelocityRange().end;
+
+		processor.getAdditionalMidiMessageBuffer().addEvent
+		(
+			MidiMessage::noteOn(
+				(int)1,
+				(int)lastSelectedSound->getMidiRootNote(),
+				(uint8)lastSelectedSound->getVelocityRange().end), 0
+		);
 	}
     //[/UserCode_mouseDown]
 }

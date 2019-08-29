@@ -29,7 +29,7 @@ class InstrumentParametersEditor;
 
 class SamplerLookAndFeel : public LookAndFeel_V4
 {
-	void SamplerLookAndFeel::drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
+	void drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
 		bool isMouseOver, bool /*isMouseDown*/,
 		ConcertinaPanel& concertina, Component& panel)
 	{
