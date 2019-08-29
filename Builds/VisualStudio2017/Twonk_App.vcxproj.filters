@@ -613,17 +613,17 @@
     <ClCompile Include="..\..\Source\UI\TwonkLookAndFeel.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\TwonkAudioSettingsMenu.cpp">
-      <Filter>Twonk\Source\UI\Widgets</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkProgramList.cpp">
-      <Filter>Twonk\Source\UI\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\TwonkProgramMenu.cpp">
       <Filter>Twonk\Source\UI\Widgets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkSaveProgramDialog.cpp">
       <Filter>Twonk\Source\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkProgramMenu.cpp">
+      <Filter>Twonk\Source\UI\ToolBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkAudioSettingsMenu.cpp">
+      <Filter>Twonk\Source\UI\ToolBar</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkToolBarHeader.cpp">
       <Filter>Twonk\Source\UI\ToolBar</Filter>
@@ -2736,17 +2736,17 @@
     <ClInclude Include="..\..\Source\UI\TwonkLookAndFeel.h">
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\TwonkAudioSettingsMenu.h">
-      <Filter>Twonk\Source\UI\Widgets</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkProgramList.h">
-      <Filter>Twonk\Source\UI\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\TwonkProgramMenu.h">
       <Filter>Twonk\Source\UI\Widgets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkSaveProgramDialog.h">
       <Filter>Twonk\Source\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkProgramMenu.h">
+      <Filter>Twonk\Source\UI\ToolBar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkAudioSettingsMenu.h">
+      <Filter>Twonk\Source\UI\ToolBar</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkToolBarHeader.h">
       <Filter>Twonk\Source\UI\ToolBar</Filter>
@@ -4959,6 +4959,9 @@
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\midi_output.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\popup_bg.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\sampler_bg.jpg">

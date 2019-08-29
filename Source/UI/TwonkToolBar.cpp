@@ -37,6 +37,12 @@ TwonkToolBar::TwonkToolBar (GraphEditorPanel &_owner)
     : owner(_owner)
 {
     //[Constructor_pre] You can add your own custom stuff here..
+	twonkProgramMenu.reset(new TwonkProgramMenu(owner));
+	twonkAudioSettingsMenu.reset(new TwonkAudioSettingsMenu(owner));
+	owner.addAndMakeVisible(twonkProgramMenu.get());
+	owner.addAndMakeVisible(twonkAudioSettingsMenu.get());
+	twonkProgramMenu->setVisible(false);
+	twonkAudioSettingsMenu->setVisible(false);
     //[/Constructor_pre]
 
     buttonConfig.reset (new TwonkToolBarButton());
@@ -54,14 +60,6 @@ TwonkToolBar::TwonkToolBar (GraphEditorPanel &_owner)
 
     buttonFile->setBounds (0, 64, 64, 64);
 
-    twonkProgramMenu.reset (new TwonkProgramMenu (owner));
-    addAndMakeVisible (twonkProgramMenu.get());
-    twonkProgramMenu->setBounds (72, 64, 210, 64);
-
-    audioSettingsMenu.reset (new TwonkAudioSettingsMenu (owner));
-    addAndMakeVisible (audioSettingsMenu.get());
-    audioSettingsMenu->setBounds (72, 128, 136, 64);
-
     toolbarHeader.reset (new TwonkToolBarHeader (owner));
     addAndMakeVisible (toolbarHeader.get());
     toolbarHeader->setBounds (0, 0, 64, 64);
@@ -78,11 +76,9 @@ TwonkToolBar::TwonkToolBar (GraphEditorPanel &_owner)
 	buttonFile->setBaseColour(Colours::lightgreen);
 	buttonFile->addListener(this);
 	buttonFile->setTooltip("File operations");
-	audioSettingsMenu->setVisible(false);
-	twonkProgramMenu->setVisible(false);
     //[/UserPreSize]
 
-    setSize (280, 258);
+    setSize (64, 258);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -97,8 +93,6 @@ TwonkToolBar::~TwonkToolBar()
     buttonConfig = nullptr;
     buttonFilters = nullptr;
     buttonFile = nullptr;
-    twonkProgramMenu = nullptr;
-    audioSettingsMenu = nullptr;
     toolbarHeader = nullptr;
 
 
@@ -123,6 +117,14 @@ void TwonkToolBar::resized()
 
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
+}
+
+void TwonkToolBar::moved()
+{
+    //[UserCode_moved] -- Add your code here...
+	twonkProgramMenu->setTopLeftPosition(getBoundsInParent().getTopRight().translated(0, buttonFile->getBounds().getTopRight().getY()));
+	twonkAudioSettingsMenu->setTopLeftPosition(getBoundsInParent().getTopRight().translated(0, buttonConfig->getBounds().getTopRight().getY()));
+    //[/UserCode_moved]
 }
 
 void TwonkToolBar::mouseDown (const MouseEvent& e)
@@ -162,45 +164,22 @@ void TwonkToolBar::buttonClicked(Button *button)
 {
 	if (button == buttonConfig.get())
 	{
-		if (audioSettingsMenu->isVisible())
-		{
-			setSize(64, getHeight());
-			audioSettingsMenu->setVisible(false);
-			return;
-		}
-
-		hideAllMenusButLeaveOne(audioSettingsMenu.get());
-		setSize(136 + 64 + 8, getHeight());
+		twonkAudioSettingsMenu->setVisible(!twonkAudioSettingsMenu->isVisible());
 	}
-
 	if (button == buttonFile.get())
 	{
-		if (twonkProgramMenu->isVisible())
-		{
-			setSize(64, getHeight());
-			twonkProgramMenu->setVisible(false);
-			return;
-		}
-
-		hideAllMenusButLeaveOne(twonkProgramMenu.get());
-		setSize(210 + 64 + 8, getHeight());
+		twonkProgramMenu->setVisible(!twonkProgramMenu->isVisible());
 	}
-}
-
-void TwonkToolBar::hideAllMenusButLeaveOne(Component *menuToLeaveVisible)
-{
-	setSize(64, getHeight());
-	audioSettingsMenu->setVisible(false);
-	twonkProgramMenu->setVisible(false);
-
-	if (menuToLeaveVisible)
-		menuToLeaveVisible->setVisible(true);
 }
 
 void TwonkToolBar::toggleMenu()
 {
 	if (getWidth() > 64 || getHeight() > 64)
+	{
 		setSize(64, 64);
+		twonkAudioSettingsMenu->setVisible(false);
+		twonkProgramMenu->setVisible(false);
+	}
 	else
 		setSize(64, 258);
 }
@@ -220,10 +199,11 @@ BEGIN_JUCER_METADATA
                  parentClasses="public Component, public TwonkClockListener, Button::Listener"
                  constructorParams="GraphEditorPanel &amp;_owner" variableInitialisers="owner(_owner)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="280" initialHeight="258">
+                 fixedSize="1" initialWidth="64" initialHeight="258">
   <METHODS>
     <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
+    <METHOD name="moved()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="d2fe4dda321d3109" memberName="buttonConfig" virtualName=""
@@ -235,12 +215,6 @@ BEGIN_JUCER_METADATA
   <GENERICCOMPONENT name="" id="face426d9e5a53b" memberName="buttonFile" virtualName=""
                     explicitFocusOrder="0" pos="0 64 64 64" class="TwonkToolBarButton"
                     params=""/>
-  <JUCERCOMP name="" id="eb3cc73fd1410a00" memberName="twonkProgramMenu" virtualName=""
-             explicitFocusOrder="0" pos="72 64 210 64" sourceFile="TwonkProgramMenu.cpp"
-             constructorParams="owner"/>
-  <JUCERCOMP name="" id="efc1d74909dca7bb" memberName="audioSettingsMenu"
-             virtualName="" explicitFocusOrder="0" pos="72 128 136 64" sourceFile="TwonkAudioSettingsMenu.cpp"
-             constructorParams="owner"/>
   <JUCERCOMP name="" id="70b8e35106ac649b" memberName="toolbarHeader" virtualName=""
              explicitFocusOrder="0" pos="0 0 64 64" sourceFile="TwonkToolBarHeader.cpp"
              constructorParams="owner"/>

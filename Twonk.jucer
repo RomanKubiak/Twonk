@@ -157,6 +157,7 @@
               file="Source/Resources/LiberationSans-Regular.ttf"/>
         <FILE id="WioInm" name="midi_input.png" compile="0" resource="1" file="Source/Resources/midi_input.png"/>
         <FILE id="JS01vo" name="midi_output.png" compile="0" resource="1" file="Source/Resources/midi_output.png"/>
+        <FILE id="C7brHx" name="popup_bg.png" compile="0" resource="1" file="Source/Resources/popup_bg.png"/>
         <FILE id="knanSC" name="sampler_bg.jpg" compile="0" resource="1" file="Source/Resources/sampler_bg.jpg"/>
         <FILE id="Q9cREJ" name="terminess.ttf" compile="0" resource="1" file="Source/Resources/terminess.ttf"/>
       </GROUP>
@@ -350,24 +351,24 @@
         <FILE id="c70QW5" name="TwonkLookAndFeel.h" compile="0" resource="0"
               file="Source/UI/TwonkLookAndFeel.h"/>
         <GROUP id="{71FF4B59-9276-84A2-0856-BCB1D3B35E2F}" name="Widgets">
-          <FILE id="LV3X8P" name="TwonkAudioSettingsMenu.cpp" compile="1" resource="0"
-                file="Source/UI/TwonkAudioSettingsMenu.cpp"/>
-          <FILE id="jDGZG8" name="TwonkAudioSettingsMenu.h" compile="0" resource="0"
-                file="Source/UI/TwonkAudioSettingsMenu.h"/>
           <FILE id="LsJ9GG" name="TwonkProgramList.cpp" compile="1" resource="0"
                 file="Source/UI/TwonkProgramList.cpp"/>
           <FILE id="aW23li" name="TwonkProgramList.h" compile="0" resource="0"
                 file="Source/UI/TwonkProgramList.h"/>
-          <FILE id="FrASuN" name="TwonkProgramMenu.cpp" compile="1" resource="0"
-                file="Source/UI/TwonkProgramMenu.cpp"/>
-          <FILE id="XvXTRO" name="TwonkProgramMenu.h" compile="0" resource="0"
-                file="Source/UI/TwonkProgramMenu.h"/>
           <FILE id="E87e5Z" name="TwonkSaveProgramDialog.cpp" compile="1" resource="0"
                 file="Source/UI/TwonkSaveProgramDialog.cpp"/>
           <FILE id="fGLR3d" name="TwonkSaveProgramDialog.h" compile="0" resource="0"
                 file="Source/UI/TwonkSaveProgramDialog.h"/>
         </GROUP>
         <GROUP id="{AF79F64E-CEFE-4B2E-D2D0-D3E3AD79AD10}" name="ToolBar">
+          <FILE id="XvXTRO" name="TwonkProgramMenu.h" compile="0" resource="0"
+                file="Source/UI/TwonkProgramMenu.h"/>
+          <FILE id="FrASuN" name="TwonkProgramMenu.cpp" compile="1" resource="0"
+                file="Source/UI/TwonkProgramMenu.cpp"/>
+          <FILE id="jDGZG8" name="TwonkAudioSettingsMenu.h" compile="0" resource="0"
+                file="Source/UI/TwonkAudioSettingsMenu.h"/>
+          <FILE id="LV3X8P" name="TwonkAudioSettingsMenu.cpp" compile="1" resource="0"
+                file="Source/UI/TwonkAudioSettingsMenu.cpp"/>
           <FILE id="ScmMF5" name="TwonkToolBarHeader.cpp" compile="1" resource="0"
                 file="Source/UI/TwonkToolBarHeader.cpp"/>
           <FILE id="g0Y72i" name="TwonkToolBarHeader.h" compile="0" resource="0"

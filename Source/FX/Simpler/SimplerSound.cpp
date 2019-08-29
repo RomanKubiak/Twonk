@@ -49,24 +49,5 @@ bool SimplerSound::appliesToChannel (int /*midiChannel*/)
 bool SimplerSound::appliesToVelocity(const float velocity)
 {
 	uint8 normalVelo = roundFloatToInt(velocity * 127.0f);
-	DBG("SimplerSound::appliesToVelocity normalizedVelo:" + String(normalVelo));
 	return (velocityRange.getRange().contains(normalVelo));
 }
-
-/*
-SimplerSound *SimplerVoice::pickSoundBasedOnVelocity(int midiNoteNumber, float velo)
-{
-	SimplerSound *firstSound = dynamic_cast<SimplerSound *>(sound);
-	SimplerSound *soundToPlay = nullptr;
-	for (int i = 0; i < instrumentArray.size(); i++)
-	{
-		if (instrumentArray[i]->midiNote == midiNoteNumber)
-		{
-			int lastSample = instrumentArray[i]->assosiatedSound.size() - 1;
-			int sampleNum = velo * lastSample;
-			soundToPlay = instrumentArray[i]->assosiatedSound[sampleNum];
-			break;
-		}
-	}
-	return (soundToPlay);
-}*/

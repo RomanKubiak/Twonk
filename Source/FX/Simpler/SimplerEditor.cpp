@@ -178,6 +178,8 @@ void SimplerEditor::loadBanksToCombo()
 			bankListCombo->addItem(processor.getBankList()[i].getFileNameWithoutExtension(), i + 1);
 		}
 	}
+	File lastBankLoaded = processor.getLastBankLoaded();
+	bankListCombo->setSelectedItemIndex(processor.getBankList().indexOf(lastBankLoaded), dontSendNotification);
 }
 
 void SimplerEditor::loadInstrumentsToGui()

@@ -314,6 +314,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/Resources/popup_bg.png">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/Resources/sampler_bg.jpg">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -764,31 +770,11 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/UI/TwonkAudioSettingsMenu.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/UI/TwonkAudioSettingsMenu.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/UI/TwonkProgramList.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
     </Unit>
     <Unit filename="../../Source/UI/TwonkProgramList.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/UI/TwonkProgramMenu.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/UI/TwonkProgramMenu.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -803,6 +789,26 @@
       <Option target="App | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkProgramMenu.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkProgramMenu.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkAudioSettingsMenu.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkAudioSettingsMenu.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
     </Unit>
     <Unit filename="../../Source/UI/TwonkToolBarHeader.cpp">
       <Option target="App | Debug"/>

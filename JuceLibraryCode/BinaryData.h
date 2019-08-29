@@ -98,6 +98,9 @@ namespace BinaryData
     extern const char*   midi_output_png;
     const int            midi_output_pngSize = 15080;
 
+    extern const char*   popup_bg_png;
+    const int            popup_bg_pngSize = 16742;
+
     extern const char*   sampler_bg_jpg;
     const int            sampler_bg_jpgSize = 750695;
 
@@ -105,7 +108,7 @@ namespace BinaryData
     const int            terminess_ttfSize = 879176;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 32;
+    const int namedResourceListSize = 33;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

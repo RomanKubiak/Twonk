@@ -18,7 +18,10 @@ struct SimplerInstrument
 	Array<SimplerSound *> assosiatedSound;
 };
 
-class SimplerProcessor : public TwonkPlugin, public ChangeListener, public ChangeBroadcaster
+class SimplerProcessor :	public TwonkPlugin, 
+							public ChangeListener, 
+							public ChangeBroadcaster, 
+							public AudioProcessorValueTreeState::Listener
 {
 	public:
 		SimplerProcessor(const PluginDescription& descr);
@@ -54,6 +57,9 @@ class SimplerProcessor : public TwonkPlugin, public ChangeListener, public Chang
 		const OwnedArray<SimplerInstrument> &getLoadedInstruments() { return (instrumentsLoaded); }
 		MidiBuffer &getAdditionalMidiMessageBuffer() { return(additionalMessagesToConsider); }
 		AudioProcessorValueTreeState &getProcessorState() { return (processorState); }
+		void parameterChanged (const String &parameterID, float newValue);
+		void loadLastBank();
+		const File &getLastBankLoaded() { return (lastLoadedBank); }
 	private:
 		OwnedArray<SimplerInstrument> instrumentsLoaded;
 		AudioFormatManager formatManager;

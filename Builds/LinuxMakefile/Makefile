@@ -112,10 +112,10 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/PluginGraph_1fc57488.o \
   $(JUCE_OBJDIR)/PluginListWindow_f200207d.o \
   $(JUCE_OBJDIR)/TwonkLookAndFeel_5aa9c071.o \
-  $(JUCE_OBJDIR)/TwonkAudioSettingsMenu_5902978b.o \
   $(JUCE_OBJDIR)/TwonkProgramList_f2921f35.o \
-  $(JUCE_OBJDIR)/TwonkProgramMenu_7e603b76.o \
   $(JUCE_OBJDIR)/TwonkSaveProgramDialog_cddd4f62.o \
+  $(JUCE_OBJDIR)/TwonkProgramMenu_7e603b76.o \
+  $(JUCE_OBJDIR)/TwonkAudioSettingsMenu_5902978b.o \
   $(JUCE_OBJDIR)/TwonkToolBarHeader_6dd3a53b.o \
   $(JUCE_OBJDIR)/TwonkToolBarButton_d540f60.o \
   $(JUCE_OBJDIR)/TwonkToolBar_fcb3ebce.o \
@@ -372,14 +372,14 @@ $(JUCE_OBJDIR)/TwonkLookAndFeel_5aa9c071.o: ../../Source/UI/TwonkLookAndFeel.cpp
 	@echo "Compiling TwonkLookAndFeel.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TwonkAudioSettingsMenu_5902978b.o: ../../Source/UI/TwonkAudioSettingsMenu.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkAudioSettingsMenu.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/TwonkProgramList_f2921f35.o: ../../Source/UI/TwonkProgramList.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkProgramList.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkSaveProgramDialog_cddd4f62.o: ../../Source/UI/TwonkSaveProgramDialog.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkSaveProgramDialog.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkProgramMenu_7e603b76.o: ../../Source/UI/TwonkProgramMenu.cpp
@@ -387,9 +387,9 @@ $(JUCE_OBJDIR)/TwonkProgramMenu_7e603b76.o: ../../Source/UI/TwonkProgramMenu.cpp
 	@echo "Compiling TwonkProgramMenu.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TwonkSaveProgramDialog_cddd4f62.o: ../../Source/UI/TwonkSaveProgramDialog.cpp
+$(JUCE_OBJDIR)/TwonkAudioSettingsMenu_5902978b.o: ../../Source/UI/TwonkAudioSettingsMenu.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkSaveProgramDialog.cpp"
+	@echo "Compiling TwonkAudioSettingsMenu.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkToolBarHeader_6dd3a53b.o: ../../Source/UI/TwonkToolBarHeader.cpp

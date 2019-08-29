@@ -184,10 +184,10 @@
     <ClCompile Include="..\..\Source\Filters\PluginGraph.cpp"/>
     <ClCompile Include="..\..\Source\UI\PluginListWindow.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkLookAndFeel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\TwonkAudioSettingsMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkProgramList.cpp"/>
-    <ClCompile Include="..\..\Source\UI\TwonkProgramMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkSaveProgramDialog.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkProgramMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkAudioSettingsMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkToolBarHeader.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkToolBarButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkToolBar.cpp"/>
@@ -2042,10 +2042,10 @@
     <ClInclude Include="..\..\Source\Filters\PluginGraph.h"/>
     <ClInclude Include="..\..\Source\UI\PluginListWindow.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkLookAndFeel.h"/>
-    <ClInclude Include="..\..\Source\UI\TwonkAudioSettingsMenu.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkProgramList.h"/>
-    <ClInclude Include="..\..\Source\UI\TwonkProgramMenu.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkSaveProgramDialog.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkProgramMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkAudioSettingsMenu.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkToolBarHeader.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkToolBarButton.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkToolBar.h"/>
@@ -2785,6 +2785,7 @@
     <None Include="..\..\Source\Resources\LiberationSans-Regular.ttf"/>
     <None Include="..\..\Source\Resources\midi_input.png"/>
     <None Include="..\..\Source\Resources\midi_output.png"/>
+    <None Include="..\..\Source\Resources\popup_bg.png"/>
     <None Include="..\..\Source\Resources\sampler_bg.jpg"/>
     <None Include="..\..\Source\Resources\terminess.ttf"/>
     <None Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>

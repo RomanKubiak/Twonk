@@ -22,14 +22,13 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "../../JuceLibraryCode/JuceHeader.h"
 #include "../TwonkPlayHead.h"
-
+#include "TwonkProgramMenu.h"
+#include "TwonkAudioSettingsMenu.h"
 class GraphEditorPanel;
 class TwonkToolBarButton;
 class TwonkToolBarStatus;
 //[/Headers]
 
-#include "TwonkProgramMenu.h"
-#include "TwonkAudioSettingsMenu.h"
 #include "TwonkToolBarHeader.h"
 
 
@@ -53,12 +52,12 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
 	void buttonClicked (Button *);
-	void hideAllMenusButLeaveOne(Component *menuToLeaveVisible);
 	void toggleMenu();
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
+    void moved() override;
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
 
@@ -72,14 +71,14 @@ private:
 	Font labelFont;
 	ComponentAnimator toolbarAnimator;
 	ComponentDragger toolbarDragger;
+	std::unique_ptr<TwonkProgramMenu> twonkProgramMenu;
+	std::unique_ptr<TwonkAudioSettingsMenu> twonkAudioSettingsMenu;
     //[/UserVariables]
 
     //==============================================================================
     std::unique_ptr<TwonkToolBarButton> buttonConfig;
     std::unique_ptr<TwonkToolBarButton> buttonFilters;
     std::unique_ptr<TwonkToolBarButton> buttonFile;
-    std::unique_ptr<TwonkProgramMenu> twonkProgramMenu;
-    std::unique_ptr<TwonkAudioSettingsMenu> audioSettingsMenu;
     std::unique_ptr<TwonkToolBarHeader> toolbarHeader;
 
 

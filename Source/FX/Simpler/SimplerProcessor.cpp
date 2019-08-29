@@ -10,7 +10,7 @@ SimplerProcessor::SimplerProcessor(const PluginDescription& descr)
 	std::function<String(int, int)> bankIndexToName = [&](int index, int maxLen)
 	{
 		const Array<File> list = getBankList();
-		return list[index].getFileNameWithoutExtension();
+		return list[index].getFullPathName();
 	};
 
 	std::function<int(String)> bankNameToIndex = [&](String bankName)
@@ -40,6 +40,9 @@ SimplerProcessor::SimplerProcessor(const PluginDescription& descr)
 	processorState.createAndAddParameter("", "ampEnvAttack", "", NormalisableRange<float>(0.0f, 500.0f), 0.0f, doubleToString, stringToDouble);
 
 	processorState.state = ValueTree("Simpler");
+	
+	// this will tell us to load the last bank
+	processorState.addParameterListener("bank", this);
 
 	programList.setDirectory(GET_TWONK_SAMPLES_DIR(), true, false);
 	directoryThread.startThread(1);
@@ -76,12 +79,23 @@ AudioProcessorEditor* SimplerProcessor::createEditor()
 	return new SimplerEditor(*this);
 }
 
-void SimplerProcessor::getStateInformation (MemoryBlock&)
+void SimplerProcessor::getStateInformation (MemoryBlock &destData)
 {
+	MemoryOutputStream stream(destData, false);
+	processorState.state.writeToStream(stream);
 }
 
-void SimplerProcessor::setStateInformation (const void*, int)
+void SimplerProcessor::setStateInformation (const void *data, int sizeInBytes)
 {
+	ValueTree tree = ValueTree::readFromData(data, sizeInBytes);
+
+	if (tree.isValid())
+	{
+		if (tree.hasType("Simpler"))
+		{
+			processorState.state = tree;
+		}
+	}
 }
 
 const String SimplerProcessor::createJsonFor(const File &bank)
@@ -216,7 +230,7 @@ Result SimplerProcessor::loadSamples(const File &bank, var &bankJsonInfo)
 			instrumentsLoaded.add(instrumentObject);
 		}
 	}
-
+	processorState.getParameterAsValue("bank") = bankList.indexOf(bank);
 	reloadInstruments();
 	return Result::ok();
 }
@@ -233,10 +247,10 @@ void SimplerProcessor::changeListenerCallback (ChangeBroadcaster* source)
 				for (int i = 0; i < programList.getNumFiles(); i++)
 				{
 					bankList.add(programList.getFile(i));
-					DBG("SimplerProcessor::changeListenerCallback found a bank: " + programList.getFile(i).getFullPathName());
 				}
 			}
 			sendChangeMessage();
+			loadLastBank();
 		}
 	}
 }
@@ -292,5 +306,32 @@ void SimplerProcessor::addSoundToSampler(SimplerInstrument *instrumentToAdd)
 		
 		instrumentToAdd->assosiatedSound.add(sound);
 		sampler.addSound(sound);
+	}
+}
+
+void SimplerProcessor::parameterChanged (const String &parameterID, float newValue)
+{
+	DBG("SimplerProcessor::parameterChanged parameterID=" + parameterID + " newValue=" + String(newValue));
+}
+
+void SimplerProcessor::loadLastBank()
+{
+	DBG("SimplerProcessor::loadLastBank lastBank: " + processorState.getParameter("bank")->getCurrentValueAsText());
+
+	if (processorState.getParameter("bank")->getCurrentValueAsText().isNotEmpty())
+	{
+		File bank(processorState.getParameter("bank")->getCurrentValueAsText());
+		if (bank.isDirectory())
+		{
+			loadBank(bank);
+		}
+		else
+		{
+			DBG("Last saved bank is not a directory");
+		}
+	}
+	else
+	{
+		DBG("No last bank saved");
 	}
 }

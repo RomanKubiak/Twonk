@@ -13,6 +13,7 @@
 class TwonkLookAndFeel : public LookAndFeel_V4
 {
 	public:
+		TwonkLookAndFeel();
 		void drawResizableFrame (Graphics&, int w, int h, const BorderSize<int>&) override;
 		int getScrollbarButtonSize (ScrollBar &) { return (32); }
 		int getDefaultScrollbarWidth () { return (32); }
@@ -26,4 +27,17 @@ class TwonkLookAndFeel : public LookAndFeel_V4
 
 		void drawAlertBox (Graphics& g, AlertWindow& alert,
 			const Rectangle<int>& textArea, TextLayout& textLayout);
+
+		Font getPopupMenuFont () override;
+
+		void drawPopupMenuBackground (Graphics& g, int width, int height) override;
+
+		int getPopupMenuBorderSize() override;
+
+		void drawPopupMenuItem (Graphics& g, const Rectangle<int>& area,
+			const bool isSeparator, const bool isActive,
+			const bool isHighlighted, const bool isTicked,
+			const bool hasSubMenu, const String& text,
+			const String& shortcutKeyText,
+			const Drawable* icon, const Colour* const textColourToUse) override;
 };

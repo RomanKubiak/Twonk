@@ -142,7 +142,14 @@ static PluginHostApp& getApp()                    { return *dynamic_cast<PluginH
 ApplicationProperties& getAppProperties()         { return *getApp().appProperties; }
 ApplicationCommandManager& getCommandManager()    { return getApp().commandManager; }
 
-bool isOnTouchDevice()                            { return Desktop::getInstance().getMainMouseSource().isTouch(); }
+bool isOnTouchDevice()
+{
+	if (SystemStats::getOperatingSystemType() == SystemStats::Linux)
+		return (true);
+
+	return (true);
+	//return Desktop::getInstance().getMainMouseSource().isTouch();
+}
 
 // This kicks the whole thing off..
 START_JUCE_APPLICATION (PluginHostApp)
