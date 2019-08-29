@@ -271,6 +271,9 @@ void SimplerProcessor::addSoundToSampler(SimplerInstrument *instrumentToAdd)
 		BigInteger midiNotes;
 		midiNotes.setBit(instrumentToAdd->midiNote);
 
+		if (i == sampleCount - 1)
+			velocityRangeEnd = 127;
+
 		SimplerSound *sound = new SimplerSound (
 			instrumentToAdd->name, 
 			*fileReader,
@@ -286,7 +289,7 @@ void SimplerProcessor::addSoundToSampler(SimplerInstrument *instrumentToAdd)
 
 		velocityRangeStart += veloStep;
 		velocityRangeEnd += veloStep;
-
+		
 		instrumentToAdd->assosiatedSound.add(sound);
 		sampler.addSound(sound);
 	}

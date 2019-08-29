@@ -568,9 +568,6 @@
     <ClCompile Include="..\..\Source\FX\Simpler\InstrumentWaveViewer.cpp">
       <Filter>Twonk\Source\FX\Simpler</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\FX\Simpler\PanPos.cpp">
-      <Filter>Twonk\Source\FX\Simpler</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\FX\Simpler\SimplerEditor.cpp">
       <Filter>Twonk\Source\FX\Simpler</Filter>
     </ClCompile>
@@ -2686,9 +2683,6 @@
       <Filter>Twonk\Source\FX\Simpler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\Simpler\InstrumentWaveViewer.h">
-      <Filter>Twonk\Source\FX\Simpler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FX\Simpler\PanPos.h">
       <Filter>Twonk\Source\FX\Simpler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FX\Simpler\SimplerEditor.h">

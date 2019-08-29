@@ -97,7 +97,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/InstrumentButtonsPanel_c732d617.o \
   $(JUCE_OBJDIR)/InstrumentParametersEditor_f448898b.o \
   $(JUCE_OBJDIR)/InstrumentWaveViewer_42c8bd3f.o \
-  $(JUCE_OBJDIR)/PanPos_b9e8b784.o \
   $(JUCE_OBJDIR)/SimplerEditor_df5133ea.o \
   $(JUCE_OBJDIR)/SimplerProcessor_8e38f2ff.o \
   $(JUCE_OBJDIR)/SimplerSound_ae9d04fc.o \
@@ -296,11 +295,6 @@ $(JUCE_OBJDIR)/InstrumentParametersEditor_f448898b.o: ../../Source/FX/Simpler/In
 $(JUCE_OBJDIR)/InstrumentWaveViewer_42c8bd3f.o: ../../Source/FX/Simpler/InstrumentWaveViewer.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling InstrumentWaveViewer.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/PanPos_b9e8b784.o: ../../Source/FX/Simpler/PanPos.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PanPos.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/SimplerEditor_df5133ea.o: ../../Source/FX/Simpler/SimplerEditor.cpp

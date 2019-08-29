@@ -602,16 +602,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/FX/Simpler/PanPos.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/FX/Simpler/PanPos.h">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/FX/Simpler/SimplerEditor.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>

@@ -169,7 +169,6 @@
     <ClCompile Include="..\..\Source\FX\Simpler\InstrumentButtonsPanel.cpp"/>
     <ClCompile Include="..\..\Source\FX\Simpler\InstrumentParametersEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Simpler\InstrumentWaveViewer.cpp"/>
-    <ClCompile Include="..\..\Source\FX\Simpler\PanPos.cpp"/>
     <ClCompile Include="..\..\Source\FX\Simpler\SimplerEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Simpler\SimplerProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Simpler\SimplerSound.cpp"/>
@@ -2026,7 +2025,6 @@
     <ClInclude Include="..\..\Source\FX\Simpler\InstrumentButtonsPanel.h"/>
     <ClInclude Include="..\..\Source\FX\Simpler\InstrumentParametersEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Simpler\InstrumentWaveViewer.h"/>
-    <ClInclude Include="..\..\Source\FX\Simpler\PanPos.h"/>
     <ClInclude Include="..\..\Source\FX\Simpler\SimplerEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Simpler\SimplerProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\Simpler\SimplerSound.h"/>

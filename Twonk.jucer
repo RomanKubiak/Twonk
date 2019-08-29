@@ -284,8 +284,6 @@
                 file="Source/FX/Simpler/InstrumentWaveViewer.cpp"/>
           <FILE id="sIb4kG" name="InstrumentWaveViewer.h" compile="0" resource="0"
                 file="Source/FX/Simpler/InstrumentWaveViewer.h"/>
-          <FILE id="Y7YhM7" name="PanPos.cpp" compile="1" resource="0" file="Source/FX/Simpler/PanPos.cpp"/>
-          <FILE id="nlTU5o" name="PanPos.h" compile="0" resource="0" file="Source/FX/Simpler/PanPos.h"/>
           <FILE id="iJquVI" name="SimplerEditor.cpp" compile="1" resource="0"
                 file="Source/FX/Simpler/SimplerEditor.cpp"/>
           <FILE id="QfJFgs" name="SimplerEditor.h" compile="0" resource="0" file="Source/FX/Simpler/SimplerEditor.h"/>
