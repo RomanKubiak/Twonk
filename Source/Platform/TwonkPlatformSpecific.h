@@ -10,7 +10,7 @@
 
 #pragma once
 #include "JuceHeader.h"
-int getCpuUsage();
+float getCpuUsage();
 int64 getMemoryUsageMegabytes();
 #if defined(WIN32)
 #include "Windows/CpuUsage.h"

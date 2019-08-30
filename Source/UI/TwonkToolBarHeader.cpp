@@ -37,7 +37,7 @@ TwonkToolBarHeader::TwonkToolBarHeader (GraphEditorPanel &_owner)
 {
     //[Constructor_pre] You can add your own custom stuff here..
 	baseColour = Colours::red;
-	startTimerHz(2);
+	startTimerHz(1);
     //[/Constructor_pre]
 
 
@@ -74,7 +74,7 @@ void TwonkToolBarHeader::paint (Graphics& g)
 	g.fillCheckerBoard(getLocalBounds().toFloat(), 4.0f, 4.0f, Colours::red, Colours::red.darker());
 	g.setColour(Colours::red.overlaidWith(Colours::white));
 	g.setFont(getDefaultTwonkSansFont().withHeight(12.0f).boldened());
-	g.drawMultiLineText(String::formatted("CPU\n%d\nMEM\n%d", getCpuUsage(), getMemoryUsageMegabytes()), 16, 16, 32, Justification::centred);
+	g.drawMultiLineText(String::formatted("CPU\n%.1f\nMEM\n%d", getCpuUsage(), getMemoryUsageMegabytes()), 16, 16, 32, Justification::centred);
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
