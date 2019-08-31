@@ -23,6 +23,7 @@
 #include "../../../JuceLibraryCode/JuceHeader.h"
 #include "SimplerProcessor.h"
 class SimplerSound;
+class InstrumentParametersEditor;
 //[/Headers]
 
 
@@ -42,7 +43,7 @@ class InstrumentWaveViewer  : public Component,
 {
 public:
     //==============================================================================
-    InstrumentWaveViewer (SimplerProcessor &_processor);
+    InstrumentWaveViewer (InstrumentParametersEditor &_owner, SimplerProcessor &_processor);
     ~InstrumentWaveViewer();
 
     //==============================================================================
@@ -73,6 +74,7 @@ private:
 	SimplerInstrument *instrumentToShow;
 	SimplerProcessor &processor;
 	SimplerSound *lastSelectedSound;
+	InstrumentParametersEditor &owner;
     //[/UserVariables]
 
     //==============================================================================

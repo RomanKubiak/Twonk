@@ -8,6 +8,7 @@
 #include "TwonkProgramMenu.h"
 #include "Twonk.h"
 #include "TwonkProgramList.h"
+#include "TwonkTransport.h"
 /**
   GraphEditorPanel
  */
@@ -528,19 +529,10 @@ struct GraphEditorPanel::PluginComponent   : public Component,
             menu->addItem (10, "Show plugin GUI");
             menu->addItem (11, "Show all programs");
             menu->addItem (12, "Show all parameters");
-           #if JUCE_WINDOWS && JUCE_WIN_PER_MONITOR_DPI_AWARE
-            auto isTicked = false;
-            if (auto* node = graph.graph.getNodeForId (pluginID))
-                isTicked = node->properties["DPIAware"];
-
-            menu->addItem (13, "Enable DPI awareness", true, isTicked);
-           #endif
-            menu->addItem (14, "Show debug log");
         }
 
         menu->addSeparator();
         menu->addItem (20, "Configure Audio I/O");
-        menu->addItem (21, "Test state save/load");
 
         menu->showMenuAsync ({}, ModalCallbackFunction::create
                              ([this] (int r) {
@@ -560,13 +552,6 @@ struct GraphEditorPanel::PluginComponent   : public Component,
             case 10:  showWindow (PluginWindow::Type::normal); break;
             case 11:  showWindow (PluginWindow::Type::programs); break;
             case 12:  showWindow (PluginWindow::Type::generic)  ; break;
-            case 13:
-            {
-                if (auto* node = graph.graph.getNodeForId (pluginID))
-                    node->properties.set ("DPIAware", ! node->properties ["DPIAware"]);
-                break;
-            }
-            case 14:  showWindow (PluginWindow::Type::debug); break;
             case 20:  showWindow (PluginWindow::Type::audioIO); break;
             case 21:  testStateSaveLoad(); break;
 
@@ -820,8 +805,8 @@ struct GraphEditorPanel::ConnectorComponent   : public Component,
 /**
 GraphEditorPanel
 */
-GraphEditorPanel::GraphEditorPanel (PluginGraph& g, AudioDeviceManager &_dm)
-	: graph (g), dm(_dm),
+GraphEditorPanel::GraphEditorPanel (PluginGraph& g, AudioDeviceManager &_dm, TwonkPlayHead &_twonkPlayHead)
+	: graph (g), dm(_dm), twonkPlayHead(_twonkPlayHead),
 	directoryListThread("Twonk programs lister"),
 	twonkDocumentFileFilter("*.twonk", "", "Twonk programs"),
 	directoryContentsList(&twonkDocumentFileFilter, directoryListThread),
@@ -831,9 +816,15 @@ GraphEditorPanel::GraphEditorPanel (PluginGraph& g, AudioDeviceManager &_dm)
 	toolBar.reset(new TwonkToolBar(*this));
 	addAndMakeVisible(toolBar.get());
 	toolBar->setVisible(true);
-	toolBar->setBounds(16, 64, 64, 532);
+	toolBar->setBounds(16, 64, 64, 258);
 	toolBar->setAlwaysOnTop(true);
 	
+	twonkTransport.reset(new TwonkTransport(twonkPlayHead));
+	addAndMakeVisible(twonkTransport.get());
+	twonkTransport->setVisible(true);
+	twonkTransport->setAlwaysOnTop(true);
+	twonkTransport->setBounds(312, 0, 316, 48);
+
     graph.addChangeListener (this);
     setOpaque (true);
 	directoryContentsList.setDirectory(GET_TWONK_PROGRAM_DIR(), false, true);
@@ -845,6 +836,8 @@ GraphEditorPanel::GraphEditorPanel (PluginGraph& g, AudioDeviceManager &_dm)
 	twonkProgramListWrapper.list.setColour(ListBox::backgroundColourId, Colours::white.withAlpha(0.5f));
 	twonkProgramListWrapper.list.setRowHeight(48);
 	twonkProgramListWrapper.setVisible(false);
+
+	setSize(1024, 600);
 }
 
 GraphEditorPanel::~GraphEditorPanel()
@@ -1112,14 +1105,16 @@ void GraphEditorPanel::fileDoubleClicked(const File &file)
 {
 }
 
+
 /*
  * GraphDocumentComponent
  */
 GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm, AudioDeviceManager& dm, KnownPluginList& kpl)
-    : graph (new PluginGraph (fm, *this)),
-      deviceManager (dm),
+    : deviceManager (dm),
       pluginList (kpl),
-      graphPlayer (getAppProperties().getUserSettings()->getBoolValue ("doublePrecisionProcessing", false))
+      graphPlayer (getAppProperties().getUserSettings()->getBoolValue ("doublePrecisionProcessing", false)),
+	  twonkPlayHead(dm),
+	  graph (new PluginGraph (fm, *this, twonkPlayHead))
 {
     init();
 
@@ -1130,7 +1125,7 @@ GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm, Au
 
 void GraphDocumentComponent::init()
 {
-    graphPanel.reset (new GraphEditorPanel (*graph, deviceManager));
+    graphPanel.reset (new GraphEditorPanel (*graph, deviceManager, twonkPlayHead));
     addAndMakeVisible (graphPanel.get());
 	
     graphPlayer.setProcessor (&graph->graph);

@@ -38,6 +38,9 @@ namespace BinaryData
     extern const char*   icon_floppy_png;
     const int            icon_floppy_pngSize = 3363;
 
+    extern const char*   icon_loop_png;
+    const int            icon_loop_pngSize = 1993;
+
     extern const char*   icon_midi_64_png;
     const int            icon_midi_64_pngSize = 6908;
 
@@ -108,7 +111,7 @@ namespace BinaryData
     const int            terminess_ttfSize = 879176;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 33;
+    const int namedResourceListSize = 34;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

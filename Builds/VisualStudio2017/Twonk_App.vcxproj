@@ -142,7 +142,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\Platform\Windows\CpuUsage.cpp"/>
     <ClCompile Include="..\..\Source\Platform\TwonkPlatformSpecific.cpp"/>
-    <ClCompile Include="..\..\Source\TwonkPlayHead.cpp"/>
     <ClCompile Include="..\..\Source\FX\Compressor\TwonkCEEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Compressor\TwonkCEProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\DebugInfo\TwonkDebugInfoEditor.cpp"/>
@@ -179,11 +178,14 @@
     <ClCompile Include="..\..\Source\FX\Wah-Wah\TwonkWWEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Wah-Wah\TwonkWWProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\TwonkFilters.cpp"/>
+    <ClCompile Include="..\..\Source\TwonkPlayHead.cpp"/>
     <ClCompile Include="..\..\Source\Filters\InternalPlugins.cpp"/>
     <ClCompile Include="..\..\Source\Filters\IOConfigurationWindow.cpp"/>
     <ClCompile Include="..\..\Source\Filters\PluginGraph.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkTransport.cpp"/>
     <ClCompile Include="..\..\Source\UI\PluginListWindow.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkLookAndFeel.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkFilterPopupProperties.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkProgramList.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkSaveProgramDialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkProgramMenu.cpp"/>
@@ -1997,7 +1999,6 @@
     <ClInclude Include="..\..\Source\Platform\Windows\CpuUsage.h"/>
     <ClInclude Include="..\..\Source\Platform\TwonkPlatformSpecific.h"/>
     <ClInclude Include="..\..\Source\Twonk.h"/>
-    <ClInclude Include="..\..\Source\TwonkPlayHead.h"/>
     <ClInclude Include="..\..\Source\FX\Compressor\TwonkCEEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Compressor\TwonkCEProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\DebugInfo\TwonkDebugInfoEditor.h"/>
@@ -2037,11 +2038,14 @@
     <ClInclude Include="..\..\Source\FX\Wah-Wah\TwonkWWProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\PluginParameter.h"/>
     <ClInclude Include="..\..\Source\FX\TwonkFilters.h"/>
+    <ClInclude Include="..\..\Source\TwonkPlayHead.h"/>
     <ClInclude Include="..\..\Source\Filters\InternalPlugins.h"/>
     <ClInclude Include="..\..\Source\Filters\IOConfigurationWindow.h"/>
     <ClInclude Include="..\..\Source\Filters\PluginGraph.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkTransport.h"/>
     <ClInclude Include="..\..\Source\UI\PluginListWindow.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkLookAndFeel.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkFilterPopupProperties.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkProgramList.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkSaveProgramDialog.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkProgramMenu.h"/>
@@ -2765,6 +2769,7 @@
     <None Include="..\..\Source\Resources\icon_dock_on_bottom.png"/>
     <None Include="..\..\Source\Resources\icon_effect.png"/>
     <None Include="..\..\Source\Resources\icon_floppy.png"/>
+    <None Include="..\..\Source\Resources\icon_loop.png"/>
     <None Include="..\..\Source\Resources\icon_midi_64.png"/>
     <None Include="..\..\Source\Resources\icon_min_max.png"/>
     <None Include="..\..\Source\Resources\icon_pause.png"/>
@@ -2801,7 +2806,6 @@
     <None Include="..\..\JUCE\modules\juce_core\native\java\README.txt"/>
     <None Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt"/>
     <None Include="..\..\JUCE\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt"/>
-    <None Include=".\icon.ico"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc"/>

@@ -36,7 +36,7 @@ SimplerEditor::SimplerEditor (SimplerProcessor &_processor)
     : processor(_processor), AudioProcessorEditor(_processor)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-	setLookAndFeel (&samplerLookAndFeel);
+	setLookAndFeel(&twonkLookAndFeel);
 	processor.addChangeListener(this);
     //[/Constructor_pre]
 

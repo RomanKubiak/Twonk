@@ -40,4 +40,29 @@ class TwonkLookAndFeel : public LookAndFeel_V4
 			const bool hasSubMenu, const String& text,
 			const String& shortcutKeyText,
 			const Drawable* icon, const Colour* const textColourToUse) override;
+
+		void drawPointer (Graphics& g, const float x, const float y, const float diameter,
+			const Colour& colour, const int direction) noexcept;
+
+		void drawLinearSlider (Graphics& g, int x, int y, int width, int height,
+			float sliderPos,
+			float minSliderPos,
+			float maxSliderPos,
+			const Slider::SliderStyle style, Slider& slider) override;
+
+		int getSliderThumbRadius (Slider& slider) override;
+
+		void drawLinearSliderBackground (Graphics& g, int x, int y, int width, int height,
+			float /*sliderPos*/,
+			float /*minSliderPos*/,
+			float /*maxSliderPos*/,
+			const Slider::SliderStyle /*style*/, Slider& slider) override;
+
+		void drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
+			bool isMouseOver, bool /*isMouseDown*/,
+			ConcertinaPanel& concertina, Component& panel) override;
+
+		Font getComboBoxFont (ComboBox& box);
+
+		void positionComboBoxText (ComboBox& box, Label& label);
 };

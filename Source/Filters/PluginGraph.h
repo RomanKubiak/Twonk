@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../UI/PluginWindow.h"
-
+class TwonkPlayHead;
 class GraphEditorDocument;
 //==============================================================================
 /**
@@ -12,7 +12,7 @@ class PluginGraph   : public FileBasedDocument,
                       private ChangeListener
 {
 public:
-    PluginGraph (AudioPluginFormatManager &fm, GraphDocumentComponent &_documentOwner);
+    PluginGraph (AudioPluginFormatManager &fm, GraphDocumentComponent &_documentOwner, TwonkPlayHead &_twonkPlayHead);
     ~PluginGraph() override;
     using NodeID = AudioProcessorGraph::NodeID;
     void addPlugin (const PluginDescription&, Point<double>);
@@ -44,7 +44,7 @@ private:
 	GraphDocumentComponent &documentOwner;
     AudioPluginFormatManager& formatManager;
     OwnedArray<PluginWindow> activePluginWindows;
-
+	TwonkPlayHead &twonkPlayHead;
     NodeID lastUID;
     NodeID getNextUID() noexcept;
 

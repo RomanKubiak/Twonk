@@ -126,6 +126,7 @@
               file="Source/Resources/icon_dock_on_bottom.png"/>
         <FILE id="H4G6Hv" name="icon_effect.png" compile="0" resource="1" file="Source/Resources/icon_effect.png"/>
         <FILE id="G5xVDO" name="icon_floppy.png" compile="0" resource="1" file="Source/Resources/icon_floppy.png"/>
+        <FILE id="yu57nn" name="icon_loop.png" compile="0" resource="1" file="Source/Resources/icon_loop.png"/>
         <FILE id="LAGaTo" name="icon_midi_64.png" compile="0" resource="1"
               file="Source/Resources/icon_midi_64.png"/>
         <FILE id="D0HAK8" name="icon_min_max.png" compile="0" resource="1"
@@ -161,9 +162,6 @@
         <FILE id="knanSC" name="sampler_bg.jpg" compile="0" resource="1" file="Source/Resources/sampler_bg.jpg"/>
         <FILE id="Q9cREJ" name="terminess.ttf" compile="0" resource="1" file="Source/Resources/terminess.ttf"/>
       </GROUP>
-      <FILE id="DeRA1G" name="TwonkPlayHead.cpp" compile="1" resource="0"
-            file="Source/TwonkPlayHead.cpp"/>
-      <FILE id="EjziJc" name="TwonkPlayHead.h" compile="0" resource="0" file="Source/TwonkPlayHead.h"/>
       <GROUP id="{8203BEF7-7441-1B1E-5D75-20E4312BBD00}" name="FX">
         <GROUP id="{2699263F-D123-752F-6C22-C936171CB24C}" name="Compressor">
           <FILE id="NcPCVl" name="TwonkCEEditor.cpp" compile="1" resource="0"
@@ -330,6 +328,9 @@
         <FILE id="YnA2wY" name="TwonkFilters.h" compile="0" resource="0" file="Source/FX/TwonkFilters.h"/>
       </GROUP>
       <GROUP id="{AE20356E-1F78-F99D-7D44-08529665AEDA}" name="Filters">
+        <FILE id="DeRA1G" name="TwonkPlayHead.cpp" compile="1" resource="0"
+              file="Source/TwonkPlayHead.cpp"/>
+        <FILE id="EjziJc" name="TwonkPlayHead.h" compile="0" resource="0" file="Source/TwonkPlayHead.h"/>
         <FILE id="YBUIps" name="InternalPlugins.cpp" compile="1" resource="0"
               file="Source/Filters/InternalPlugins.cpp"/>
         <FILE id="ILTO5u" name="InternalPlugins.h" compile="0" resource="0"
@@ -342,6 +343,12 @@
         <FILE id="LjuO1d" name="PluginGraph.h" compile="0" resource="0" file="Source/Filters/PluginGraph.h"/>
       </GROUP>
       <GROUP id="{D892BFB2-FE85-B70F-10D3-450F407E2B3D}" name="UI">
+        <GROUP id="{A6DAB4AC-31D6-FAB0-ACB6-7BF93F6072B0}" name="Transport">
+          <FILE id="zZQaRl" name="TwonkTransport.cpp" compile="1" resource="0"
+                file="Source/UI/TwonkTransport.cpp"/>
+          <FILE id="IpkDs0" name="TwonkTransport.h" compile="0" resource="0"
+                file="Source/UI/TwonkTransport.h"/>
+        </GROUP>
         <FILE id="yQc2Kt" name="PluginListWindow.cpp" compile="1" resource="0"
               file="Source/UI/PluginListWindow.cpp"/>
         <FILE id="UOBRNC" name="PluginListWindow.h" compile="0" resource="0"
@@ -351,6 +358,10 @@
         <FILE id="c70QW5" name="TwonkLookAndFeel.h" compile="0" resource="0"
               file="Source/UI/TwonkLookAndFeel.h"/>
         <GROUP id="{71FF4B59-9276-84A2-0856-BCB1D3B35E2F}" name="Widgets">
+          <FILE id="xiMz9t" name="TwonkFilterPopupProperties.cpp" compile="1"
+                resource="0" file="Source/UI/TwonkFilterPopupProperties.cpp"/>
+          <FILE id="eGOd2I" name="TwonkFilterPopupProperties.h" compile="0" resource="0"
+                file="Source/UI/TwonkFilterPopupProperties.h"/>
           <FILE id="LsJ9GG" name="TwonkProgramList.cpp" compile="1" resource="0"
                 file="Source/UI/TwonkProgramList.cpp"/>
           <FILE id="aW23li" name="TwonkProgramList.h" compile="0" resource="0"

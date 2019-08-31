@@ -26,12 +26,13 @@
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 #include "SimplerSound.h"
+#include "InstrumentParametersEditor.h"
 //[/MiscUserDefs]
 
 //==============================================================================
-InstrumentWaveViewer::InstrumentWaveViewer (SimplerProcessor &_processor)
+InstrumentWaveViewer::InstrumentWaveViewer (InstrumentParametersEditor &_owner, SimplerProcessor &_processor)
     : processor(_processor),
-      thumbnailCache (5), thumbnail (8, processor.getFormatManager(), thumbnailCache)
+      thumbnailCache (5), thumbnail (8, processor.getFormatManager(), thumbnailCache), owner(_owner)
 {
     //[Constructor_pre] You can add your own custom stuff here..
 	instrumentToShow = nullptr;
@@ -150,7 +151,7 @@ void InstrumentWaveViewer::resized()
 
     soundName->setBounds (0, getHeight() - 18, proportionOfWidth (0.5000f), 16);
     soundData->setBounds (proportionOfWidth (0.5000f), getHeight() - 18, proportionOfWidth (0.5000f), 16);
-    sampleList->setBounds (2, 2, proportionOfWidth (0.4500f), 24);
+    sampleList->setBounds (2, 2, getWidth() - 256, 24);
     velocityRange->setBounds (getWidth() - 48, 2, 39, getHeight() - 8);
     velocityRangeLabel->setBounds (getWidth() - 128, 2, 64, 24);
     //[UserResized] Add your own custom resize handling here..
@@ -171,6 +172,7 @@ void InstrumentWaveViewer::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 			loadNewThumbnail(lastSelectedSound);
 			setSampleData(lastSelectedSound);
 			setVelocityRangeData(lastSelectedSound);
+			owner.setEditedSound(lastSelectedSound);
 		}
         //[/UserComboBoxCode_sampleList]
     }
@@ -199,14 +201,13 @@ void InstrumentWaveViewer::mouseDown (const MouseEvent& e)
     //[UserCode_mouseDown] -- Add your code here...
 	if (e.eventComponent == this && lastSelectedSound)
 	{
-		lastSelectedSound->getVelocityRange().end;
-
+		uint8 velo = lastSelectedSound->getVelocityRange().getRange().getStart();
 		processor.getAdditionalMidiMessageBuffer().addEvent
 		(
 			MidiMessage::noteOn(
 				(int)1,
 				(int)lastSelectedSound->getMidiRootNote(),
-				(uint8)lastSelectedSound->getVelocityRange().end), 0
+				(uint8)(velo ? velo : 1)), 0
 		);
 	}
     //[/UserCode_mouseDown]
@@ -286,9 +287,11 @@ void InstrumentWaveViewer::setSoundToShow(SimplerInstrument *instrument)
 		fillSampleCombo(instrumentToShow);
 		if (instrumentToShow->assosiatedSound[0])
 		{
+			lastSelectedSound = instrumentToShow->assosiatedSound[0];
 			loadNewThumbnail(instrumentToShow->assosiatedSound[0]);
 			setSampleData(instrumentToShow->assosiatedSound[0]);
 			setVelocityRangeData(instrumentToShow->assosiatedSound[0]);
+			owner.setEditedSound(instrumentToShow->assosiatedSound[0]);
 		}
 	}
 }
@@ -305,8 +308,8 @@ void InstrumentWaveViewer::setSoundToShow(SimplerInstrument *instrument)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="InstrumentWaveViewer" componentName=""
-                 parentClasses="public Component, public ChangeListener" constructorParams="SimplerProcessor &amp;_processor"
-                 variableInitialisers="processor(_processor),&#10;thumbnailCache (5), thumbnail (8, processor.getFormatManager(), thumbnailCache)"
+                 parentClasses="public Component, public ChangeListener" constructorParams="InstrumentParametersEditor &amp;_owner, SimplerProcessor &amp;_processor"
+                 variableInitialisers="processor(_processor),&#10;thumbnailCache (5), thumbnail (8, processor.getFormatManager(), thumbnailCache), owner(_owner)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="400" initialHeight="200">
   <METHODS>
@@ -327,7 +330,7 @@ BEGIN_JUCER_METADATA
          focusDiscardsChanges="0" fontname="Default font" fontsize="14.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
   <COMBOBOX name="" id="2ee4fb804dfd2a26" memberName="sampleList" virtualName=""
-            explicitFocusOrder="0" pos="2 2 45% 24" editable="0" layout="33"
+            explicitFocusOrder="0" pos="2 2 256M 24" editable="0" layout="33"
             items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="" id="1dd6eac09a26d26" memberName="velocityRange" virtualName=""
           explicitFocusOrder="0" pos="48R 2 39 8M" textboxoutline="0" min="0.0"

@@ -13,7 +13,8 @@
 
 TwonkLookAndFeel::TwonkLookAndFeel()
 {
-	setColour(PopupMenu::highlightedBackgroundColourId, Colours::lightgrey.withAlpha(0.7f));
+	setColour(PopupMenu::highlightedBackgroundColourId, Colours::turquoise.withAlpha(0.5f));
+	setColour(PopupMenu::backgroundColourId, Colours::black.brighter(0.1f));
 }
 
 void TwonkLookAndFeel::drawResizableFrame (Graphics &g, int w, int h, const BorderSize<int> &border)
@@ -150,16 +151,37 @@ void TwonkLookAndFeel::drawAlertBox (Graphics& g, AlertWindow& alert,
 	textLayout.draw (g, alertBounds.toFloat());
 }
 
+Font TwonkLookAndFeel::getComboBoxFont (ComboBox& box)
+{
+	
+	return getDefaultTwonkSansFont().withHeight(jmin (16.0f, box.getHeight() * 0.85f));
+}
+
+void TwonkLookAndFeel::positionComboBoxText (ComboBox& box, Label& label)
+{
+	label.setBounds (1, 1,
+		box.getWidth() - 30,
+		box.getHeight() - 2);
+
+	label.setFont (getComboBoxFont (box));
+}
+
 Font TwonkLookAndFeel::getPopupMenuFont()
 {
-	return (getDefaultTwonkSansFont().withHeight(19.0f));
+	return (getDefaultTwonkSansFont().withHeight(18.0f));
 }
 
 void TwonkLookAndFeel::drawPopupMenuBackground (Graphics& g, int width, int height)
 {
-	g.setTiledImageFill(IMG(popup_bg_png), 0, 0, 1.0f);
-	g.fillAll();
-	//g.fillAll (findColour (PopupMenu::backgroundColourId));
+	//g.setTiledImageFill(IMG(popup_bg_png), 0, 0, 1.0f);
+	//g.fillAll();
+	
+	g.setColour(findColour (PopupMenu::backgroundColourId));
+	g.fillRect(0.0f, 0.0f, (float)width, (float)height);
+
+	g.setColour(findColour (PopupMenu::backgroundColourId).brighter(0.7f));
+	g.drawRect(1.0f, 1.0f, (float)width-2, (float)height-2, 1.5f);
+
 	ignoreUnused (width, height);
 }
 
@@ -259,4 +281,178 @@ void TwonkLookAndFeel::drawPopupMenuItem (Graphics& g, const Rectangle<int>& are
 			g.drawText (shortcutKeyText, r, Justification::centredRight, true);
 		}
 	}
+}
+
+int TwonkLookAndFeel::getSliderThumbRadius (Slider& slider)
+{
+	return slider.isHorizontal() ? static_cast<int> (slider.getHeight() * 0.75f) : static_cast<int> (slider.getWidth()  * 0.75f);
+}
+
+void TwonkLookAndFeel::drawPointer (Graphics& g, const float x, const float y, const float diameter,
+	const Colour& colour, const int direction) noexcept
+{
+	Path p;
+	p.startNewSubPath (x + diameter * 0.5f, y);
+	p.lineTo (x + diameter, y + diameter * 0.6f);
+	p.lineTo (x + diameter, y + diameter);
+	p.lineTo (x, y + diameter);
+	p.lineTo (x, y + diameter * 0.6f);
+	p.closeSubPath();
+
+	p.applyTransform (AffineTransform::rotation (direction * MathConstants<float>::halfPi,
+		x + diameter * 0.5f, y + diameter * 0.5f));
+	g.setColour (colour);
+	g.fillPath (p);
+}
+
+void TwonkLookAndFeel::drawLinearSlider (Graphics& g, int x, int y, int width, int height,
+	float sliderPos,
+	float minSliderPos,
+	float maxSliderPos,
+	const Slider::SliderStyle style, Slider& slider)
+{
+	if (slider.isBar())
+	{
+		g.setColour (slider.findColour (Slider::trackColourId));
+		g.fillRect (slider.isHorizontal() ? Rectangle<float> (static_cast<float> (x), y + 0.5f, sliderPos - x, height - 1.0f)
+			: Rectangle<float> (x + 0.5f, sliderPos, width - 1.0f, y + (height - sliderPos)));
+	}
+	else
+	{
+		auto isTwoVal = (style == Slider::SliderStyle::TwoValueVertical || style == Slider::SliderStyle::TwoValueHorizontal);
+		auto isThreeVal = (style == Slider::SliderStyle::ThreeValueVertical || style == Slider::SliderStyle::ThreeValueHorizontal);
+
+		auto trackWidth = jmin (6.0f, slider.isHorizontal() ? height * 0.25f : width * 0.25f);
+
+		Point<float> startPoint (slider.isHorizontal() ? x : x + width * 0.5f,
+			slider.isHorizontal() ? y + height * 0.5f : height + y);
+
+		Point<float> endPoint (slider.isHorizontal() ? width + x : startPoint.x,
+			slider.isHorizontal() ? startPoint.y : y);
+
+		Path backgroundTrack;
+		backgroundTrack.startNewSubPath (startPoint);
+		backgroundTrack.lineTo (endPoint);
+		g.setColour (slider.findColour (Slider::backgroundColourId));
+		g.strokePath (backgroundTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+
+		Path valueTrack;
+		Point<float> minPoint, maxPoint, thumbPoint;
+
+		if (isTwoVal || isThreeVal)
+		{
+			minPoint = { slider.isHorizontal() ? minSliderPos : width * 0.5f,
+						 slider.isHorizontal() ? height * 0.5f : minSliderPos };
+
+			if (isThreeVal)
+				thumbPoint = { slider.isHorizontal() ? sliderPos : width * 0.5f,
+							   slider.isHorizontal() ? height * 0.5f : sliderPos };
+
+			maxPoint = { slider.isHorizontal() ? maxSliderPos : width * 0.5f,
+						 slider.isHorizontal() ? height * 0.5f : maxSliderPos };
+		}
+		else
+		{
+			auto kx = slider.isHorizontal() ? sliderPos : (x + width * 0.5f);
+			auto ky = slider.isHorizontal() ? (y + height * 0.5f) : sliderPos;
+
+			minPoint = startPoint;
+			maxPoint = { kx, ky };
+		}
+
+		auto thumbWidth = getSliderThumbRadius (slider);
+
+		valueTrack.startNewSubPath (minPoint);
+		valueTrack.lineTo (isThreeVal ? thumbPoint : maxPoint);
+		g.setColour (slider.findColour (Slider::trackColourId));
+		g.strokePath (valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+
+		if (!isTwoVal)
+		{
+			g.setColour (slider.findColour (Slider::thumbColourId));
+			g.fillEllipse (Rectangle<float> (static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre (isThreeVal ? thumbPoint : maxPoint));
+		}
+
+		if (isTwoVal || isThreeVal)
+		{
+			auto sr = jmin (trackWidth, (slider.isHorizontal() ? height : width) * 0.4f);
+			auto pointerColour = slider.findColour (Slider::thumbColourId);
+
+			if (slider.isHorizontal())
+			{
+				drawPointer (g, minSliderPos - sr,
+					jmax (0.0f, y + height * 0.5f - trackWidth * 2.0f),
+					trackWidth * 2.0f, pointerColour, 2);
+
+				drawPointer (g, maxSliderPos - trackWidth,
+					jmin (y + height - trackWidth * 2.0f, y + height * 0.5f),
+					trackWidth * 2.0f, pointerColour, 4);
+			}
+			else
+			{
+				drawPointer (g, jmax (0.0f, x + width * 0.5f - trackWidth * 2.0f),
+					minSliderPos - trackWidth,
+					trackWidth * 2.0f, pointerColour, 1);
+
+				drawPointer (g, jmin (x + width - trackWidth * 2.0f, x + width * 0.5f), maxSliderPos - sr,
+					trackWidth * 2.0f, pointerColour, 3);
+			}
+		}
+	}
+}
+
+void TwonkLookAndFeel::drawLinearSliderBackground (Graphics& g, int x, int y, int width, int height,
+	float /*sliderPos*/,
+	float /*minSliderPos*/,
+	float /*maxSliderPos*/,
+	const Slider::SliderStyle /*style*/, Slider& slider)
+{
+	const float sliderRadius = (float)(getSliderThumbRadius (slider) - 2);
+
+	const Colour trackColour (slider.findColour (Slider::trackColourId));
+	const Colour gradCol1 (trackColour.overlaidWith (Colour (slider.isEnabled() ? 0x13000000 : 0x09000000)));
+	const Colour gradCol2 (trackColour.overlaidWith (Colour (0x06000000)));
+	Path indent;
+
+	if (slider.isHorizontal())
+	{
+		auto iy = y + height * 0.5f - sliderRadius * 0.5f;
+
+		g.setGradientFill (ColourGradient::vertical (gradCol1, iy, gradCol2, iy + sliderRadius));
+
+		indent.addRoundedRectangle (x - sliderRadius * 0.5f, iy, width + sliderRadius, sliderRadius, 5.0f);
+	}
+	else
+	{
+		auto ix = x + width * 0.5f - sliderRadius * 0.5f;
+
+		g.setGradientFill (ColourGradient::horizontal (gradCol1, ix, gradCol2, ix + sliderRadius));
+
+		indent.addRoundedRectangle (ix, y - sliderRadius * 0.5f, sliderRadius, height + sliderRadius, 5.0f);
+	}
+
+	g.fillPath (indent);
+
+	g.setColour (trackColour.contrasting (0.5f));
+	g.strokePath (indent, PathStrokeType (0.5f));
+}
+
+void TwonkLookAndFeel::drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
+	bool isMouseOver, bool /*isMouseDown*/,
+	ConcertinaPanel& concertina, Component& panel)
+{
+	auto bounds = area.toFloat().reduced (0.5f);
+	auto cornerSize = 4.0f;
+	auto isTopPanel = (concertina.getPanel (0) == &panel);
+
+	Path p;
+	p.addRoundedRectangle (bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(),
+		cornerSize, cornerSize, isTopPanel, isTopPanel, false, false);
+
+	g.setGradientFill (ColourGradient::vertical (Colours::white.withAlpha (isMouseOver ? 0.4f : 0.2f), static_cast<float> (area.getY()),
+		Colours::darkgrey.withAlpha (0.1f), static_cast<float> (area.getBottom())));
+	g.fillPath (p);
+	g.setColour(Colours::white);
+	g.setFont(getDefaultTwonkSansFont().withHeight(bounds.getHeight() * 0.7f));
+	g.drawText(panel.getName(), bounds.withLeft(8), Justification::left);
 }

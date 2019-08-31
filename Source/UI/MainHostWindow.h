@@ -59,7 +59,6 @@ bool isOnTouchDevice();
 
 //==============================================================================
 class MainHostWindow    : public DocumentWindow,
-                          public MenuBarModel,
                           public ApplicationCommandTarget,
                           public ChangeListener,
                           public FileDragAndDropTarget
@@ -72,30 +71,21 @@ public:
     //==============================================================================
     void closeButtonPressed() override;
     void changeListenerCallback (ChangeBroadcaster*) override;
-
     bool isInterestedInFileDrag (const StringArray& files) override;
     void fileDragEnter (const StringArray& files, int, int) override;
     void fileDragMove (const StringArray& files, int, int) override;
     void fileDragExit (const StringArray& files) override;
     void filesDropped (const StringArray& files, int, int) override;
-
-    void menuBarActivated (bool isActive) override;
-
-    StringArray getMenuBarNames() override;
-    PopupMenu getMenuForIndex (int topLevelMenuIndex, const String& menuName) override;
-    void menuItemSelected (int menuItemID, int topLevelMenuIndex) override;
     ApplicationCommandTarget* getNextCommandTarget() override;
     void getAllCommands (Array<CommandID>&) override;
     void getCommandInfo (CommandID, ApplicationCommandInfo&) override;
     bool perform (const InvocationInfo&) override;
 	void initPaths();
     void tryToQuitApplication();
-
     void createPlugin (const PluginDescription&, Point<int> pos);
-
     void addPluginsToMenu (PopupMenu&);
     PluginDescription getChosenType (int menuID) const;
-
+	int getDesktopWindowStyleFlags () const override;
     bool isDoublePrecisionProcessing();
     void updatePrecisionMenuItem (ApplicationCommandInfo& info);
     std::unique_ptr<GraphDocumentComponent> graphHolder;
@@ -108,11 +98,9 @@ private:
     AudioPluginFormatManager formatManager;
     Array<PluginDescription> internalTypes;
 	Array<PluginDescription> twonkTypes;
-	
     KnownPluginList::SortMethod pluginSortMethod;
     Array<PluginDescription> pluginDescriptions;
 	TwonkLookAndFeel twonkLookAndFeel;
-    
     void showAudioSettings();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainHostWindow)

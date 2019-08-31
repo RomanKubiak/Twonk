@@ -6,7 +6,7 @@
 MainHostWindow::MainHostWindow()
     : DocumentWindow (JUCEApplication::getInstance()->getApplicationName(),
                       LookAndFeel::getDefaultLookAndFeel().findColour (ResizableWindow::backgroundColourId),
-                      DocumentWindow::allButtons)
+                      DocumentWindow::allButtons, true)
 {
 	LookAndFeel::setDefaultLookAndFeel(&twonkLookAndFeel);
     formatManager.addDefaultFormats();
@@ -19,12 +19,17 @@ MainHostWindow::MainHostWindow()
                                      auto savedState = getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState");
                                      safeThis->deviceManager.initialise (granted ? 256 : 0, 256, savedState.get(), true);
                                  });
-    centreWithSize (1024, 600);
+    
+#if defined(__linux__)
+	Desktop::getInstance().setKioskModeComponent(this, false);
+#else
+	centreWithSize (1024, 600);
+#endif
     graphHolder.reset (new GraphDocumentComponent (formatManager, deviceManager, knownPluginList));
     setContentNonOwned (graphHolder.get(), false);
     restoreWindowStateFromString (getAppProperties().getUserSettings()->getValue ("mainWindowPos"));
     setVisible (true);
-
+	
     InternalPluginFormat internalFormat;
 	TwonkPluginFormat twonkFormat;
 	internalFormat.getAllTypes (internalTypes);
@@ -153,9 +158,7 @@ void MainHostWindow::tryToQuitApplication()
 void MainHostWindow::changeListenerCallback (ChangeBroadcaster* changed)
 {
     if (changed == &knownPluginList)
-    {
-        menuItemsChanged();
-
+	{
         // save the plugin list every time it gets changed, so that if we're scanning
         // and it crashes, we've still saved the previous ones
         if (auto savedPluginList = std::unique_ptr<XmlElement> (knownPluginList.createXml()))
@@ -174,127 +177,6 @@ void MainHostWindow::changeListenerCallback (ChangeBroadcaster* changed)
 
         setName (title);
     }
-}
-
-StringArray MainHostWindow::getMenuBarNames()
-{
-    StringArray names;
-    names.add ("File");
-    names.add ("Plugins");
-    names.add ("Options");
-    names.add ("Windows");
-    return names;
-}
-
-PopupMenu MainHostWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*menuName*/)
-{
-    PopupMenu menu;
-
-    if (topLevelMenuIndex == 0)
-    {
-        // "File" menu
-       #if ! (JUCE_IOS || JUCE_ANDROID)
-        menu.addCommandItem (&getCommandManager(), CommandIDs::newFile);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::open);
-       #endif
-
-        RecentlyOpenedFilesList recentFiles;
-        recentFiles.restoreFromString (getAppProperties().getUserSettings()
-                                            ->getValue ("recentFilterGraphFiles"));
-
-        PopupMenu recentFilesMenu;
-        recentFiles.createPopupMenuItems (recentFilesMenu, 100, true, true);
-        menu.addSubMenu ("Open recent file", recentFilesMenu);
-
-       #if ! (JUCE_IOS || JUCE_ANDROID)
-        menu.addCommandItem (&getCommandManager(), CommandIDs::save);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::saveAs);
-       #endif
-
-        menu.addSeparator();
-        menu.addCommandItem (&getCommandManager(), StandardApplicationCommandIDs::quit);
-    }
-    else if (topLevelMenuIndex == 1)
-    {
-        // "Plugins" menu
-        PopupMenu pluginsMenu;
-        addPluginsToMenu (pluginsMenu);
-        menu.addSubMenu ("Create plugin", pluginsMenu);
-        menu.addSeparator();
-        menu.addItem (250, "Delete all plugins");
-    }
-    else if (topLevelMenuIndex == 2)
-    {
-        // "Options" menu
-
-        menu.addCommandItem (&getCommandManager(), CommandIDs::showPluginListEditor);
-
-        PopupMenu sortTypeMenu;
-        sortTypeMenu.addItem (200, "List plugins in default order",      true, pluginSortMethod == KnownPluginList::defaultOrder);
-        sortTypeMenu.addItem (201, "List plugins in alphabetical order", true, pluginSortMethod == KnownPluginList::sortAlphabetically);
-        sortTypeMenu.addItem (202, "List plugins by category",           true, pluginSortMethod == KnownPluginList::sortByCategory);
-        sortTypeMenu.addItem (203, "List plugins by manufacturer",       true, pluginSortMethod == KnownPluginList::sortByManufacturer);
-        sortTypeMenu.addItem (204, "List plugins based on the directory structure", true, pluginSortMethod == KnownPluginList::sortByFileSystemLocation);
-        menu.addSubMenu ("Plugin menu type", sortTypeMenu);
-
-        menu.addSeparator();
-        menu.addCommandItem (&getCommandManager(), CommandIDs::showAudioSettings);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::toggleDoublePrecision);
-		menu.addCommandItem (&getCommandManager(), CommandIDs::toggleProgramPanel);
-        menu.addSeparator();
-        menu.addCommandItem (&getCommandManager(), CommandIDs::aboutBox);
-    }
-    else if (topLevelMenuIndex == 3)
-    {
-        menu.addCommandItem (&getCommandManager(), CommandIDs::allWindowsForward);
-    }
-
-    return menu;
-}
-
-void MainHostWindow::menuItemSelected (int menuItemID, int /*topLevelMenuIndex*/)
-{
-    if (menuItemID == 250)
-    {
-        if (graphHolder != nullptr)
-            if (auto* graph = graphHolder->graph.get())
-                graph->clear();
-    }
-   #if ! (JUCE_ANDROID || JUCE_IOS)
-    else if (menuItemID >= 100 && menuItemID < 200)
-    {
-        RecentlyOpenedFilesList recentFiles;
-        recentFiles.restoreFromString (getAppProperties().getUserSettings()
-                                            ->getValue ("recentFilterGraphFiles"));
-
-        if (graphHolder != nullptr)
-            if (auto* graph = graphHolder->graph.get())
-                if (graph != nullptr && graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
-                    graph->loadFrom (recentFiles.getFile (menuItemID - 100), true);
-    }
-   #endif
-    else if (menuItemID >= 200 && menuItemID < 210)
-    {
-             if (menuItemID == 200)     pluginSortMethod = KnownPluginList::defaultOrder;
-        else if (menuItemID == 201)     pluginSortMethod = KnownPluginList::sortAlphabetically;
-        else if (menuItemID == 202)     pluginSortMethod = KnownPluginList::sortByCategory;
-        else if (menuItemID == 203)     pluginSortMethod = KnownPluginList::sortByManufacturer;
-        else if (menuItemID == 204)     pluginSortMethod = KnownPluginList::sortByFileSystemLocation;
-
-        getAppProperties().getUserSettings()->setValue ("pluginSortMethod", (int) pluginSortMethod);
-
-        menuItemsChanged();
-    }
-    else
-    {
-        if (KnownPluginList::getIndexChosenByMenu (pluginDescriptions, menuItemID) >= 0)
-            createPlugin (getChosenType (menuItemID), { proportionOfWidth  (0.3f + Random::getSystemRandom().nextFloat() * 0.6f),
-                                                        proportionOfHeight (0.3f + Random::getSystemRandom().nextFloat() * 0.6f) });
-    }
-}
-
-void MainHostWindow::menuBarActivated (bool isActivated)
-{
 }
 
 void MainHostWindow::createPlugin (const PluginDescription& desc, Point<int> pos)
@@ -465,7 +347,6 @@ bool MainHostWindow::perform (const InvocationInfo& info)
             {
                 ApplicationCommandInfo cmdInfo (info.commandID);
                 updatePrecisionMenuItem (cmdInfo);
-                menuItemsChanged();
             }
 
             if (graphHolder != nullptr)
@@ -593,4 +474,15 @@ void MainHostWindow::updatePrecisionMenuItem (ApplicationCommandInfo& info)
 {
     info.setInfo ("Double floating point precision rendering", String(), "General", 0);
     info.setTicked (isDoublePrecisionProcessing());
+}
+
+int MainHostWindow::getDesktopWindowStyleFlags () const
+{
+
+	int flags = DocumentWindow::getDesktopWindowStyleFlags();
+#if defined (__linux__)
+	flags &= ~(ComponentPeer::windowAppearsOnTaskbar);
+	flags &= ~(ComponentPeer::windowHasTitleBar);
+#endif
+	return (flags);
 }

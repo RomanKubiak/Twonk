@@ -17,7 +17,7 @@ class SimplerSound : public SynthesiserSound
 		~SimplerSound() override;
 		const String& getName() const noexcept { return name; }
 		AudioBuffer<float>* getAudioData() const noexcept { return data.get(); }
-		void setEnvelopeParameters (ADSR::Parameters parametersToUse) { params = parametersToUse; }
+		void setEnvelopeParameters (ADSR::Parameters parametersToUse);
 		bool appliesToNote (int midiNoteNumber) override;
 		bool appliesToChannel (int midiChannel) override;
 		bool appliesToVelocity(const float velocity);
@@ -26,6 +26,7 @@ class SimplerSound : public SynthesiserSound
 		const File getSampleFile() const { return (sampleFile); }
 		const int getMidiRootNote() const { return (midiRootNote); }
 		NormalisableRange<int> &getVelocityRange() { return (velocityRange); }
+		const ADSR::Parameters getCurrentADSRParameters() { return (params); }
 
 	private:
 		friend class SimplerVoice;

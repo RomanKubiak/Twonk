@@ -2,12 +2,14 @@
 
 #include "../Filters/PluginGraph.h"
 #include "TwonkProgramList.h"
+#include "../TwonkPlayHead.h"
+
 class MainHostWindow;
 class TwonkToolBar;
 class TwonkToolBarButton;
 class TwonkToolBarController;
 class TwonkFileMenu;
-
+class TwonkTransport;
 /**
     A panel that displays and edits a PluginGraph.
 */
@@ -17,7 +19,7 @@ class GraphEditorPanel   : public Component,
 						   public FileBrowserListener
 {
 public:
-    GraphEditorPanel (PluginGraph& graph, AudioDeviceManager &_dm);
+    GraphEditorPanel (PluginGraph& graph, AudioDeviceManager &_dm, TwonkPlayHead &_twonkPlayHead);
     ~GraphEditorPanel() override;
 
     void createNewPlugin (const PluginDescription&, Point<int> position);
@@ -36,7 +38,6 @@ public:
 
     //==============================================================================
     void showPopupMenu (Point<int> position);
-	Path getHexagonPath(Rectangle<int> area);
     //==============================================================================
     void beginConnectorDrag (AudioProcessorGraph::NodeAndChannel source,
                              AudioProcessorGraph::NodeAndChannel dest,
@@ -77,10 +78,13 @@ private:
     std::unique_ptr<ConnectorComponent> draggingConnector;
     std::unique_ptr<PopupMenu> menu;
 	std::unique_ptr<TwonkToolBar> toolBar;
+	std::unique_ptr<TwonkTransport> twonkTransport;
+	
     PluginComponent* getComponentForPlugin (AudioProcessorGraph::NodeID) const;
     ConnectorComponent* getComponentForConnection (const AudioProcessorGraph::Connection&) const;
     PinComponent* findPinAt (Point<float>) const;
 	Image bgImage;
+	TwonkPlayHead &twonkPlayHead;
 	ComponentAnimator toolBarAnimator;
 	WildcardFileFilter twonkDocumentFileFilter;
 	TimeSliceThread directoryListThread;
@@ -119,12 +123,14 @@ public:
     void releaseGraph();
     bool isInterestedInDragSource (const SourceDetails&) override;
     void itemDropped (const SourceDetails&) override;
+	AudioDeviceManager& getDeviceManager() { return (deviceManager); }
     std::unique_ptr<GraphEditorPanel> graphPanel;
 
 private:
     AudioDeviceManager& deviceManager;
     KnownPluginList& pluginList;
     AudioProcessorPlayer graphPlayer;
+	TwonkPlayHead twonkPlayHead;
     void init();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphDocumentComponent)
 };

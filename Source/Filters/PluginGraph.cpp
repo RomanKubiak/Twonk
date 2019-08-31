@@ -6,15 +6,16 @@
 #include "Twonk.h"
 
 //==============================================================================
-PluginGraph::PluginGraph (AudioPluginFormatManager& fm, GraphDocumentComponent &_documentOwner)
+PluginGraph::PluginGraph (AudioPluginFormatManager& fm, GraphDocumentComponent &_documentOwner, TwonkPlayHead &_twonkPlayHead)
     : FileBasedDocument (getFilenameSuffix(),
                          getFilenameWildcard(),
                          "Load a graph",
                          "Save a graph"),
-      formatManager (fm), documentOwner(_documentOwner)
+      formatManager (fm), documentOwner(_documentOwner), twonkPlayHead(_twonkPlayHead)
 {
     newDocument();
     graph.addListener (this);
+	graph.setPlayHead(&twonkPlayHead);
 }
 
 PluginGraph::~PluginGraph()
@@ -72,6 +73,7 @@ void PluginGraph::addPluginCallback (std::unique_ptr<AudioPluginInstance> instan
     else
     {
         instance->enableAllBuses();
+		instance->setPlayHead(&twonkPlayHead);
 
         if (auto node = graph.addNode (std::move (instance)))
         {

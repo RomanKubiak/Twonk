@@ -70,7 +70,6 @@ endif
 OBJECTS_APP := \
   $(JUCE_OBJDIR)/CpuUsage_d698222.o \
   $(JUCE_OBJDIR)/TwonkPlatformSpecific_6b0edfbb.o \
-  $(JUCE_OBJDIR)/TwonkPlayHead_1245343e.o \
   $(JUCE_OBJDIR)/TwonkCEEditor_b150544c.o \
   $(JUCE_OBJDIR)/TwonkCEProcessor_16925f5d.o \
   $(JUCE_OBJDIR)/TwonkDebugInfoEditor_208e4471.o \
@@ -107,11 +106,14 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkWWEditor_409921e2.o \
   $(JUCE_OBJDIR)/TwonkWWProcessor_3fbea207.o \
   $(JUCE_OBJDIR)/TwonkFilters_70d0b1f0.o \
+  $(JUCE_OBJDIR)/TwonkPlayHead_1245343e.o \
   $(JUCE_OBJDIR)/InternalPlugins_577454d0.o \
   $(JUCE_OBJDIR)/IOConfigurationWindow_beb677cd.o \
   $(JUCE_OBJDIR)/PluginGraph_1fc57488.o \
+  $(JUCE_OBJDIR)/TwonkTransport_c801611c.o \
   $(JUCE_OBJDIR)/PluginListWindow_f200207d.o \
   $(JUCE_OBJDIR)/TwonkLookAndFeel_5aa9c071.o \
+  $(JUCE_OBJDIR)/TwonkFilterPopupProperties_8b6e6e5a.o \
   $(JUCE_OBJDIR)/TwonkProgramList_f2921f35.o \
   $(JUCE_OBJDIR)/TwonkSaveProgramDialog_cddd4f62.o \
   $(JUCE_OBJDIR)/TwonkProgramMenu_7e603b76.o \
@@ -160,11 +162,6 @@ $(JUCE_OBJDIR)/CpuUsage_d698222.o: ../../Source/Platform/Windows/CpuUsage.cpp
 $(JUCE_OBJDIR)/TwonkPlatformSpecific_6b0edfbb.o: ../../Source/Platform/TwonkPlatformSpecific.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkPlatformSpecific.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/TwonkPlayHead_1245343e.o: ../../Source/TwonkPlayHead.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TwonkPlayHead.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkCEEditor_b150544c.o: ../../Source/FX/Compressor/TwonkCEEditor.cpp
@@ -347,6 +344,11 @@ $(JUCE_OBJDIR)/TwonkFilters_70d0b1f0.o: ../../Source/FX/TwonkFilters.cpp
 	@echo "Compiling TwonkFilters.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/TwonkPlayHead_1245343e.o: ../../Source/TwonkPlayHead.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkPlayHead.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/InternalPlugins_577454d0.o: ../../Source/Filters/InternalPlugins.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling InternalPlugins.cpp"
@@ -362,6 +364,11 @@ $(JUCE_OBJDIR)/PluginGraph_1fc57488.o: ../../Source/Filters/PluginGraph.cpp
 	@echo "Compiling PluginGraph.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/TwonkTransport_c801611c.o: ../../Source/UI/TwonkTransport.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkTransport.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/PluginListWindow_f200207d.o: ../../Source/UI/PluginListWindow.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling PluginListWindow.cpp"
@@ -370,6 +377,11 @@ $(JUCE_OBJDIR)/PluginListWindow_f200207d.o: ../../Source/UI/PluginListWindow.cpp
 $(JUCE_OBJDIR)/TwonkLookAndFeel_5aa9c071.o: ../../Source/UI/TwonkLookAndFeel.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkLookAndFeel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkFilterPopupProperties_8b6e6e5a.o: ../../Source/UI/TwonkFilterPopupProperties.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkFilterPopupProperties.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkProgramList_f2921f35.o: ../../Source/UI/TwonkProgramList.cpp

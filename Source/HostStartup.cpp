@@ -14,7 +14,7 @@ class PluginHostApp  : public JUCEApplication,
 public:
     PluginHostApp() {}
 
-    void initialise (const String&) override
+    void initialise (const String &commandToRunAfterStart) override
     {
         // initialise our settings file..
 
@@ -27,12 +27,11 @@ public:
         appProperties->setStorageParameters (options);
 		appProperties->getUserSettings()->setValue("lastPluginScanPath_VST", GET_TWONK_PLUGINS_DIR().getFullPathName());
         mainWindow.reset (new MainHostWindow());
-        mainWindow->setUsingNativeTitleBar (true);
+
+		mainWindow->setUsingNativeTitleBar (true);
 
         commandManager.registerAllCommandsForTarget (this);
         commandManager.registerAllCommandsForTarget (mainWindow.get());
-
-        mainWindow->menuItemsChanged();
 
         // Important note! We're going to use an async update here so that if we need
         // to re-open a file and instantiate some plugins, it will happen AFTER this
@@ -42,21 +41,32 @@ public:
         // being loaded. If that happens inside this method, the OSX event loop seems to be in some
         // kind of special "initialisation" mode and things get confused. But if we load the plugin
         // later when the normal event loop is running, everything's fine.
+#if defined (__linux__)
+		/*
+--- cut here
+#!/bin/bash
+wid=`xdotool search Twonk 2>/dev/null`
+xdotool windowmove $wid 0 0
+--- cut here
+something like that needs to be executed cause JUCE is dumb
+and can't position itself without a window manager
+
+the below code is to allow execution of such script or any other
+stuff that might be needed
+		*/
+		ChildProcess child;
+		child.start(commandToRunAfterStart);
+		if (!child.waitForProcessToFinish(500))
+		{
+			child.kill();
+		}
+#endif
         triggerAsyncUpdate();
     }
 
     void handleAsyncUpdate() override
     {
         File fileToOpen;
-
-        for (int i = 0; i < getCommandLineParameterArray().size(); ++i)
-        {
-            fileToOpen = File::getCurrentWorkingDirectory().getChildFile (getCommandLineParameterArray()[i]);
-
-            if (fileToOpen.existsAsFile())
-                break;
-        }
-
 		
         if (! fileToOpen.existsAsFile())
         {

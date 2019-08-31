@@ -56,6 +56,9 @@
     <Filter Include="Twonk\Source\Filters">
       <UniqueIdentifier>{625A5023-3AE7-6F48-9BBD-66713F3AF3AB}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Twonk\Source\UI\Transport">
+      <UniqueIdentifier>{E3ECA5D5-D840-4035-FE82-6F42E653A51E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Twonk\Source\UI\Widgets">
       <UniqueIdentifier>{CC902468-6123-96E8-9662-24EC142766DC}</UniqueIdentifier>
     </Filter>
@@ -487,9 +490,6 @@
     <ClCompile Include="..\..\Source\Platform\TwonkPlatformSpecific.cpp">
       <Filter>Twonk\Source\Platform</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TwonkPlayHead.cpp">
-      <Filter>Twonk\Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\FX\Compressor\TwonkCEEditor.cpp">
       <Filter>Twonk\Source\FX\Compressor</Filter>
     </ClCompile>
@@ -598,6 +598,9 @@
     <ClCompile Include="..\..\Source\FX\TwonkFilters.cpp">
       <Filter>Twonk\Source\FX</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\TwonkPlayHead.cpp">
+      <Filter>Twonk\Source\Filters</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Filters\InternalPlugins.cpp">
       <Filter>Twonk\Source\Filters</Filter>
     </ClCompile>
@@ -607,11 +610,17 @@
     <ClCompile Include="..\..\Source\Filters\PluginGraph.cpp">
       <Filter>Twonk\Source\Filters</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkTransport.cpp">
+      <Filter>Twonk\Source\UI\Transport</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\PluginListWindow.cpp">
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkLookAndFeel.cpp">
       <Filter>Twonk\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkFilterPopupProperties.cpp">
+      <Filter>Twonk\Source\UI\Widgets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkProgramList.cpp">
       <Filter>Twonk\Source\UI\Widgets</Filter>
@@ -2601,9 +2610,6 @@
     <ClInclude Include="..\..\Source\Twonk.h">
       <Filter>Twonk\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TwonkPlayHead.h">
-      <Filter>Twonk\Source</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\FX\Compressor\TwonkCEEditor.h">
       <Filter>Twonk\Source\FX\Compressor</Filter>
     </ClInclude>
@@ -2721,6 +2727,9 @@
     <ClInclude Include="..\..\Source\FX\TwonkFilters.h">
       <Filter>Twonk\Source\FX</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\TwonkPlayHead.h">
+      <Filter>Twonk\Source\Filters</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Filters\InternalPlugins.h">
       <Filter>Twonk\Source\Filters</Filter>
     </ClInclude>
@@ -2730,11 +2739,17 @@
     <ClInclude Include="..\..\Source\Filters\PluginGraph.h">
       <Filter>Twonk\Source\Filters</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkTransport.h">
+      <Filter>Twonk\Source\UI\Transport</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\PluginListWindow.h">
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkLookAndFeel.h">
       <Filter>Twonk\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkFilterPopupProperties.h">
+      <Filter>Twonk\Source\UI\Widgets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkProgramList.h">
       <Filter>Twonk\Source\UI\Widgets</Filter>
@@ -4901,6 +4916,9 @@
     <None Include="..\..\Source\Resources\icon_floppy.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
+    <None Include="..\..\Source\Resources\icon_loop.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
     <None Include="..\..\Source\Resources\icon_midi_64.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
@@ -5008,9 +5026,6 @@
     </None>
     <None Include="..\..\JUCE\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt">
       <Filter>JUCE Modules\juce_graphics\image_formats\pnglib</Filter>
-    </None>
-    <None Include=".\icon.ico">
-      <Filter>JUCE Library Code</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

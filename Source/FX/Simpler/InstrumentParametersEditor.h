@@ -37,7 +37,8 @@ class SimplerProcessor;
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class InstrumentParametersEditor  : public Component
+class InstrumentParametersEditor  : public Component,
+                                    public Slider::Listener
 {
 public:
     //==============================================================================
@@ -48,10 +49,12 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
 	void setEditedInstrument(SimplerInstrument *si);
 	void parameterChanged (const String &parameterID, float newValue);
+	void setEditedSound (SimplerSound *editedSound);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
+    void sliderValueChanged (Slider* sliderThatWasMoved) override;
 
 
 
@@ -60,10 +63,15 @@ private:
 	TwonkLookAndFeel twonkLookAndFeel;
 	SimplerProcessor &processor;
 	SimplerInstrument *currentSamplerInstrument;
+	SimplerSound *currentSimplerSound;
     //[/UserVariables]
 
     //==============================================================================
     std::unique_ptr<InstrumentWaveViewer> waveViewer;
+    std::unique_ptr<Slider> attack;
+    std::unique_ptr<Slider> decay;
+    std::unique_ptr<Slider> sustain;
+    std::unique_ptr<Slider> release;
 
 
     //==============================================================================

@@ -194,6 +194,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/Resources/icon_loop.png">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/Resources/icon_midi_64.png">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -327,16 +333,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Resources/terminess.ttf">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/TwonkPlayHead.cpp">
-      <Option target="App | Debug"/>
-      <Option target="App | Release"/>
-    </Unit>
-    <Unit filename="../../Source/TwonkPlayHead.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>
@@ -720,6 +716,16 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/TwonkPlayHead.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/TwonkPlayHead.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/Filters/InternalPlugins.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -750,6 +756,16 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/UI/TwonkTransport.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkTransport.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/UI/PluginListWindow.cpp">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
@@ -765,6 +781,16 @@
       <Option target="App | Release"/>
     </Unit>
     <Unit filename="../../Source/UI/TwonkLookAndFeel.h">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkFilterPopupProperties.cpp">
+      <Option target="App | Debug"/>
+      <Option target="App | Release"/>
+    </Unit>
+    <Unit filename="../../Source/UI/TwonkFilterPopupProperties.h">
       <Option target="App | Debug"/>
       <Option target="App | Release"/>
       <Option compile="0"/>

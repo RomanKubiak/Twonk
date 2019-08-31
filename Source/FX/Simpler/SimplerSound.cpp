@@ -51,3 +51,14 @@ bool SimplerSound::appliesToVelocity(const float velocity)
 	uint8 normalVelo = roundFloatToInt(velocity * 127.0f);
 	return (velocityRange.getRange().contains(normalVelo));
 }
+
+void SimplerSound::setEnvelopeParameters (ADSR::Parameters parametersToUse)
+{
+	/*DBG("SimplerSound::setEnvelopeParameters file:" + sampleFile.getFileName()
+		+ " attack:" + String(parametersToUse.attack)
+		+ " decay:" + String(parametersToUse.decay)
+		+ " sustain:" + String(parametersToUse.sustain)
+		+ " release:" + String(parametersToUse.release)
+	);*/
+	params = parametersToUse;
+}

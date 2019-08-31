@@ -22,33 +22,10 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "InstrumentButton.h"
 #include "UI/MainHostWindow.h"
-
+#include "UI/TwonkLookAndFeel.h"
 class SimplerProcessor;
 class InstrumentButtonsPanel;
 class InstrumentParametersEditor;
-
-class SamplerLookAndFeel : public LookAndFeel_V4
-{
-	void drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
-		bool isMouseOver, bool /*isMouseDown*/,
-		ConcertinaPanel& concertina, Component& panel)
-	{
-		auto bounds = area.toFloat().reduced (0.5f);
-		auto cornerSize = 4.0f;
-		auto isTopPanel = (concertina.getPanel (0) == &panel);
-
-		Path p;
-		p.addRoundedRectangle (bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(),
-			cornerSize, cornerSize, isTopPanel, isTopPanel, false, false);
-
-		g.setGradientFill (ColourGradient::vertical (Colours::white.withAlpha (isMouseOver ? 0.4f : 0.2f), static_cast<float> (area.getY()),
-			Colours::darkgrey.withAlpha (0.1f), static_cast<float> (area.getBottom())));
-		g.fillPath (p);
-		g.setColour(Colours::white);
-		g.setFont(getDefaultTwonkSansFont().withHeight(bounds.getHeight() * 0.7f));
-		g.drawText(panel.getName(), bounds.withLeft(8), Justification::left);
-	}
-};
 //[/Headers]
 
 
@@ -94,7 +71,7 @@ private:
 	InstrumentParametersEditor *instrumentEditor;
 	std::unique_ptr<ResizableCornerComponent> cornerResizer;
 	std::unique_ptr<ComponentBoundsConstrainer> sizeConstrainer;
-	SamplerLookAndFeel samplerLookAndFeel;
+	TwonkLookAndFeel twonkLookAndFeel;
 	InstrumentButtonsPanel *buttonsPanel;
 	std::unique_ptr< AudioProcessorValueTreeState::ComboBoxAttachment> bankListLink;
     //[/UserVariables]

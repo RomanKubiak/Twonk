@@ -837,7 +837,7 @@ AudioProcessorEditor* AudioProcessor::createEditorIfNeeded()
     if (ed != nullptr)
     {
         // you must give your editor comp a size before returning it..
-        jassert (ed->getWidth() > 0 && ed->getHeight() > 0);
+ //       jassert (ed->getWidth() > 0 && ed->getHeight() > 0);
 
         const ScopedLock sl (callbackLock);
         activeEditor = ed;

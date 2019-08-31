@@ -311,7 +311,6 @@ void SimplerProcessor::addSoundToSampler(SimplerInstrument *instrumentToAdd)
 
 void SimplerProcessor::parameterChanged (const String &parameterID, float newValue)
 {
-	DBG("SimplerProcessor::parameterChanged parameterID=" + parameterID + " newValue=" + String(newValue));
 }
 
 void SimplerProcessor::loadLastBank()

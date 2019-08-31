@@ -9,16 +9,12 @@
 */
 
 #pragma once
-#include "Twonk.h"
-#include "Filters/InternalPlugins.h"
-
+#include "JuceHeader.h"
 
 class TwonkClockListener
 {
 	public:
 		virtual void positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo) = 0;
-		virtual void transportStopped() {}
-		virtual void transportStarted() {}
 };
 
 class TwonkPlayHead : public AudioPlayHead, public AsyncUpdater, public AudioIODeviceCallback
@@ -28,9 +24,13 @@ class TwonkPlayHead : public AudioPlayHead, public AsyncUpdater, public AudioIOD
 		~TwonkPlayHead();
 		bool getCurrentPosition(CurrentPositionInfo &result);
 		void setTempo(const double _bpm);
+		const double getTempo() const;
 		void stop();
-		void play(const bool _isPlaying = true);
-		void reset(const bool startNow = false);
+		void play(const bool resetNow);
+		const bool isPlaying() const;
+		void pause();
+		void reset();
+		void setLooping();
 		void setExternalSync(const bool _shouldSync) { }
 		void addClockListener(TwonkClockListener *listenerToAdd);
 		void removeClockListener(TwonkClockListener *listenerToRemove);

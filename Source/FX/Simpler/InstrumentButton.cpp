@@ -210,8 +210,8 @@ void InstrumentButton::previewAudio()
 {
 	if (currentInstrument->assosiatedSound[0])
 	{
-		DBG("InstrumentButton::previewAudio preview audio with velocity: "
-			+ String((uint8)currentInstrument->assosiatedSound[0]->getVelocityRange().end));
+		/*DBG("InstrumentButton::previewAudio preview audio with velocity: "
+			+ String((uint8)currentInstrument->assosiatedSound[0]->getVelocityRange().end));*/
 		owner.getNamedAudioProcessor().getAdditionalMidiMessageBuffer().addEvent
 		(
 			MidiMessage::noteOn(
