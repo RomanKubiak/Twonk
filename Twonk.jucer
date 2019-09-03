@@ -120,17 +120,24 @@
               file="Source/Resources/Default.generic.twonk"/>
         <FILE id="FjHJuC" name="icon_audio_dev.png" compile="0" resource="1"
               file="Source/Resources/icon_audio_dev.png"/>
+        <FILE id="Y39g3W" name="icon_bypass2.png" compile="0" resource="1"
+              file="Source/Resources/icon_bypass2.png"/>
         <FILE id="mykT67" name="icon_close.png" compile="0" resource="1" file="Source/Resources/icon_close.png"/>
         <FILE id="Whhw2e" name="icon_delete.png" compile="0" resource="1" file="Source/Resources/icon_delete.png"/>
+        <FILE id="Hq0G9l" name="icon_disconnect.png" compile="0" resource="1"
+              file="Source/Resources/icon_disconnect.png"/>
         <FILE id="tmifG2" name="icon_dock_on_bottom.png" compile="0" resource="1"
               file="Source/Resources/icon_dock_on_bottom.png"/>
         <FILE id="H4G6Hv" name="icon_effect.png" compile="0" resource="1" file="Source/Resources/icon_effect.png"/>
         <FILE id="G5xVDO" name="icon_floppy.png" compile="0" resource="1" file="Source/Resources/icon_floppy.png"/>
+        <FILE id="S0uQqr" name="icon_gui.png" compile="0" resource="1" file="Source/Resources/icon_gui.png"/>
         <FILE id="yu57nn" name="icon_loop.png" compile="0" resource="1" file="Source/Resources/icon_loop.png"/>
         <FILE id="LAGaTo" name="icon_midi_64.png" compile="0" resource="1"
               file="Source/Resources/icon_midi_64.png"/>
         <FILE id="D0HAK8" name="icon_min_max.png" compile="0" resource="1"
               file="Source/Resources/icon_min_max.png"/>
+        <FILE id="UK2W86" name="icon_parameters.png" compile="0" resource="1"
+              file="Source/Resources/icon_parameters.png"/>
         <FILE id="LP1pzv" name="icon_pause.png" compile="0" resource="1" file="Source/Resources/icon_pause.png"/>
         <FILE id="owTzSk" name="icon_piano.png" compile="0" resource="1" file="Source/Resources/icon_piano.png"/>
         <FILE id="mTQzxr" name="icon_pin.png" compile="0" resource="1" file="Source/Resources/icon_pin.png"/>
@@ -143,6 +150,8 @@
               file="Source/Resources/icon_plugin_midi.png"/>
         <FILE id="sm4qFC" name="icon_preferences.png" compile="0" resource="1"
               file="Source/Resources/icon_preferences.png"/>
+        <FILE id="FDMgf3" name="icon_programs2.png" compile="0" resource="1"
+              file="Source/Resources/icon_programs2.png"/>
         <FILE id="eq9UHQ" name="icon_project.png" compile="0" resource="1"
               file="Source/Resources/icon_project.png"/>
         <FILE id="QSOoL8" name="icon_question.jpg" compile="0" resource="1"
@@ -158,7 +167,6 @@
               file="Source/Resources/LiberationSans-Regular.ttf"/>
         <FILE id="WioInm" name="midi_input.png" compile="0" resource="1" file="Source/Resources/midi_input.png"/>
         <FILE id="JS01vo" name="midi_output.png" compile="0" resource="1" file="Source/Resources/midi_output.png"/>
-        <FILE id="C7brHx" name="popup_bg.png" compile="0" resource="1" file="Source/Resources/popup_bg.png"/>
         <FILE id="knanSC" name="sampler_bg.jpg" compile="0" resource="1" file="Source/Resources/sampler_bg.jpg"/>
         <FILE id="Q9cREJ" name="terminess.ttf" compile="0" resource="1" file="Source/Resources/terminess.ttf"/>
       </GROUP>
@@ -191,6 +199,30 @@
                 file="Source/FX/Distortion/TwonkDistortionProcessor.cpp"/>
           <FILE id="EWdCUp" name="TwonkDistortionProcessor.h" compile="0" resource="0"
                 file="Source/FX/Distortion/TwonkDistortionProcessor.h"/>
+        </GROUP>
+        <GROUP id="{1E2CCD52-957C-227E-D8E6-5BAEE7D14D9A}" name="FifteenStep">
+          <FILE id="EyOdza" name="FifteenStep.cpp" compile="1" resource="0" file="Source/FX/FifteenStep/FifteenStep.cpp"/>
+          <FILE id="ZriiKZ" name="FifteenStep.h" compile="0" resource="0" file="Source/FX/FifteenStep/FifteenStep.h"/>
+          <FILE id="DX588R" name="FifteenStepEditor.cpp" compile="1" resource="0"
+                file="Source/FX/FifteenStep/FifteenStepEditor.cpp"/>
+          <FILE id="yCwrNL" name="FifteenStepEditor.h" compile="0" resource="0"
+                file="Source/FX/FifteenStep/FifteenStepEditor.h"/>
+          <FILE id="SBlnwU" name="FifteenStepHexRow.cpp" compile="1" resource="0"
+                file="Source/FX/FifteenStep/FifteenStepHexRow.cpp"/>
+          <FILE id="DZWe1k" name="FifteenStepHexRow.h" compile="0" resource="0"
+                file="Source/FX/FifteenStep/FifteenStepHexRow.h"/>
+          <FILE id="r0WGom" name="FifteenStepHexStep.cpp" compile="1" resource="0"
+                file="Source/FX/FifteenStep/FifteenStepHexStep.cpp"/>
+          <FILE id="jTFaLK" name="FifteenStepHexStep.h" compile="0" resource="0"
+                file="Source/FX/FifteenStep/FifteenStepHexStep.h"/>
+          <FILE id="vYQPmy" name="FifteenStepProcessor.cpp" compile="1" resource="0"
+                file="Source/FX/FifteenStep/FifteenStepProcessor.cpp"/>
+          <FILE id="WBU18Z" name="FifteenStepProcessor.h" compile="0" resource="0"
+                file="Source/FX/FifteenStep/FifteenStepProcessor.h"/>
+          <FILE id="hN5LcJ" name="FifteenStepRowHolder.cpp" compile="1" resource="0"
+                file="Source/FX/FifteenStep/FifteenStepRowHolder.cpp"/>
+          <FILE id="jZyzDG" name="FifteenStepRowHolder.h" compile="0" resource="0"
+                file="Source/FX/FifteenStep/FifteenStepRowHolder.h"/>
         </GROUP>
         <GROUP id="{4ECE16E0-58B6-2741-B743-64D40BA76209}" name="Flanger">
           <FILE id="K0w45q" name="TwonkFlangerEditor.cpp" compile="1" resource="0"
@@ -362,6 +394,10 @@
                 resource="0" file="Source/UI/TwonkFilterPopupProperties.cpp"/>
           <FILE id="eGOd2I" name="TwonkFilterPopupProperties.h" compile="0" resource="0"
                 file="Source/UI/TwonkFilterPopupProperties.h"/>
+          <FILE id="V67fsY" name="TwonkFilterPopupPropertiesSegment.cpp" compile="1"
+                resource="0" file="Source/UI/TwonkFilterPopupPropertiesSegment.cpp"/>
+          <FILE id="OC4g88" name="TwonkFilterPopupPropertiesSegment.h" compile="0"
+                resource="0" file="Source/UI/TwonkFilterPopupPropertiesSegment.h"/>
           <FILE id="LsJ9GG" name="TwonkProgramList.cpp" compile="1" resource="0"
                 file="Source/UI/TwonkProgramList.cpp"/>
           <FILE id="aW23li" name="TwonkProgramList.h" compile="0" resource="0"

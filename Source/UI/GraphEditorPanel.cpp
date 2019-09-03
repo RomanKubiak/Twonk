@@ -9,6 +9,8 @@
 #include "Twonk.h"
 #include "TwonkProgramList.h"
 #include "TwonkTransport.h"
+#include "TwonkFilterPopupProperties.h"
+
 /**
   GraphEditorPanel
  */
@@ -41,6 +43,7 @@ struct GraphEditorPanel::PinComponent   : public Component,
 					baseColour = Colours::green.brighter(0.5f);
 
                 auto& processor = *node->getProcessor();
+				setName(processor.getName());
                 auto channel = processor.getOffsetInBusBufferForAbsoluteChannelIndex (isInput, pin.channelIndex, busIdx);
 
                 if (auto* bus = processor.getBus (isInput, busIdx))
@@ -518,46 +521,7 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 
     void showPopupMenu()
     {
-        menu.reset (new PopupMenu);
-        menu->addItem (1, "Delete this filter");
-        menu->addItem (2, "Disconnect all pins");
-        menu->addItem (3, "Toggle Bypass");
-
-        if (getProcessor()->hasEditor())
-        {
-            menu->addSeparator();
-            menu->addItem (10, "Show plugin GUI");
-            menu->addItem (11, "Show all programs");
-            menu->addItem (12, "Show all parameters");
-        }
-
-        menu->addSeparator();
-        menu->addItem (20, "Configure Audio I/O");
-
-        menu->showMenuAsync ({}, ModalCallbackFunction::create
-                             ([this] (int r) {
-        switch (r)
-        {
-            case 1:   graph.graph.removeNode (pluginID); break;
-            case 2:   graph.graph.disconnectNode (pluginID); break;
-            case 3:
-            {
-                if (auto* node = graph.graph.getNodeForId (pluginID))
-                    node->setBypassed (! node->isBypassed());
-
-                repaint();
-
-                break;
-            }
-            case 10:  showWindow (PluginWindow::Type::normal); break;
-            case 11:  showWindow (PluginWindow::Type::programs); break;
-            case 12:  showWindow (PluginWindow::Type::generic)  ; break;
-            case 20:  showWindow (PluginWindow::Type::audioIO); break;
-            case 21:  testStateSaveLoad(); break;
-
-            default:  break;
-        }
-        }));
+		panel.showMenuForFilter(this);
     }
 
     void testStateSaveLoad()
@@ -592,6 +556,11 @@ struct GraphEditorPanel::PluginComponent   : public Component,
     }
 
     void parameterGestureChanged (int, bool) override  {}
+
+	void moved() override
+	{
+		panel.filterMoved(this);
+	}
 
     GraphEditorPanel& panel;
     PluginGraph& graph;
@@ -671,16 +640,21 @@ struct GraphEditorPanel::ConnectorComponent   : public Component,
         repaint();
     }
 
-    void getPoints (Point<float>& p1, Point<float>& p2) const
-    {
-        p1 = lastInputPos;
-        p2 = lastOutputPos;
+	void getPoints (Point<float>& p1, Point<float>& p2) const
+	{
 
-        if (auto* src = panel.getComponentForPlugin (connection.source.nodeID))
-            p1 = src->getPinPos (connection.source.channelIndex, false);
+		p1 = lastInputPos;
+		p2 = lastOutputPos;
 
-        if (auto* dest = panel.getComponentForPlugin (connection.destination.nodeID))
-            p2 = dest->getPinPos (connection.destination.channelIndex, true);
+		if (auto* src = panel.getComponentForPlugin (connection.source.nodeID))
+		{
+			p1 = src->getPinPos (connection.source.channelIndex, false);
+		}
+
+		if (auto* dest = panel.getComponentForPlugin (connection.destination.nodeID))
+		{
+			p2 = dest->getPinPos (connection.destination.channelIndex, true);
+		}
     }
 
     void paint (Graphics& g) override
@@ -729,7 +703,7 @@ struct GraphEditorPanel::ConnectorComponent   : public Component,
             double distanceFromStart, distanceFromEnd;
             getDistancesFromEnds (getPosition().toFloat() + e.position, distanceFromStart, distanceFromEnd);
             const bool isNearerSource = (distanceFromStart < distanceFromEnd);
-
+			DBG("mouseDrag isNearerSource:" + String(isNearerSource ? 1 : 0));
             AudioProcessorGraph::NodeAndChannel dummy { {}, 0 };
 
             panel.beginConnectorDrag (isNearerSource ? dummy : connection.source,
@@ -816,7 +790,7 @@ GraphEditorPanel::GraphEditorPanel (PluginGraph& g, AudioDeviceManager &_dm, Two
 	toolBar.reset(new TwonkToolBar(*this));
 	addAndMakeVisible(toolBar.get());
 	toolBar->setVisible(true);
-	toolBar->setBounds(16, 64, 64, 258);
+	toolBar->setBounds(16, 64, 64, 196);
 	toolBar->setAlwaysOnTop(true);
 	
 	twonkTransport.reset(new TwonkTransport(twonkPlayHead));
@@ -837,6 +811,13 @@ GraphEditorPanel::GraphEditorPanel (PluginGraph& g, AudioDeviceManager &_dm, Two
 	twonkProgramListWrapper.list.setRowHeight(48);
 	twonkProgramListWrapper.setVisible(false);
 
+	filterPropertiesPopup.reset (new TwonkFilterPopupProperties(*this));
+	addAndMakeVisible(filterPropertiesPopup.get());
+	filterPropertiesPopup->setVisible(false);
+
+	pinConnectionHint.reset(new BubbleMessageComponent());
+	addChildComponent(pinConnectionHint.get());
+	pinConnectionHint->setAlwaysOnTop(true);
 	setSize(1024, 600);
 }
 
@@ -844,6 +825,7 @@ GraphEditorPanel::~GraphEditorPanel()
 {
     graph.removeChangeListener (this);
     draggingConnector = nullptr;
+	filterPropertiesPopup = nullptr;
     nodes.clear();
     connectors.clear();
 }
@@ -855,6 +837,9 @@ void GraphEditorPanel::paint (Graphics& g)
 
 void GraphEditorPanel::mouseDown (const MouseEvent& e)
 {
+	if (filterPropertiesPopup->isVisible())
+		filterPropertiesPopup->setVisible(false);
+
     if (isOnTouchDevice())
     {
         originalTouchPos = e.position.toInt();
@@ -1034,6 +1019,10 @@ void GraphEditorPanel::dragConnector (const MouseEvent& e)
             {
                 pos = (pin->getParentComponent()->getPosition() + pin->getBounds().getCentre()).toFloat();
                 draggingConnector->setTooltip (pin->getTooltip());
+				AttributedString as;
+				as.append("Connect to: ", getDefaultTwonkSansFont(), Colours::white);
+				as.append(pin->getTooltip(), getDefaultTwonkSansFont().boldened(), Colours::white);
+				pinConnectionHint->showAt(pin, as, 1200, true, false);
             }
         }
 
@@ -1105,6 +1094,48 @@ void GraphEditorPanel::fileDoubleClicked(const File &file)
 {
 }
 
+void GraphEditorPanel::showMenuForFilter(struct GraphEditorPanel::PluginComponent *filter)
+{
+	filterPropertiesPopup->setVisible(true);
+	filterPropertiesPopup->setFilter(filter);
+	filterPropertiesPopup->setCentrePosition(filter->getBounds().getCentre());
+}
+
+void GraphEditorPanel::filterMoved (struct GraphEditorPanel::PluginComponent *filter)
+{
+	if (filterPropertiesPopup->isVisible() && filter == filterPropertiesPopup->getFilter())
+	{
+		filterPropertiesPopup->setCentrePosition(filter->getBounds().getCentre());
+	}
+}
+
+void GraphEditorPanel::menuForFilterClicked(const int r)
+{
+	struct GraphEditorPanel::PluginComponent *filter = filterPropertiesPopup->getFilter();
+	filterPropertiesPopup->setVisible(false);
+	filterPropertiesPopup->setFilter(nullptr);
+
+	switch (r)
+	{
+	case 1:   graph.graph.removeNode (filter->pluginID); break;
+	case 2:   graph.graph.disconnectNode (filter->pluginID); break;
+	case 3:
+	{
+		if (auto* node = graph.graph.getNodeForId (filter->pluginID))
+			node->setBypassed (!node->isBypassed());
+
+		repaint();
+
+		break;
+	}
+	case 10:  filter->showWindow (PluginWindow::Type::normal); break;
+	case 11:  filter->showWindow (PluginWindow::Type::programs); break;
+	case 12:  filter->showWindow (PluginWindow::Type::generic); break;
+	case 20:  filter->showWindow (PluginWindow::Type::audioIO); break;
+
+	default:  break;
+	}
+}
 
 /*
  * GraphDocumentComponent

@@ -44,6 +44,9 @@ InstrumentParametersEditor::InstrumentParametersEditor (SimplerProcessor &_proce
     attack->setRange (0, 10, 0.1);
     attack->setSliderStyle (Slider::LinearVertical);
     attack->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
+    attack->setColour (Slider::backgroundColourId, Colour (0x4bff0000));
+    attack->setColour (Slider::thumbColourId, Colour (0xfff01717));
+    attack->setColour (Slider::trackColourId, Colour (0xbbff0000));
     attack->addListener (this);
 
     attack->setBounds (424, 32, 48, 200);
@@ -53,6 +56,8 @@ InstrumentParametersEditor::InstrumentParametersEditor (SimplerProcessor &_proce
     decay->setRange (0, 10, 0.1);
     decay->setSliderStyle (Slider::LinearVertical);
     decay->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
+    decay->setColour (Slider::backgroundColourId, Colour (0xda13384a));
+    decay->setColour (Slider::trackColourId, Colour (0xff0f89be));
     decay->addListener (this);
 
     decay->setBounds (472, 32, 48, 200);
@@ -62,6 +67,9 @@ InstrumentParametersEditor::InstrumentParametersEditor (SimplerProcessor &_proce
     sustain->setRange (0, 1, 0.01);
     sustain->setSliderStyle (Slider::LinearVertical);
     sustain->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
+    sustain->setColour (Slider::backgroundColourId, Colour (0x543f0852));
+    sustain->setColour (Slider::thumbColourId, Colour (0xffae20c6));
+    sustain->setColour (Slider::trackColourId, Colour (0xffb50ec1));
     sustain->addListener (this);
 
     sustain->setBounds (520, 32, 48, 200);
@@ -71,6 +79,9 @@ InstrumentParametersEditor::InstrumentParametersEditor (SimplerProcessor &_proce
     release->setRange (0, 10, 0.1);
     release->setSliderStyle (Slider::LinearVertical);
     release->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
+    release->setColour (Slider::backgroundColourId, Colour (0xb603802c));
+    release->setColour (Slider::thumbColourId, Colour (0xff17cd61));
+    release->setColour (Slider::trackColourId, Colour (0xff18dd49));
     release->addListener (this);
 
     release->setBounds (568, 32, 48, 200);
@@ -235,19 +246,23 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="8 8 392 232" sourceFile="InstrumentWaveViewer.cpp"
              constructorParams="*this, processor"/>
   <SLIDER name="" id="a701a4b674dae16e" memberName="attack" virtualName=""
-          explicitFocusOrder="0" pos="424 32 48 200" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="424 32 48 200" bkgcol="4bff0000"
+          thumbcol="fff01717" trackcol="bbff0000" min="0.0" max="10.0"
           int="0.1" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="" id="310093749b5340cf" memberName="decay" virtualName=""
-          explicitFocusOrder="0" pos="472 32 48 200" min="0.0" max="10.0"
-          int="0.1" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          explicitFocusOrder="0" pos="472 32 48 200" bkgcol="da13384a"
+          trackcol="ff0f89be" min="0.0" max="10.0" int="0.1" style="LinearVertical"
+          textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="" id="7ce63505be6b42aa" memberName="sustain" virtualName=""
-          explicitFocusOrder="0" pos="520 32 48 200" min="0.0" max="1.0"
-          int="0.01" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
+          explicitFocusOrder="0" pos="520 32 48 200" bkgcol="543f0852"
+          thumbcol="ffae20c6" trackcol="ffb50ec1" min="0.0" max="1.0" int="0.01"
+          style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="" id="eecc200e0866d810" memberName="release" virtualName=""
-          explicitFocusOrder="0" pos="568 32 48 200" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="568 32 48 200" bkgcol="b603802c"
+          thumbcol="ff17cd61" trackcol="ff18dd49" min="0.0" max="10.0"
           int="0.1" style="LinearVertical" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
 </JUCER_COMPONENT>

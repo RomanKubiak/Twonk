@@ -48,21 +48,21 @@ TwonkToolBar::TwonkToolBar (GraphEditorPanel &_owner)
     buttonConfig.reset (new TwonkToolBarButton());
     addAndMakeVisible (buttonConfig.get());
 
-    buttonConfig->setBounds (0, 128, 64, 64);
+    buttonConfig->setBounds (0, 96, 48, 48);
 
     buttonFilters.reset (new TwonkToolBarButton());
     addAndMakeVisible (buttonFilters.get());
 
-    buttonFilters->setBounds (0, 192, 64, 64);
+    buttonFilters->setBounds (0, 144, 48, 48);
 
     buttonFile.reset (new TwonkToolBarButton());
     addAndMakeVisible (buttonFile.get());
 
-    buttonFile->setBounds (0, 64, 64, 64);
+    buttonFile->setBounds (0, 48, 48, 48);
 
     toolbarHeader.reset (new TwonkToolBarHeader (owner));
     addAndMakeVisible (toolbarHeader.get());
-    toolbarHeader->setBounds (0, 0, 64, 64);
+    toolbarHeader->setBounds (0, 0, 48, 48);
 
 
     //[UserPreSize]
@@ -78,7 +78,7 @@ TwonkToolBar::TwonkToolBar (GraphEditorPanel &_owner)
 	buttonFile->setTooltip("File operations");
     //[/UserPreSize]
 
-    setSize (64, 258);
+    setSize (48, 196);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -174,14 +174,14 @@ void TwonkToolBar::buttonClicked(Button *button)
 
 void TwonkToolBar::toggleMenu()
 {
-	if (getWidth() > 64 || getHeight() > 64)
+	if (getWidth() > 48 || getHeight() > 48)
 	{
-		setSize(64, 64);
+		setSize(48, 48);
 		twonkAudioSettingsMenu->setVisible(false);
 		twonkProgramMenu->setVisible(false);
 	}
 	else
-		setSize(64, 258);
+		setSize(48, 196);
 }
 //[/MiscUserCode]
 
@@ -199,7 +199,7 @@ BEGIN_JUCER_METADATA
                  parentClasses="public Component, public TwonkClockListener, Button::Listener"
                  constructorParams="GraphEditorPanel &amp;_owner" variableInitialisers="owner(_owner)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="64" initialHeight="258">
+                 fixedSize="1" initialWidth="48" initialHeight="196">
   <METHODS>
     <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
@@ -207,16 +207,16 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="d2fe4dda321d3109" memberName="buttonConfig" virtualName=""
-                    explicitFocusOrder="0" pos="0 128 64 64" class="TwonkToolBarButton"
+                    explicitFocusOrder="0" pos="0 96 48 48" class="TwonkToolBarButton"
                     params=""/>
   <GENERICCOMPONENT name="" id="fdd3b341895bc99a" memberName="buttonFilters" virtualName=""
-                    explicitFocusOrder="0" pos="0 192 64 64" class="TwonkToolBarButton"
+                    explicitFocusOrder="0" pos="0 144 48 48" class="TwonkToolBarButton"
                     params=""/>
   <GENERICCOMPONENT name="" id="face426d9e5a53b" memberName="buttonFile" virtualName=""
-                    explicitFocusOrder="0" pos="0 64 64 64" class="TwonkToolBarButton"
+                    explicitFocusOrder="0" pos="0 48 48 48" class="TwonkToolBarButton"
                     params=""/>
   <JUCERCOMP name="" id="70b8e35106ac649b" memberName="toolbarHeader" virtualName=""
-             explicitFocusOrder="0" pos="0 0 64 64" sourceFile="TwonkToolBarHeader.cpp"
+             explicitFocusOrder="0" pos="0 0 48 48" sourceFile="TwonkToolBarHeader.cpp"
              constructorParams="owner"/>
 </JUCER_COMPONENT>
 

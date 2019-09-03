@@ -38,6 +38,7 @@ class TwonkToolBarButton;
 class TwonkTransport  : public Component,
                         public TwonkClockListener,
                         public Button::Listener,
+                        public Timer,
                         public Slider::Listener
 {
 public:
@@ -49,6 +50,7 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
 	void positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo);
 	void buttonClicked(Button *button);
+	void timerCallback();
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -75,6 +77,8 @@ private:
     std::unique_ptr<Label> timeLabel;
     std::unique_ptr<Label> positionLabel;
     std::unique_ptr<Label> tempoLabel;
+    std::unique_ptr<Label> cpuUsage;
+    std::unique_ptr<Label> memUsage;
 
 
     //==============================================================================

@@ -10,8 +10,12 @@
 
 #pragma once
 #include "JuceHeader.h"
-float getCpuUsage();
-int64 getMemoryUsageMegabytes();
+namespace TwonkPlatform
+{
+	int getCpuUsage();
+	int64 getMemoryUsageMegabytes();
+};
+
 #if defined(WIN32)
 #include "Windows/CpuUsage.h"
 #endif

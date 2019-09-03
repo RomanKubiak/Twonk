@@ -10,6 +10,8 @@ class TwonkToolBarButton;
 class TwonkToolBarController;
 class TwonkFileMenu;
 class TwonkTransport;
+class TwonkFilterPopupProperties;
+
 /**
     A panel that displays and edits a PluginGraph.
 */
@@ -21,6 +23,10 @@ class GraphEditorPanel   : public Component,
 public:
     GraphEditorPanel (PluginGraph& graph, AudioDeviceManager &_dm, TwonkPlayHead &_twonkPlayHead);
     ~GraphEditorPanel() override;
+
+	struct PluginComponent;
+	struct ConnectorComponent;
+	struct PinComponent;
 
     void createNewPlugin (const PluginDescription&, Point<int> position);
 
@@ -48,6 +54,9 @@ public:
 	void selectionChanged();
 	void fileClicked(const File &file, const MouseEvent &e);
 	void fileDoubleClicked(const File &file);
+	void showMenuForFilter(struct GraphEditorPanel::PluginComponent *filter);
+	void filterMoved (struct GraphEditorPanel::PluginComponent *filter);
+	void menuForFilterClicked(const int r);
 	void browserRootChanged(const File &newRoot) {}
 	void updateTwonkDocuments() { directoryContentsList.refresh(); }
 	AudioDeviceManager &getAudioDeviceManager() { return (dm); }
@@ -67,11 +76,7 @@ public:
 		PluginSynthWithInput,
 		FuckIfIKnow
 	};
-	
 private:
-    struct PluginComponent;
-    struct ConnectorComponent;
-    struct PinComponent;
 
     OwnedArray<PluginComponent> nodes;
     OwnedArray<ConnectorComponent> connectors;
@@ -79,7 +84,8 @@ private:
     std::unique_ptr<PopupMenu> menu;
 	std::unique_ptr<TwonkToolBar> toolBar;
 	std::unique_ptr<TwonkTransport> twonkTransport;
-	
+	std::unique_ptr<TwonkFilterPopupProperties> filterPropertiesPopup;
+	std::unique_ptr<BubbleMessageComponent> pinConnectionHint;
     PluginComponent* getComponentForPlugin (AudioProcessorGraph::NodeID) const;
     ConnectorComponent* getComponentForConnection (const AudioProcessorGraph::Connection&) const;
     PinComponent* findPinAt (Point<float>) const;

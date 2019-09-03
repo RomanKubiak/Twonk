@@ -1916,12 +1916,12 @@ std::unique_ptr<MidiOutput> MidiOutput::openDevice (int index)
 MidiOutput::~MidiOutput()
 {
     stopBackgroundThread();
-    delete static_cast<MidiServiceType::OutputWrapper*> (internal);
+    //delete static_cast<MidiServiceType::OutputWrapper*> (internal);
 }
 
 void MidiOutput::sendMessageNow (const MidiMessage& message)
 {
-    static_cast<MidiServiceType::OutputWrapper*> (internal)->sendMessageNow (message);
+    //static_cast<MidiServiceType::OutputWrapper*> (internal)->sendMessageNow (message);
 }
 
 } // namespace juce

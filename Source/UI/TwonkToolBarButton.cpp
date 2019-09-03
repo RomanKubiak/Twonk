@@ -19,9 +19,9 @@ void TwonkToolBarButton::resized()
 
 void TwonkToolBarButton::paintButton(Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
-	g.setColour(baseColour.contrasting(0.1f));
+	g.setColour(baseColour.contrasting(0.1f).withAlpha(iconAlpha));
 	g.drawImage(icon, getLocalBounds().toFloat().reduced(getWidth() * iconShrink), RectanglePlacement::stretchToFit, true);
-	g.setColour(baseColour.withAlpha(shouldDrawButtonAsDown ? 0.5f : 0.2f));
+	g.setColour(baseColour.withAlpha((getToggleState()|| shouldDrawButtonAsDown) ? 0.7f : (shouldDrawButtonAsHighlighted ? 0.4f : 0.2f)));
 	g.fillPath(roundingHexagon);
 	g.setColour(baseColour);
 	g.strokePath(roundingHexagon, PathStrokeType(getWidth() * 0.02f));

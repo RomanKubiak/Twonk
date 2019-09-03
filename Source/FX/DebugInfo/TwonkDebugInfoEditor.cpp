@@ -1,6 +1,6 @@
 #include "TwonkDebugInfoEditor.h"
 #include "TwonkDebugInfoProcessor.h"
-
+#include "Twonk.h"
 //==============================================================================
 
 DebugInfoProcessorEditor::DebugInfoProcessorEditor (DebugInfoProcessor& p)
@@ -45,21 +45,6 @@ String DebugInfoProcessorEditor::timeToTimecodeString (double seconds)
 		(absMillisecs / 60000) % 60,
 		(absMillisecs / 1000) % 60,
 		absMillisecs % 1000);
-}
-
-String DebugInfoProcessorEditor::quarterNotePositionToBarsBeatsString (double quarterNotes, int numerator, int denominator)
-{
-	if (numerator == 0 || denominator == 0)
-		return "1|1|000";
-
-	auto quarterNotesPerBar = (numerator * 4 / denominator);
-	auto beats = (fmod (quarterNotes, quarterNotesPerBar) / quarterNotesPerBar) * numerator;
-
-	auto bar = ((int)quarterNotes) / quarterNotesPerBar + 1;
-	auto beat = ((int)beats) + 1;
-	auto ticks = ((int)(fmod (beats, 1.0) * 960.0 + 0.5));
-
-	return String::formatted ("%d|%d|%03d", bar, beat, ticks);
 }
 
 // Updates the text in our position label.
