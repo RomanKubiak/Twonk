@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE examples.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    The code included in this file is provided under the terms of the ISC license
    http://www.isc.org/downloads/software-support-policy/isc-license. Permission
@@ -34,9 +34,10 @@
                    juce_audio_processors, juce_audio_utils, juce_core,
                    juce_data_structures, juce_events, juce_graphics,
                    juce_gui_basics, juce_gui_extra
- exporters:        xcode_mac, vs2019, xcode_iphone, androidstudio
+ exporters:        xcode_mac, xcode_iphone, androidstudio
 
  moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
+                   JUCE_PUSH_NOTIFICATIONS=1
 
  type:             Component
  mainClass:        PushNotificationsDemo
@@ -96,7 +97,7 @@ The following steps are only necessary if you have a custom activity defined:
 
 6. Ensure that you override onNewIntent() function in the same way as it is done in JuceActivity.java:
 
-package com.roli.juce;
+package com.rmsl.juce;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -161,7 +162,7 @@ public:
         mainTabs.addTab ("Local",  colour, &localNotificationsTabs, false);
         mainTabs.addTab ("Remote", colour, &remoteView,             false);
 
-        auto userArea = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
+        auto userArea = Desktop::getInstance().getDisplays().getPrimaryDisplay()->userArea;
       #if JUCE_ANDROID || JUCE_IOS
         setSize (userArea.getWidth(), userArea.getHeight());
       #else
@@ -238,7 +239,7 @@ public:
        #endif
     }
 
-    ~PushNotificationsDemo()
+    ~PushNotificationsDemo() override
     {
         PushNotifications::getInstance()->removeListener (this);
 
@@ -502,28 +503,34 @@ private:
 
     void setupAccentColour()
     {
-        paramControls.accentColourSelector = new ColourSelector();
-        paramControls.accentColourSelector->setName ("accent colour");
-        paramControls.accentColourSelector->setCurrentColour (paramControls.accentColourButton.findColour (TextButton::buttonColourId));
-        paramControls.accentColourSelector->setColour (ColourSelector::backgroundColourId, Colours::transparentBlack);
-        paramControls.accentColourSelector->setSize (200, 200);
-        paramControls.accentColourSelector->addComponentListener (this);
-        paramControls.accentColourSelector->addChangeListener (this);
+        auto accentColourSelector = std::make_unique<ColourSelector>();
 
-        CallOutBox::launchAsynchronously (paramControls.accentColourSelector, paramControls.accentColourButton.getScreenBounds(), nullptr);
+        accentColourSelector->setName ("accent colour");
+        accentColourSelector->setCurrentColour (paramControls.accentColourButton.findColour (TextButton::buttonColourId));
+        accentColourSelector->setColour (ColourSelector::backgroundColourId, Colours::transparentBlack);
+        accentColourSelector->setSize (200, 200);
+        accentColourSelector->addComponentListener (this);
+        accentColourSelector->addChangeListener (this);
+
+        paramControls.accentColourSelector = accentColourSelector.get();
+
+        CallOutBox::launchAsynchronously (std::move (accentColourSelector), paramControls.accentColourButton.getScreenBounds(), nullptr);
     }
 
     void setupLedColour()
     {
-        paramControls.ledColourSelector = new ColourSelector();
-        paramControls.ledColourSelector->setName ("led colour");
-        paramControls.ledColourSelector->setCurrentColour (paramControls.ledColourButton.findColour (TextButton::buttonColourId));
-        paramControls.ledColourSelector->setColour (ColourSelector::backgroundColourId, Colours::transparentBlack);
-        paramControls.ledColourSelector->setSize (200, 200);
-        paramControls.ledColourSelector->addComponentListener (this);
-        paramControls.ledColourSelector->addChangeListener (this);
+        auto ledColourSelector = std::make_unique<ColourSelector>();
 
-        CallOutBox::launchAsynchronously (paramControls.ledColourSelector, paramControls.accentColourButton.getScreenBounds(), nullptr);
+        ledColourSelector->setName ("led colour");
+        ledColourSelector->setCurrentColour (paramControls.ledColourButton.findColour (TextButton::buttonColourId));
+        ledColourSelector->setColour (ColourSelector::backgroundColourId, Colours::transparentBlack);
+        ledColourSelector->setSize (200, 200);
+        ledColourSelector->addComponentListener (this);
+        ledColourSelector->addChangeListener (this);
+
+        paramControls.ledColourSelector = ledColourSelector.get();
+
+        CallOutBox::launchAsynchronously (std::move (ledColourSelector), paramControls.accentColourButton.getScreenBounds(), nullptr);
     }
 
     void changeListenerCallback (ChangeBroadcaster* source) override

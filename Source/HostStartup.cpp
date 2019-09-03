@@ -157,7 +157,7 @@ bool isOnTouchDevice()
 	if (SystemStats::getOperatingSystemType() == SystemStats::Linux)
 		return (true);
 
-	return (true);
+	return (false);
 	//return Desktop::getInstance().getMainMouseSource().isTouch();
 }
 

@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 6 End-User License
+   Agreement and JUCE Privacy Policy (both effective as of the 16th June 2020).
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-6-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -207,7 +206,7 @@ public:
 
         demos.deselectAllRows();
         demos.setHeaderComponent (categoryName.isEmpty() ? nullptr
-                                                         : new Header (*this));
+                                                         : std::make_unique<Header> (*this));
         demos.updateContent();
     }
 
@@ -314,14 +313,21 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    auto bounds = getLocalBounds();
+    auto safeBounds = [this]
+    {
+        auto bounds = getLocalBounds();
 
-    showDemosButton.setBounds (0, 0, 150, contentComponent->getTabBarDepth());
+        if (auto* display = Desktop::getInstance().getDisplays().getDisplayForRect (getScreenBounds()))
+            return display->safeAreaInsets.subtractedFrom (bounds);
+
+        return bounds;
+    }();
+
+    showDemosButton.setBounds (safeBounds.getX(), safeBounds.getY(), 150, contentComponent->getTabBarDepth());
 
     if (isShowingHeavyweightDemo)
     {
-        bounds.removeFromLeft (sidePanelWidth);
-
+        safeBounds.removeFromLeft (sidePanelWidth);
         contentComponent->setTabBarIndent (jmax (0, 150 - sidePanelWidth));
     }
     else
@@ -329,7 +335,7 @@ void MainComponent::resized()
         contentComponent->setTabBarIndent (150);
     }
 
-    contentComponent->setBounds (bounds);
+    contentComponent->setBounds (safeBounds);
 }
 
 void MainComponent::homeButtonClicked()

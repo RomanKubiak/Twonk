@@ -151,8 +151,8 @@ void InstrumentWaveViewer::resized()
 
     soundName->setBounds (0, getHeight() - 18, proportionOfWidth (0.5000f), 16);
     soundData->setBounds (proportionOfWidth (0.5000f), getHeight() - 18, proportionOfWidth (0.5000f), 16);
-    sampleList->setBounds (2, 2, getWidth() - 256, 24);
-    velocityRange->setBounds (getWidth() - 48, 2, 39, getHeight() - 8);
+    sampleList->setBounds (2, 2, getWidth() - 194, 24);
+    velocityRange->setBounds (getWidth() - 48, 24, 39, getHeight() - 56);
     velocityRangeLabel->setBounds (getWidth() - 128, 2, 64, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -330,11 +330,11 @@ BEGIN_JUCER_METADATA
          focusDiscardsChanges="0" fontname="Default font" fontsize="14.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
   <COMBOBOX name="" id="2ee4fb804dfd2a26" memberName="sampleList" virtualName=""
-            explicitFocusOrder="0" pos="2 2 256M 24" editable="0" layout="33"
+            explicitFocusOrder="0" pos="2 2 194M 24" editable="0" layout="33"
             items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="" id="1dd6eac09a26d26" memberName="velocityRange" virtualName=""
-          explicitFocusOrder="0" pos="48R 2 39 8M" textboxoutline="0" min="0.0"
-          max="127.0" int="1.0" style="TwoValueVertical" textBoxPos="NoTextBox"
+          explicitFocusOrder="0" pos="48R 24 39 56M" textboxoutline="0"
+          min="0.0" max="127.0" int="1.0" style="TwoValueVertical" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="16" skewFactor="1.0"
           needsCallback="1"/>
   <LABEL name="new label" id="3d4eecfb0e8066e7" memberName="velocityRangeLabel"

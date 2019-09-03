@@ -1,6 +1,554 @@
 JUCE breaking changes
 =====================
 
+Version 6.0.8
+=============
+
+Change
+------
+Calling AudioProcessorEditor::setResizeLimits() will no longer implicitly add a
+ResizableCornerComponent to the editor if it has not already been set as
+resizable.
+
+Possible Issues
+---------------
+Code which previously relied on calling this method to set up the corner
+resizer will no longer work.
+
+Workaround
+----------
+Explicitly call AudioProcessorEditor::setResizable() with the second argument
+set to true to enable the corner resizer.
+
+Rationale
+---------
+The previous behaviour was undocumented and potentially confusing. There is now
+a single method to control the behaviour of the editor's corner resizer to
+avoid any ambiguity.
+
+
+Change
+------
+The implementations of `getValue` and `setValue` in `AUInstanceParameter` now
+properly take the ranges of discrete parameters into account.
+
+Possible Issues
+---------------
+This issue affects JUCE Audio Unit hosts. Automation data previously saved for
+a discrete parameter with a non-zero minimum value may not set the parameter to
+the same values as previous JUCE versions. Note that previously, `getValue` on
+a hosted discrete parameter may have returned out-of-range values, and
+`setValue` may have only mapped to a portion of the parameter range. As a
+result, automation recorded for affected parameters was likely already behaving
+unexpectedly.
+
+Workaround
+----------
+There is no workaround.
+
+Rationale
+---------
+The old behaviour was incorrect, and was causing issues in plugin validators
+and other hosts. Hosts expect `getValue` to return a normalised parameter
+value. If this function returns an out-of-range value (including Inf and NaN)
+this is likely to break assumptions made by the host, leading to crashes,
+corrupted project data, or other defects.
+
+
+Change
+------
+AudioProcessorListener::audioProcessorChanged gained a new parameter describing
+the nature of any change.
+
+Possible Issues
+---------------
+Code using the old function signature will not build until updated to use
+the new signature.
+
+Workaround
+----------
+Listeners should add the new parameter to any overrides of
+audioProcessorChanged.
+
+Rationale
+---------
+The new function signature means that wrappers can be smarter about the
+requests that they make to hosts whenever some aspect of the processor changes.
+In particular, plugin wrappers can now distinguish between changes to latency,
+parameter attributes, and the current program. This means that hosts will no
+longer assume parameters have changed when `setLatencySamples` is called.
+
+
+Change
+------
+CharacterFunctions::readDoubleValue now returns values consistent with other
+C++ number parsing libraries. Parsing values smaller than the minimum number
+respresentable in a double will return (+/-)0.0 and parsing values larger than
+the maximum number respresentable in a double will return (+/-)inf.
+
+Possible Issues
+---------------
+Code reading very large or very small numbers may receive values of 0.0 and inf
+rather than nan.
+
+Workaround
+----------
+Where you may be using std::isnan to check the validity of the result you can
+instead use std::isfinite.
+
+Rationale
+---------
+The new behaviour is consistent with other string parsing libraries.
+
+
+Version 6.0.6
+=============
+
+Change
+------
+The name of `OperatingSystemType::MacOSX_11_0` was changed to
+`OperatingSystemType::MacOS_11`.
+
+Possible Issues
+---------------
+Code using the old name will not build until it is updated to use the new name.
+
+Workaround
+----------
+Update code using the old name to use the new name instead.
+
+Rationale
+---------
+Newer versions of macOS have dropped the "X" naming. Minor version updates are
+also less significant now than they were for the X-series.
+
+
+Change
+------
+Xcode projects generated using the Projucer will now use the "New Build System"
+instead of the "Legacy Build System" by default.
+
+Possible Issues
+---------------
+Xcode 10.0 - 10.2 has some known issues when using the new build system such as
+JUCE modules not rebuilding correctly when modified, issue and file navigation
+not working, and breakpoints not being reliably set or hit.
+
+Workaround
+----------
+If you are using an affected version of Xcode then you can enable the "Use
+Legacy Build System" setting in the Projucer Xcode exporter to go back to the
+previous behaviour.
+
+Rationale
+---------
+The legacy build system has issues building arm64 binaries for Apple silicon
+and will eventually be removed altogether.
+
+
+Version 6.0.5
+=============
+
+Change
+------
+New pure virtual methods accepting `PopupMenu::Options` arguments have been
+added to `PopupMenu::LookAndFeelMethods`.
+
+Possible Issues
+---------------
+Classes derived from `PopupMenu::LookAndFeelMethods`, such as custom
+LookAndFeel classes, will not compile unless these pure virtual methods are
+implemented.
+
+Workaround
+----------
+The old LookAndFeel methods still exist, so if the new Options parameter is not
+useful in your application, your implementation of
+`PopupMenu::LookAndFeelMethods` can simply forward to the old methods. For
+example, your implementation of `drawPopupMenuBackgroundWithOptions` can
+internally call your existing `drawPopupMenuBackground` implementation.
+
+Rationale
+---------
+Allowing the LookAndFeelMethods to access the popup menu's options allows for
+more flexible styling. For example, a theme may wish to query the menu's target
+component or parent for colours to use.
+
+
+Change
+------
+A typo in the JUCEUtils CMake script that caused the wrong manufacturer code to
+be set in the compile definitions for a plugin was fixed.
+
+Possible Issues
+---------------
+The manufacturer code for plugins built under CMake with this version of JUCE
+will differ from the manufacturer code that was generated previously.
+
+Workaround
+----------
+If you have released plugins that used the old, incorrect manufacturer code and
+wish to continue using this code for backwards compatibility, add the following
+to your `juce_add_plugin` call:
+
+    USE_LEGACY_COMPATIBILITY_PLUGIN_CODE TRUE
+
+In most cases, this should not be necessary, and we recommend using the fixed
+behaviour.
+
+Rationale
+---------
+This change ensures that the manufacturer codes used by CMake projects match
+the codes that would be generated by the Projucer, improving compatibility
+when transitioning from the Projucer to CMake.
+
+
+Version 6.0.2
+=============
+
+Change
+------
+The JUCE_WASAPI_EXCLUSIVE flag has been removed from juce_audio_devices and all
+available WASAPI audio device modes (shared, shared low latency and exclusive)
+are available by default when JUCE_WASAPI is enabled. The
+AudioIODeviceType::createAudioIODeviceType_WASAPI() method which takes a single
+boolean argument has also been deprecated in favour of a new method which takes
+a WASAPIDeviceMode enum.
+
+Possible Issues
+---------------
+Code that relied on the JUCE_WASAPI_EXCLUSIVE flag to disable WASAPI exclusive
+mode will no longer work.
+
+Workaround
+----------
+Override the AudioDeviceManager::createAudioDeviceTypes() method to omit the
+WASAPI exclusive mode device if you do not want it to be available.
+
+Rationale
+---------
+JUCE now supports shared low latency WASAPI audio devices via the AudioClient3
+interface and instead of adding an additional compile time config flag to
+enable this functionality, which adds complexity to the build process when not
+using the Projucer, JUCE makes all WASAPI device modes available by default.
+
+
+Change
+------
+The fields representing Mac OS X 10.4 to 10.6 inclusive have been removed from
+the `OperatingSystemType` enum.
+
+Possible Issues
+---------------
+Code that uses these fields will fail to build.
+
+Workaround
+----------
+Remove references to these fields from user code.
+
+Rationale
+---------
+JUCE is not supported on Mac OS X versions lower than 10.7, so it is a given
+that `getOperatingSystemType` will always return an OS version greater than or
+equal to 10.7. Code that changes behaviours depending on the OS version can
+assume that this version is at least 10.7.
+
+
+Change
+------
+The JUCE_DISABLE_COREGRAPHICS_FONT_SMOOTHING flag in juce_graphics is no
+longer used on iOS.
+
+Possible Issues
+---------------
+Projects with this flag enabled may render differently on iOS.
+
+Workaround
+----------
+There is no workaround.
+
+Rationale
+---------
+When using a cached image to render Components with `setBufferedToImage (true)`
+the result now matches the default behaviour on iOS where fonts are not
+smoothed.
+
+
+Change
+------
+Space, return and escape key events on the native macOS menu bar are no longer
+passed to the currently focused JUCE Component.
+
+Possible Issues
+---------------
+Code relying on receiving these keyboard events will no longer work.
+
+Workaround
+----------
+There is no workaround.
+
+Rationale
+---------
+It should be possible for users with a keyboard or assistive device to navigate
+the menu, invoking the currently highlighted menu item with the space or return
+key and dismissing the menu with the escape key. These key events should not be
+passed to the application and doing so interferes with the accessibility of
+JUCE apps. Only passing these events to the native macOS menu means that JUCE
+apps behave as expected for users.
+
+
+Version 6.0.0
+=============
+
+Change
+------
+The Convolution class interface was changed:
+- `loadImpulseResponse` member functions now take `enum class` parameters
+  instead of `bool`.
+- `copyAndLoadImpulseResponseFromBlock` and
+  `copyAndLoadImpulseResponseFromBuffer` were replaced by a new
+  `loadImpulseResponse` overload.
+
+Possible Issues
+---------------
+Code using the old interface will no longer compile, and will need to be
+updated.
+
+Workaround
+----------
+Code that was previously loading impulse responses from binary data or from
+files can substitute old `bool` parameters with the newer `enum class`
+equivalents. Code that was previously passing buffers or blocks will need
+reworking so that the Convolution instance can take ownership of the buffer
+containing the impulse response.
+
+Rationale
+---------
+The newer `enum class` parameters make user code much more readable, e.g.
+`loadImpulseResponse (file, Stereo::yes, Trim::yes, 0, Normalise::yes)` rather
+than `loadImpulseResponse (file, true, true, 0, true);`. By taking ownership of
+the passed buffer, the Convolution can avoid preallocating a large internal
+buffer, reducing memory usage when short impulse responses are used. Changing
+the ownership semantics of the buffer also makes it easier for users to avoid
+copies/allocations on the audio thread, and gives more flexibility to the
+implementation to run initialisation tasks on a background thread.
+
+
+Change
+------
+All references to ROLI Ltd. (ROLI) have been changed to Raw Material Software
+Limited.
+
+Possible Issues
+---------------
+Exising projects, particularly Android, may need to be resaved by the Projucer
+and have the old build artifacts deleted before they will build.
+
+Workaround
+----------
+In Android projects any explicit mention of paths with the from "com.roli.*"
+should be changed to the form "com.rmsl.*".
+
+Rationale
+---------
+This change reflects the change in ownership from ROLI to RMSL.
+
+
+Change
+------
+The Windows DPI handling in the VST wrapper and hosting code has been
+refactored to be more stable.
+
+Possible Issues
+---------------
+The new code uses a top-level AffineTransform to scale the JUCE editor window
+instead of native methods. Therefore any AudioProcessorEditors which have their
+own AffineTransform applied will no longer work correctly.
+
+Workaround
+----------
+If you are using an AffineTransform to scale the entire plug-in window then
+consider putting the component you want to transform in a child of
+the editor and transform that instead. Alternatively, if you don't need a
+separate scale factor for each plug-in instance you can use
+Desktop::setGlobalScaleFactor().
+
+Rationale
+---------
+The old code had some bugs when using OpenGL and when moving between monitors
+with different scale factors. The new code should fix these and DPI-aware
+plug-ins will scale correctly.
+
+
+Change
+------
+Relative Xcode subproject paths specified in the Projucer are now relative to
+the build directory rather than the project directory.
+
+Possible Issues
+---------------
+After being re-saved in the Projucer existing Xcode projects will fail to find
+any subprojects specified using a relative path.
+
+Workaround
+----------
+Update the subproject path in the Projucer.
+
+Rationale
+---------
+Most other Xcode specific paths are specified reltive to the build directory.
+This change brings the Xcode subproject path in line with the rest of the
+configuration.
+
+
+Version 5.4.6
+=============
+
+Change
+------
+AudioProcessorValueTreeState::getRawParameterValue now returns a
+std::atomic<float>* instead of a float*.
+
+Possible Issues
+---------------
+Existing code which explicitly mentions the type of the returned value, or
+interacts with the dereferenced float in ways unsupported by the std::atomic
+wrapper, will fail to compile. Certain evaluation-reordering compiler
+optimisations may no longer be possible.
+
+Workaround
+----------
+Update your code to deal with a std::atomic<float>* instead of a float*.
+
+Rationale
+---------
+Returning a std::atomic<float>* allows the JUCE framework to have much stronger
+guarantees about thread safety.
+
+
+Change
+------
+Removed a workaround from the ASIOAudioIODevice::getOutputLatencyInSamples()
+and ASIOAudioIODevice::getInputLatencyInSamples() methods which was adding an
+arbitrary amount to the reported latencies to compensate for dodgy, old
+drivers.
+
+Possible Issues
+---------------
+Code which relied on these altered values may now behave differently.
+
+Workaround
+----------
+Update your code to deal with the new, correct values reported from the drivers
+directly.
+
+Rationale
+---------
+JUCE will now return the latency values as reported by the drivers without
+adding anything to them. The workaround was for old drivers and the current
+drivers should report the correct values without the need for the workaround.
+
+
+Change
+------
+The default behaviour of the AU and AUv3 plug-in wrappers is now to call
+get/setStateInformation instead of get/setProgramStateInformation.
+
+Possible Issues
+---------------
+AudioProcessor subclasses which have overridden the default implementations of
+get/setProgramStateInformation (which simply call through to
+get/setStateInformation) may be unable to load previously saved state; state
+previously saved via a call to getProgramStateInformation will be presented to
+setStateInformation.
+
+Workaround
+----------
+Enable the JUCE_AU_WRAPPERS_SAVE_PROGRAM_STATES configuration option in the
+juce_audio_plugin_client module to preserve backwards compatibility if
+required.
+
+Rationale
+---------
+When using overridden get/setProgramStateInformation methods the previous
+behaviour of the AU and AUv3 wrappers does not correctly save and restore
+state.
+
+
+Version 5.4.5
+=============
+
+Change
+------
+The alignment of text rendered on macOS using CoreGraphics may have shifted
+slightly, depending on the font you have used. The default macOS font has
+shifted downwards.
+
+Possible Issues
+---------------
+Meticulously aligned text components of a GUI may now be misaligned.
+
+Workaround
+----------
+Use a custom LookAndFeel to change the location where text is drawn, or use a
+different font that matches the previous alignment of your original font.
+
+Rationale
+---------
+This was an unintentional change resulting from moving away from a deprecated
+macOS text API. The new alignment is consistent with other rendering engines
+(web browsers and text editors) and the software renderer.
+
+
+Change
+------
+The JUCEApplicationBase::backButtonPressed() method now returns a bool to
+indicate whether the back event was handled or not.
+
+Possible Issues
+---------------
+Applications which override this method will fail to compile.
+
+Workaround
+----------
+You will need to update your code to return a bool indicating whether the back
+event was handled or not.
+
+Rationale
+---------
+The back button behaviour on Android was previously broken as it would not do
+anything. The new code will correctly call finish() on the Activity when the
+back button is pressed but this method now allows the user to override this to
+implement their own custom navigation behaviour by returning true to indicate
+that it has been handled.
+
+
+Change
+------
+The AudioBlock class has been refactored and some of the method names have
+changed. Additionally the `const` behaviour now mirrors that of `std::span`,
+with the `const`-ness of the contained data decoupled from the `const`-ness of
+the container.
+
+Possible Issues
+---------------
+Code using the old method names or violating `const`-correctness will fail to
+compile.
+
+Workaround
+----------
+You will need to update your code to use the new method names and select an
+appropriate `const`-ness for the AudioBlock and the data it references.
+
+Rationale
+---------
+The names of some of the methods in the AudioBlock class were ambiguous,
+particularly when chaining methods involving references to other blocks. The
+interaction between the `const`-ness of the AudioBlock and the `const`-ness of
+the referenced data was also ambiguous and has now been standardised to the
+same behaviour as other non-owning data views like `std::span`.
+
+
 Version 5.4.4
 =============
 
@@ -918,7 +1466,7 @@ or
 2. Override the Look&Feel method
    PopupMenu::LookAndFeelMethods::shouldPopupMenuScaleWithTargetComponent and
    return false. See
-   https://github.com/WeAreROLI/JUCE/blob/c288c94c2914af20f36c03ca9c5401fcb555e4e9/modules/juce_gui_basics/menus/juce_PopupMenu.h#725
+   https://github.com/juce-framework/JUCE/blob/c288c94c2914af20f36c03ca9c5401fcb555e4e9/modules/juce_gui_basics/menus/juce_PopupMenu.h#725
 
 Rationale
 ---------

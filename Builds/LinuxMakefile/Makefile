@@ -76,6 +76,12 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TwonkDebugInfoProcessor_6f5f4118.o \
   $(JUCE_OBJDIR)/TwonkDistortionEditor_c39324bf.o \
   $(JUCE_OBJDIR)/TwonkDistortionProcessor_23d1d60a.o \
+  $(JUCE_OBJDIR)/FifteenStep_5132866f.o \
+  $(JUCE_OBJDIR)/FifteenStepEditor_dd9ed1fc.o \
+  $(JUCE_OBJDIR)/FifteenStepHexRow_5ea3cc4e.o \
+  $(JUCE_OBJDIR)/FifteenStepHexStep_cb089ea2.o \
+  $(JUCE_OBJDIR)/FifteenStepProcessor_18a6c3ad.o \
+  $(JUCE_OBJDIR)/FifteenStepRowHolder_8af4b541.o \
   $(JUCE_OBJDIR)/TwonkFlangerEditor_997d0a31.o \
   $(JUCE_OBJDIR)/TwonkFlangerProcessor_8195a358.o \
   $(JUCE_OBJDIR)/HexagonController_1475d7b4.o \
@@ -114,6 +120,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/PluginListWindow_f200207d.o \
   $(JUCE_OBJDIR)/TwonkLookAndFeel_5aa9c071.o \
   $(JUCE_OBJDIR)/TwonkFilterPopupProperties_8b6e6e5a.o \
+  $(JUCE_OBJDIR)/TwonkFilterPopupPropertiesSegment_43dc6903.o \
   $(JUCE_OBJDIR)/TwonkProgramList_f2921f35.o \
   $(JUCE_OBJDIR)/TwonkSaveProgramDialog_cddd4f62.o \
   $(JUCE_OBJDIR)/TwonkProgramMenu_7e603b76.o \
@@ -192,6 +199,36 @@ $(JUCE_OBJDIR)/TwonkDistortionEditor_c39324bf.o: ../../Source/FX/Distortion/Twon
 $(JUCE_OBJDIR)/TwonkDistortionProcessor_23d1d60a.o: ../../Source/FX/Distortion/TwonkDistortionProcessor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkDistortionProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/FifteenStep_5132866f.o: ../../Source/FX/FifteenStep/FifteenStep.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling FifteenStep.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/FifteenStepEditor_dd9ed1fc.o: ../../Source/FX/FifteenStep/FifteenStepEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling FifteenStepEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/FifteenStepHexRow_5ea3cc4e.o: ../../Source/FX/FifteenStep/FifteenStepHexRow.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling FifteenStepHexRow.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/FifteenStepHexStep_cb089ea2.o: ../../Source/FX/FifteenStep/FifteenStepHexStep.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling FifteenStepHexStep.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/FifteenStepProcessor_18a6c3ad.o: ../../Source/FX/FifteenStep/FifteenStepProcessor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling FifteenStepProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/FifteenStepRowHolder_8af4b541.o: ../../Source/FX/FifteenStep/FifteenStepRowHolder.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling FifteenStepRowHolder.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkFlangerEditor_997d0a31.o: ../../Source/FX/Flanger/TwonkFlangerEditor.cpp
@@ -382,6 +419,11 @@ $(JUCE_OBJDIR)/TwonkLookAndFeel_5aa9c071.o: ../../Source/UI/TwonkLookAndFeel.cpp
 $(JUCE_OBJDIR)/TwonkFilterPopupProperties_8b6e6e5a.o: ../../Source/UI/TwonkFilterPopupProperties.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TwonkFilterPopupProperties.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TwonkFilterPopupPropertiesSegment_43dc6903.o: ../../Source/UI/TwonkFilterPopupPropertiesSegment.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TwonkFilterPopupPropertiesSegment.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TwonkProgramList_f2921f35.o: ../../Source/UI/TwonkProgramList.cpp

@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE examples.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    The code included in this file is provided under the terms of the ISC license
    http://www.isc.org/downloads/software-support-policy/isc-license. Permission
@@ -134,7 +134,7 @@ private:
         {
             stopFlashing();
             sendChangeMessage();
-            // Once we've finsihed flashing send a change message to trigger the next component to flash
+            // Once we've finished flashing send a change message to trigger the next component to flash
         }
 
         repaint();
@@ -173,7 +173,7 @@ public:
         addAndMakeVisible (randomColourButton);
         randomColourButton.onClick = [this] { randomColourButtonClicked(); };
 
-        // lay out our components in a psudo random grid
+        // lay out our components in a pseudo random grid
         Rectangle<int> area (0, 100, 150, 150);
 
         for (auto* comp : flashingComponents)

@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -67,7 +67,7 @@ struct MIDIDeviceConnection  : public PhysicalTopologySource::DeviceConnection,
     {
         JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED // This method must only be called from the message thread!
 
-        jassert (dataSize > sizeof (BlocksProtocol::roliSysexHeader) + 2);
+        jassert (dataSize > sizeof (BlocksProtocol::roliSysexHeader) + 1);
         jassert (memcmp (data, BlocksProtocol::roliSysexHeader, sizeof (BlocksProtocol::roliSysexHeader) - 1) == 0);
         jassert (static_cast<const uint8*> (data)[dataSize - 1] == 0xf7);
 

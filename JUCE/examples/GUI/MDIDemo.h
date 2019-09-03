@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE examples.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    The code included in this file is provided under the terms of the ISC license
    http://www.isc.org/downloads/software-support-policy/isc-license. Permission
@@ -51,7 +51,7 @@
 //==============================================================================
 /** The Note class contains text editor used to display and edit the note's contents and will
     also listen to changes in the text and mark the FileBasedDocument as 'dirty'. This 'dirty'
-    flag is used to promt the user to save the note when it is closed.
+    flag is used to prompt the user to save the note when it is closed.
  */
 class Note    : public Component,
                 public FileBasedDocument

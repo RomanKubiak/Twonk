@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -30,7 +30,7 @@ struct BlockImplementation  : public Block,
 {
 public:
     struct ControlButtonImplementation;
-    struct TouchSurfaceImsplementation;
+    struct TouchSurfaceImplementation;
     struct LEDGridImplementation;
     struct LEDRowImplementation;
 
@@ -40,7 +40,8 @@ public:
                  deviceInfo.name.asString()),
           modelData (deviceInfo.serial),
           remoteHeap (modelData.programAndHeapSize),
-          detector (&detectorToUse)
+          detector (&detectorToUse),
+          config (modelData.defaultConfig)
     {
         markReconnected (deviceInfo);
 
@@ -83,6 +84,20 @@ public:
         if (connectionTime == Time())
             connectionTime = Time::getCurrentTime();
 
+        updateDeviceInfo (deviceInfo);
+
+        remoteHeap.reset();
+
+        setProgram (nullptr);
+
+        if (auto surface = dynamic_cast<TouchSurfaceImplementation*> (touchSurface.get()))
+            surface->activateTouchSurface();
+
+        updateMidiConnectionListener();
+    }
+
+    void updateDeviceInfo (const DeviceInfo& deviceInfo)
+    {
         versionNumber = deviceInfo.version.asString();
         name = deviceInfo.name.asString();
         isMaster = deviceInfo.isMaster;
@@ -90,14 +105,6 @@ public:
         batteryCharging = deviceInfo.batteryCharging;
         batteryLevel = deviceInfo.batteryLevel;
         topologyIndex = deviceInfo.index;
-
-        setProgram (nullptr);
-        remoteHeap.resetDeviceStateToUnknown();
-
-        if (auto surface = dynamic_cast<TouchSurfaceImplementation*> (touchSurface.get()))
-            surface->activateTouchSurface();
-
-        updateMidiConnectionListener();
     }
 
     void setToMaster (bool shouldBeMaster)
@@ -227,6 +234,11 @@ public:
                                        { return p.deviceControlMessage (commandID); });
     }
 
+    void handleProgramEvent (const ProgramEventMessage& message)
+    {
+        programEventListeners.call ([&] (ProgramEventListener& l) { l.handleProgramEvent(*this, message); });
+    }
+
     void handleCustomMessage (Block::Timestamp, const int32* data)
     {
         ProgramEventMessage m;
@@ -234,7 +246,7 @@ public:
         for (uint32 i = 0; i < BlocksProtocol::numProgramMessageInts; ++i)
             m.values[i] = data[i];
 
-        programEventListeners.call ([&] (ProgramEventListener& l) { l.handleProgramEvent (*this, m); });
+        handleProgramEvent (m);
     }
 
     static BlockImplementation* getFrom (Block* b) noexcept
@@ -249,9 +261,9 @@ public:
     }
 
     //==============================================================================
-    std::function<void(const Block& block, const String&)> logger;
+    std::function<void (const Block& block, const String&)> logger;
 
-    void setLogger (std::function<void(const Block& block, const String&)> newLogger) override
+    void setLogger (std::function<void (const Block& block, const String&)> newLogger) override
     {
         logger = std::move (newLogger);
     }
@@ -263,25 +275,37 @@ public:
     }
 
     //==============================================================================
-    Result setProgram (Program* newProgram) override
+    Result setProgram (std::unique_ptr<Program> newProgram,
+                       ProgramPersistency persistency = ProgramPersistency::setAsTemp) override
     {
-        if (newProgram != nullptr && program.get() == newProgram)
+        auto doProgramsMatch = [&]
         {
-            jassertfalse;
+            if (program == nullptr || newProgram == nullptr)
+                return false;
+
+            return program->getLittleFootProgram() == newProgram->getLittleFootProgram()
+                && program->getSearchPaths() == newProgram->getSearchPaths();
+        }();
+
+        if (doProgramsMatch)
+        {
+            if (isProgramLoaded)
+            {
+                MessageManager::callAsync ([blockRef = Block::Ptr (this), this]
+                {
+                    programLoadedListeners.call ([&] (ProgramLoadedListener& l) { l.handleProgramLoaded (*this); });
+                });
+            }
+
             return Result::ok();
         }
 
-        {
-            std::unique_ptr<Program> p (newProgram);
+        program = std::move (newProgram);
+        return loadProgram (persistency);
+    }
 
-            if (program != nullptr
-                && newProgram != nullptr
-                && program->getLittleFootProgram() == newProgram->getLittleFootProgram())
-                return Result::ok();
-
-            std::swap (program, p);
-        }
-
+    Result loadProgram (ProgramPersistency persistency)
+    {
         stopTimer();
 
         programSize = 0;
@@ -289,11 +313,38 @@ public:
 
         if (program == nullptr)
         {
-            remoteHeap.clear();
+            remoteHeap.clearTargetData();
             return Result::ok();
         }
 
-        littlefoot::Compiler compiler;
+        auto res = compileProgram();
+
+        if (res.failed())
+            return res;
+
+        programSize = (uint32) compiler.compiledObjectCode.size();
+
+        remoteHeap.resetDataRangeToUnknown (0, remoteHeap.blockSize);
+        remoteHeap.clearTargetData();
+        remoteHeap.sendChanges (*this, true);
+
+        remoteHeap.resetDataRangeToUnknown (0, programSize);
+        remoteHeap.setBytes (0, compiler.compiledObjectCode.begin(), programSize);
+        remoteHeap.sendChanges (*this, true);
+
+        this->resetConfigListActiveStatus();
+
+        const auto legacyProgramChangeConfigIndex = getMaxConfigIndex();
+        handleConfigItemChanged ({ legacyProgramChangeConfigIndex }, legacyProgramChangeConfigIndex);
+
+        shouldSaveProgramAsDefault = persistency == ProgramPersistency::setAsDefault;
+        startTimer (20);
+
+        return Result::ok();
+    }
+
+    Result compileProgram()
+    {
         compiler.addNativeFunctions (PhysicalTopologySource::getStandardLittleFootFunctions());
 
         const auto err = compiler.compile (program->getLittleFootProgram(), 512, program->getSearchPaths());
@@ -306,24 +357,6 @@ public:
 
         if (compiler.getCompiledProgram().getTotalSpaceNeeded() > getMemorySize())
             return Result::fail ("Program too large!");
-
-        const auto size = (size_t) compiler.compiledObjectCode.size();
-        programSize = (uint32) size;
-
-        remoteHeap.resetDataRangeToUnknown (0, remoteHeap.blockSize);
-        remoteHeap.clear();
-        remoteHeap.sendChanges (*this, true);
-
-        remoteHeap.resetDataRangeToUnknown (0, (uint32) size);
-        remoteHeap.setBytes (0, compiler.compiledObjectCode.begin(), size);
-        remoteHeap.sendChanges (*this, true);
-
-        this->resetConfigListActiveStatus();
-
-        if (auto changeCallback = this->configChangedCallback)
-            changeCallback (*this, {}, this->getMaxConfigIndex());
-
-        startTimer (20);
 
         return Result::ok();
     }
@@ -352,8 +385,7 @@ public:
             if (shouldSaveProgramAsDefault)
                 doSaveProgramAsDefault();
 
-            if (programLoadedCallback != nullptr)
-                programLoadedCallback (*this);
+            programLoadedListeners.call([&] (ProgramLoadedListener& l) { l.handleProgramLoaded (*this); });
         }
         else
         {
@@ -415,7 +447,7 @@ public:
         remoteHeap.handleACKFromDevice (*this, packetCounter);
     }
 
-    bool sendFirmwareUpdatePacket (const uint8* data, uint8 size, std::function<void(uint8, uint32)> callback) override
+    bool sendFirmwareUpdatePacket (const uint8* data, uint8 size, std::function<void (uint8, uint32)> callback) override
     {
         firmwarePacketAckCallback = nullptr;
 
@@ -443,7 +475,7 @@ public:
         config.handleConfigUpdateMessage (item, value, min, max);
     }
 
-    void handleConfigSetMessage(int32 item, int32 value)
+    void handleConfigSetMessage (int32 item, int32 value)
     {
         config.handleConfigSetMessage (item, value);
     }
@@ -504,11 +536,26 @@ public:
 
         remoteHeap.sendChanges (*this, false);
 
-        if (lastMessageSendTime < Time::getCurrentTime() - RelativeTime::milliseconds (pingIntervalMs))
+        if (lastMessageSendTime < Time::getCurrentTime() - getPingInterval())
             sendCommandMessage (BlocksProtocol::ping);
     }
 
+    RelativeTime getPingInterval()
+    {
+        return RelativeTime::milliseconds (isMaster ? masterPingIntervalMs : dnaPingIntervalMs);
+    }
+
     //==============================================================================
+    void handleConfigItemChanged (const ConfigMetaData& data, uint32 index)
+    {
+        configItemListeners.call([&] (ConfigItemListener& l) { l.handleConfigItemChanged (*this, data, index); });
+    }
+
+    void handleConfigSyncEnded()
+    {
+        configItemListeners.call([&] (ConfigItemListener& l) { l.handleConfigSyncEnded (*this); });
+    }
+
     int32 getLocalConfigValue (uint32 item) override
     {
         initialiseDeviceIndexAndConnection();
@@ -568,16 +615,6 @@ public:
         config.resetConfigListActiveStatus();
     }
 
-    void setConfigChangedCallback (std::function<void(Block&, const ConfigMetaData&, uint32)> configChanged) override
-    {
-        configChangedCallback = std::move (configChanged);
-    }
-
-    void setProgramLoadedCallback (std::function<void(Block&)> programLoaded) override
-    {
-        programLoadedCallback = std::move (programLoaded);
-    }
-
     bool setName (const String& newName) override
     {
         return buildAndSendPacket<128> ([&newName] (BlocksProtocol::HostPacketBuilder<128>& p)
@@ -588,6 +625,12 @@ public:
     {
         buildAndSendPacket<32> ([] (BlocksProtocol::HostPacketBuilder<32>& p)
                                 { return p.addFactoryReset(); });
+
+        juce::Timer::callAfterDelay (5, [ref = WeakReference<BlockImplementation>(this)]
+        {
+            if (ref != nullptr)
+                ref->blockReset();
+        });
     }
 
     void blockReset() override
@@ -629,7 +672,8 @@ public:
 
     MIDIDeviceConnection* listenerToMidiConnection = nullptr;
 
-    static constexpr int pingIntervalMs = 400;
+    static constexpr int masterPingIntervalMs = 400;
+    static constexpr int dnaPingIntervalMs = 1666;
 
     static constexpr uint32 maxBlockSize = BlocksProtocol::padBlockProgramAndHeapSize;
     static constexpr uint32 maxPacketCounter = BlocksProtocol::PacketCounter::maxValue;
@@ -644,15 +688,13 @@ public:
     Time lastMessageSendTime, lastMessageReceiveTime;
 
     BlockConfigManager config;
-    std::function<void(Block&, const ConfigMetaData&, uint32)> configChangedCallback;
-
-    std::function<void(Block&)> programLoadedCallback;
 
 private:
+    littlefoot::Compiler compiler;
     std::unique_ptr<Program> program;
     uint32 programSize = 0;
 
-    std::function<void(uint8, uint32)> firmwarePacketAckCallback;
+    std::function<void (uint8, uint32)> firmwarePacketAckCallback;
 
     bool isMaster = false;
     Block::UID masterUID = {};
@@ -726,7 +768,7 @@ private:
         sendCommandMessage (BlocksProtocol::saveProgramAsDefault);
     }
 
-    template<int packetBytes, typename PacketBuilderFn>
+    template <int packetBytes, typename PacketBuilderFn>
     bool buildAndSendPacket (PacketBuilderFn buildFn)
     {
         auto index = getDeviceIndex();
@@ -1022,7 +1064,7 @@ public:
         {
             if (block.getProgram() == nullptr)
             {
-                auto err = block.setProgram (new DefaultLEDGridProgram (block));
+                auto err = block.setProgram (std::make_unique <DefaultLEDGridProgram> (block));
 
                 if (err.failed())
                 {
@@ -1103,6 +1145,7 @@ public:
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BlockImplementation)
+    JUCE_DECLARE_WEAK_REFERENCEABLE (BlockImplementation)
 };
 
 } // namespace juce

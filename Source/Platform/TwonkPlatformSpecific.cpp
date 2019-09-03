@@ -9,77 +9,78 @@
 */
 
 #include "TwonkPlatformSpecific.h"
+namespace TwonkPlatform
+{
 
 #if defined(WIN32)
-CpuUsage cpuUsage;
-float getCpuUsage()
-{
-	return (cpuUsage.GetUsage());
-}
+	CpuUsage cpuUsage;
+	int getCpuUsage()
+	{
+		return (cpuUsage.GetUsage());
+	}
 
-int64 getMemoryUsageMegabytes()
-{
-	MEMORYSTATUSEX statex;
-	statex.dwLength = sizeof (statex);
-	GlobalMemoryStatusEx (&statex);
-	return ((statex.ullTotalVirtual - statex.ullAvailVirtual) / 1048576);
-}
+	int64 getMemoryUsageMegabytes()
+	{
+		MEMORYSTATUSEX statex;
+		statex.dwLength = sizeof (statex);
+		GlobalMemoryStatusEx (&statex);
+		return ((statex.ullTotalVirtual - statex.ullAvailVirtual) / 1048576);
+	}
 
 #elif defined(__linux__)
 #include <sys/types.h>
 #include <unistd.h>
-float getCpuUsage()
-{
-	FILE *in;
-	char buff[512];
-	float cpuUsage;
-	
-	if (!(in = popen("ps -C Twonk -o %cpu| tail -n 1", "r")))
+	int getCpuUsage()
 	{
-        	return 0.0;
-	}
-	
-	if (fgets(buff, sizeof(buff), in) !=NULL)
-	{		
-		cpuUsage = atof(buff);
-	}
-	pclose(in);
-	
-	return cpuUsage;
-}
+		FILE *in;
+		char buff[512];
+		int cpuUsage;
 
-int64 getMemoryUsageMegabytes()
-{	
-	FILE *in;
-	char buff[512];
-	char cmd[128];
-	long int memoryUsed;
-	int pid = getpid();
-	sprintf(cmd, "pmap %d | tail -n 1 | awk '/[0-9]K/{print $2}'", pid);
-	
-	if (!(in = popen(cmd, "r")))
-	{
-		return (0);
+		if (!(in = popen("ps -C Twonk -o %cpu| tail -n 1", "r")))
+		{
+			return 0;
+		}
+
+		if (fgets(buff, sizeof(buff), in) != NULL)
+		{
+			cpuUsage = atoi(buff);
+		}
+		pclose(in);
+
+		return cpuUsage;
 	}
-	if (fgets(buff, sizeof(buff), in) != NULL)
+
+	int64 getMemoryUsageMegabytes()
 	{
-		buff[strlen(buff)-1] = '\0';
-		memoryUsed = atol(buff);
+		FILE *in;
+		char buff[512];
+		char cmd[128];
+		long int memoryUsed;
+		int pid = getpid();
+		sprintf(cmd, "pmap %d | tail -n 1 | awk '/[0-9]K/{print $2}'", pid);
+
+		if (!(in = popen(cmd, "r")))
+		{
+			return (0);
+		}
+		if (fgets(buff, sizeof(buff), in) != NULL)
+		{
+			buff[strlen(buff) - 1] = '\0';
+			memoryUsed = atol(buff);
+		}
+		return (memoryUsed / 1024); // megs
 	}
-	return (memoryUsed/1024); // megs
-}
 
 #else
-int getCpuUsage()
-{
-	printf("undefined platform\n");
-	fflush();
-	return (-1);
-}
+	int getCpuUsage()
+	{
+		return (-1);
+	}
 
-int64 getMemoryUsageMegabytes()
-{
-	return (-1);
-}
+	int64 getMemoryUsageMegabytes()
+	{
+		return (-1);
+	}
 
 #endif
+}

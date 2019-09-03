@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 6 End-User License
+   Agreement and JUCE Privacy Policy (both effective as of the 16th June 2020).
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-6-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -51,7 +50,7 @@ protected:
     //==============================================================================
     /** Constructor.
 
-        This constructor will create a main input and output bus which are diabled
+        This constructor will create a main input and output bus which are disabled
         by default. If you need more fine-grained control then use the other constructors.
     */
     AudioProcessor();
@@ -78,6 +77,8 @@ public:
         singlePrecision,
         doublePrecision
     };
+
+    using ChangeDetails = AudioProcessorListener::ChangeDetails;
 
     //==============================================================================
     /** Destructor. */
@@ -400,7 +401,7 @@ public:
         /** Return the number of channels of the current bus. */
         inline int getNumberOfChannels() const noexcept                 { return cachedChannelCount; }
 
-        /** Set the number of channles of this bus. This will return false if the AudioProcessor
+        /** Set the number of channels of this bus. This will return false if the AudioProcessor
             does not support this layout.
         */
         bool setNumberOfChannels (int channels);
@@ -627,7 +628,7 @@ public:
      */
     int getChannelIndexInProcessBlockBuffer (bool isInput, int busIndex, int channelIndex) const noexcept;
 
-    /** Returns the offset in a bus's buffer from an absolute channel indes.
+    /** Returns the offset in a bus's buffer from an absolute channel index.
 
         This method returns the offset in a bus's buffer given an absolute channel index.
         It also provides the bus index. For example, this method would return one
@@ -771,7 +772,7 @@ public:
 
     /** Returns the next best layout which is contained in a channel layout map.
 
-        You can use this mehtod to help you implement getNextBestLayout. For example:
+        You can use this method to help you implement getNextBestLayout. For example:
 
         @code
         BusesLayout getNextBestLayout (const BusesLayout& layouts) override
@@ -900,7 +901,7 @@ public:
         If this method returns a nullptr then you can still control the bypass by
         calling processBlockBypassed instead of processBlock. On the other hand,
         if this method returns a non-null value, you should never call
-        processBlockBypassed but use the returned parameter to conrol the bypass
+        processBlockBypassed but use the returned parameter to control the bypass
         state instead.
 
         A plug-in can override this function to return a parameter which control's your
@@ -964,10 +965,13 @@ public:
     virtual bool hasEditor() const = 0;
 
     //==============================================================================
-    /** Returns the active editor, if there is one.
-        Bear in mind this can return nullptr, even if an editor has previously been opened.
+    /** Returns the active editor, if there is one. Bear in mind this can return nullptr
+        even if an editor has previously been opened.
+
+        Note that you should only call this method from the message thread as the active
+        editor may be deleted by the message thread, causing a dangling pointer.
     */
-    AudioProcessorEditor* getActiveEditor() const noexcept             { return activeEditor; }
+    AudioProcessorEditor* getActiveEditor() const noexcept;
 
     /** Returns the active editor, or if there isn't one, it will create one.
         This may call createEditor() internally to create the component.
@@ -989,7 +993,7 @@ public:
         It sends a hint to the host that something like the program, number of parameters,
         etc, has changed, and that it should update itself.
     */
-    void updateHostDisplay();
+    void updateHostDisplay (const ChangeDetails& details = ChangeDetails::getAllChanged());
 
     //==============================================================================
     /** Adds a parameter to the AudioProcessor.
@@ -1011,14 +1015,21 @@ public:
     /** Returns the group of parameters managed by this AudioProcessor. */
     const AudioProcessorParameterGroup& getParameterTree() const;
 
-    /** Returns the group of parameters managed by this AudioProcessor. */
+    /** Sets the group of parameters managed by this AudioProcessor.
+
+        Replacing the tree after your AudioProcessor has been constructed will
+        crash many hosts, so don't do it! You may, however, change parameter and
+        group names by iterating the tree returned by getParameterTree().
+        Afterwards, call updateHostDisplay() to inform the host of the changes.
+        Not all hosts support dynamic changes to parameters and group names.
+    */
     void setParameterTree (AudioProcessorParameterGroup&& newTree);
 
     /** A processor should implement this method so that the host can ask it to
         rebuild its parameter tree.
-        If a plugin never changes its parameters, it's enough to create its
-        parameters in its constructor and do nothing in this method, but some
-        may want to
+
+        For most plug-ins it's enough to simply add your parameters in the
+        constructor and leave this unimplemented.
     */
     virtual void refreshParameterList();
 
@@ -1165,7 +1176,7 @@ public:
             Unknown = -1
         };
 
-        std::function<float(float)> curve;    // a function which represents your curve (such as an eq)
+        std::function<float (float)> curve;   // a function which represents your curve (such as an eq)
         Range<float> xRange, yRange;          // the data range of your curve
 
         // For some curve types, your plug-in may already measure the current input and output values.
@@ -1221,7 +1232,7 @@ public:
         AudioProcessor about which track the AudioProcessor is loaded on. This method
         may only be called on the message thread.
 
-        If you are implemeting an AudioProcessor then you can override this callback
+        If you are implementing an AudioProcessor then you can override this callback
         to do something useful with the track properties such as changing the colour
         of your AudioProcessor's editor. It's entirely up to the host when and how
         often this callback will be called.
@@ -1362,7 +1373,7 @@ protected:
 
     //==============================================================================
     /** @internal */
-    AudioPlayHead* playHead = nullptr;
+    std::atomic<AudioPlayHead*> playHead { nullptr };
 
     /** @internal */
     void sendParamChangeMessageToListeners (int parameterIndex, float newValue);
@@ -1456,9 +1467,10 @@ private:
     Component::SafePointer<AudioProcessorEditor> activeEditor;
     double currentSampleRate = 0;
     int blockSize = 0, latencySamples = 0;
-    bool suspended = false, nonRealtime = false;
+    bool suspended = false;
+    std::atomic<bool> nonRealtime { false };
     ProcessingPrecision processingPrecision = singlePrecision;
-    CriticalSection callbackLock, listenerLock;
+    CriticalSection callbackLock, listenerLock, activeEditorLock;
 
     friend class Bus;
     mutable OwnedArray<Bus> inputBuses, outputBuses;
@@ -1477,17 +1489,16 @@ private:
     #endif
 
     bool textRecursionCheck = false;
-
-    struct DuplicateParamIDCheck;
-    std::unique_ptr<DuplicateParamIDCheck> duplicateParamIDCheck;
-    void checkDuplicateParamIDs();
+    std::unordered_set<String> paramIDs, groupIDs;
    #endif
+
+    void checkForDuplicateParamID (AudioProcessorParameter*);
+    void checkForDuplicateGroupIDs (const AudioProcessorParameterGroup&);
 
     AudioProcessorListener* getListenerLocked (int) const noexcept;
     void updateSpeakerFormatStrings();
     void audioIOChanged (bool busNumberChanged, bool channelNumChanged);
     void getNextBestLayout (const BusesLayout&, BusesLayout&) const;
-    void triggerDuplicateParamIDCheck();
 
     template <typename floatType>
     void processBypassed (AudioBuffer<floatType>&, MidiBuffer&);

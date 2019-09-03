@@ -148,6 +148,12 @@
     <ClCompile Include="..\..\Source\FX\DebugInfo\TwonkDebugInfoProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Distortion\TwonkDistortionEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Distortion\TwonkDistortionProcessor.cpp"/>
+    <ClCompile Include="..\..\Source\FX\FifteenStep\FifteenStep.cpp"/>
+    <ClCompile Include="..\..\Source\FX\FifteenStep\FifteenStepEditor.cpp"/>
+    <ClCompile Include="..\..\Source\FX\FifteenStep\FifteenStepHexRow.cpp"/>
+    <ClCompile Include="..\..\Source\FX\FifteenStep\FifteenStepHexStep.cpp"/>
+    <ClCompile Include="..\..\Source\FX\FifteenStep\FifteenStepProcessor.cpp"/>
+    <ClCompile Include="..\..\Source\FX\FifteenStep\FifteenStepRowHolder.cpp"/>
     <ClCompile Include="..\..\Source\FX\Flanger\TwonkFlangerEditor.cpp"/>
     <ClCompile Include="..\..\Source\FX\Flanger\TwonkFlangerProcessor.cpp"/>
     <ClCompile Include="..\..\Source\FX\MIDI Controller\HexagonController.cpp"/>
@@ -186,6 +192,7 @@
     <ClCompile Include="..\..\Source\UI\PluginListWindow.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkLookAndFeel.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkFilterPopupProperties.cpp"/>
+    <ClCompile Include="..\..\Source\UI\TwonkFilterPopupPropertiesSegment.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkProgramList.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkSaveProgramDialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\TwonkProgramMenu.cpp"/>
@@ -2005,6 +2012,12 @@
     <ClInclude Include="..\..\Source\FX\DebugInfo\TwonkDebugInfoProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\Distortion\TwonkDistortionEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Distortion\TwonkDistortionProcessor.h"/>
+    <ClInclude Include="..\..\Source\FX\FifteenStep\FifteenStep.h"/>
+    <ClInclude Include="..\..\Source\FX\FifteenStep\FifteenStepEditor.h"/>
+    <ClInclude Include="..\..\Source\FX\FifteenStep\FifteenStepHexRow.h"/>
+    <ClInclude Include="..\..\Source\FX\FifteenStep\FifteenStepHexStep.h"/>
+    <ClInclude Include="..\..\Source\FX\FifteenStep\FifteenStepProcessor.h"/>
+    <ClInclude Include="..\..\Source\FX\FifteenStep\FifteenStepRowHolder.h"/>
     <ClInclude Include="..\..\Source\FX\Flanger\TwonkFlangerEditor.h"/>
     <ClInclude Include="..\..\Source\FX\Flanger\TwonkFlangerProcessor.h"/>
     <ClInclude Include="..\..\Source\FX\MIDI Controller\HexagonController.h"/>
@@ -2046,6 +2059,7 @@
     <ClInclude Include="..\..\Source\UI\PluginListWindow.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkLookAndFeel.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkFilterPopupProperties.h"/>
+    <ClInclude Include="..\..\Source\UI\TwonkFilterPopupPropertiesSegment.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkProgramList.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkSaveProgramDialog.h"/>
     <ClInclude Include="..\..\Source\UI\TwonkProgramMenu.h"/>
@@ -2764,14 +2778,18 @@
     <None Include="..\..\Source\Resources\bg1.jpg"/>
     <None Include="..\..\Source\Resources\Default.generic.twonk"/>
     <None Include="..\..\Source\Resources\icon_audio_dev.png"/>
+    <None Include="..\..\Source\Resources\icon_bypass2.png"/>
     <None Include="..\..\Source\Resources\icon_close.png"/>
     <None Include="..\..\Source\Resources\icon_delete.png"/>
+    <None Include="..\..\Source\Resources\icon_disconnect.png"/>
     <None Include="..\..\Source\Resources\icon_dock_on_bottom.png"/>
     <None Include="..\..\Source\Resources\icon_effect.png"/>
     <None Include="..\..\Source\Resources\icon_floppy.png"/>
+    <None Include="..\..\Source\Resources\icon_gui.png"/>
     <None Include="..\..\Source\Resources\icon_loop.png"/>
     <None Include="..\..\Source\Resources\icon_midi_64.png"/>
     <None Include="..\..\Source\Resources\icon_min_max.png"/>
+    <None Include="..\..\Source\Resources\icon_parameters.png"/>
     <None Include="..\..\Source\Resources\icon_pause.png"/>
     <None Include="..\..\Source\Resources\icon_piano.png"/>
     <None Include="..\..\Source\Resources\icon_pin.png"/>
@@ -2780,6 +2798,7 @@
     <None Include="..\..\Source\Resources\icon_plugin_internal.png"/>
     <None Include="..\..\Source\Resources\icon_plugin_midi.png"/>
     <None Include="..\..\Source\Resources\icon_preferences.png"/>
+    <None Include="..\..\Source\Resources\icon_programs2.png"/>
     <None Include="..\..\Source\Resources\icon_project.png"/>
     <None Include="..\..\Source\Resources\icon_question.jpg"/>
     <None Include="..\..\Source\Resources\icon_rename.png"/>
@@ -2790,7 +2809,6 @@
     <None Include="..\..\Source\Resources\LiberationSans-Regular.ttf"/>
     <None Include="..\..\Source\Resources\midi_input.png"/>
     <None Include="..\..\Source\Resources\midi_output.png"/>
-    <None Include="..\..\Source\Resources\popup_bg.png"/>
     <None Include="..\..\Source\Resources\sampler_bg.jpg"/>
     <None Include="..\..\Source\Resources\terminess.ttf"/>
     <None Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>

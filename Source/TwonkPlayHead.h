@@ -30,7 +30,7 @@ class TwonkPlayHead : public AudioPlayHead, public AsyncUpdater, public AudioIOD
 		const bool isPlaying() const;
 		void pause();
 		void reset();
-		void setLooping();
+		void setLooping(bool isLooping);
 		void setExternalSync(const bool _shouldSync) { }
 		void addClockListener(TwonkClockListener *listenerToAdd);
 		void removeClockListener(TwonkClockListener *listenerToRemove);
@@ -53,4 +53,7 @@ class TwonkPlayHead : public AudioPlayHead, public AsyncUpdater, public AudioIOD
 		double sampleRate;
 		AudioDeviceManager &dm;
 		CurrentPositionInfo currentPostion;
+		double timeInSecondsOffset = 0.0;
+		double ppqPositionOffset = 0.0;
+		double timeInSamplesOffset = 0.0;
 };

@@ -42,13 +42,13 @@ TwonkAudioSettingsMenu::TwonkAudioSettingsMenu (GraphEditorPanel &_owner)
     addAndMakeVisible (settingsPlugins.get());
     settingsPlugins->setName ("SAVE");
 
-    settingsPlugins->setBounds (72, 0, 64, 64);
+    settingsPlugins->setBounds (56, 0, 48, 48);
 
     settingsAudio.reset (new TwonkToolBarButton());
     addAndMakeVisible (settingsAudio.get());
     settingsAudio->setName ("NEW");
 
-    settingsAudio->setBounds (0, 0, 64, 64);
+    settingsAudio->setBounds (0, 0, 48, 48);
 
 
     //[UserPreSize]
@@ -60,7 +60,7 @@ TwonkAudioSettingsMenu::TwonkAudioSettingsMenu (GraphEditorPanel &_owner)
 	settingsPlugins->addListener(this);
     //[/UserPreSize]
 
-    setSize (136, 64);
+    setSize (104, 48);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -135,14 +135,14 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="TwonkAudioSettingsMenu" componentName=""
                  parentClasses="public Component, public Button::Listener" constructorParams="GraphEditorPanel &amp;_owner"
                  variableInitialisers="owner(_owner)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="136"
-                 initialHeight="64">
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="104"
+                 initialHeight="48">
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="SAVE" id="f47128457b7b2ed7" memberName="settingsPlugins"
-                    virtualName="" explicitFocusOrder="0" pos="72 0 64 64" class="TwonkToolBarButton"
+                    virtualName="" explicitFocusOrder="0" pos="56 0 48 48" class="TwonkToolBarButton"
                     params=""/>
   <GENERICCOMPONENT name="NEW" id="6606329e0f8f9cc5" memberName="settingsAudio" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 64 64" class="TwonkToolBarButton"
+                    explicitFocusOrder="0" pos="0 0 48 48" class="TwonkToolBarButton"
                     params=""/>
 </JUCER_COMPONENT>
 

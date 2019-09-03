@@ -6,12 +6,11 @@
  * IN 'COPYING'. PLEASE READ THESE TERMS BEFORE DISTRIBUTING.       *
  *                                                                  *
  * THE OggVorbis SOURCE CODE IS (C) COPYRIGHT 1994-2001             *
- * by the Xiph.Org Foundation http://www.xiph.org/                  *
+ * by the Xiph.Org Foundation https://xiph.org/                     *
  *                                                                  *
  ********************************************************************
 
  function: vorbis encode-engine setup
- last mod: $Id: vorbisenc.h 17021 2010-03-24 09:29:41Z xiphmont $
 
  ********************************************************************/
 
@@ -69,7 +68,7 @@ extern int vorbis_encode_init(vorbis_info *vi,
  * This function performs step-one of a three-step bitrate-managed encode
  * setup.  It functions similarly to the one-step setup performed by \ref
  * vorbis_encode_init but allows an application to make further encode setup
- * tweaks using \ref vorbis_encode_ctl before finally calling \ref
+ * tweaks using \ref vorbis_encode_ctl before ly calling \ref
  * vorbis_encode_setup_init to complete the setup process.
  *
  * Before this function is called, the \ref vorbis_info struct should be
@@ -107,7 +106,7 @@ extern int vorbis_encode_setup_managed(vorbis_info *vi,
  * (quality-based) encode setup.  It functions similarly to the one-step setup
  * performed by \ref vorbis_encode_init_vbr() but allows an application to
  * make further encode setup tweaks using \ref vorbis_encode_ctl() before
- * finally calling \ref vorbis_encode_setup_init to complete the setup
+ * ly calling \ref vorbis_encode_setup_init to complete the setup
  * process.
  *
  * Before this function is called, the \ref vorbis_info struct should be
@@ -171,7 +170,7 @@ extern int vorbis_encode_init_vbr(vorbis_info *vi,
  * \ref vorbis_encode_setup_managed() or \ref vorbis_encode_setup_vbr() called to
  * initialize the high-level encoding setup, and \ref vorbis_encode_ctl()
  * called if necessary to make encoding setup changes.
- * vorbis_encode_setup_init() finalizes the highlevel encoding structure into
+ * vorbis_encode_setup_init() izes the highlevel encoding structure into
  * a complete encoding setup after which the application may make no further
  * setup changes.
  *

@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -24,12 +24,12 @@ namespace juce
 {
 
 //==============================================================================
-class BelaMidiInput
+class MidiInput::Pimpl
 {
 public:
-    static Array<BelaMidiInput*> midiInputs;
+    static Array<Pimpl*> midiInputs;
 
-    BelaMidiInput (const String& port, MidiInput* input, MidiInputCallback* callback)
+    Pimpl (const String& port, MidiInput* input, MidiInputCallback* callback)
         : midiInput (input), midiPort (port), midiCallback (callback)
     {
         jassert (midiCallback != nullptr);
@@ -38,7 +38,7 @@ public:
         buffer.resize (32);
     }
 
-    ~BelaMidiInput()
+    ~Pimpl()
     {
         stop();
         midiInputs.removeAllInstancesOf (this);
@@ -56,7 +56,7 @@ public:
 
     void poll()
     {
-        int receivedBytes = 0;
+        size_t receivedBytes = 0;
 
         for (;;)
         {
@@ -70,13 +70,13 @@ public:
 
             if (receivedBytes == buffer.size())
             {
-                pushMidiData (receivedBytes);
+                pushMidiData (static_cast<int> (receivedBytes));
                 receivedBytes = 0;
             }
         }
 
         if (receivedBytes > 0)
-            pushMidiData (receivedBytes);
+            pushMidiData ((int) receivedBytes);
     }
 
     static Array<MidiDeviceInfo> getDevices (bool input)
@@ -87,6 +87,11 @@ public:
             findMidiDevices (devices, input, card);
 
         return devices;
+    }
+
+    void pushMidiMessage (juce::MidiMessage& message)
+    {
+        concatenator.pushMidiData (message.getRawData(), message.getRawDataSize(), Time::getMillisecondCounter() * 0.001, midiInput, *midiCallback);
     }
 
 private:
@@ -136,7 +141,7 @@ private:
             snd_rawmidi_info_t* info;
             snd_rawmidi_info_alloca (&info);
 
-            snd_rawmidi_info_set_device (info, device);
+            snd_rawmidi_info_set_device (info, (unsigned int) device);
             snd_rawmidi_info_set_stream (info, input ? SND_RAWMIDI_STREAM_INPUT
                                                      : SND_RAWMIDI_STREAM_OUTPUT);
 
@@ -144,7 +149,7 @@ private:
 
             auto subCount = snd_rawmidi_info_get_subdevices_count (info);
 
-            for (int sub = 0; sub < subCount; ++sub)
+            for (size_t sub = 0; sub < subCount; ++sub)
             {
                 snd_rawmidi_info_set_subdevice (info, sub);
 
@@ -161,17 +166,17 @@ private:
         snd_ctl_close (ctl);
     }
 
-    String midiPort;
     MidiInput* const midiInput;
+    String midiPort;
     MidiInputCallback* const midiCallback;
 
     Midi midi;
     MidiDataConcatenator concatenator { 512 };
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BelaMidiInput)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Pimpl)
 };
 
-Array<BelaMidiInput*> BelaMidiInput::midiInputs;
+Array<MidiInput::Pimpl*> MidiInput::Pimpl::midiInputs;
 
 
 //==============================================================================
@@ -190,8 +195,26 @@ public:
     }
 
     //==============================================================================
-    StringArray getOutputChannelNames() override           { return { "Out #1", "Out #2" }; }
-    StringArray getInputChannelNames() override            { return { "In #1",  "In #2" }; }
+    StringArray getOutputChannelNames() override
+    {
+        StringArray result;
+
+        for (int i = 1; i <= actualNumberOfOutputs; i++)
+            result.add ("Out #" + std::to_string (i));
+
+        return result;
+    }
+
+    StringArray getInputChannelNames() override
+    {
+        StringArray result;
+
+        for (int i = 1; i <= actualNumberOfInputs; i++)
+            result.add ("In #" + std::to_string (i));
+
+        return result;
+    }
+
     Array<double> getAvailableSampleRates() override       { return { 44100.0 }; }
     Array<int> getAvailableBufferSizes() override          { /* TODO: */ return { getDefaultBufferSize() }; }
     int getDefaultBufferSize() override                    { return defaultSettings.periodSize; }
@@ -213,15 +236,27 @@ public:
         auto numIns = getNumContiguousSetBits (inputChannels);
         auto numOuts = getNumContiguousSetBits (outputChannels);
 
-        settings.useAnalog            = 0;
-        settings.useDigital           = 0;
-        settings.numAudioInChannels   = numIns;
-        settings.numAudioOutChannels  = numOuts;
+        // Input and Output channels are numbered as follows
+        //
+        // 0  .. 1  - audio
+        // 2  .. 9  - analog
+
+        if (numIns > 2 || numOuts > 2)
+        {
+            settings.useAnalog            = true;
+            settings.numAnalogInChannels  = std::max (numIns - 2, 8);
+            settings.numAnalogOutChannels = std::max (numOuts - 2, 8);
+            settings.uniformSampleRate    = true;
+        }
+
+        settings.numAudioInChannels   = std::max (numIns, 2);
+        settings.numAudioOutChannels  = std::max (numOuts, 2);
+
         settings.detectUnderruns      = 1;
         settings.setup                = setupCallback;
         settings.render               = renderCallback;
         settings.cleanup              = cleanupCallback;
-        settings.interleave           = 1;
+        settings.interleave           = 0;
 
         if (bufferSizeSamples > 0)
             settings.periodSize = bufferSizeSamples;
@@ -240,10 +275,7 @@ public:
         actualNumberOfInputs  = jmin (numIns, actualNumberOfInputs);
         actualNumberOfOutputs = jmin (numOuts, actualNumberOfOutputs);
 
-        audioInBuffer.setSize (actualNumberOfInputs, actualBufferSize);
         channelInBuffer.calloc (actualNumberOfInputs);
-
-        audioOutBuffer.setSize (actualNumberOfOutputs, actualBufferSize);
         channelOutBuffer.calloc (actualNumberOfOutputs);
 
         return {};
@@ -265,10 +297,7 @@ public:
             actualNumberOfInputs = 0;
             actualNumberOfOutputs = 0;
 
-            audioInBuffer.setSize (0, 0);
             channelInBuffer.free();
-
-            audioOutBuffer.setSize (0, 0);
             channelOutBuffer.free();
         }
     }
@@ -298,9 +327,6 @@ public:
         }
         else
         {
-            audioInBuffer.clear();
-            audioOutBuffer.clear();
-
             callback = newCallback;
             isRunning = (Bela_startAudio() == 0);
 
@@ -340,25 +366,26 @@ public:
     String getLastError() override    { return lastError; }
 
     //==============================================================================
-    int getCurrentBufferSizeSamples() override            { return actualBufferSize; }
+    int getCurrentBufferSizeSamples() override            { return (int) actualBufferSize; }
     double getCurrentSampleRate() override                { return 44100.0; }
-    int getCurrentBitDepth() override                     { return 24; }
+    int getCurrentBitDepth() override                     { return 16; }
     BigInteger getActiveOutputChannels() const override   { BigInteger b; b.setRange (0, actualNumberOfOutputs, true); return b; }
     BigInteger getActiveInputChannels() const override    { BigInteger b; b.setRange (0, actualNumberOfInputs, true);  return b; }
     int getOutputLatencyInSamples() override              { /* TODO */ return 0; }
     int getInputLatencyInSamples() override               { /* TODO */ return 0; }
-    int getXRunCount() const noexcept                     { return underruns; }
+    int getXRunCount() const noexcept override            { return underruns; }
 
     //==============================================================================
     static const char* const belaTypeName;
 
 private:
+
     //==============================================================================
     bool setup (BelaContext& context)
     {
         actualBufferSize      = context.audioFrames;
-        actualNumberOfInputs  = context.audioInChannels;
-        actualNumberOfOutputs = context.audioOutChannels;
+        actualNumberOfInputs  = (int) (context.audioInChannels + context.analogInChannels);
+        actualNumberOfOutputs = (int) (context.audioOutChannels + context.analogOutChannels);
         isBelaOpen = true;
         firstCallback = true;
 
@@ -378,65 +405,37 @@ private:
         ScopedLock lock (callbackLock);
 
         // Check for and process and midi
-        for (auto midiInput : BelaMidiInput::midiInputs)
+        for (auto midiInput : MidiInput::Pimpl::midiInputs)
             midiInput->poll();
 
         if (callback != nullptr)
         {
             jassert (context.audioFrames <= actualBufferSize);
-            auto numSamples = jmin (context.audioFrames, actualBufferSize);
-            auto interleaved = ((context.flags & BELA_FLAG_INTERLEAVED) != 0);
-            auto numIns  = jmin (actualNumberOfInputs,  (int) context.audioInChannels);
-            auto numOuts = jmin (actualNumberOfOutputs, (int) context.audioOutChannels);
+            jassert ((context.flags & BELA_FLAG_INTERLEAVED) == 0);
 
-            int ch;
+            using Frames = decltype (context.audioFrames);
 
-            if (interleaved && context.audioInChannels > 1)
+            // Setup channelInBuffers
+            for (int ch = 0; ch < actualNumberOfInputs; ++ch)
             {
-                for (ch = 0; ch < numIns; ++ch)
-                {
-                    using DstSampleType = AudioData::Pointer<AudioData::Float32, AudioData::NativeEndian, AudioData::NonInterleaved, AudioData::NonConst>;
-                    using SrcSampleType = AudioData::Pointer<AudioData::Float32, AudioData::NativeEndian, AudioData::Interleaved,    AudioData::Const>;
-
-                    channelInBuffer[ch] = audioInBuffer.getWritePointer (ch);
-                    DstSampleType dstData (audioInBuffer.getWritePointer (ch));
-                    SrcSampleType srcData (context.audioIn + ch, context.audioInChannels);
-                    dstData.convertSamples (srcData, numSamples);
-                }
-            }
-            else
-            {
-                for (ch = 0; ch < numIns; ++ch)
-                    channelInBuffer[ch] = context.audioIn + (ch * numSamples);
+                if (ch < analogChannelStart)
+                    channelInBuffer[ch] = &context.audioIn[(Frames) ch * context.audioFrames];
+                else
+                    channelInBuffer[ch] = &context.analogIn[(Frames) (ch - analogChannelStart) * context.analogFrames];
             }
 
-            for (; ch < actualNumberOfInputs; ++ch)
+            // Setup channelOutBuffers
+            for (int ch = 0; ch < actualNumberOfOutputs; ++ch)
             {
-                channelInBuffer[ch] = audioInBuffer.getWritePointer(ch);
-                zeromem (audioInBuffer.getWritePointer (ch), sizeof (float) * numSamples);
+                if (ch < analogChannelStart)
+                    channelOutBuffer[ch] = &context.audioOut[(Frames) ch * context.audioFrames];
+                else
+                    channelOutBuffer[ch] = &context.analogOut[(Frames) (ch - analogChannelStart) * context.audioFrames];
             }
-
-            for (int i = 0; i < actualNumberOfOutputs; ++i)
-                channelOutBuffer[i] = ((interleaved && context.audioOutChannels > 1) || i >= context.audioOutChannels ? audioOutBuffer.getWritePointer (i)
-                                                                                                                      : context.audioOut + (i * numSamples));
 
             callback->audioDeviceIOCallback (channelInBuffer.getData(), actualNumberOfInputs,
                                              channelOutBuffer.getData(), actualNumberOfOutputs,
-                                             numSamples);
-
-            if (interleaved && context.audioOutChannels > 1)
-            {
-                for (int i = 0; i < numOuts; ++i)
-                {
-                    using DstSampleType = AudioData::Pointer<AudioData::Float32, AudioData::NativeEndian, AudioData::Interleaved,    AudioData::NonConst>;
-                    using SrcSampleType = AudioData::Pointer<AudioData::Float32, AudioData::NativeEndian, AudioData::NonInterleaved, AudioData::Const>;
-
-                    SrcSampleType srcData (channelOutBuffer[i]);
-                    DstSampleType dstData (context.audioOut + i, context.audioOutChannels);
-
-                    dstData.convertSamples (srcData, numSamples);
-                }
-            }
+                                             (int) context.audioFrames);
         }
     }
 
@@ -448,6 +447,7 @@ private:
             callback->audioDeviceStopped();
     }
 
+    const int analogChannelStart  = 2;
 
     //==============================================================================
     uint64_t expectedElapsedAudioSamples = 0;
@@ -490,9 +490,10 @@ private:
     uint32_t actualBufferSize = 0;
     int actualNumberOfInputs = 0, actualNumberOfOutputs = 0;
 
-    AudioBuffer<float> audioInBuffer, audioOutBuffer;
     HeapBlock<const float*> channelInBuffer;
     HeapBlock<float*> channelOutBuffer;
+
+    bool includeAnalogSupport;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BelaAudioIODevice)
 };
@@ -504,7 +505,6 @@ struct BelaAudioIODeviceType  : public AudioIODeviceType
 {
     BelaAudioIODeviceType() : AudioIODeviceType ("Bela") {}
 
-    // TODO: support analog outputs
     StringArray getDeviceNames (bool) const override                       { return StringArray (BelaAudioIODevice::belaTypeName); }
     void scanForDevices() override                                         {}
     int getDefaultDeviceIndex (bool) const override                        { return 0; }
@@ -513,6 +513,7 @@ struct BelaAudioIODeviceType  : public AudioIODeviceType
 
     AudioIODevice* createDevice (const String& outputName, const String& inputName) override
     {
+        // TODO: switching whether to support analog/digital with possible multiple Bela device types?
         if (outputName == BelaAudioIODevice::belaTypeName || inputName == BelaAudioIODevice::belaTypeName)
             return new BelaAudioIODevice();
 
@@ -523,24 +524,18 @@ struct BelaAudioIODeviceType  : public AudioIODeviceType
 };
 
 //==============================================================================
-AudioIODeviceType* AudioIODeviceType::createAudioIODeviceType_Bela()
-{
-    return new BelaAudioIODeviceType();
-}
-
-//==============================================================================
 MidiInput::MidiInput (const String& deviceName, const String& deviceID)
     : deviceInfo (deviceName, deviceID)
 {
 }
 
-MidiInput::~MidiInput()   { delete static_cast<BelaMidiInput*> (internal); }
-void MidiInput::start()   { static_cast<BelaMidiInput*> (internal)->start(); }
-void MidiInput::stop()    { static_cast<BelaMidiInput*> (internal)->stop(); }
+MidiInput::~MidiInput() = default;
+void MidiInput::start()   { internal->start(); }
+void MidiInput::stop()    { internal->stop(); }
 
 Array<MidiDeviceInfo> MidiInput::getAvailableDevices()
 {
-    return BelaMidiInput::getDevices (true);
+    return Pimpl::getDevices (true);
 }
 
 MidiDeviceInfo MidiInput::getDefaultDevice()
@@ -554,7 +549,7 @@ std::unique_ptr<MidiInput> MidiInput::openDevice (const String& deviceIdentifier
         return {};
 
     std::unique_ptr<MidiInput> midiInput (new MidiInput (deviceIdentifier, deviceIdentifier));
-    midiInput->internal = new BelaMidiInput (deviceIdentifier, midiInput.get(), callback);
+    midiInput->internal = std::make_unique<Pimpl> (deviceIdentifier, midiInput.get(), callback);
 
     return midiInput;
 }
@@ -588,7 +583,8 @@ std::unique_ptr<MidiInput> MidiInput::openDevice (int index, MidiInputCallback* 
 
 //==============================================================================
 // TODO: Add Bela MidiOutput support
-MidiOutput::~MidiOutput()                                                {}
+class MidiOutput::Pimpl {};
+MidiOutput::~MidiOutput() = default;
 void MidiOutput::sendMessageNow (const MidiMessage&)                     {}
 Array<MidiDeviceInfo> MidiOutput::getAvailableDevices()                  { return {}; }
 MidiDeviceInfo MidiOutput::getDefaultDevice()                            { return {}; }

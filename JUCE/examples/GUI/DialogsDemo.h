@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE examples.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    The code included in this file is provided under the terms of the ISC license
    http://www.isc.org/downloads/software-support-policy/isc-license. Permission
@@ -144,7 +144,7 @@ public:
         StringArray windowNames { "Plain Alert Window", "Alert Window With Warning Icon", "Alert Window With Info Icon", "Alert Window With Question Icon",
                                   "OK Cancel Alert Window", "Alert Window With Extra Components", "CalloutBox", "Thread With Progress Window",
                                   "'Load' File Browser", "'Load' File Browser With Image Preview", "'Choose Directory' File Browser", "'Save' File Browser",
-                                  "Share Text", "Share Files", "Share Images"  };
+                                  "Share Text", "Share Files", "Share Images" };
 
         // warn in case we add any windows
         jassert (windowNames.size() == numDialogs);
@@ -219,13 +219,9 @@ private:
         {
             AlertWindow::AlertIconType icon = AlertWindow::NoIcon;
 
-            switch (type)
-            {
-                case warningAlertWindow:    icon = AlertWindow::WarningIcon;    break;
-                case infoAlertWindow:       icon = AlertWindow::InfoIcon;       break;
-                case questionAlertWindow:   icon = AlertWindow::QuestionIcon;   break;
-                default: break;
-            }
+            if (type == warningAlertWindow)   icon = AlertWindow::WarningIcon;
+            if (type == infoAlertWindow)      icon = AlertWindow::InfoIcon;
+            if (type == questionAlertWindow)  icon = AlertWindow::QuestionIcon;
 
             AlertWindow::showMessageBoxAsync (icon, "This is an AlertWindow",
                                               "And this is the AlertWindow's message. Blah blah blah blah blah blah blah blah blah blah blah blah blah.",
@@ -240,18 +236,23 @@ private:
         }
         else if (type == calloutBoxWindow)
         {
-            auto* colourSelector = new ColourSelector();
+            auto colourSelector = std::make_unique<ColourSelector>();
 
             colourSelector->setName ("background");
             colourSelector->setCurrentColour (findColour (TextButton::buttonColourId));
             colourSelector->setColour (ColourSelector::backgroundColourId, Colours::transparentBlack);
             colourSelector->setSize (300, 400);
 
-            CallOutBox::launchAsynchronously (colourSelector, button.getScreenBounds(), nullptr);
+            CallOutBox::launchAsynchronously (std::move (colourSelector), button.getScreenBounds(), nullptr);
         }
         else if (type == extraComponentsAlertWindow)
         {
            #if JUCE_MODAL_LOOPS_PERMITTED
+            // Modal loops are extremely dangerous. Do not copy the code below unless you are absolutely
+            // certain you are aware of all the many complicated things that can go catastrophically
+            // wrong. Read the documentation for Component::runModalLoop. If you find you are using code
+            // similar to this you should refactor things to remove it.
+
             AlertWindow w ("AlertWindow demo..",
                            "This AlertWindow has a couple of extra components added to show how to add drop-down lists and text entry boxes.",
                            AlertWindow::QuestionIcon);
@@ -339,7 +340,7 @@ private:
                     FileOutputStream outStream (fileToSave);
 
                     if (outStream.openedOk())
-                        if (auto inStream = std::unique_ptr<InputStream> (createAssetInputStream ("juce_icon.png")))
+                        if (auto inStream = createAssetInputStream ("juce_icon.png"))
                             outStream.writeFromInputStream (*inStream, -1);
                 }
 
@@ -419,7 +420,7 @@ private:
                 fileToSave.replaceWithText ("Make it fast!");
 
                 Array<URL> urls;
-                urls.add ({ fileToSave.getFullPathName() });
+                urls.add (URL (fileToSave));
 
                 ContentSharer::getInstance()->shareFiles (urls,
                     [] (bool success, const String& error)

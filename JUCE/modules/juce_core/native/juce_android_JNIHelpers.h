@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -149,7 +149,7 @@ private:
     //==============================================================================
     jobject obj = nullptr;
 
-    static inline jobject retain (jobject obj, JNIEnv* env)
+    static jobject retain (jobject obj, JNIEnv* env)
     {
         return obj == nullptr ? nullptr : env->NewGlobalRef (obj);
     }
@@ -875,13 +875,29 @@ LocalRef<jobject> CreateJavaInterface (AndroidInterfaceImplementer* implementer,
 class ActivityLifecycleCallbacks     : public AndroidInterfaceImplementer
 {
 public:
-    virtual void onActivityCreated (jobject /*activity*/, jobject /*bundle*/) {}
-    virtual void onActivityDestroyed (jobject /*activity*/) {}
-    virtual void onActivityPaused (jobject /*activity*/) {}
-    virtual void onActivityResumed (jobject /*activity*/) {}
-    virtual void onActivitySaveInstanceState (jobject /*activity*/, jobject /*bundle*/) {}
-    virtual void onActivityStarted (jobject /*activity*/) {}
-    virtual void onActivityStopped (jobject /*activity*/) {}
+    virtual void onActivityPreCreated            (jobject /*activity*/, jobject /*bundle*/)  {}
+    virtual void onActivityPreDestroyed          (jobject /*activity*/)                      {}
+    virtual void onActivityPrePaused             (jobject /*activity*/)                      {}
+    virtual void onActivityPreResumed            (jobject /*activity*/)                      {}
+    virtual void onActivityPreSaveInstanceState  (jobject /*activity*/, jobject /*bundle*/)  {}
+    virtual void onActivityPreStarted            (jobject /*activity*/)                      {}
+    virtual void onActivityPreStopped            (jobject /*activity*/)                      {}
+
+    virtual void onActivityCreated               (jobject /*activity*/, jobject /*bundle*/)  {}
+    virtual void onActivityDestroyed             (jobject /*activity*/)                      {}
+    virtual void onActivityPaused                (jobject /*activity*/)                      {}
+    virtual void onActivityResumed               (jobject /*activity*/)                      {}
+    virtual void onActivitySaveInstanceState     (jobject /*activity*/, jobject /*bundle*/)  {}
+    virtual void onActivityStarted               (jobject /*activity*/)                      {}
+    virtual void onActivityStopped               (jobject /*activity*/)                      {}
+
+    virtual void onActivityPostCreated           (jobject /*activity*/, jobject /*bundle*/)  {}
+    virtual void onActivityPostDestroyed         (jobject /*activity*/)                      {}
+    virtual void onActivityPostPaused            (jobject /*activity*/)                      {}
+    virtual void onActivityPostResumed           (jobject /*activity*/)                      {}
+    virtual void onActivityPostSaveInstanceState (jobject /*activity*/, jobject /*bundle*/)  {}
+    virtual void onActivityPostStarted           (jobject /*activity*/)                      {}
+    virtual void onActivityPostStopped           (jobject /*activity*/)                      {}
 
 private:
     jobject invoke (jobject, jobject, jobjectArray) override;
@@ -967,7 +983,7 @@ public:
 //==============================================================================
 // Allows you to start an activity without requiring to have an activity
 void startAndroidActivityForResult (const LocalRef<jobject>& intent, int requestCode,
-                                    std::function<void(int, int, LocalRef<jobject>)> && callback);
+                                    std::function<void (int, int, LocalRef<jobject>)> && callback);
 
 //==============================================================================
 bool androidHasSystemFeature (const String& property);

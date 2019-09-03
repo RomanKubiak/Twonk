@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -25,7 +25,7 @@ namespace juce
 
 /**
     Firmware below 0.3.0 does not report its version over the Blocks API.
-    This class can make requests and process responses to retreive the master Block version.
+    This class can make requests and process responses to retrieve the master Block version.
 */
 class DepreciatedVersionReader :  private MIDIDeviceConnection::Listener,
                                   private Timer

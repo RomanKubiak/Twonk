@@ -36,8 +36,7 @@ TwonkToolBarHeader::TwonkToolBarHeader (GraphEditorPanel &_owner)
     : owner(_owner)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-	baseColour = Colours::red;
-	startTimerHz(1);
+	baseColour = Colours::darkgrey;
     //[/Constructor_pre]
 
 
@@ -72,9 +71,6 @@ void TwonkToolBarHeader::paint (Graphics& g)
 	g.fillPath(roundingHexagon);
 	g.reduceClipRegion(roundingHexagon);
 	g.fillCheckerBoard(getLocalBounds().toFloat(), 4.0f, 4.0f, Colours::red, Colours::red.darker());
-	g.setColour(Colours::red.overlaidWith(Colours::white));
-	g.setFont(getDefaultTwonkSansFont().withHeight(12.0f).boldened());
-	g.drawMultiLineText(String::formatted("CPU\n%.1f\nMEM\n%d", getCpuUsage(), getMemoryUsageMegabytes()), 16, 16, 32, Justification::centred);
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
@@ -119,11 +115,6 @@ void TwonkToolBarHeader::mouseDoubleClick (const MouseEvent& e)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void TwonkToolBarHeader::timerCallback()
-{
-	cpuUsage = owner.getAudioDeviceManager().getCpuUsage();
-	repaint();
-}
 //[/MiscUserCode]
 
 
@@ -137,7 +128,7 @@ void TwonkToolBarHeader::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TwonkToolBarHeader" componentName=""
-                 parentClasses="public Component, public Timer" constructorParams="GraphEditorPanel &amp;_owner"
+                 parentClasses="public Component" constructorParams="GraphEditorPanel &amp;_owner"
                  variableInitialisers="owner(_owner)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="64"
                  initialHeight="64">

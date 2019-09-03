@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 6 End-User License
+   Agreement and JUCE Privacy Policy (both effective as of the 16th June 2020).
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-6-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -44,11 +43,33 @@ namespace CommandIDs
     static const int aboutBox               = 0x30300;
     static const int allWindowsForward      = 0x30400;
     static const int toggleDoublePrecision  = 0x30500;
+    static const int autoScalePluginWindows = 0x30600;
 }
 
+//==============================================================================
 ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();
 bool isOnTouchDevice();
+
+//==============================================================================
+enum class AutoScale
+{
+    scaled,
+    unscaled,
+    useDefault
+};
+
+constexpr bool autoScaleOptionAvailable =
+    #if JUCE_WINDOWS && JUCE_WIN_PER_MONITOR_DPI_AWARE
+     true;
+    #else
+     false;
+    #endif
+
+AutoScale getAutoScaleValueForPlugin (const String&);
+void setAutoScaleValueForPlugin (const String&, AutoScale);
+bool shouldAutoScalePlugin (const PluginDescription&);
+void addPluginAutoScaleOptionsSubMenu (AudioPluginInstance*, PopupMenu&);
 
 //==============================================================================
 class MainHostWindow    : public DocumentWindow,
@@ -89,25 +110,29 @@ public:
     void addPluginsToMenu (PopupMenu&);
     PluginDescription getChosenType (int menuID) const;
 
-    bool isDoublePrecisionProcessing();
-    void updatePrecisionMenuItem (ApplicationCommandInfo& info);
-
     std::unique_ptr<GraphDocumentComponent> graphHolder;
 
 private:
     //==============================================================================
+    static bool isDoublePrecisionProcessingEnabled();
+    static bool isAutoScalePluginWindowsEnabled();
+
+    static void updatePrecisionMenuItem (ApplicationCommandInfo& info);
+    static void updateAutoScaleMenuItem (ApplicationCommandInfo& info);
+
+    void showAudioSettings();
+
+    //==============================================================================
     AudioDeviceManager deviceManager;
     AudioPluginFormatManager formatManager;
 
-    Array<PluginDescription> internalTypes;
+    std::vector<PluginDescription> internalTypes;
     KnownPluginList knownPluginList;
     KnownPluginList::SortMethod pluginSortMethod;
     Array<PluginDescription> pluginDescriptions;
 
     class PluginListWindow;
     std::unique_ptr<PluginListWindow> pluginListWindow;
-
-    void showAudioSettings();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainHostWindow)
 };

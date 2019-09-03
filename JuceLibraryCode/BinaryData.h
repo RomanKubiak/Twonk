@@ -23,11 +23,17 @@ namespace BinaryData
     extern const char*   icon_audio_dev_png;
     const int            icon_audio_dev_pngSize = 2555;
 
+    extern const char*   icon_bypass2_png;
+    const int            icon_bypass2_pngSize = 3528;
+
     extern const char*   icon_close_png;
     const int            icon_close_pngSize = 6415;
 
     extern const char*   icon_delete_png;
     const int            icon_delete_pngSize = 4129;
+
+    extern const char*   icon_disconnect_png;
+    const int            icon_disconnect_pngSize = 4568;
 
     extern const char*   icon_dock_on_bottom_png;
     const int            icon_dock_on_bottom_pngSize = 6010;
@@ -38,6 +44,9 @@ namespace BinaryData
     extern const char*   icon_floppy_png;
     const int            icon_floppy_pngSize = 3363;
 
+    extern const char*   icon_gui_png;
+    const int            icon_gui_pngSize = 7329;
+
     extern const char*   icon_loop_png;
     const int            icon_loop_pngSize = 1993;
 
@@ -46,6 +55,9 @@ namespace BinaryData
 
     extern const char*   icon_min_max_png;
     const int            icon_min_max_pngSize = 1308;
+
+    extern const char*   icon_parameters_png;
+    const int            icon_parameters_pngSize = 4700;
 
     extern const char*   icon_pause_png;
     const int            icon_pause_pngSize = 624;
@@ -70,6 +82,9 @@ namespace BinaryData
 
     extern const char*   icon_preferences_png;
     const int            icon_preferences_pngSize = 8530;
+
+    extern const char*   icon_programs2_png;
+    const int            icon_programs2_pngSize = 4909;
 
     extern const char*   icon_project_png;
     const int            icon_project_pngSize = 7672;
@@ -101,9 +116,6 @@ namespace BinaryData
     extern const char*   midi_output_png;
     const int            midi_output_pngSize = 15080;
 
-    extern const char*   popup_bg_png;
-    const int            popup_bg_pngSize = 16742;
-
     extern const char*   sampler_bg_jpg;
     const int            sampler_bg_jpgSize = 750695;
 
@@ -111,7 +123,7 @@ namespace BinaryData
     const int            terminess_ttfSize = 879176;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 34;
+    const int namedResourceListSize = 38;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

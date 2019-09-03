@@ -36,8 +36,7 @@ class GraphEditorPanel;
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class TwonkToolBarHeader  : public Component,
-                            public Timer
+class TwonkToolBarHeader  : public Component
 {
 public:
     //==============================================================================

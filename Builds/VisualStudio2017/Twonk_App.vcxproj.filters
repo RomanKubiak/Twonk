@@ -20,6 +20,9 @@
     <Filter Include="Twonk\Source\FX\Distortion">
       <UniqueIdentifier>{CBD82D54-4D61-02AA-CFC9-6C2665579C70}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Twonk\Source\FX\FifteenStep">
+      <UniqueIdentifier>{88CD4544-802F-7413-B101-AB2E6D471A22}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Twonk\Source\FX\Flanger">
       <UniqueIdentifier>{AD44E9BE-45D2-DCEA-6BA3-B26AF6FB0ECC}</UniqueIdentifier>
     </Filter>
@@ -508,6 +511,24 @@
     <ClCompile Include="..\..\Source\FX\Distortion\TwonkDistortionProcessor.cpp">
       <Filter>Twonk\Source\FX\Distortion</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\FX\FifteenStep\FifteenStep.cpp">
+      <Filter>Twonk\Source\FX\FifteenStep</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\FifteenStep\FifteenStepEditor.cpp">
+      <Filter>Twonk\Source\FX\FifteenStep</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\FifteenStep\FifteenStepHexRow.cpp">
+      <Filter>Twonk\Source\FX\FifteenStep</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\FifteenStep\FifteenStepHexStep.cpp">
+      <Filter>Twonk\Source\FX\FifteenStep</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\FifteenStep\FifteenStepProcessor.cpp">
+      <Filter>Twonk\Source\FX\FifteenStep</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FX\FifteenStep\FifteenStepRowHolder.cpp">
+      <Filter>Twonk\Source\FX\FifteenStep</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\FX\Flanger\TwonkFlangerEditor.cpp">
       <Filter>Twonk\Source\FX\Flanger</Filter>
     </ClCompile>
@@ -620,6 +641,9 @@
       <Filter>Twonk\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkFilterPopupProperties.cpp">
+      <Filter>Twonk\Source\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\TwonkFilterPopupPropertiesSegment.cpp">
       <Filter>Twonk\Source\UI\Widgets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\TwonkProgramList.cpp">
@@ -2628,6 +2652,24 @@
     <ClInclude Include="..\..\Source\FX\Distortion\TwonkDistortionProcessor.h">
       <Filter>Twonk\Source\FX\Distortion</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\FX\FifteenStep\FifteenStep.h">
+      <Filter>Twonk\Source\FX\FifteenStep</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\FifteenStep\FifteenStepEditor.h">
+      <Filter>Twonk\Source\FX\FifteenStep</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\FifteenStep\FifteenStepHexRow.h">
+      <Filter>Twonk\Source\FX\FifteenStep</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\FifteenStep\FifteenStepHexStep.h">
+      <Filter>Twonk\Source\FX\FifteenStep</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\FifteenStep\FifteenStepProcessor.h">
+      <Filter>Twonk\Source\FX\FifteenStep</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FX\FifteenStep\FifteenStepRowHolder.h">
+      <Filter>Twonk\Source\FX\FifteenStep</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\FX\Flanger\TwonkFlangerEditor.h">
       <Filter>Twonk\Source\FX\Flanger</Filter>
     </ClInclude>
@@ -2749,6 +2791,9 @@
       <Filter>Twonk\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkFilterPopupProperties.h">
+      <Filter>Twonk\Source\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\TwonkFilterPopupPropertiesSegment.h">
       <Filter>Twonk\Source\UI\Widgets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\TwonkProgramList.h">
@@ -4901,10 +4946,16 @@
     <None Include="..\..\Source\Resources\icon_audio_dev.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
+    <None Include="..\..\Source\Resources\icon_bypass2.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
     <None Include="..\..\Source\Resources\icon_close.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\icon_delete.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_disconnect.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\icon_dock_on_bottom.png">
@@ -4916,6 +4967,9 @@
     <None Include="..\..\Source\Resources\icon_floppy.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
+    <None Include="..\..\Source\Resources\icon_gui.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
     <None Include="..\..\Source\Resources\icon_loop.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
@@ -4923,6 +4977,9 @@
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\icon_min_max.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_parameters.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\icon_pause.png">
@@ -4947,6 +5004,9 @@
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\icon_preferences.png">
+      <Filter>Twonk\Source\Resources</Filter>
+    </None>
+    <None Include="..\..\Source\Resources\icon_programs2.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\icon_project.png">
@@ -4977,9 +5037,6 @@
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\midi_output.png">
-      <Filter>Twonk\Source\Resources</Filter>
-    </None>
-    <None Include="..\..\Source\Resources\popup_bg.png">
       <Filter>Twonk\Source\Resources</Filter>
     </None>
     <None Include="..\..\Source\Resources\sampler_bg.jpg">

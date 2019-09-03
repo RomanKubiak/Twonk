@@ -7,16 +7,20 @@
     <string>This app requires audio input. If you do not have an audio interface connected it will use the built-in microphone.</string>
     <key>NSCameraUsageDescription</key>
     <string>This app requires access to the camera to function correctly.</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>This app requires access to Bluetooth to function correctly.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>This app requires access to Bluetooth to function correctly.</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>UIViewControllerBasedStatusBarAppearance</key>
-    <false/>
+    <true/>
     <key>UILaunchStoryboardName</key>
     <string>LaunchScreen</string>
     <key>CFBundleExecutable</key>
     <string>${EXECUTABLE_NAME}</string>
     <key>CFBundleIdentifier</key>
-    <string>com.juce.demorunner</string>
+    <string>com.rmsl.jucedemorunner</string>
     <key>CFBundleName</key>
     <string>DemoRunner</string>
     <key>CFBundleDisplayName</key>
@@ -26,11 +30,11 @@
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleShortVersionString</key>
-    <string>5.4.4</string>
+    <string>6.0.8</string>
     <key>CFBundleVersion</key>
-    <string>5.4.4</string>
+    <string>6.0.8</string>
     <key>NSHumanReadableCopyright</key>
-    <string>Copyright (c) 2018 - ROLI Ltd.</string>
+    <string>Copyright (c) 2020 - Raw Material Software Limited</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>UIFileSharingEnabled</key>
@@ -38,14 +42,13 @@
     <key>UISupportsDocumentBrowser</key>
     <true/>
     <key>UIRequiresFullScreen</key>
-    <true/>
-    <key>UIStatusBarHidden</key>
-    <true/>
+    <false/>
     <key>UISupportedInterfaceOrientations</key>
     <array>
-      <string>UIInterfaceOrientationPortrait</string>
       <string>UIInterfaceOrientationLandscapeLeft</string>
       <string>UIInterfaceOrientationLandscapeRight</string>
+      <string>UIInterfaceOrientationPortrait</string>
+      <string>UIInterfaceOrientationPortraitUpsideDown</string>
     </array>
     <key>UIBackgroundModes</key>
     <array/>

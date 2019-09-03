@@ -42,19 +42,19 @@ TwonkProgramMenu::TwonkProgramMenu (GraphEditorPanel &_owner)
     addAndMakeVisible (programLoad.get());
     programLoad->setName ("LOAD");
 
-    programLoad->setBounds (144, 0, 64, 64);
+    programLoad->setBounds (112, 0, 48, 48);
 
     programSave.reset (new TwonkToolBarButton());
     addAndMakeVisible (programSave.get());
     programSave->setName ("SAVE");
 
-    programSave->setBounds (72, 0, 64, 64);
+    programSave->setBounds (56, 0, 48, 48);
 
     programNew.reset (new TwonkToolBarButton());
     addAndMakeVisible (programNew.get());
     programNew->setName ("NEW");
 
-    programNew->setBounds (0, 0, 64, 64);
+    programNew->setBounds (0, 0, 48, 48);
 
 
     //[UserPreSize]
@@ -69,7 +69,7 @@ TwonkProgramMenu::TwonkProgramMenu (GraphEditorPanel &_owner)
 	programLoad->setText("load", Justification::centredTop, 12.0f, 16);
     //[/UserPreSize]
 
-    setSize (208, 64);
+    setSize (160, 48);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -183,17 +183,17 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="TwonkProgramMenu" componentName=""
                  parentClasses="public Component, public Button::Listener" constructorParams="GraphEditorPanel &amp;_owner"
                  variableInitialisers="owner(_owner)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="208"
-                 initialHeight="64">
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="160"
+                 initialHeight="48">
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="LOAD" id="8de011dfeb6f5ac1" memberName="programLoad" virtualName=""
-                    explicitFocusOrder="0" pos="144 0 64 64" class="TwonkToolBarButton"
+                    explicitFocusOrder="0" pos="112 0 48 48" class="TwonkToolBarButton"
                     params=""/>
   <GENERICCOMPONENT name="SAVE" id="f47128457b7b2ed7" memberName="programSave" virtualName=""
-                    explicitFocusOrder="0" pos="72 0 64 64" class="TwonkToolBarButton"
+                    explicitFocusOrder="0" pos="56 0 48 48" class="TwonkToolBarButton"
                     params=""/>
   <GENERICCOMPONENT name="NEW" id="6606329e0f8f9cc5" memberName="programNew" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 64 64" class="TwonkToolBarButton"
+                    explicitFocusOrder="0" pos="0 0 48 48" class="TwonkToolBarButton"
                     params=""/>
 </JUCER_COMPONENT>
 

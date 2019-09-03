@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 6 End-User License
+   Agreement and JUCE Privacy Policy (both effective as of the 16th June 2020).
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-6-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -63,7 +62,7 @@ public:
         This class is used in the AudioProcessorValueTreeState constructor to allow
         arbitrarily grouped RangedAudioParameters to be passed to an AudioProcessor.
     */
-    class JUCE_API ParameterLayout final
+    class JUCE_API ParameterLayout 
     {
     private:
         //==============================================================================
@@ -138,7 +137,7 @@ public:
             std::unique_ptr<Contents> contents;
         };
 
-        struct MakeContents final
+        struct MakeContents 
         {
             template <typename Item>
             std::unique_ptr<ParameterStorageBase> operator() (std::unique_ptr<Item> item) const
@@ -176,18 +175,18 @@ public:
                        std::make_unique<AudioParameterInt> ("b", "Parameter B", 0, 5, 2) })
         @endcode
 
-        To add parameters programatically you can use the iterator-based ParameterLayout
-        constructor:
+        To add parameters programatically you can call `add` repeatedly on a
+        ParameterLayout instance:
 
         @code
         AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
         {
-            std::vector<std::unique_ptr<AudioParameterInt>> params;
+            AudioProcessorValueTreeState::ParameterLayout layout;
 
             for (int i = 1; i < 9; ++i)
-                params.push_back (std::make_unique<AudioParameterInt> (String (i), String (i), 0, i, 0));
+                layout.add (std::make_unique<AudioParameterInt> (String (i), String (i), 0, i, 0));
 
-            return { params.begin(), params.end() };
+            return layout;
         }
 
         YourAudioProcessor()
@@ -262,8 +261,8 @@ public:
                                                                   const String& labelText,
                                                                   NormalisableRange<float> valueRange,
                                                                   float defaultValue,
-                                                                  std::function<String(float)> valueToTextFunction,
-                                                                  std::function<float(const String&)> textToValueFunction,
+                                                                  std::function<String (float)> valueToTextFunction,
+                                                                  std::function<float (const String&)> textToValueFunction,
                                                                   bool isMetaParameter = false,
                                                                   bool isAutomatableParameter = true,
                                                                   bool isDiscrete = false,
@@ -285,7 +284,7 @@ public:
         Note that calling this method from within AudioProcessorValueTreeState::Listener::parameterChanged()
         is not guaranteed to return an up-to-date value for the parameter.
     */
-    float* getRawParameterValue (StringRef parameterID) const noexcept;
+    std::atomic<float>* getRawParameterValue (StringRef parameterID) const noexcept;
 
     //==============================================================================
     /** A listener class that can be attached to an AudioProcessorValueTreeState.
@@ -361,6 +360,11 @@ public:
     /** Provides access to the undo manager that this object is using. */
     UndoManager* const undoManager;
 
+private:
+    //==============================================================================
+    class ParameterAdapter;
+
+public:
     //==============================================================================
     /** A parameter class that maintains backwards compatibility with deprecated
         AudioProcessorValueTreeState functionality.
@@ -389,7 +393,7 @@ public:
                                                           ... })
         @endcode
     */
-    class Parameter final  : public AudioParameterFloat
+    class Parameter   : public AudioParameterFloat
     {
     public:
         Parameter (const String& parameterID,
@@ -397,8 +401,8 @@ public:
                    const String& labelText,
                    NormalisableRange<float> valueRange,
                    float defaultValue,
-                   std::function<String(float)> valueToTextFunction,
-                   std::function<float(const String&)> textToValueFunction,
+                   std::function<String (float)> valueToTextFunction,
+                   std::function<float (const String&)> textToValueFunction,
                    bool isMetaParameter = false,
                    bool isAutomatableParameter = true,
                    bool isDiscrete = false,
@@ -416,9 +420,13 @@ public:
     private:
         void valueChanged (float) override;
 
+        std::function<void()> onValueChanged;
+
         const float unsnappedDefault;
         const bool metaParameter, automatable, discrete, boolean;
-        float lastValue = 0.0f;
+        std::atomic<float> lastValue { -1.0f };
+
+        friend class AudioProcessorValueTreeState::ParameterAdapter;
     };
 
     //==============================================================================
@@ -433,14 +441,12 @@ public:
     class JUCE_API  SliderAttachment
     {
     public:
-        SliderAttachment (AudioProcessorValueTreeState& stateToControl,
+        SliderAttachment (AudioProcessorValueTreeState& stateToUse,
                           const String& parameterID,
-                          Slider& sliderToControl);
-        ~SliderAttachment();
+                          Slider& slider);
 
     private:
-        struct Pimpl;
-        std::unique_ptr<Pimpl> pimpl;
+        std::unique_ptr<SliderParameterAttachment> attachment;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SliderAttachment)
     };
 
@@ -461,14 +467,12 @@ public:
     class JUCE_API  ComboBoxAttachment
     {
     public:
-        ComboBoxAttachment (AudioProcessorValueTreeState& stateToControl,
+        ComboBoxAttachment (AudioProcessorValueTreeState& stateToUse,
                             const String& parameterID,
-                            ComboBox& comboBoxToControl);
-        ~ComboBoxAttachment();
+                            ComboBox& combo);
 
     private:
-        struct Pimpl;
-        std::unique_ptr<Pimpl> pimpl;
+        std::unique_ptr<ComboBoxParameterAttachment> attachment;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ComboBoxAttachment)
     };
 
@@ -484,14 +488,12 @@ public:
     class JUCE_API  ButtonAttachment
     {
     public:
-        ButtonAttachment (AudioProcessorValueTreeState& stateToControl,
+        ButtonAttachment (AudioProcessorValueTreeState& stateToUse,
                           const String& parameterID,
-                          Button& buttonToControl);
-        ~ButtonAttachment();
+                          Button& button);
 
     private:
-        struct Pimpl;
-        std::unique_ptr<Pimpl> pimpl;
+        std::unique_ptr<ButtonParameterAttachment> attachment;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ButtonAttachment)
     };
 
@@ -519,12 +521,10 @@ private:
         @endcode
     */
     JUCE_DEPRECATED (std::unique_ptr<RangedAudioParameter> createParameter (const String&, const String&, const String&, NormalisableRange<float>,
-                                                                            float, std::function<String(float)>, std::function<float(const String&)>,
+                                                                            float, std::function<String (float)>, std::function<float (const String&)>,
                                                                             bool, bool, bool, AudioProcessorParameter::Category, bool));
 
     //==============================================================================
-    class ParameterAdapter;
-
    #if JUCE_UNIT_TESTS
     friend struct ParameterAdapterTests;
    #endif
@@ -543,7 +543,7 @@ private:
 
     const Identifier valueType { "PARAM" }, valuePropertyID { "value" }, idPropertyID { "id" };
 
-    struct StringRefLessThan final
+    struct StringRefLessThan 
     {
         bool operator() (StringRef a, StringRef b) const noexcept { return a.text.compare (b.text) < 0; }
     };

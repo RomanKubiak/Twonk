@@ -285,7 +285,7 @@ void TwonkLookAndFeel::drawPopupMenuItem (Graphics& g, const Rectangle<int>& are
 
 int TwonkLookAndFeel::getSliderThumbRadius (Slider& slider)
 {
-	return slider.isHorizontal() ? static_cast<int> (slider.getHeight() * 0.75f) : static_cast<int> (slider.getWidth()  * 0.75f);
+	return slider.isHorizontal() ? static_cast<int> (slider.getHeight() * 0.45f) : static_cast<int> (slider.getWidth()  * 0.45f);
 }
 
 void TwonkLookAndFeel::drawPointer (Graphics& g, const float x, const float y, const float diameter,
@@ -322,7 +322,7 @@ void TwonkLookAndFeel::drawLinearSlider (Graphics& g, int x, int y, int width, i
 		auto isTwoVal = (style == Slider::SliderStyle::TwoValueVertical || style == Slider::SliderStyle::TwoValueHorizontal);
 		auto isThreeVal = (style == Slider::SliderStyle::ThreeValueVertical || style == Slider::SliderStyle::ThreeValueHorizontal);
 
-		auto trackWidth = jmin (6.0f, slider.isHorizontal() ? height * 0.25f : width * 0.25f);
+		auto trackWidth = slider.isHorizontal() ? height * 0.35f : width * 0.35f;
 
 		Point<float> startPoint (slider.isHorizontal() ? x : x + width * 0.5f,
 			slider.isHorizontal() ? y + height * 0.5f : height + y);
@@ -330,11 +330,15 @@ void TwonkLookAndFeel::drawLinearSlider (Graphics& g, int x, int y, int width, i
 		Point<float> endPoint (slider.isHorizontal() ? width + x : startPoint.x,
 			slider.isHorizontal() ? startPoint.y : y);
 
-		Path backgroundTrack;
-		backgroundTrack.startNewSubPath (startPoint);
-		backgroundTrack.lineTo (endPoint);
+		/* this is the background drawn
+		*/
+		//Path backgroundTrack;
+		//backgroundTrack.startNewSubPath (startPoint);
+		//backgroundTrack.lineTo (endPoint);
 		g.setColour (slider.findColour (Slider::backgroundColourId));
-		g.strokePath (backgroundTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+		//g.strokePath (backgroundTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::butt });
+		float dashes[] = { trackWidth  * 0.25f, trackWidth  * 0.25f };
+		g.drawDashedLine(Line<float>(startPoint, endPoint), dashes, 2, trackWidth, 0);
 
 		Path valueTrack;
 		Point<float> minPoint, maxPoint, thumbPoint;
@@ -362,15 +366,23 @@ void TwonkLookAndFeel::drawLinearSlider (Graphics& g, int x, int y, int width, i
 
 		auto thumbWidth = getSliderThumbRadius (slider);
 
-		valueTrack.startNewSubPath (minPoint);
-		valueTrack.lineTo (isThreeVal ? thumbPoint : maxPoint);
+		/* this fills the background tracking the value */
+		//valueTrack.startNewSubPath (minPoint);
+		//valueTrack.lineTo (isThreeVal ? thumbPoint : maxPoint);
+		//g.setColour (slider.findColour (Slider::trackColourId));
+		//g.strokePath (valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 		g.setColour (slider.findColour (Slider::trackColourId));
-		g.strokePath (valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+		g.drawDashedLine(Line<float>(minPoint, isThreeVal ? thumbPoint : maxPoint), dashes, 2, trackWidth, 0);
 
 		if (!isTwoVal)
 		{
+			
+			Path thumb;
+			thumb.addPolygon(isThreeVal ? thumbPoint : maxPoint, 6, thumbWidth, float_Pi*0.5f);
+			g.setColour (slider.findColour (Slider::thumbColourId).withAlpha(0.55f));
+			g.fillPath(thumb);
 			g.setColour (slider.findColour (Slider::thumbColourId));
-			g.fillEllipse (Rectangle<float> (static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre (isThreeVal ? thumbPoint : maxPoint));
+			g.strokePath(thumb, PathStrokeType(thumbWidth * 0.08f));
 		}
 
 		if (isTwoVal || isThreeVal)
@@ -401,40 +413,36 @@ void TwonkLookAndFeel::drawLinearSlider (Graphics& g, int x, int y, int width, i
 	}
 }
 
-void TwonkLookAndFeel::drawLinearSliderBackground (Graphics& g, int x, int y, int width, int height,
-	float /*sliderPos*/,
-	float /*minSliderPos*/,
-	float /*maxSliderPos*/,
-	const Slider::SliderStyle /*style*/, Slider& slider)
+class TwonkLookAndFeel::SliderLabelComp : public Label
 {
-	const float sliderRadius = (float)(getSliderThumbRadius (slider) - 2);
+public:
+	SliderLabelComp() : Label ({}, {}) {}
 
-	const Colour trackColour (slider.findColour (Slider::trackColourId));
-	const Colour gradCol1 (trackColour.overlaidWith (Colour (slider.isEnabled() ? 0x13000000 : 0x09000000)));
-	const Colour gradCol2 (trackColour.overlaidWith (Colour (0x06000000)));
-	Path indent;
+	void mouseWheelMove (const MouseEvent&, const MouseWheelDetails&) override {}
+};
 
-	if (slider.isHorizontal())
-	{
-		auto iy = y + height * 0.5f - sliderRadius * 0.5f;
+Label* TwonkLookAndFeel::createSliderTextBox (Slider& slider)
+{
+	auto l = new TwonkLookAndFeel::SliderLabelComp();
+	l->setFont(getDefaultTwonkMonoFont());
+	l->setJustificationType (Justification::centred);
+	l->setKeyboardType (TextInputTarget::decimalKeyboard);
 
-		g.setGradientFill (ColourGradient::vertical (gradCol1, iy, gradCol2, iy + sliderRadius));
+	l->setColour (Label::textColourId, slider.findColour (Slider::textBoxTextColourId));
+	l->setColour (Label::backgroundColourId,
+		(slider.getSliderStyle() == Slider::LinearBar || slider.getSliderStyle() == Slider::LinearBarVertical)
+		? Colours::transparentBlack
+		: slider.findColour (Slider::textBoxBackgroundColourId));
+	l->setColour (Label::outlineColourId, slider.findColour (Slider::textBoxOutlineColourId));
+	l->setColour (TextEditor::textColourId, slider.findColour (Slider::textBoxTextColourId));
+	l->setColour (TextEditor::backgroundColourId,
+		slider.findColour (Slider::textBoxBackgroundColourId)
+		.withAlpha ((slider.getSliderStyle() == Slider::LinearBar || slider.getSliderStyle() == Slider::LinearBarVertical)
+			? 0.7f : 1.0f));
+	l->setColour (TextEditor::outlineColourId, slider.findColour (Slider::textBoxOutlineColourId));
+	l->setColour (TextEditor::highlightColourId, slider.findColour (Slider::textBoxHighlightColourId));
 
-		indent.addRoundedRectangle (x - sliderRadius * 0.5f, iy, width + sliderRadius, sliderRadius, 5.0f);
-	}
-	else
-	{
-		auto ix = x + width * 0.5f - sliderRadius * 0.5f;
-
-		g.setGradientFill (ColourGradient::horizontal (gradCol1, ix, gradCol2, ix + sliderRadius));
-
-		indent.addRoundedRectangle (ix, y - sliderRadius * 0.5f, sliderRadius, height + sliderRadius, 5.0f);
-	}
-
-	g.fillPath (indent);
-
-	g.setColour (trackColour.contrasting (0.5f));
-	g.strokePath (indent, PathStrokeType (0.5f));
+	return l;
 }
 
 void TwonkLookAndFeel::drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
@@ -455,4 +463,18 @@ void TwonkLookAndFeel::drawConcertinaPanelHeader (Graphics& g, const Rectangle<i
 	g.setColour(Colours::white);
 	g.setFont(getDefaultTwonkSansFont().withHeight(bounds.getHeight() * 0.7f));
 	g.drawText(panel.getName(), bounds.withLeft(8), Justification::left);
+}
+
+void TwonkLookAndFeel::drawBubble (Graphics& g, BubbleComponent& comp, const Point<float>& tip, const Rectangle<float>& body)
+{
+	Path p;
+
+	p.addBubble (body.reduced (0.5f), body.getUnion (Rectangle<float> (tip.x, tip.y, 1.0f, 1.0f)),
+		tip, 5.0f, jmin (15.0f, body.getWidth() * 0.2f, body.getHeight() * 0.2f));
+
+	g.setColour (comp.findColour (BubbleComponent::backgroundColourId));
+	g.fillPath (p);
+
+	g.setColour (comp.findColour (BubbleComponent::outlineColourId));
+	g.strokePath (p, PathStrokeType (1.0f));
 }

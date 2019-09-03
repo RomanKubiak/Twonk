@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -20,6 +20,9 @@
   ==============================================================================
 */
 
+#if JUCE_BELA
+extern "C" int cobalt_thread_mode();
+#endif
 
 namespace juce
 {
@@ -51,7 +54,7 @@ bool SystemStats::isOperatingSystem64Bit()
 }
 
 //==============================================================================
-static inline String getCpuInfo (const char* key)
+static String getCpuInfo (const char* key)
 {
     return readPosixConfigFileValue ("/proc/cpuinfo", key);
 }
@@ -146,6 +149,8 @@ void CPUInformation::initialise() noexcept
     auto flags = getCpuInfo ("flags");
 
     hasMMX             = flags.contains ("mmx");
+    hasFMA3            = flags.contains ("fma");
+    hasFMA4            = flags.contains ("fma4");
     hasSSE             = flags.contains ("sse");
     hasSSE2            = flags.contains ("sse2");
     hasSSE3            = flags.contains ("sse3");
@@ -183,13 +188,18 @@ uint32 juce_millisecondsSinceStartup() noexcept
 
 int64 Time::getHighResolutionTicks() noexcept
 {
-   #if JUCE_BELA
-    return rt_timer_read() / 1000;
-   #else
     timespec t;
+
+   #if JUCE_BELA
+    if (cobalt_thread_mode() == 0x200 /*XNRELAX*/)
+        clock_gettime (CLOCK_MONOTONIC, &t);
+    else
+        __wrap_clock_gettime (CLOCK_MONOTONIC, &t);
+   #else
     clock_gettime (CLOCK_MONOTONIC, &t);
-    return (t.tv_sec * (int64) 1000000) + (t.tv_nsec / 1000);
    #endif
+
+    return (t.tv_sec * (int64) 1000000) + (t.tv_nsec / 1000);
 }
 
 int64 Time::getHighResolutionTicksPerSecond() noexcept
@@ -199,14 +209,14 @@ int64 Time::getHighResolutionTicksPerSecond() noexcept
 
 double Time::getMillisecondCounterHiRes() noexcept
 {
-    return getHighResolutionTicks() * 0.001;
+    return (double) getHighResolutionTicks() * 0.001;
 }
 
 bool Time::setSystemTimeToThisTime() const
 {
     timeval t;
-    t.tv_sec = millisSinceEpoch / 1000;
-    t.tv_usec = (millisSinceEpoch - t.tv_sec * 1000) * 1000;
+    t.tv_sec = decltype (timeval::tv_sec) (millisSinceEpoch / 1000);
+    t.tv_usec = decltype (timeval::tv_usec) ((millisSinceEpoch - t.tv_sec * 1000) * 1000);
 
     return settimeofday (&t, nullptr) == 0;
 }

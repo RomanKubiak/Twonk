@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -30,7 +30,7 @@ namespace juce
     Examples of arrays are: Array<int>, Array<Rectangle> or Array<MyClass*>
 
     The Array class can be used to hold simple, non-polymorphic objects as well as primitive types - to
-    do so, the class must fulfil these requirements:
+    do so, the class must fulfill these requirements:
     - it must have a copy constructor and assignment operator
     - it must be able to be relocated in memory by a memcpy without this causing any problems - so
       objects whose functionality relies on external pointers or references to themselves can not be used.
@@ -110,16 +110,16 @@ public:
 
     /** Initalises an Array from a list of items. */
     template <typename... OtherElements>
-    Array (const ElementType& firstNewElement, OtherElements... otherElements)
+    Array (const ElementType& firstNewElement, OtherElements&&... otherElements)
     {
-        values.add (firstNewElement, otherElements...);
+        values.add (firstNewElement, std::forward<OtherElements> (otherElements)...);
     }
 
     /** Initalises an Array from a list of items. */
     template <typename... OtherElements>
-    Array (ElementType&& firstNewElement, OtherElements... otherElements)
+    Array (ElementType&& firstNewElement, OtherElements&&... otherElements)
     {
-        values.add (std::move (firstNewElement), otherElements...);
+        values.add (std::move (firstNewElement), std::forward<OtherElements> (otherElements)...);
     }
 
     template <typename TypeToCreateFrom>
@@ -433,18 +433,18 @@ public:
 
     /** Appends multiple new elements at the end of the array. */
     template <typename... OtherElements>
-    void add (const ElementType& firstNewElement, OtherElements... otherElements)
+    void add (const ElementType& firstNewElement, OtherElements&&... otherElements)
     {
         const ScopedLockType lock (getLock());
-        values.add (firstNewElement, otherElements...);
+        values.add (firstNewElement, std::forward<OtherElements> (otherElements)...);
     }
 
     /** Appends multiple new elements at the end of the array. */
     template <typename... OtherElements>
-    void add (ElementType&& firstNewElement, OtherElements... otherElements)
+    void add (ElementType&& firstNewElement, OtherElements&&... otherElements)
     {
         const ScopedLockType lock (getLock());
-        values.add (std::move (firstNewElement), otherElements...);
+        values.add (std::move (firstNewElement), std::forward<OtherElements> (otherElements)...);
     }
 
     /** Inserts a new element into the array at a given position.

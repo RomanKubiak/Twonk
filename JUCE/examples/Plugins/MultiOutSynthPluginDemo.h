@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE examples.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    The code included in this file is provided under the terms of the ISC license
    http://www.isc.org/downloads/software-support-policy/isc-license. Permission
@@ -23,24 +23,26 @@
 
  BEGIN_JUCE_PIP_METADATA
 
- name:             MultiOutSynthPlugin
- version:          1.0.0
- vendor:           JUCE
- website:          http://juce.com
- description:      Multi-out synthesiser audio plugin.
+ name:                  MultiOutSynthPlugin
+ version:               1.0.0
+ vendor:                JUCE
+ website:               http://juce.com
+ description:           Multi-out synthesiser audio plugin.
 
- dependencies:     juce_audio_basics, juce_audio_devices, juce_audio_formats,
-                   juce_audio_plugin_client, juce_audio_processors,
-                   juce_audio_utils, juce_core, juce_data_structures,
-                   juce_events, juce_graphics, juce_gui_basics, juce_gui_extra
- exporters:        xcode_mac, vs2019
+ dependencies:          juce_audio_basics, juce_audio_devices, juce_audio_formats,
+                        juce_audio_plugin_client, juce_audio_processors,
+                        juce_audio_utils, juce_core, juce_data_structures,
+                        juce_events, juce_graphics, juce_gui_basics, juce_gui_extra
+ exporters:             xcode_mac, vs2019
 
- moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
+ moduleFlags:           JUCE_STRICT_REFCOUNTEDPOINTER=1
 
- type:             AudioProcessor
- mainClass:        MultiOutSynth
+ type:                  AudioProcessor
+ mainClass:             MultiOutSynth
 
- useLocalCopy:     1
+ useLocalCopy:          1
+
+ pluginCharacteristics: pluginIsSynth, pluginWantsMidiIn
 
  END_JUCE_PIP_METADATA
 
@@ -94,19 +96,17 @@ public:
         loadNewSample (createAssetInputStream ("singing.ogg"), "ogg");
     }
 
-    ~MultiOutSynth() {}
-
     //==============================================================================
-    bool canAddBus    (bool isInput) const override   { return (! isInput && getBusCount (false) < maxMidiChannel); }
-    bool canRemoveBus (bool isInput) const override   { return (! isInput && getBusCount (false) > 1); }
+    bool canAddBus    (bool isInput) const override   { return ! isInput; }
+    bool canRemoveBus (bool isInput) const override   { return ! isInput; }
 
     //==============================================================================
     void prepareToPlay (double newSampleRate, int samplesPerBlock) override
     {
         ignoreUnused (samplesPerBlock);
 
-        for (auto midiChannel = 0; midiChannel < maxMidiChannel; ++midiChannel)
-            synth[midiChannel]->setCurrentPlaybackSampleRate (newSampleRate);
+        for (auto* s : synth)
+            s->setCurrentPlaybackSampleRate (newSampleRate);
     }
 
     void releaseResources() override {}
@@ -117,12 +117,17 @@ public:
 
         for (auto busNr = 0; busNr < busCount; ++busNr)
         {
+            if (synth.size() <= busNr)
+                continue;
+
             auto midiChannelBuffer = filterMidiMessagesForChannel (midiBuffer, busNr + 1);
             auto audioBusBuffer = getBusBuffer (buffer, false, busNr);
 
             synth [busNr]->renderNextBlock (audioBusBuffer, midiChannelBuffer, 0, audioBusBuffer.getNumSamples());
         }
     }
+
+    using AudioProcessor::processBlock;
 
     //==============================================================================
     AudioProcessorEditor* createEditor() override          { return new GenericAudioProcessorEditor (*this); }
@@ -139,6 +144,15 @@ public:
     const String getProgramName (int) override             { return {}; }
     void changeProgramName (int, const String&) override   {}
 
+    bool isBusesLayoutSupported (const BusesLayout& layout) const override
+    {
+        for (const auto& bus : layout.outputBuses)
+            if (bus != AudioChannelSet::stereo())
+                return false;
+
+        return layout.inputBuses.isEmpty() && 1 <= layout.outputBuses.size();
+    }
+
     //==============================================================================
     void getStateInformation (MemoryBlock&) override {}
     void setStateInformation (const void*, int) override {}
@@ -147,31 +161,34 @@ private:
     //==============================================================================
     static MidiBuffer filterMidiMessagesForChannel (const MidiBuffer& input, int channel)
     {
-        MidiMessage msg;
-        int samplePosition;
         MidiBuffer output;
 
-        for (MidiBuffer::Iterator it (input); it.getNextEvent (msg, samplePosition);)
-            if (msg.getChannel() == channel) output.addEvent (msg, samplePosition);
+        for (const auto metadata : input)
+        {
+            const auto message = metadata.getMessage();
+
+            if (message.getChannel() == channel)
+                output.addEvent (message, metadata.samplePosition);
+        }
 
         return output;
     }
 
-    void loadNewSample (InputStream* soundBuffer, const char* format)
+    void loadNewSample (std::unique_ptr<InputStream> soundBuffer, const char* format)
     {
-        std::unique_ptr<AudioFormatReader> formatReader (formatManager.findFormatForFileExtension (format)->createReaderFor (soundBuffer, true));
+        std::unique_ptr<AudioFormatReader> formatReader (formatManager.findFormatForFileExtension (format)->createReaderFor (soundBuffer.release(), true));
 
         BigInteger midiNotes;
         midiNotes.setRange (0, 126, true);
         SynthesiserSound::Ptr newSound = new SamplerSound ("Voice", *formatReader, midiNotes, 0x40, 0.0, 0.0, 10.0);
 
-        for (int channel = 0; channel < maxMidiChannel; ++channel)
-            synth[channel]->removeSound (0);
+        for (auto* s : synth)
+            s->removeSound (0);
 
         sound = newSound;
 
-        for (int channel = 0; channel < maxMidiChannel; ++channel)
-            synth[channel]->addSound (sound);
+        for (auto* s : synth)
+            s->addSound (sound);
     }
 
     //==============================================================================

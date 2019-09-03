@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -82,7 +82,7 @@ public:
         /** True if this is the first event for this finger/index. */
         bool isTouchStart;
 
-        /** True if this is the final event as this finger/index is lifted off. */
+        /** True if this is the  event as this finger/index is lifted off. */
         bool isTouchEnd;
 
         /** The ID of the block that generated this touch. */

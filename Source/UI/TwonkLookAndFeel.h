@@ -52,11 +52,7 @@ class TwonkLookAndFeel : public LookAndFeel_V4
 
 		int getSliderThumbRadius (Slider& slider) override;
 
-		void drawLinearSliderBackground (Graphics& g, int x, int y, int width, int height,
-			float /*sliderPos*/,
-			float /*minSliderPos*/,
-			float /*maxSliderPos*/,
-			const Slider::SliderStyle /*style*/, Slider& slider) override;
+		Label* createSliderTextBox (Slider& slider);
 
 		void drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
 			bool isMouseOver, bool /*isMouseDown*/,
@@ -65,4 +61,8 @@ class TwonkLookAndFeel : public LookAndFeel_V4
 		Font getComboBoxFont (ComboBox& box);
 
 		void positionComboBoxText (ComboBox& box, Label& label);
+
+		class SliderLabelComp;
+
+		void drawBubble (Graphics& g, BubbleComponent& comp, const Point<float>& tip, const Rectangle<float>& body) override;
 };

@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -34,8 +34,11 @@ namespace LinuxEventLoop
         @param fd            the file descriptor to be monitored
         @param readCallback  a callback that will be called when the file descriptor has
                              data to read. The file descriptor will be passed as an argument
+        @param eventMask     a bit mask specifying the events you are interested in for the
+                             file descriptor. The possible values for this are defined in
+                             <poll.h>
     */
-    void registerFdCallback (int fd, std::function<void(int)> readCallback);
+    void registerFdCallback (int fd, std::function<void (int)> readCallback, short eventMask = 1 /*POLLIN*/);
 
     /** Unregisters a previously registered file descriptor.
 

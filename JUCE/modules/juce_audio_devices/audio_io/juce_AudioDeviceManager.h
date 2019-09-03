@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -267,7 +267,7 @@ public:
 
         Note that this only reloads the last device that was running before
         closeAudioDevice() was called - it doesn't reload any kind of saved-state,
-        and can only be called after a device has been opened with SetAudioDevice().
+        and can only be called after a device has been opened with setAudioDeviceSetup().
 
         If a device is already open, this call will do nothing.
     */
@@ -391,10 +391,11 @@ public:
     */
     virtual void createAudioDeviceTypes (OwnedArray<AudioIODeviceType>& types);
 
-    /** Adds a new device type to the list of types.
-        The manager will take ownership of the object that is passed-in.
-    */
-    void addAudioDeviceType (AudioIODeviceType* newDeviceType);
+    /** Adds a new device type to the list of types. */
+    void addAudioDeviceType (std::unique_ptr<AudioIODeviceType> newDeviceType);
+
+    /** Removes a previously added device type from the manager. */
+    void removeAudioDeviceType (AudioIODeviceType* deviceTypeToRemove);
 
     //==============================================================================
     /** Plays a beep through the current audio device.

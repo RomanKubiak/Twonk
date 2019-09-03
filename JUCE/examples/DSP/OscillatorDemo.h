@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE examples.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    The code included in this file is provided under the terms of the ISC license
    http://www.isc.org/downloads/software-support-policy/isc-license. Permission
@@ -73,11 +73,11 @@ struct OscillatorDemoDSP
 
     void process (const ProcessContextReplacing<float>& context)
     {
-        tempBuffer.copy (context.getInputBlock());
-        tempBuffer.multiply (static_cast<float> (fileMix));
+        tempBuffer.copyFrom (context.getInputBlock());
+        tempBuffer.multiplyBy (static_cast<float> (fileMix));
 
         oscillators[currentOscillatorIdx].process (context);
-        context.getOutputBlock().multiply (static_cast<float> (1.0 - fileMix));
+        context.getOutputBlock().multiplyBy (static_cast<float> (1.0 - fileMix));
 
         context.getOutputBlock().add (tempBuffer);
 

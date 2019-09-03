@@ -26,6 +26,8 @@
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 #include "TwonkToolBarButton.h"
 #include "UI/MainHostWindow.h"
+
+#include "Platform/TwonkPlatformSpecific.h"
 //[/MiscUserDefs]
 
 //==============================================================================
@@ -60,6 +62,8 @@ TwonkTransport::TwonkTransport (TwonkPlayHead &_playHead)
     tempoSlider->setRange (30, 300, 1);
     tempoSlider->setSliderStyle (Slider::LinearHorizontal);
     tempoSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 50, 20);
+    tempoSlider->setColour (Slider::backgroundColourId, Colour (0x82005179));
+    tempoSlider->setColour (Slider::trackColourId, Colour (0xff00b2ff));
     tempoSlider->addListener (this);
 
     tempoSlider->setBounds (0, 48, 312, 40);
@@ -69,7 +73,9 @@ TwonkTransport::TwonkTransport (TwonkPlayHead &_playHead)
     loopLengthSlider->setRange (4, 64, 1);
     loopLengthSlider->setSliderStyle (Slider::LinearHorizontal);
     loopLengthSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 50, 20);
+    loopLengthSlider->setColour (Slider::backgroundColourId, Colour (0xbf879e00));
     loopLengthSlider->setColour (Slider::thumbColourId, Colour (0xffb8dc1a));
+    loopLengthSlider->setColour (Slider::trackColourId, Colour (0xedf4ff56));
     loopLengthSlider->addListener (this);
 
     loopLengthSlider->setBounds (0, 88, 312, 40);
@@ -94,10 +100,10 @@ TwonkTransport::TwonkTransport (TwonkPlayHead &_playHead)
     positionLabel->setColour (TextEditor::textColourId, Colours::black);
     positionLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    positionLabel->setBounds (160, 8, 88, 16);
+    positionLabel->setBounds (160, 8, 80, 16);
 
     tempoLabel.reset (new Label ("Tempo",
-                                 TRANS("666")));
+                                 TRANS("120")));
     addAndMakeVisible (tempoLabel.get());
     tempoLabel->setFont (Font (Font::getDefaultMonospacedFontName(), 14.00f, Font::plain).withTypefaceStyle ("Regular"));
     tempoLabel->setJustificationType (Justification::centredLeft);
@@ -108,14 +114,37 @@ TwonkTransport::TwonkTransport (TwonkPlayHead &_playHead)
 
     tempoLabel->setBounds (160, 29, 40, 14);
 
+    cpuUsage.reset (new Label ("CPU Usage",
+                               TRANS("99%")));
+    addAndMakeVisible (cpuUsage.get());
+    cpuUsage->setFont (Font (10.00f, Font::plain).withTypefaceStyle ("Regular"));
+    cpuUsage->setJustificationType (Justification::centredLeft);
+    cpuUsage->setEditable (false, false, false);
+    cpuUsage->setColour (TextEditor::textColourId, Colours::black);
+    cpuUsage->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    cpuUsage->setBounds (237, 8, 30, 14);
+
+    memUsage.reset (new Label ("Memory Usage",
+                               TRANS("1900MB")));
+    addAndMakeVisible (memUsage.get());
+    memUsage->setFont (Font (10.00f, Font::plain).withTypefaceStyle ("Regular"));
+    memUsage->setJustificationType (Justification::centredLeft);
+    memUsage->setEditable (false, false, false);
+    memUsage->setColour (TextEditor::textColourId, Colours::black);
+    memUsage->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    memUsage->setBounds (264, 8, 44, 14);
+
 
     //[UserPreSize]
 	timeLabel->setFont(getDefaultTwonkMonoFont().withHeight(14.0f).withExtraKerningFactor (-0.03f));
 	timeLabel->addMouseListener(this, true);
-	positionLabel->setFont(getDefaultTwonkMonoFont().withHeight(14.0f).withExtraKerningFactor (-0.065f));
+	positionLabel->setFont(getDefaultTwonkMonoFont().withHeight(14.0f).withExtraKerningFactor (-0.03f));
 	positionLabel->addMouseListener(this, true);
 	tempoLabel->setFont(getDefaultTwonkMonoFont().withHeight(14.0f));
 	tempoLabel->addMouseListener(this, true);
+
 	playButton->setIcon(IMG(icon_play_png));
 	playButton->setBaseColour(Colours::lightgreen);
 	playButton->addListener(this);
@@ -123,7 +152,12 @@ TwonkTransport::TwonkTransport (TwonkPlayHead &_playHead)
 	stopButton->addListener(this);
 	loopButton->setIcon(IMG(icon_loop_png));
 	loopButton->addListener(this);
-	loopButton->setBaseColour(Colours::turquoise.darker());
+	loopButton->setBaseColour(Colours::turquoise);
+	loopButton->setIconAlpha(0.3f);
+	loopButton->setClickingTogglesState(true);
+
+	memUsage->setFont(getDefaultTwonkMonoFont().withHeight(14.0f));
+	cpuUsage->setFont(getDefaultTwonkMonoFont().withHeight(14.0f));
     //[/UserPreSize]
 
     setSize (316, 48);
@@ -132,6 +166,8 @@ TwonkTransport::TwonkTransport (TwonkPlayHead &_playHead)
     //[Constructor] You can add your own custom stuff here..
 	tempoLabel->setText(String(playHead.getTempo()), dontSendNotification);
 	tempoSlider->setValue(playHead.getTempo(), dontSendNotification);
+
+	startTimer(3000);
     //[/Constructor]
 }
 
@@ -149,6 +185,8 @@ TwonkTransport::~TwonkTransport()
     timeLabel = nullptr;
     positionLabel = nullptr;
     tempoLabel = nullptr;
+    cpuUsage = nullptr;
+    memUsage = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -222,7 +260,12 @@ void TwonkTransport::sliderValueChanged (Slider* sliderThatWasMoved)
 void TwonkTransport::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-	if (e.eventComponent == this || e.eventComponent == timeLabel.get())
+	if (e.eventComponent == this
+		|| e.eventComponent == tempoLabel.get()
+		|| e.eventComponent == positionLabel.get()
+		|| e.eventComponent == timeLabel.get()
+		|| e.eventComponent == cpuUsage.get()
+		|| e.eventComponent == memUsage.get())
 		dragger->startDraggingComponent(this, e);
     //[/UserCode_mouseDown]
 }
@@ -230,7 +273,12 @@ void TwonkTransport::mouseDown (const MouseEvent& e)
 void TwonkTransport::mouseDrag (const MouseEvent& e)
 {
     //[UserCode_mouseDrag] -- Add your code here...
-	if (e.eventComponent == this || e.eventComponent == timeLabel.get())
+	if (e.eventComponent == this
+		|| e.eventComponent == tempoLabel.get()
+		|| e.eventComponent == positionLabel.get()
+		|| e.eventComponent == timeLabel.get()
+		|| e.eventComponent == cpuUsage.get()
+		|| e.eventComponent == memUsage.get())
 		dragger->dragComponent(this, e, nullptr);
     //[/UserCode_mouseDrag]
 }
@@ -238,7 +286,12 @@ void TwonkTransport::mouseDrag (const MouseEvent& e)
 void TwonkTransport::mouseDoubleClick (const MouseEvent& e)
 {
     //[UserCode_mouseDoubleClick] -- Add your code here...
-	if (e.eventComponent == this || e.eventComponent == timeLabel.get())
+	if (e.eventComponent == this
+		|| e.eventComponent == tempoLabel.get()
+		|| e.eventComponent == positionLabel.get()
+		|| e.eventComponent == timeLabel.get()
+		|| e.eventComponent == cpuUsage.get()
+		|| e.eventComponent == memUsage.get())
 	{
 		if (getHeight() > 48)
 			setSize(getWidth(), 48);
@@ -273,21 +326,20 @@ void TwonkTransport::buttonClicked(Button *button)
 		playButton->setIcon(IMG(icon_play_png));
 		playButton->repaint();
 	}
-}
 
-String quarterNotePositionToBarsBeatsString (double quarterNotes, int numerator, int denominator)
-{
-	if (numerator == 0 || denominator == 0)
-		return "1.1.000";
+	if (loopButton.get() == button)
+	{
+		if (loopButton->getToggleState())
+		{
+			loopButton->setIconAlpha(1.0f);
+		}
+		else
+		{
+			loopButton->setIconAlpha(0.3f);
+		}
 
-	auto quarterNotesPerBar = (numerator * 4 / denominator);
-	auto beats = (fmod (quarterNotes, quarterNotesPerBar) / quarterNotesPerBar) * numerator;
-
-	auto bar = ((int)quarterNotes) / quarterNotesPerBar + 1;
-	auto beat = ((int)beats) + 1;
-	auto ticks = ((int)(fmod (beats, 1.0) * 960.0 + 0.5));
-
-	return String::formatted ("%d.%d.%03d", bar, beat, ticks);
+		playHead.setLooping(loopButton->getToggleState());
+	}
 }
 
 void TwonkTransport::positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo)
@@ -306,6 +358,12 @@ void TwonkTransport::positionChanged(const AudioPlayHead::CurrentPositionInfo &p
 
 		tempoLabel->setText(String(positionInfo.bpm), dontSendNotification);
 }
+
+void TwonkTransport::timerCallback()
+{
+	cpuUsage->setText(String(TwonkPlatform::getCpuUsage())+"%", dontSendNotification);
+	memUsage->setText(String(TwonkPlatform::getMemoryUsageMegabytes()) + "MB", dontSendNotification);
+}
 //[/MiscUserCode]
 
 
@@ -319,7 +377,7 @@ void TwonkTransport::positionChanged(const AudioPlayHead::CurrentPositionInfo &p
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TwonkTransport" componentName=""
-                 parentClasses="public Component, public TwonkClockListener, public Button::Listener"
+                 parentClasses="public Component, public TwonkClockListener, public Button::Listener, public Timer"
                  constructorParams="TwonkPlayHead &amp;_playHead" variableInitialisers="playHead(_playHead)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="316" initialHeight="48">
@@ -342,29 +400,40 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="0 0 48 48" class="TwonkToolBarButton"
                     params=""/>
   <SLIDER name="Tempo" id="9d6c76ef260baea1" memberName="tempoSlider" virtualName=""
-          explicitFocusOrder="0" pos="0 48 312 40" min="30.0" max="300.0"
-          int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft" textBoxEditable="1"
-          textBoxWidth="50" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
-  <SLIDER name="Loop Length" id="653c441302bacde0" memberName="loopLengthSlider"
-          virtualName="" explicitFocusOrder="0" pos="0 88 312 40" thumbcol="ffb8dc1a"
-          min="4.0" max="64.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
+          explicitFocusOrder="0" pos="0 48 312 40" bkgcol="82005179" trackcol="ff00b2ff"
+          min="30.0" max="300.0" int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="50" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
+  <SLIDER name="Loop Length" id="653c441302bacde0" memberName="loopLengthSlider"
+          virtualName="" explicitFocusOrder="0" pos="0 88 312 40" bkgcol="bf879e00"
+          thumbcol="ffb8dc1a" trackcol="edf4ff56" min="4.0" max="64.0"
+          int="1.0" style="LinearHorizontal" textBoxPos="TextBoxLeft" textBoxEditable="1"
+          textBoxWidth="50" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <LABEL name="Time" id="652beaf6f8698602" memberName="timeLabel" virtualName=""
          explicitFocusOrder="0" pos="232 28 80 16" edTextCol="ff000000"
          edBkgCol="0" labelText="00:00:000" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default monospaced font" fontsize="14.0"
          kerning="-0.074" bold="0" italic="0" justification="36"/>
   <LABEL name="Time" id="1f6e782fb5035eac" memberName="positionLabel"
-         virtualName="" explicitFocusOrder="0" pos="160 8 88 16" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="160 8 80 16" edTextCol="ff000000"
          edBkgCol="0" labelText="00.00.000" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default monospaced font" fontsize="14.0"
          kerning="-0.065" bold="0" italic="0" justification="33"/>
   <LABEL name="Tempo" id="5485653b957cb88d" memberName="tempoLabel" virtualName=""
          explicitFocusOrder="0" pos="160 29 40 14" textCol="ff42a2c8"
-         edTextCol="ff000000" edBkgCol="0" labelText="666" editableSingleClick="0"
+         edTextCol="ff000000" edBkgCol="0" labelText="120" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default monospaced font"
          fontsize="14.0" kerning="0.0" bold="0" italic="0" justification="33"/>
+  <LABEL name="CPU Usage" id="8f8b6394fbbd65c1" memberName="cpuUsage"
+         virtualName="" explicitFocusOrder="0" pos="237 8 30 14" edTextCol="ff000000"
+         edBkgCol="0" labelText="99%" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="10.0"
+         kerning="0.0" bold="0" italic="0" justification="33"/>
+  <LABEL name="Memory Usage" id="94dfb8c0a903d21e" memberName="memUsage"
+         virtualName="" explicitFocusOrder="0" pos="264 8 44 14" edTextCol="ff000000"
+         edBkgCol="0" labelText="1900MB" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="10.0"
+         kerning="0.0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

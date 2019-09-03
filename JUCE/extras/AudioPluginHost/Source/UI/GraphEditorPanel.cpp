@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 6 End-User License
+   Agreement and JUCE Privacy Policy (both effective as of the 16th June 2020).
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-6-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -24,7 +23,7 @@
   ==============================================================================
 */
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 #include "GraphEditorPanel.h"
 #include "../Plugins/InternalPlugins.h"
 #include "MainHostWindow.h"
@@ -140,7 +139,7 @@ struct GraphEditorPanel::PinComponent   : public Component,
 
         auto colour = (pin.isMIDI() ? Colours::red : Colours::green);
 
-        g.setColour (colour.withRotatedHue (busIdx / 5.0f));
+        g.setColour (colour.withRotatedHue ((float) busIdx / 5.0f));
         g.fillPath (p);
     }
 
@@ -404,21 +403,14 @@ struct GraphEditorPanel::PluginComponent   : public Component,
         menu->addItem (2, "Disconnect all pins");
         menu->addItem (3, "Toggle Bypass");
 
-        if (getProcessor()->hasEditor())
-        {
-            menu->addSeparator();
-            menu->addItem (10, "Show plugin GUI");
-            menu->addItem (11, "Show all programs");
-            menu->addItem (12, "Show all parameters");
-           #if JUCE_WINDOWS && JUCE_WIN_PER_MONITOR_DPI_AWARE
-            auto isTicked = false;
-            if (auto* node = graph.graph.getNodeForId (pluginID))
-                isTicked = node->properties["DPIAware"];
+        menu->addSeparator();
+        menu->addItem (10, "Show plugin GUI");
+        menu->addItem (11, "Show all programs");
+        menu->addItem (12, "Show all parameters");
+        menu->addItem (13, "Show debug log");
 
-            menu->addItem (13, "Enable DPI awareness", true, isTicked);
-           #endif
-            menu->addItem (14, "Show debug log");
-        }
+        if (autoScaleOptionAvailable)
+            addPluginAutoScaleOptionsSubMenu (dynamic_cast<AudioPluginInstance*> (getProcessor()), *menu);
 
         menu->addSeparator();
         menu->addItem (20, "Configure Audio I/O");
@@ -442,13 +434,7 @@ struct GraphEditorPanel::PluginComponent   : public Component,
             case 10:  showWindow (PluginWindow::Type::normal); break;
             case 11:  showWindow (PluginWindow::Type::programs); break;
             case 12:  showWindow (PluginWindow::Type::generic)  ; break;
-            case 13:
-            {
-                if (auto* node = graph.graph.getNodeForId (pluginID))
-                    node->properties.set ("DPIAware", ! node->properties ["DPIAware"]);
-                break;
-            }
-            case 14:  showWindow (PluginWindow::Type::debug); break;
+            case 13:  showWindow (PluginWindow::Type::debug); break;
             case 20:  showWindow (PluginWindow::Type::audioIO); break;
             case 21:  testStateSaveLoad(); break;
 
@@ -508,7 +494,8 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 struct GraphEditorPanel::ConnectorComponent   : public Component,
                                                 public SettableTooltipClient
 {
-    ConnectorComponent (GraphEditorPanel& p) : panel (p), graph (p.graph)
+    explicit ConnectorComponent (GraphEditorPanel& p)
+        : panel (p), graph (p.graph)
     {
         setAlwaysOnTop (true);
     }
@@ -961,7 +948,7 @@ struct GraphDocumentComponent::TooltipBar   : public Component,
 
     void paint (Graphics& g) override
     {
-        g.setFont (Font (getHeight() * 0.7f, Font::bold));
+        g.setFont (Font ((float) getHeight() * 0.7f, Font::bold));
         g.setColour (Colours::black);
         g.drawFittedText (tip, 10, 0, getWidth() - 12, getHeight(), Justification::centredLeft, 1);
     }
@@ -992,7 +979,7 @@ class GraphDocumentComponent::TitleBarComponent    : public Component,
                                                      private Button::Listener
 {
 public:
-    TitleBarComponent (GraphDocumentComponent& graphDocumentComponent)
+    explicit TitleBarComponent (GraphDocumentComponent& graphDocumentComponent)
         : owner (graphDocumentComponent)
     {
         static const unsigned char burgerMenuPathData[]
@@ -1165,10 +1152,13 @@ GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm,
     deviceManager.addChangeListener (graphPanel.get());
     deviceManager.addAudioCallback (&graphPlayer);
     deviceManager.addMidiInputDeviceCallback ({}, &graphPlayer.getMidiMessageCollector());
+    deviceManager.addChangeListener (this);
 }
 
 void GraphDocumentComponent::init()
 {
+    updateMidiOutput();
+
     graphPanel.reset (new GraphEditorPanel (*graph));
     addAndMakeVisible (graphPanel.get());
     graphPlayer.setProcessor (&graph->graph);
@@ -1184,11 +1174,8 @@ void GraphDocumentComponent::init()
 
     if (isOnTouchDevice())
     {
-        if (isOnTouchDevice())
-        {
-            titleBarComponent.reset (new TitleBarComponent (*this));
-            addAndMakeVisible (titleBarComponent.get());
-        }
+        titleBarComponent.reset (new TitleBarComponent (*this));
+        addAndMakeVisible (titleBarComponent.get());
 
         pluginListBoxModel.reset (new PluginListBoxModel (pluginListBox, pluginList));
 
@@ -1201,16 +1188,16 @@ void GraphDocumentComponent::init()
                                                                               0, 2, 0, 2,
                                                                               true, true, true, false));
 
-        if (isOnTouchDevice())
-        {
-            addAndMakeVisible (pluginListSidePanel);
-            addAndMakeVisible (mobileSettingsSidePanel);
-        }
+        addAndMakeVisible (pluginListSidePanel);
+        addAndMakeVisible (mobileSettingsSidePanel);
     }
 }
 
 GraphDocumentComponent::~GraphDocumentComponent()
 {
+    if (midiOutput != nullptr)
+        midiOutput->stopBackgroundThread();
+
     releaseGraph();
 
     keyState.removeListener (&graphPlayer.getMidiMessageCollector());
@@ -1323,4 +1310,24 @@ void GraphDocumentComponent::setDoublePrecision (bool doublePrecision)
 bool GraphDocumentComponent::closeAnyOpenPluginWindows()
 {
     return graphPanel->graph.closeAnyOpenPluginWindows();
+}
+
+void GraphDocumentComponent::changeListenerCallback (ChangeBroadcaster*)
+{
+    updateMidiOutput();
+}
+
+void GraphDocumentComponent::updateMidiOutput()
+{
+    auto* defaultMidiOutput = deviceManager.getDefaultMidiOutput();
+
+    if (midiOutput != defaultMidiOutput)
+    {
+        midiOutput = defaultMidiOutput;
+
+        if (midiOutput != nullptr)
+            midiOutput->startBackgroundThread();
+
+        graphPlayer.setMidiOutput (midiOutput);
+    }
 }

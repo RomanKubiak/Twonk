@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -31,7 +31,7 @@ namespace juce
 
     @tags{Core}
 */
-class CharPointer_UTF16  final
+class CharPointer_UTF16  
 {
 public:
    #if JUCE_NATIVE_WCHAR_IS_UTF16
@@ -425,6 +425,9 @@ public:
 
     /** Returns the first non-whitespace character in the string. */
     CharPointer_UTF16 findEndOfWhitespace() const noexcept      { return CharacterFunctions::findEndOfWhitespace (*this); }
+
+    /** Move this pointer to the first non-whitespace character in the string. */
+    void incrementToEndOfWhitespace() noexcept                  { CharacterFunctions::incrementToEndOfWhitespace (*this); }
 
     /** Returns true if the given unicode character can be represented in this encoding. */
     static bool canRepresent (juce_wchar character) noexcept
