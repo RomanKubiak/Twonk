@@ -29,7 +29,7 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-TwonkFilterPopupProperties::TwonkFilterPopupProperties (GraphEditorPanel &_owner)
+TwonkFilterPopupProperties::TwonkFilterPopupProperties (Editor &_owner)
     : owner(_owner)
 {
     //[Constructor_pre] You can add your own custom stuff here..
@@ -140,7 +140,7 @@ void TwonkFilterPopupProperties::resized()
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void TwonkFilterPopupProperties::setFilter(struct GraphEditorPanel::PluginComponent *_filter)
+void TwonkFilterPopupProperties::setFilter(struct Editor::Processor *_filter)
 {
 	filter = _filter;
 }

@@ -23,7 +23,7 @@
 
 #include "../../JuceLibraryCode/JuceHeader.h"
 
-class GraphEditorPanel;
+class Editor;
 //[/Headers]
 
 
@@ -40,7 +40,7 @@ class TwonkToolBarHeader  : public Component
 {
 public:
     //==============================================================================
-    TwonkToolBarHeader (GraphEditorPanel &_owner);
+    TwonkToolBarHeader (Editor &_owner);
     ~TwonkToolBarHeader();
 
     //==============================================================================
@@ -61,7 +61,7 @@ private:
 	Path roundingHexagon;
 	Colour baseColour;
 	ComponentDragger dragger;
-	GraphEditorPanel &owner;
+    Editor &owner;
 	double cpuUsage;
     //[/UserVariables]
 

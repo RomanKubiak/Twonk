@@ -24,7 +24,7 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
-#include "GraphEditorPanel.h"
+#include "Panel/Editor.h"
 #include "MainHostWindow.h"
 #include "TwonkToolBar.h"
 
@@ -32,7 +32,7 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-TwonkToolBarHeader::TwonkToolBarHeader (GraphEditorPanel &_owner)
+TwonkToolBarHeader::TwonkToolBarHeader (Editor &_owner)
     : owner(_owner)
 {
     //[Constructor_pre] You can add your own custom stuff here..

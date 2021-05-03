@@ -24,7 +24,7 @@
 #include "../TwonkPlayHead.h"
 #include "TwonkProgramMenu.h"
 #include "TwonkAudioSettingsMenu.h"
-class GraphEditorPanel;
+class Editor;
 class TwonkToolBarButton;
 class TwonkToolBarStatus;
 //[/Headers]
@@ -46,7 +46,7 @@ class TwonkToolBar  : public Component,
 {
 public:
     //==============================================================================
-    TwonkToolBar (GraphEditorPanel &_owner);
+    TwonkToolBar (Editor &_owner);
     ~TwonkToolBar();
 
     //==============================================================================
@@ -65,7 +65,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-	GraphEditorPanel &owner;
+    Editor &owner;
 	void positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo);
 	void transportStopped();
 	Font labelFont;

@@ -26,13 +26,13 @@
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 #include "Twonk.h"
 #include "TwonkToolBarButton.h"
-#include "GraphEditorPanel.h"
+#include "Panel/Editor.h"
 #include "MainHostWindow.h"
 #include "BinaryData.h"
 //[/MiscUserDefs]
 
 //==============================================================================
-TwonkAudioSettingsMenu::TwonkAudioSettingsMenu (GraphEditorPanel &_owner)
+TwonkAudioSettingsMenu::TwonkAudioSettingsMenu (Editor &_owner)
     : owner(_owner)
 {
     //[Constructor_pre] You can add your own custom stuff here..

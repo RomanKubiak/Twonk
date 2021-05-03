@@ -23,7 +23,7 @@
 #include "../../JuceLibraryCode/JuceHeader.h"
 #include "TwonkSaveProgramDialog.h"
 class TwonkToolBarButton;
-class GraphEditorPanel;
+class Editor;
 
 //[/Headers]
 
@@ -42,7 +42,7 @@ class TwonkProgramMenu  : public Component,
 {
 public:
     //==============================================================================
-    TwonkProgramMenu (GraphEditorPanel &_owner);
+    TwonkProgramMenu (Editor &_owner);
     ~TwonkProgramMenu();
 
     //==============================================================================
@@ -57,7 +57,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-	GraphEditorPanel &owner;
+    Editor &owner;
 
     //[/UserVariables]
 

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../Filters/PluginGraph.h"
-#include "GraphEditorPanel.h"
+#include "Filters/PluginGraph.h"
+#include "Panel/Editor.h"
+#include "Panel/Document.h"
 #include "TwonkLookAndFeel.h"
 #include "BinaryData.h"
 
@@ -15,7 +16,7 @@ static const Font getDefaultTwonkSansFont()
 
 static const Font getDefaultTwonkMonoFont()
 {
-	Typeface::Ptr t = Typeface::createSystemTypefaceFor(BinaryData::terminess_ttf, BinaryData::terminess_ttfSize);
+	Typeface::Ptr t = Typeface::createSystemTypefaceFor(BinaryData::terminus_ttf, BinaryData::terminus_ttfSize);
 	return (Font(t));
 }
 
@@ -85,10 +86,10 @@ public:
     void createPlugin (const PluginDescription&, Point<int> pos);
     void addPluginsToMenu (PopupMenu&);
     PluginDescription getChosenType (int menuID) const;
-	int getDesktopWindowStyleFlags () const override;
     bool isDoublePrecisionProcessing();
     void updatePrecisionMenuItem (ApplicationCommandInfo& info);
-    std::unique_ptr<GraphDocumentComponent> graphHolder;
+    void setKioskMode();
+    std::unique_ptr<Document> graphHolder;
 	KnownPluginList knownPluginList;
 	std::unique_ptr<PluginListWindow> pluginListWindow;
 

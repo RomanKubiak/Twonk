@@ -2,18 +2,18 @@
 
 <JUCERPROJECT id="NTe0XB0ij" name="Twonk" projectType="guiapp" version="1.0.0"
               juceFolder="../../../juce" vstFolderMac="~/SDKs/vstsdk2.4" vstFolderPC="c:\SDKs\vstsdk2.4"
-              bundleIdentifier="com.instiagtor.twonk" jucerVersion="5.4.4"
-              companyName="Instigator" displaySplashScreen="0" reportAppUsage="0"
-              headerPath="../../vst3sdk&#10;../../Source/FX/SFZ/SFZero/&#10;../../Source/&#10;../../JuceLibraryCode/"
-              companyWebsite="http://sciek.pl" includeBinaryInJuceHeader="0">
+              bundleIdentifier="com.instiagtor.twonk" companyName="Instigator"
+              displaySplashScreen="1" reportAppUsage="0" headerPath="../../vst3sdk&#10;../../Source/FX/SFZ/SFZero/&#10;../../Source/&#10;../../JuceLibraryCode/"
+              companyWebsite="http://sciek.pl" includeBinaryInJuceHeader="0"
+              jucerFormatVersion="1" cppLanguageStandard="14">
   <EXPORTFORMATS>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" vstFolder="" vst3Folder=""
                 smallIcon="c97aUr" bigIcon="c97aUr" extraCompilerFlags="-w" enableGNUExtensions="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" targetName="Twonk" libraryPath="/usr/X11R6/lib/"
-                       headerPath="/home/atom/devel//Twonk/JUCE&#10;/home/atom/devel/Twonk/JUCE/modules"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="6" targetName="Twonk"
-                       libraryPath="/usr/X11R6/lib/" headerPath="/home/atom/devel//Twonk/JUCE&#10;/home/atom/devel/Twonk/JUCE/modules"/>
+                       headerPath="../../Source&#10;../../Source/UI&#10;../../Source/Panel&#10;../../Source/Transport&#10;../../Source/Filters&#10;../../Source/Platform&#10;"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Twonk"
+                       libraryPath="/usr/X11R6/lib/" headerPath="../../Source&#10;../../Source/UI&#10;../../Source/Panel&#10;../../Source/Transport&#10;../../Source/Filters&#10;../../Source/Platform&#10;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../modules"/>
@@ -31,52 +31,25 @@
         <MODULEPATH id="juce_dsp" path="../../modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
-    <VS2017 targetFolder="Builds/VisualStudio2017" smallIcon="Y2rI0S" bigIcon="HmV2EU"
-            extraCompilerFlags="/w44265 /w45038 /w44062 /w44244" windowsTargetPlatformVersion="10.0.17763.0"
-            extraDefs="_USE_MATH_DEFINES">
-      <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" targetName="Twonk" winWarningLevel="2"/>
-        <CONFIGURATION name="Release" isDebug="0" targetName="Twonk" debugInformationFormat="ProgramDatabase"
-                       winWarningLevel="2"/>
-      </CONFIGURATIONS>
+    <CLION targetFolder="Builds/CLion" clionMakefileEnabled="1">
       <MODULEPATHS>
-        <MODULEPATH id="juce_gui_extra" path="../../modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../modules"/>
-        <MODULEPATH id="juce_graphics" path="../../modules"/>
-        <MODULEPATH id="juce_events" path="../../modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../modules"/>
-        <MODULEPATH id="juce_cryptography" path="../../modules"/>
-        <MODULEPATH id="juce_core" path="../../modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../modules"/>
-        <MODULEPATH id="juce_audio_basics" path="modules"/>
-        <MODULEPATH id="juce_dsp" path="../../modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
+        <MODULEPATH id="juce_graphics" path="../../juce"/>
+        <MODULEPATH id="juce_events" path="../../juce"/>
+        <MODULEPATH id="juce_dsp" path="../../juce"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce"/>
+        <MODULEPATH id="juce_cryptography" path="../../juce"/>
+        <MODULEPATH id="juce_core" path="../../juce"/>
+        <MODULEPATH id="juce_audio_utils" path="../../juce"/>
+        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
+        <MODULEPATH id="juce_audio_formats" path="../../juce"/>
+        <MODULEPATH id="juce_audio_devices" path="../../juce"/>
+        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
       </MODULEPATHS>
-    </VS2017>
-    <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux">
-      <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug"/>
-        <CONFIGURATION isDebug="0" name="Release"/>
-      </CONFIGURATIONS>
-      <MODULEPATHS>
-        <MODULEPATH id="juce_gui_extra" path="../../modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../modules"/>
-        <MODULEPATH id="juce_graphics" path="../../modules"/>
-        <MODULEPATH id="juce_events" path="../../modules"/>
-        <MODULEPATH id="juce_dsp" path="../../modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../modules"/>
-        <MODULEPATH id="juce_cryptography" path="../../modules"/>
-        <MODULEPATH id="juce_core" path="../../modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../modules"/>
-      </MODULEPATHS>
-    </CODEBLOCKS_LINUX>
-    <ANDROIDSTUDIO targetFolder="Builds/Android" gradleVersion="5.1">
+    </CLION>
+    <VS2019 targetFolder="Builds/VisualStudio2019" extraDefs="_USE_MATH_DEFINES"
+            extraCompilerFlags="/w44265 /w45038 /w44062 /w44244">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug"/>
         <CONFIGURATION isDebug="0" name="Release"/>
@@ -96,7 +69,7 @@
         <MODULEPATH id="juce_audio_devices"/>
         <MODULEPATH id="juce_audio_basics"/>
       </MODULEPATHS>
-    </ANDROIDSTUDIO>
+    </VS2019>
   </EXPORTFORMATS>
   <MAINGROUP id="YdWL7hi7p" name="Twonk">
     <GROUP id="{CFED5B3D-D1D8-0F3F-4D67-B2A810D057EF}" name="Source">
@@ -115,7 +88,6 @@
         <FILE id="H5ZAjx" name="audio_input.png" compile="0" resource="1" file="Source/Resources/audio_input.png"/>
         <FILE id="Oj2KSL" name="audio_output.png" compile="0" resource="1"
               file="Source/Resources/audio_output.png"/>
-        <FILE id="mCSsmv" name="bg1.jpg" compile="0" resource="1" file="Source/Resources/bg1.jpg"/>
         <FILE id="jGvTo3" name="Default.generic.twonk" compile="0" resource="1"
               file="Source/Resources/Default.generic.twonk"/>
         <FILE id="FjHJuC" name="icon_audio_dev.png" compile="0" resource="1"
@@ -169,6 +141,7 @@
         <FILE id="JS01vo" name="midi_output.png" compile="0" resource="1" file="Source/Resources/midi_output.png"/>
         <FILE id="knanSC" name="sampler_bg.jpg" compile="0" resource="1" file="Source/Resources/sampler_bg.jpg"/>
         <FILE id="Q9cREJ" name="terminess.ttf" compile="0" resource="1" file="Source/Resources/terminess.ttf"/>
+        <FILE id="bjmPZ2" name="terminus.ttf" compile="0" resource="1" file="Source/Resources/terminus.ttf"/>
       </GROUP>
       <GROUP id="{8203BEF7-7441-1B1E-5D75-20E4312BBD00}" name="FX">
         <GROUP id="{2699263F-D123-752F-6C22-C936171CB24C}" name="Compressor">
@@ -375,6 +348,18 @@
         <FILE id="LjuO1d" name="PluginGraph.h" compile="0" resource="0" file="Source/Filters/PluginGraph.h"/>
       </GROUP>
       <GROUP id="{D892BFB2-FE85-B70F-10D3-450F407E2B3D}" name="UI">
+        <GROUP id="{966E7590-6868-1C3D-A510-3BE2E2BE2D75}" name="Panel">
+          <FILE id="Ir0rg1" name="Connector.cpp" compile="1" resource="0" file="Source/UI/Panel/Connector.cpp"/>
+          <FILE id="ltmV53" name="Connector.h" compile="0" resource="0" file="Source/UI/Panel/Connector.h"/>
+          <FILE id="RNIrUs" name="Document.cpp" compile="1" resource="0" file="Source/UI/Panel/Document.cpp"/>
+          <FILE id="TFgUXw" name="Document.h" compile="0" resource="0" file="Source/UI/Panel/Document.h"/>
+          <FILE id="JqCda7" name="Editor.cpp" compile="1" resource="0" file="Source/UI/Panel/Editor.cpp"/>
+          <FILE id="xP1HZH" name="Editor.h" compile="0" resource="0" file="Source/UI/Panel/Editor.h"/>
+          <FILE id="vwan1v" name="Pin.cpp" compile="1" resource="0" file="Source/UI/Panel/Pin.cpp"/>
+          <FILE id="Uz1yWC" name="Pin.h" compile="0" resource="0" file="Source/UI/Panel/Pin.h"/>
+          <FILE id="JBOahe" name="Processor.cpp" compile="1" resource="0" file="Source/UI/Panel/Processor.cpp"/>
+          <FILE id="pGj9Ov" name="Processor.h" compile="0" resource="0" file="Source/UI/Panel/Processor.h"/>
+        </GROUP>
         <GROUP id="{A6DAB4AC-31D6-FAB0-ACB6-7BF93F6072B0}" name="Transport">
           <FILE id="zZQaRl" name="TwonkTransport.cpp" compile="1" resource="0"
                 file="Source/UI/TwonkTransport.cpp"/>
@@ -434,10 +419,6 @@
               file="Source/UI/PluginDefaultEditor.h"/>
         <FILE id="pvrmu7" name="PluginWindow.cpp" compile="1" resource="0"
               file="Source/UI/PluginWindow.cpp"/>
-        <FILE id="wPgLS9" name="GraphEditorPanel.cpp" compile="1" resource="0"
-              file="Source/UI/GraphEditorPanel.cpp"/>
-        <FILE id="BDMvfT" name="GraphEditorPanel.h" compile="0" resource="0"
-              file="Source/UI/GraphEditorPanel.h"/>
         <FILE id="AVGs2y" name="MainHostWindow.cpp" compile="1" resource="0"
               file="Source/UI/MainHostWindow.cpp"/>
         <FILE id="Ia6Vec" name="MainHostWindow.h" compile="0" resource="0"
@@ -473,5 +454,6 @@
   <LIVE_SETTINGS>
     <OSX/>
     <WINDOWS/>
+    <LINUX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>

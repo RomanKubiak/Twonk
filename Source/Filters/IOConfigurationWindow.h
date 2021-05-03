@@ -27,7 +27,7 @@
 #pragma once
 #include "JuceHeader.h"
 class MainHostWindow;
-class GraphDocumentComponent;
+class Document;
 
 
 //==============================================================================
@@ -52,7 +52,7 @@ private:
     void update();
 
     MainHostWindow* getMainWindow() const;
-    GraphDocumentComponent* getGraphEditor() const;
+    Document* getGraphEditor() const;
     AudioProcessorGraph* getGraph() const;
     AudioProcessorGraph::NodeID getNodeID() const;
 

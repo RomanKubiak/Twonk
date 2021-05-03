@@ -21,7 +21,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "../../JuceLibraryCode/JuceHeader.h"
-class GraphEditorPanel;
+class Editor;
 class TwonkToolBarButton;
 //[/Headers]
 
@@ -40,7 +40,7 @@ class TwonkAudioSettingsMenu  : public Component,
 {
 public:
     //==============================================================================
-    TwonkAudioSettingsMenu (GraphEditorPanel &_owner);
+    TwonkAudioSettingsMenu (Editor &_owner);
     ~TwonkAudioSettingsMenu();
 
     //==============================================================================
@@ -55,7 +55,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-	GraphEditorPanel &owner;
+    Editor &owner;
     //[/UserVariables]
 
     //==============================================================================

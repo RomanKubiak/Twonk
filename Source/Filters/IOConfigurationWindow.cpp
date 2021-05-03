@@ -25,7 +25,8 @@
 */
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../UI/GraphEditorPanel.h"
+#include "Panel/Editor.h"
+#include "Panel/Document.h"
 #include "InternalPlugins.h"
 #include "../UI/MainHostWindow.h"
 #include "IOConfigurationWindow.h"
@@ -537,7 +538,7 @@ MainHostWindow* IOConfigurationWindow::getMainWindow() const
     return nullptr;
 }
 
-GraphDocumentComponent* IOConfigurationWindow::getGraphEditor() const
+Document* IOConfigurationWindow::getGraphEditor() const
 {
     if (auto* mainWindow = getMainWindow())
         return mainWindow->graphHolder.get();

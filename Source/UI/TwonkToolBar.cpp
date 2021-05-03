@@ -18,7 +18,7 @@
 */
 
 //[Headers] You can add your own extra header files here...
-#include "GraphEditorPanel.h"
+#include "Panel/Editor.h"
 #include "TwonkToolBarButton.h"
 #include "TwonkMidiKeyboard.h"
 #include "MainHostWindow.h"
@@ -33,7 +33,7 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-TwonkToolBar::TwonkToolBar (GraphEditorPanel &_owner)
+TwonkToolBar::TwonkToolBar (Editor &_owner)
     : owner(_owner)
 {
     //[Constructor_pre] You can add your own custom stuff here..

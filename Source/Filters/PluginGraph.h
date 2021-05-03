@@ -2,7 +2,7 @@
 
 #include "../UI/PluginWindow.h"
 class TwonkPlayHead;
-class GraphEditorDocument;
+class Document;
 //==============================================================================
 /**
     A collection of plugins and some connections between them.
@@ -12,7 +12,7 @@ class PluginGraph   : public FileBasedDocument,
                       private ChangeListener
 {
 public:
-    PluginGraph (AudioPluginFormatManager &fm, GraphDocumentComponent &_documentOwner, TwonkPlayHead &_twonkPlayHead);
+    PluginGraph (AudioPluginFormatManager &fm, Document &_documentOwner, TwonkPlayHead &_twonkPlayHead);
     ~PluginGraph() override;
     using NodeID = AudioProcessorGraph::NodeID;
     void addPlugin (const PluginDescription&, Point<double>);
@@ -24,7 +24,7 @@ public:
     void closeCurrentlyOpenWindowsFor (AudioProcessorGraph::NodeID);
     bool closeAnyOpenPluginWindows();
     void audioProcessorParameterChanged (AudioProcessor*, int, float) override {}
-    void audioProcessorChanged (AudioProcessor*) override { changed(); }
+    void audioProcessorChanged (AudioProcessor* processor, const ChangeDetails& details) { changed(); }
     std::unique_ptr<XmlElement> createXml() const;
     void restoreFromXml (const XmlElement&);
     static const char* getFilenameSuffix()      { return ".twonk"; }
@@ -37,11 +37,11 @@ public:
     File getLastDocumentOpened() override;
     void setLastDocumentOpened (const File& file) override;
     static File getDefaultGraphDocumentOnMobile();
-	GraphDocumentComponent &getDocumentOwner() { return (documentOwner); }
+    Document &getDocumentOwner() { return (documentOwner); }
     AudioProcessorGraph graph;
 
 private:
-	GraphDocumentComponent &documentOwner;
+	Document &documentOwner;
     AudioPluginFormatManager& formatManager;
     OwnedArray<PluginWindow> activePluginWindows;
 	TwonkPlayHead &twonkPlayHead;

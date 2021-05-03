@@ -1,6 +1,6 @@
 #include "PluginWindow.h"
 #include "Filters/PluginGraph.h"
-#include "UI/GraphEditorPanel.h"
+#include "Panel/Editor.h"
 #include "MainHostWindow.h"
 
 PluginWindowLookAndFeel::PluginWindowLookAndFeel() : owner(nullptr)

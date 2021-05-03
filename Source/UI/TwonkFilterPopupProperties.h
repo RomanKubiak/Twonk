@@ -20,16 +20,10 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
-#include "../../JuceLibraryCode/JuceHeader.h"
-#include "GraphEditorPanel.h"
+#include "JuceHeader.h"
+#include "Panel/Editor.h"
 //[/Headers]
 
-#include "TwonkFilterPopupPropertiesSegment.h"
-#include "TwonkFilterPopupPropertiesSegment.h"
-#include "TwonkFilterPopupPropertiesSegment.h"
-#include "TwonkFilterPopupPropertiesSegment.h"
-#include "TwonkFilterPopupPropertiesSegment.h"
-#include "TwonkFilterPopupPropertiesSegment.h"
 #include "TwonkFilterPopupPropertiesSegment.h"
 
 
@@ -46,13 +40,13 @@ class TwonkFilterPopupProperties  : public Component,
 {
 public:
     //==============================================================================
-    TwonkFilterPopupProperties (GraphEditorPanel &_owner);
+    TwonkFilterPopupProperties (Editor &_owner);
     ~TwonkFilterPopupProperties();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-	void setFilter(struct GraphEditorPanel::PluginComponent *_filter);
-	struct GraphEditorPanel::PluginComponent *getFilter() { return (filter); }
+	void setFilter(Editor::Processor *_filter);
+	Editor::Processor *getFilter() { return (filter); }
 	void changeListenerCallback (ChangeBroadcaster* source);
     //[/UserMethods]
 
@@ -63,8 +57,8 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-	struct GraphEditorPanel::PluginComponent *filter = nullptr;
-	GraphEditorPanel &owner;
+	Editor::Processor *filter = nullptr;
+    Editor &owner;
     //[/UserVariables]
 
     //==============================================================================

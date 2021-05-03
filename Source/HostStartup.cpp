@@ -14,10 +14,42 @@ class PluginHostApp  : public JUCEApplication,
 public:
     PluginHostApp() {}
 
-    void initialise (const String &commandToRunAfterStart) override
+    static const StringArray getParameters(const String &cli)
+    {
+        StringArray tokens;
+        StringArray ret;
+        tokens.addTokens (cli, " ", "\'\"");
+
+        for (int i=0; i<tokens.size(); i++)
+        {
+            ret.add (tokens[i].fromFirstOccurrenceOf ("--", false, false).upToFirstOccurrenceOf("=", false, true));
+        }
+
+        return (ret);
+    }
+
+    static const String getParameterValue(const String &cli, const String &parameter)
+    {
+        StringArray tokens;
+        StringArray ret;
+        tokens.addTokens (cli, " ", "\'\"");
+
+        for (int i=0; i<tokens.size(); i++)
+        {
+            if (tokens[i].fromFirstOccurrenceOf("--", false, false) == parameter)
+                return tokens[i].fromFirstOccurrenceOf ("=", false, false).unquoted().trim();
+        }
+
+        return "";
+    }
+
+    void initialise (const String &cliParams) override
     {
         // initialise our settings file..
+        StringArray parameters		= getParameters(cliParams);
 
+        _TXT("primary display: dpi=%f area=%s", Desktop::getInstance().getDisplays().getPrimaryDisplay()->dpi,
+             Desktop::getInstance().getDisplays().getPrimaryDisplay()->totalArea.toString().toUTF8());
         PropertiesFile::Options options;
         options.applicationName     = "Twonk";
         options.filenameSuffix      = "settings";
@@ -27,8 +59,6 @@ public:
         appProperties->setStorageParameters (options);
 		appProperties->getUserSettings()->setValue("lastPluginScanPath_VST", GET_TWONK_PLUGINS_DIR().getFullPathName());
         mainWindow.reset (new MainHostWindow());
-
-		mainWindow->setUsingNativeTitleBar (true);
 
         commandManager.registerAllCommandsForTarget (this);
         commandManager.registerAllCommandsForTarget (mainWindow.get());
@@ -41,7 +71,7 @@ public:
         // being loaded. If that happens inside this method, the OSX event loop seems to be in some
         // kind of special "initialisation" mode and things get confused. But if we load the plugin
         // later when the normal event loop is running, everything's fine.
-#if defined (__linux__)
+
 		/*
 --- cut here
 #!/bin/bash
@@ -54,13 +84,23 @@ and can't position itself without a window manager
 the below code is to allow execution of such script or any other
 stuff that might be needed
 		*/
-		ChildProcess child;
-		child.start(commandToRunAfterStart);
-		if (!child.waitForProcessToFinish(500))
-		{
-			child.kill();
+		_TXT("cliParams: %s", cliParams.toUTF8());
+		if (getParameterValue(cliParams, "runAfterStart") != "") {
+            ChildProcess child;
+            child.start(getParameterValue(cliParams, "runAfterStart"));
+            if (!child.waitForProcessToFinish(500)) {
+                child.kill();
+            }
+        }
+
+		if (parameters.contains("kiosk")) {
+		    startInKioskMode = true;
 		}
-#endif
+
+        if (parameters.contains("resizeToDisplay")) {
+            resizeToDisplay = true;
+        }
+
         triggerAsyncUpdate();
     }
 
@@ -106,6 +146,21 @@ stuff that might be needed
 				}
 			}
 		}
+
+		if (startInKioskMode) {
+		    _TXT("set kiosk mode");
+		    mainWindow->setKioskMode();
+		}
+
+		if (resizeToDisplay) {
+            _TXT("resize to display");
+		    Rectangle<int> r = Desktop::getInstance().getDisplays().getPrimaryDisplay()->totalArea;
+		    _TXT("display area: %s", r.toString().toUTF8());
+		    mainWindow->setTitleBarHeight(0);
+		    mainWindow->setResizable(false, false);
+		    mainWindow->setTopLeftPosition(0,0);
+		    mainWindow->setSize(r.getWidth(), r.getHeight());
+		}
 	}
 
     void shutdown() override
@@ -132,14 +187,11 @@ stuff that might be needed
             JUCEApplicationBase::quit();
     }
 
-    void backButtonPressed() override
-    {
-    }
-
     const String getApplicationName() override       { return "Twonk"; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
     bool moreThanOneInstanceAllowed() override       { return true; }
-
+    bool startInKioskMode = false;
+    bool resizeToDisplay = false;
     ApplicationCommandManager commandManager;
     std::unique_ptr<ApplicationProperties> appProperties;
 
@@ -151,15 +203,6 @@ static PluginHostApp& getApp()                    { return *dynamic_cast<PluginH
 
 ApplicationProperties& getAppProperties()         { return *getApp().appProperties; }
 ApplicationCommandManager& getCommandManager()    { return getApp().commandManager; }
-
-bool isOnTouchDevice()
-{
-	if (SystemStats::getOperatingSystemType() == SystemStats::Linux)
-		return (true);
-
-	return (false);
-	//return Desktop::getInstance().getMainMouseSource().isTouch();
-}
 
 // This kicks the whole thing off..
 START_JUCE_APPLICATION (PluginHostApp)

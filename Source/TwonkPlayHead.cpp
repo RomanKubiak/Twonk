@@ -1,11 +1,10 @@
 #include "JuceHeader.h"
 #include "TwonkPlayHead.h"
-#include <chrono>
 
 TwonkPlayHead::TwonkPlayHead(AudioDeviceManager &_dm) 
 	: dm(_dm),  sampleRate(44100)
 {
-	DBG("TwonkPlayHead::ctor");
+	_TXT("enter");
 	currentPostion.timeSigNumerator = 4;
 	currentPostion.timeSigDenominator = 4;
 	currentPostion.isLooping = false;
@@ -108,7 +107,7 @@ void TwonkPlayHead::setLooping(const bool isLooping)
 
 void TwonkPlayHead::stop()
 {
-	DBG("TwonkPlayHead::stop");
+	_TXT("enter");
 	reset();
 	ScopedLock sl(cs);
 	currentPostion.isPlaying = false;
@@ -118,14 +117,14 @@ void TwonkPlayHead::stop()
 
 void TwonkPlayHead::pause()
 {
-	DBG("TwonkPlayHead::pause");
+	_TXT("enter");
 	ScopedLock sl(cs);
 	currentPostion.isPlaying = false;
 }
 
 void TwonkPlayHead::play(const bool resetNow)
 {
-	DBG("TwonkPlayHead::play");
+    _TXT("enter");
 	if (resetNow)
 		reset();
 	ScopedLock sl(cs);

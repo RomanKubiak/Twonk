@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.4.4
+  Created with Projucer version: 6.0.8
 
   ------------------------------------------------------------------------------
 
   The Projucer is part of the JUCE library.
-  Copyright (c) 2017 - ROLI Ltd.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -39,12 +39,12 @@ class TwonkTransport  : public Component,
                         public TwonkClockListener,
                         public Button::Listener,
                         public Timer,
-                        public Slider::Listener
+                        public juce::Slider::Listener
 {
 public:
     //==============================================================================
     TwonkTransport (TwonkPlayHead &_playHead);
-    ~TwonkTransport();
+    ~TwonkTransport() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -53,12 +53,12 @@ public:
 	void timerCallback();
     //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseDoubleClick (const MouseEvent& e) override;
+    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void mouseDown (const juce::MouseEvent& e) override;
+    void mouseDrag (const juce::MouseEvent& e) override;
+    void mouseDoubleClick (const juce::MouseEvent& e) override;
 
 
 
@@ -72,13 +72,16 @@ private:
     std::unique_ptr<TwonkToolBarButton> playButton;
     std::unique_ptr<TwonkToolBarButton> stopButton;
     std::unique_ptr<TwonkToolBarButton> loopButton;
-    std::unique_ptr<Slider> tempoSlider;
-    std::unique_ptr<Slider> loopLengthSlider;
-    std::unique_ptr<Label> timeLabel;
-    std::unique_ptr<Label> positionLabel;
-    std::unique_ptr<Label> tempoLabel;
-    std::unique_ptr<Label> cpuUsage;
-    std::unique_ptr<Label> memUsage;
+    std::unique_ptr<juce::Slider> tempoSlider;
+    std::unique_ptr<juce::Slider> loopLengthSlider;
+    std::unique_ptr<juce::Label> timeLabel;
+    std::unique_ptr<juce::Label> positionLabel;
+    std::unique_ptr<juce::Label> tempoLabel;
+    std::unique_ptr<juce::Label> cpuUsage;
+    std::unique_ptr<juce::Label> memUsage;
+    std::unique_ptr<juce::Label> juce__label;
+    std::unique_ptr<juce::Label> juce__label2;
+    std::unique_ptr<juce::Label> juce__label3;
 
 
     //==============================================================================

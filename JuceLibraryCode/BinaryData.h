@@ -14,9 +14,6 @@ namespace BinaryData
     extern const char*   audio_output_png;
     const int            audio_output_pngSize = 9212;
 
-    extern const char*   bg1_jpg;
-    const int            bg1_jpgSize = 91962;
-
     extern const char*   Default_generic_twonk;
     const int            Default_generic_twonkSize = 1714;
 
@@ -121,6 +118,9 @@ namespace BinaryData
 
     extern const char*   terminess_ttf;
     const int            terminess_ttfSize = 879176;
+
+    extern const char*   terminus_ttf;
+    const int            terminus_ttfSize = 453248;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 38;

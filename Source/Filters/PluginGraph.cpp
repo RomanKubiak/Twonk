@@ -2,11 +2,11 @@
 #include "../UI/MainHostWindow.h"
 #include "PluginGraph.h"
 #include "InternalPlugins.h"
-#include "../UI/GraphEditorPanel.h"
+#include "Panel/Editor.h"
 #include "Twonk.h"
 
 //==============================================================================
-PluginGraph::PluginGraph (AudioPluginFormatManager& fm, GraphDocumentComponent &_documentOwner, TwonkPlayHead &_twonkPlayHead)
+PluginGraph::PluginGraph (AudioPluginFormatManager& fm, Document &_documentOwner, TwonkPlayHead &_twonkPlayHead)
     : FileBasedDocument (getFilenameSuffix(),
                          getFilenameWildcard(),
                          "Load a graph",

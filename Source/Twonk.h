@@ -14,8 +14,8 @@
 #define TWONK_DEFAULT_TYPEFACE "Liberation Sans"
 #define DEFAULT_PPQN 960.0
 #define TITLEBAR_HEIGHT 48
-#define BUBBLE_SIZE 100
-#define NODE_SIZE   25
+#define BUBBLE_SIZE 140
+#define NODE_SIZE   40
 #define TOOLBAR_BUTTON_SIZE 64
 #define BUBBLE_COLOUR_INTERNAL_MIDI_IN		0xffbb3366
 #define BUBBLE_COLOUR_INTERNAL_MIDI_OUT		0xffff1188
@@ -35,6 +35,8 @@
 #define GET_TWONK_SAMPLES_DIR() File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Twonk").getChildFile("Samples")
 #define GET_TWONK_SETTINGS_DIR() File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Twonk")
 
+#define _TXT(...) logMessage(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
+
 #define IMG(n) ImageCache::getFromMemory(BinaryData::n, BinaryData::n##Size)
 
 enum ProgramType
@@ -45,6 +47,17 @@ enum ProgramType
 	Generic,
 	FuckIfIKnow
 };
+
+static void logMessage(const String &file, const String &function, const int line, char *format, ...)
+{
+    char buffer[512];
+    va_list args;
+    va_start (args, format);
+    vsnprintf (buffer,512,format, args);
+    va_end (args);
+
+    Logger::getCurrentLogger()->writeToLog("[" + File(file).getFileName() + ":" + function + ":" + String(line) + "]: " + String(buffer));
+}
 
 static const String programTypeDescriptor(const ProgramType type)
 {

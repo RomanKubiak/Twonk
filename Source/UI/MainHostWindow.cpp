@@ -1,31 +1,44 @@
 #include "PluginListWindow.h"
 #include "MainHostWindow.h"
 #include "../Filters/InternalPlugins.h"
+#include "Panel/Document.h"
+
+bool isOnTouchDevice()
+{
+    if (SystemStats::getOperatingSystemType() == SystemStats::Linux)
+        return (true);
+
+    return (false);
+    //return Desktop::getInstance().getMainMouseSource().isTouch();
+}
 
 //==============================================================================
 MainHostWindow::MainHostWindow()
     : DocumentWindow (JUCEApplication::getInstance()->getApplicationName(),
                       LookAndFeel::getDefaultLookAndFeel().findColour (ResizableWindow::backgroundColourId),
-                      DocumentWindow::allButtons, true)
-{
-	LookAndFeel::setDefaultLookAndFeel(&twonkLookAndFeel);
+                      DocumentWindow::allButtons, true) {
+    LookAndFeel::setDefaultLookAndFeel(&twonkLookAndFeel);
     formatManager.addDefaultFormats();
-    formatManager.addFormat (new InternalPluginFormat());
-	formatManager.addFormat (new TwonkPluginFormat());
-    auto safeThis = SafePointer<MainHostWindow> (this);
-    RuntimePermissions::request (RuntimePermissions::recordAudio,
-                                 [safeThis] (bool granted) mutable
-                                 {
-                                     auto savedState = getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState");
-                                     safeThis->deviceManager.initialise (granted ? 256 : 0, 256, savedState.get(), true);
-                                 });
-    
-#if defined(__linux__)
-	Desktop::getInstance().setKioskModeComponent(this, false);
+    formatManager.addFormat(new InternalPluginFormat());
+    formatManager.addFormat(new TwonkPluginFormat());
+    auto safeThis = SafePointer<MainHostWindow>(this);
+    RuntimePermissions::request(RuntimePermissions::recordAudio,
+                                [safeThis](bool granted) mutable {
+                                    auto savedState = getAppProperties().getUserSettings()->getXmlValue(
+                                            "audioDeviceState");
+                                    safeThis->deviceManager.initialise(granted ? 256 : 0, 256, savedState.get(), true);
+                                });
+
+
+#if JUCE_DEBUG
+    centreWithSize(1280, 720);
+    setUsingNativeTitleBar(false);
+    setTitleBarHeight(29);
+    setResizable(true, false);
 #else
-	centreWithSize (1024, 600);
+    Desktop::getInstance().setKioskModeComponent(this, false);
 #endif
-    graphHolder.reset (new GraphDocumentComponent (formatManager, deviceManager, knownPluginList));
+    graphHolder.reset (new Document (formatManager, deviceManager, knownPluginList));
     setContentNonOwned (graphHolder.get(), false);
     restoreWindowStateFromString (getAppProperties().getUserSettings()->getValue ("mainWindowPos"));
     setVisible (true);
@@ -476,13 +489,14 @@ void MainHostWindow::updatePrecisionMenuItem (ApplicationCommandInfo& info)
     info.setTicked (isDoublePrecisionProcessing());
 }
 
-int MainHostWindow::getDesktopWindowStyleFlags () const
+void MainHostWindow::setKioskMode()
 {
+    Rectangle<int> totalAreaOfDisplay = Desktop::getInstance().getDisplays().getPrimaryDisplay()->totalArea;
+    _TXT("primary display: dpi=%f area=%s", Desktop::getInstance().getDisplays().getPrimaryDisplay()->dpi,
+         Desktop::getInstance().getDisplays().getPrimaryDisplay()->totalArea.toString().toUTF8());
 
-	int flags = DocumentWindow::getDesktopWindowStyleFlags();
-#if defined (__linux__)
-	flags &= ~(ComponentPeer::windowAppearsOnTaskbar);
-	flags &= ~(ComponentPeer::windowHasTitleBar);
-#endif
-	return (flags);
+    setTitleBarHeight(0);
+    setBounds(totalAreaOfDisplay);
+    setResizable(false, false);
+    //Desktop::getInstance().setKioskModeComponent(this, false);
 }
