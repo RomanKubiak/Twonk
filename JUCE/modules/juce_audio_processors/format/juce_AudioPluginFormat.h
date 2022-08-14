@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -75,7 +74,7 @@ public:
                                                                         String& errorMessage);
 
     /** A callback lambda that is passed to createPluginInstanceAsync() */
-    using PluginCreationCallback = std::function<void(std::unique_ptr<AudioPluginInstance>, const String&)>;
+    using PluginCreationCallback = std::function<void (std::unique_ptr<AudioPluginInstance>, const String&)>;
 
     /** Tries to recreate a type from a previously generated PluginDescription.
         When the plugin has been created, it will be passed to the caller via an
@@ -138,6 +137,21 @@ public:
     */
     virtual FileSearchPath getDefaultLocationsToSearch() = 0;
 
+    /** Returns true if instantiation of this plugin type must be done from a non-message thread. */
+    virtual bool requiresUnblockedMessageThreadDuringCreation (const PluginDescription&) const = 0;
+
+    /** A callback lambda that is passed to getARAFactory() */
+    using ARAFactoryCreationCallback = std::function<void (ARAFactoryResult)>;
+
+    /** Tries to create an ::ARAFactoryWrapper for this description.
+
+        The result of the operation will be wrapped into an ARAFactoryResult,
+        which will be passed to a callback object supplied by the caller.
+
+        @see AudioPluginFormatManager::createARAFactoryAsync
+    */
+    virtual void createARAFactoryAsync (const PluginDescription&, ARAFactoryCreationCallback callback) { callback ({}); }
+
 protected:
     //==============================================================================
     friend class AudioPluginFormatManager;
@@ -149,9 +163,6 @@ protected:
     */
     virtual void createPluginInstance (const PluginDescription&, double initialSampleRate,
                                        int initialBufferSize, PluginCreationCallback) = 0;
-
-    /** Returns true if instantiation of this plugin type must be done from a non-message thread. */
-    virtual bool requiresUnblockedMessageThreadDuringCreation (const PluginDescription&) const = 0;
 
 private:
     struct AsyncCreateMessage;

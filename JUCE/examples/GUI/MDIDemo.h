@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE examples.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    The code included in this file is provided under the terms of the ISC license
    http://www.isc.org/downloads/software-support-policy/isc-license. Permission
@@ -31,7 +31,7 @@
 
  dependencies:     juce_core, juce_data_structures, juce_events, juce_graphics,
                    juce_gui_basics, juce_gui_extra
- exporters:        xcode_mac, vs2019, linux_make, androidstudio, xcode_iphone
+ exporters:        xcode_mac, vs2022, linux_make, androidstudio, xcode_iphone
 
  moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
 
@@ -51,7 +51,7 @@
 //==============================================================================
 /** The Note class contains text editor used to display and edit the note's contents and will
     also listen to changes in the text and mark the FileBasedDocument as 'dirty'. This 'dirty'
-    flag is used to promt the user to save the note when it is closed.
+    flag is used to prompt the user to save the note when it is closed.
  */
 class Note    : public Component,
                 public FileBasedDocument
@@ -110,14 +110,12 @@ public:
         // not interested in this for now
     }
 
-   #if JUCE_MODAL_LOOPS_PERMITTED
     File getSuggestedSaveAsFile (const File&) override
     {
         return File::getSpecialLocation (File::userDesktopDirectory)
                     .getChildFile (getName())
                     .withFileExtension ("jnote");
     }
-   #endif
 
 private:
     Value textValueObject;
@@ -138,23 +136,19 @@ private:
 class DemoMultiDocumentPanel    : public MultiDocumentPanel
 {
 public:
-    DemoMultiDocumentPanel() {}
+    DemoMultiDocumentPanel() = default;
 
-    ~DemoMultiDocumentPanel() override
+    void tryToCloseDocumentAsync (Component* component, std::function<void (bool)> callback) override
     {
-        closeAllDocuments (true);
-    }
-
-    bool tryToCloseDocument (Component* component) override
-    {
-       #if JUCE_MODAL_LOOPS_PERMITTED
         if (auto* note = dynamic_cast<Note*> (component))
-            return note->saveIfNeededAndUserAgrees() != FileBasedDocument::failedToWriteToFile;
-       #else
-        ignoreUnused (component);
-       #endif
-
-        return true;
+        {
+            SafePointer<DemoMultiDocumentPanel> parent { this };
+            note->saveIfNeededAndUserAgreesAsync ([parent, callback] (FileBasedDocument::SaveResult result)
+            {
+                if (parent != nullptr)
+                    callback (result == FileBasedDocument::savedOk);
+            });
+        }
     }
 
 private:
@@ -180,6 +174,16 @@ public:
         addNoteButton.onClick = [this] { addNote ("Note " + String (multiDocumentPanel.getNumDocuments() + 1), "Hello World!"); };
         addAndMakeVisible (addNoteButton);
 
+        closeApplicationButton.onClick = [this]
+        {
+            multiDocumentPanel.closeAllDocumentsAsync (true, [] (bool allSaved)
+            {
+                if (allSaved)
+                    JUCEApplicationBase::quit();
+            });
+        };
+        addAndMakeVisible (closeApplicationButton);
+
         addAndMakeVisible (multiDocumentPanel);
         multiDocumentPanel.setBackgroundColour (Colours::transparentBlack);
 
@@ -200,8 +204,9 @@ public:
         auto area = getLocalBounds();
 
         auto buttonArea = area.removeFromTop (28).reduced (2);
-        addNoteButton   .setBounds (buttonArea.removeFromRight (150));
-        showInTabsButton.setBounds (buttonArea);
+        closeApplicationButton.setBounds (buttonArea.removeFromRight (150));
+        addNoteButton         .setBounds (buttonArea.removeFromRight (150));
+        showInTabsButton      .setBounds (buttonArea);
 
         multiDocumentPanel.setBounds (area);
     }
@@ -235,11 +240,6 @@ public:
     }
 
 private:
-    ToggleButton showInTabsButton  { "Show with tabs" };
-    TextButton addNoteButton       { "Create a new note" };
-
-    DemoMultiDocumentPanel multiDocumentPanel;
-
     void updateLayoutMode()
     {
         multiDocumentPanel.setLayoutMode (showInTabsButton.getToggleState() ? MultiDocumentPanel::MaximisedWindowsWithTabs
@@ -260,6 +260,12 @@ private:
         File::getSpecialLocation (File::userDesktopDirectory).findChildFiles (files, File::findFiles, false, "*.jnote");
         createNotesForFiles (files);
     }
+
+    ToggleButton showInTabsButton { "Show with tabs" };
+    TextButton addNoteButton          { "Create a new note" },
+               closeApplicationButton { "Close app" };
+
+    DemoMultiDocumentPanel multiDocumentPanel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MDIDemo)
 };

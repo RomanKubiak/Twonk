@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -65,11 +65,10 @@ public:
     /** Constructor to pass to the synthesiser a custom MPEInstrument object
         to handle the MPE note state, MIDI channel assignment etc.
         (in case you need custom logic for this that goes beyond MIDI and MPE).
-        The synthesiser will take ownership of this object.
 
         @see MPESynthesiserBase, MPEInstrument
     */
-    MPESynthesiser (MPEInstrument* instrumentToUse);
+    MPESynthesiser (MPEInstrument& instrumentToUse);
 
     /** Destructor. */
     ~MPESynthesiser() override;
@@ -247,7 +246,7 @@ protected:
                              int numSamples) override;
 
     /** This will simply call renderNextBlock for each currently active
-        voice and fill the buffer with the sum. (souble-precision version)
+        voice and fill the buffer with the sum. (double-precision version)
         Override this method if you need to do more work to render your audio.
     */
     void renderNextSubBlock (AudioBuffer<double>& outputAudio,
@@ -303,7 +302,7 @@ protected:
 
 private:
     //==============================================================================
-    bool shouldStealVoices = false;
+    std::atomic<bool> shouldStealVoices { false };
     uint32 lastNoteOnCounter = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MPESynthesiser)

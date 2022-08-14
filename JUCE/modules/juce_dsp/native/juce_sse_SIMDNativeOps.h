@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -31,10 +30,7 @@ namespace dsp
 
 #ifndef DOXYGEN
 
-#if JUCE_GCC && (__GNUC__ >= 6)
- #pragma GCC diagnostic push
- #pragma GCC diagnostic ignored "-Wignored-attributes"
-#endif
+JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wignored-attributes")
 
 #ifdef _MSC_VER
  #define DECLARE_SSE_SIMD_CONST(type, name) \
@@ -110,11 +106,13 @@ struct SIMDNativeOps<float>
     static forcedinline float JUCE_VECTOR_CALLTYPE sum (__m128 a) noexcept
     {
        #if defined(__SSE4__)
-        __m128 retval = _mm_dp_ps (a, _mm_loadu_ps (kOne), 0xff);
+        const auto retval = _mm_dp_ps (a, _mm_loadu_ps (kOne), 0xff);
        #elif defined(__SSE3__)
-        __m128 retval = _mm_hadd_ps (_mm_hadd_ps (a, a), a);
+        const auto shuffled = _mm_movehdup_ps (a);
+        const auto sums = _mm_add_ps (a, shuffled);
+        const auto retval = _mm_add_ss (sums, _mm_movehl_ps (shuffled, sums));
        #else
-        __m128 retval = _mm_add_ps (_mm_shuffle_ps (a, a, 0x4e), a);
+        auto retval = _mm_add_ps (_mm_shuffle_ps (a, a, 0x4e), a);
         retval = _mm_add_ps (retval, _mm_shuffle_ps (retval, retval, 0xb1));
        #endif
         return _mm_cvtss_f32 (retval);
@@ -727,9 +725,7 @@ struct SIMDNativeOps<uint64_t>
 
 #endif
 
-#if JUCE_GCC && (__GNUC__ >= 6)
- #pragma GCC diagnostic pop
-#endif
+JUCE_END_IGNORE_WARNINGS_GCC_LIKE
 
 } // namespace dsp
 } // namespace juce

@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -204,7 +203,8 @@ public:
     */
     Point<ValueType> getPointAlongLine (ValueType distanceFromStart) const noexcept
     {
-        return start + (end - start) * (distanceFromStart / getLength());
+        const auto length = getLength();
+        return length == 0 ? start : start + (end - start) * (distanceFromStart / length);
     }
 
     /** Returns a point which is a certain distance along and to the side of this line.
@@ -329,6 +329,16 @@ public:
                 && point.y < ((end.y - start.y) * (point.x - start.x)) / (end.x - start.x) + start.y;
     }
 
+    /** Returns a lengthened copy of this line.
+
+        This will extend the line by a certain amount by moving the start away from the end
+        (leaving the end-point the same), and return the new line.
+    */
+    Line withLengthenedStart (ValueType distanceToLengthenBy) const noexcept
+    {
+        return withShortenedStart (-distanceToLengthenBy);
+    }
+
     //==============================================================================
     /** Returns a shortened copy of this line.
 
@@ -338,6 +348,16 @@ public:
     Line withShortenedStart (ValueType distanceToShortenBy) const noexcept
     {
         return { getPointAlongLine (jmin (distanceToShortenBy, getLength())), end };
+    }
+
+    /** Returns a lengthened copy of this line.
+
+        This will extend the line by a certain amount by moving the end away from the start
+        (leaving the start-point the same), and return the new line.
+    */
+    Line withLengthenedEnd (ValueType distanceToLengthenBy) const noexcept
+    {
+        return withShortenedEnd (-distanceToLengthenBy);
     }
 
     /** Returns a shortened copy of this line.

@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -27,10 +26,8 @@
 namespace juce
 {
 
-#if defined (MAC_OS_X_VERSION_10_11) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_11
-
 //==============================================================================
-class BluetoothMidiPairingWindowClass   : public ObjCClass<NSObject>
+class API_AVAILABLE (macos (10.11)) BluetoothMidiPairingWindowClass : public ObjCClass<NSObject>
 {
 public:
     struct Callbacks
@@ -44,14 +41,13 @@ public:
         addIvar<Callbacks*> ("callbacks");
         addIvar<CABTLEMIDIWindowController*> ("controller");
 
-       #pragma clang diagnostic push
-       #pragma clang diagnostic ignored "-Wundeclared-selector"
-        addMethod (@selector (initWithCallbacks:),       initWithCallbacks,       "@@:^v");
-        addMethod (@selector (show:),                    show,                    "v@:^v");
-        addMethod (@selector (receivedWindowWillClose:), receivedWindowWillClose, "v@:^v");
-       #pragma clang diagnostic pop
+        JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wundeclared-selector")
+        addMethod (@selector (initWithCallbacks:),       initWithCallbacks);
+        addMethod (@selector (show:),                    show);
+        addMethod (@selector (receivedWindowWillClose:), receivedWindowWillClose);
+        JUCE_END_IGNORE_WARNINGS_GCC_LIKE
 
-        addMethod (@selector (dealloc), dealloc, "v@:");
+        addMethod (@selector (dealloc), dealloc);
 
         registerClass();
     }
@@ -64,18 +60,17 @@ private:
 
     static id initWithCallbacks (id self, SEL, Callbacks* cbs)
     {
-        self = sendSuperclassMessage (self, @selector (init));
+        self = sendSuperclassMessage<id> (self, @selector (init));
 
         object_setInstanceVariable (self, "callbacks", cbs);
         object_setInstanceVariable (self, "controller", [CABTLEMIDIWindowController new]);
 
-       #pragma clang diagnostic push
-       #pragma clang diagnostic ignored "-Wundeclared-selector"
+        JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wundeclared-selector")
         [[NSNotificationCenter defaultCenter] addObserver: self
                                                  selector: @selector (receivedWindowWillClose:)
                                                      name: @"NSWindowWillCloseNotification"
                                                    object: [getController (self) window]];
-       #pragma clang diagnostic pop
+        JUCE_END_IGNORE_WARNINGS_GCC_LIKE
 
         return self;
     }
@@ -83,8 +78,7 @@ private:
     static void dealloc (id self, SEL)
     {
         [getController (self) release];
-
-        sendSuperclassMessage (self, @selector (dealloc));
+        sendSuperclassMessage<void> (self, @selector (dealloc));
     }
 
     static void show (id self, SEL, Rectangle<int>* bounds)
@@ -123,7 +117,7 @@ private:
     }
 };
 
-class BluetoothMidiSelectorWindowHelper   : public DeletedAtShutdown
+class API_AVAILABLE (macos (10.11)) BluetoothMidiSelectorWindowHelper : public DeletedAtShutdown
 {
 public:
     BluetoothMidiSelectorWindowHelper (ModalComponentManager::Callback* exitCallback,
@@ -134,24 +128,21 @@ public:
         static BluetoothMidiPairingWindowClass cls;
         window.reset (cls.createInstance());
 
-        WeakReference<BluetoothMidiSelectorWindowHelper> safeThis (this);
-
-        auto deletionCB = [=]
+        auto deletionCB = [safeThis = WeakReference<BluetoothMidiSelectorWindowHelper> { this }]
         {
-            if (auto* t = safeThis.get())
-                delete t;
+            if (safeThis != nullptr)
+                delete safeThis.get();
         };
 
         callbacks.reset (new BluetoothMidiPairingWindowClass::Callbacks { std::move (exitCB),
                                                                           std::move (deletionCB) });
 
-       #pragma clang diagnostic push
-       #pragma clang diagnostic ignored "-Wundeclared-selector"
+        JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wundeclared-selector")
         [window.get() performSelector: @selector (initWithCallbacks:)
                            withObject: (id) callbacks.get()];
         [window.get() performSelector: @selector (show:)
                            withObject: (id) bounds];
-       #pragma clang diagnostic pop
+        JUCE_END_IGNORE_WARNINGS_GCC_LIKE
     }
 
 private:
@@ -166,20 +157,12 @@ private:
 bool BluetoothMidiDevicePairingDialogue::open (ModalComponentManager::Callback* exitCallback,
                                                Rectangle<int>* bounds)
 {
-    new BluetoothMidiSelectorWindowHelper (exitCallback, bounds);
-    return true;
-}
+    if (@available (macOS 10.11, *))
+    {
+        new BluetoothMidiSelectorWindowHelper (exitCallback, bounds);
+        return true;
+    }
 
-bool BluetoothMidiDevicePairingDialogue::isAvailable()
-{
-    return true;
-}
-
-#else
-
-bool BluetoothMidiDevicePairingDialogue::open (ModalComponentManager::Callback* exitCallback,
-                                               Rectangle<int>*)
-{
     std::unique_ptr<ModalComponentManager::Callback> cb (exitCallback);
     // This functionality is unavailable when targetting OSX < 10.11. Instead,
     // you should pair Bluetooth MIDI devices using the "Audio MIDI Setup" app
@@ -190,9 +173,10 @@ bool BluetoothMidiDevicePairingDialogue::open (ModalComponentManager::Callback* 
 
 bool BluetoothMidiDevicePairingDialogue::isAvailable()
 {
+    if (@available (macOS 10.11, *))
+        return true;
+
     return false;
 }
-
-#endif
 
 } // namespace juce

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="3t6YqETY1" name="BinaryBuilder" projectType="consoleapp"
-              juceFolder="../../../juce" jucerVersion="5.4.4" bundleIdentifier="com.roli.binarybuilder"
-              displaySplashScreen="0" reportAppUsage="0" companyName="ROLI Ltd."
-              companyCopyright="ROLI Ltd.">
+              juceFolder="../../../juce" bundleIdentifier="com.juce.binarybuilder"
+              displaySplashScreen="0" reportAppUsage="0" companyName="Raw Material Software Limited"
+              companyCopyright="Raw Material Software Limited" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1">
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" vstFolder="~/SDKs/vstsdk2.4" rtasFolder="~/SDKs/PT_80_SDK"
-               objCExtraSuffix="OeJtJb">
+    <XCODE_MAC targetFolder="Builds/MacOSX" applicationCategory="public.app-category.developer-tools">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" targetName="BinaryBuilder"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="BinaryBuilder"/>
@@ -15,17 +15,16 @@
         <MODULEPATH id="juce_core" path="../../modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" vstFolder="~/SDKs/vstsdk2.4">
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" targetName="BinaryBuilder" libraryPath="/usr/X11R6/lib/"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="BinaryBuilder"
-                       libraryPath="/usr/X11R6/lib/"/>
+        <CONFIGURATION name="Debug" isDebug="1" targetName="BinaryBuilder"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="BinaryBuilder"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
-    <VS2019 targetFolder="Builds/VisualStudio2019">
+    <VS2022 targetFolder="Builds/VisualStudio2022">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" targetName="BinaryBuilder"/>
         <CONFIGURATION name="Release" isDebug="0" targetName="BinaryBuilder"/>
@@ -33,7 +32,7 @@
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../modules"/>
       </MODULEPATHS>
-    </VS2019>
+    </VS2022>
   </EXPORTFORMATS>
   <MAINGROUP id="TTBP5JihO" name="BinaryBuilder">
     <GROUP id="noYkBuTg" name="Source">

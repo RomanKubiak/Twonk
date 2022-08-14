@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -109,9 +108,12 @@ struct CachedImageList  : public ReferenceCountedObject,
 
         TextureInfo getTextureInfo()
         {
+            if (pixelData == nullptr)
+                return {};
+
             TextureInfo t;
 
-            if (textureNeedsReloading && pixelData != nullptr)
+            if (textureNeedsReloading)
             {
                 textureNeedsReloading = false;
                 texture.loadImage (Image (*pixelData));
@@ -120,8 +122,8 @@ struct CachedImageList  : public ReferenceCountedObject,
             t.textureID = texture.getTextureID();
             t.imageWidth = pixelData->width;
             t.imageHeight = pixelData->height;
-            t.fullWidthProportion  = t.imageWidth  / (float) texture.getWidth();
-            t.fullHeightProportion = t.imageHeight / (float) texture.getHeight();
+            t.fullWidthProportion  = (float) t.imageWidth  / (float) texture.getWidth();
+            t.fullHeightProportion = (float) t.imageHeight / (float) texture.getHeight();
 
             lastUsed = Time::getCurrentTime();
             return t;
@@ -420,23 +422,23 @@ struct ShaderPrograms  : public ReferenceCountedObject
             screenBounds.set (bounds.getX(), bounds.getY(), 0.5f * bounds.getWidth(), 0.5f * bounds.getHeight());
         }
 
-        void bindAttributes (OpenGLContext& context)
+        void bindAttributes()
         {
-            context.extensions.glVertexAttribPointer ((GLuint) positionAttribute.attributeID, 2, GL_SHORT, GL_FALSE, 8, nullptr);
-            context.extensions.glVertexAttribPointer ((GLuint) colourAttribute.attributeID, 4, GL_UNSIGNED_BYTE, GL_TRUE, 8, (void*) 4);
-            context.extensions.glEnableVertexAttribArray ((GLuint) positionAttribute.attributeID);
-            context.extensions.glEnableVertexAttribArray ((GLuint) colourAttribute.attributeID);
+            gl::glVertexAttribPointer ((GLuint) positionAttribute.attributeID, 2, GL_SHORT, GL_FALSE, 8, nullptr);
+            gl::glVertexAttribPointer ((GLuint) colourAttribute.attributeID, 4, GL_UNSIGNED_BYTE, GL_TRUE, 8, (void*) 4);
+            gl::glEnableVertexAttribArray ((GLuint) positionAttribute.attributeID);
+            gl::glEnableVertexAttribArray ((GLuint) colourAttribute.attributeID);
         }
 
-        void unbindAttributes (OpenGLContext& context)
+        void unbindAttributes()
         {
-            context.extensions.glDisableVertexAttribArray ((GLuint) positionAttribute.attributeID);
-            context.extensions.glDisableVertexAttribArray ((GLuint) colourAttribute.attributeID);
+            gl::glDisableVertexAttribArray ((GLuint) positionAttribute.attributeID);
+            gl::glDisableVertexAttribArray ((GLuint) colourAttribute.attributeID);
         }
 
         OpenGLShaderProgram::Attribute positionAttribute, colourAttribute;
         OpenGLShaderProgram::Uniform screenBounds;
-        std::function<void(OpenGLShaderProgram&)> onShaderActivated;
+        std::function<void (OpenGLShaderProgram&)> onShaderActivated;
     };
 
     struct MaskedShaderParams
@@ -647,16 +649,16 @@ struct ShaderPrograms  : public ReferenceCountedObject
                         float targetX, float targetY, bool isForTiling) const
         {
             auto t = trans.translated (-targetX, -targetY)
-                          .inverted().scaled (fullWidthProportion / imageWidth,
-                                              fullHeightProportion / imageHeight);
+                          .inverted().scaled (fullWidthProportion  / (float) imageWidth,
+                                              fullHeightProportion / (float) imageHeight);
 
             const GLfloat m[] = { t.mat00, t.mat01, t.mat02, t.mat10, t.mat11, t.mat12 };
             matrix.set (m, 6);
 
             if (isForTiling)
             {
-                fullWidthProportion -= 0.5f / imageWidth;
-                fullHeightProportion -= 0.5f / imageHeight;
+                fullWidthProportion  -= 0.5f / (float) imageWidth;
+                fullHeightProportion -= 0.5f / (float) imageHeight;
             }
 
             imageLimits.set (fullWidthProportion, fullHeightProportion);
@@ -1043,14 +1045,18 @@ struct StateHelpers
             if (currentActiveTexture != index)
             {
                 currentActiveTexture = index;
-                context.extensions.glActiveTexture ((GLenum) (GL_TEXTURE0 + index));
+                context.extensions.glActiveTexture (GL_TEXTURE0 + (GLenum) index);
                 JUCE_CHECK_OPENGL_ERROR
             }
         }
 
         void bindTexture (GLuint textureID) noexcept
         {
-            jassert (currentActiveTexture >= 0);
+            if (currentActiveTexture < 0 || numTextures <= currentActiveTexture)
+            {
+                jassertfalse;
+                return;
+            }
 
             if (currentTextureID[currentActiveTexture] != textureID)
             {
@@ -1069,7 +1075,8 @@ struct StateHelpers
         }
 
     private:
-        GLuint currentTextureID[3];
+        static constexpr auto numTextures = 3;
+        GLuint currentTextureID[numTextures];
         int texturesEnabled = 0, currentActiveTexture = -1;
         const OpenGLContext& context;
 
@@ -1315,7 +1322,7 @@ struct StateHelpers
 
                 activeShader = &shader;
                 shader.program.use();
-                shader.bindAttributes (context);
+                shader.bindAttributes();
 
                 if (shader.onShaderActivated)
                     shader.onShaderActivated (shader.program);
@@ -1342,7 +1349,7 @@ struct StateHelpers
             if (activeShader != nullptr)
             {
                 quadQueue.flush();
-                activeShader->unbindAttributes (context);
+                activeShader->unbindAttributes();
                 activeShader = nullptr;
                 context.extensions.glUseProgram (0);
             }
@@ -1423,8 +1430,8 @@ struct GLState
             textureCache.bindTextureForGradient (activeTextures, g);
         }
 
-        auto t = transform.translated (0.5f - target.bounds.getX(),
-                                       0.5f - target.bounds.getY());
+        auto t = transform.translated (0.5f - (float) target.bounds.getX(),
+                                       0.5f - (float) target.bounds.getY());
         auto p1 = g.point1.transformedBy (t);
         auto p2 = g.point2.transformedBy (t);
         auto p3 = Point<float> (g.point1.x + (g.point2.y - g.point1.y),
@@ -1657,7 +1664,7 @@ struct SavedState  : public RenderingHelpers::SavedStateBase<SavedState>
                 auto t = transform.getTransformWith (AffineTransform::scale (fontHeight * font.getHorizontalScale(), fontHeight)
                                                                      .followedBy (trans));
 
-                const std::unique_ptr<EdgeTable> et (font.getTypeface()->getEdgeTableForGlyph (glyphNumber, t, fontHeight));
+                const std::unique_ptr<EdgeTable> et (font.getTypefacePtr()->getEdgeTableForGlyph (glyphNumber, t, fontHeight));
 
                 if (et != nullptr)
                     fillShape (*new EdgeTableRegionType (*et), false);

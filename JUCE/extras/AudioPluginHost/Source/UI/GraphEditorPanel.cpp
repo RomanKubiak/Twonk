@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -24,7 +23,7 @@
   ==============================================================================
 */
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 #include "GraphEditorPanel.h"
 #include "../Plugins/InternalPlugins.h"
 #include "MainHostWindow.h"
@@ -140,7 +139,7 @@ struct GraphEditorPanel::PinComponent   : public Component,
 
         auto colour = (pin.isMIDI() ? Colours::red : Colours::green);
 
-        g.setColour (colour.withRotatedHue (busIdx / 5.0f));
+        g.setColour (colour.withRotatedHue ((float) busIdx / 5.0f));
         g.fillPath (p);
     }
 
@@ -175,7 +174,8 @@ struct GraphEditorPanel::PinComponent   : public Component,
 //==============================================================================
 struct GraphEditorPanel::PluginComponent   : public Component,
                                              public Timer,
-                                             private AudioProcessorParameter::Listener
+                                             private AudioProcessorParameter::Listener,
+                                             private AsyncUpdater
 {
     PluginComponent (GraphEditorPanel& p, AudioProcessorGraph::NodeID id)  : panel (p), graph (p.graph), pluginID (id)
     {
@@ -339,12 +339,14 @@ struct GraphEditorPanel::PluginComponent   : public Component,
         const AudioProcessorGraph::Node::Ptr f (graph.graph.getNodeForId (pluginID));
         jassert (f != nullptr);
 
-        numIns = f->getProcessor()->getTotalNumInputChannels();
-        if (f->getProcessor()->acceptsMidi())
+        auto& processor = *f->getProcessor();
+
+        numIns = processor.getTotalNumInputChannels();
+        if (processor.acceptsMidi())
             ++numIns;
 
-        numOuts = f->getProcessor()->getTotalNumOutputChannels();
-        if (f->getProcessor()->producesMidi())
+        numOuts = processor.getTotalNumOutputChannels();
+        if (processor.producesMidi())
             ++numOuts;
 
         int w = 100;
@@ -352,14 +354,13 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 
         w = jmax (w, (jmax (numIns, numOuts) + 1) * 20);
 
-        const int textWidth = font.getStringWidth (f->getProcessor()->getName());
+        const int textWidth = font.getStringWidth (processor.getName());
         w = jmax (w, 16 + jmin (textWidth, 300));
         if (textWidth > 300)
             h = 100;
 
         setSize (w, h);
-
-        setName (f->getProcessor()->getName());
+        setName (processor.getName() + formatSuffix);
 
         {
             auto p = graph.getNodePosition (pluginID);
@@ -373,16 +374,16 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 
             pins.clear();
 
-            for (int i = 0; i < f->getProcessor()->getTotalNumInputChannels(); ++i)
+            for (int i = 0; i < processor.getTotalNumInputChannels(); ++i)
                 addAndMakeVisible (pins.add (new PinComponent (panel, { pluginID, i }, true)));
 
-            if (f->getProcessor()->acceptsMidi())
+            if (processor.acceptsMidi())
                 addAndMakeVisible (pins.add (new PinComponent (panel, { pluginID, AudioProcessorGraph::midiChannelIndex }, true)));
 
-            for (int i = 0; i < f->getProcessor()->getTotalNumOutputChannels(); ++i)
+            for (int i = 0; i < processor.getTotalNumOutputChannels(); ++i)
                 addAndMakeVisible (pins.add (new PinComponent (panel, { pluginID, i }, false)));
 
-            if (f->getProcessor()->producesMidi())
+            if (processor.producesMidi())
                 addAndMakeVisible (pins.add (new PinComponent (panel, { pluginID, AudioProcessorGraph::midiChannelIndex }, false)));
 
             resized();
@@ -397,64 +398,55 @@ struct GraphEditorPanel::PluginComponent   : public Component,
         return {};
     }
 
+    bool isNodeUsingARA() const
+    {
+        if (auto node = graph.graph.getNodeForId (pluginID))
+            return node->properties["useARA"];
+
+        return false;
+    }
+
     void showPopupMenu()
     {
         menu.reset (new PopupMenu);
-        menu->addItem (1, "Delete this filter");
-        menu->addItem (2, "Disconnect all pins");
-        menu->addItem (3, "Toggle Bypass");
-
-        if (getProcessor()->hasEditor())
+        menu->addItem ("Delete this filter", [this] { graph.graph.removeNode (pluginID); });
+        menu->addItem ("Disconnect all pins", [this] { graph.graph.disconnectNode (pluginID); });
+        menu->addItem ("Toggle Bypass", [this]
         {
-            menu->addSeparator();
-            menu->addItem (10, "Show plugin GUI");
-            menu->addItem (11, "Show all programs");
-            menu->addItem (12, "Show all parameters");
-           #if JUCE_WINDOWS && JUCE_WIN_PER_MONITOR_DPI_AWARE
-            auto isTicked = false;
             if (auto* node = graph.graph.getNodeForId (pluginID))
-                isTicked = node->properties["DPIAware"];
+                node->setBypassed (! node->isBypassed());
 
-            menu->addItem (13, "Enable DPI awareness", true, isTicked);
-           #endif
-            menu->addItem (14, "Show debug log");
-        }
+            repaint();
+        });
 
         menu->addSeparator();
-        menu->addItem (20, "Configure Audio I/O");
-        menu->addItem (21, "Test state save/load");
+        if (getProcessor()->hasEditor())
+            menu->addItem ("Show plugin GUI", [this] { showWindow (PluginWindow::Type::normal); });
 
-        menu->showMenuAsync ({}, ModalCallbackFunction::create
-                             ([this] (int r) {
-        switch (r)
-        {
-            case 1:   graph.graph.removeNode (pluginID); break;
-            case 2:   graph.graph.disconnectNode (pluginID); break;
-            case 3:
-            {
-                if (auto* node = graph.graph.getNodeForId (pluginID))
-                    node->setBypassed (! node->isBypassed());
+        menu->addItem ("Show all programs", [this] { showWindow (PluginWindow::Type::programs); });
+        menu->addItem ("Show all parameters", [this] { showWindow (PluginWindow::Type::generic); });
+        menu->addItem ("Show debug log", [this] { showWindow (PluginWindow::Type::debug); });
 
-                repaint();
+       #if JUCE_PLUGINHOST_ARA && (JUCE_MAC || JUCE_WINDOWS)
+        if (auto* instance = dynamic_cast<AudioPluginInstance*> (getProcessor()))
+            if (instance->getPluginDescription().hasARAExtension && isNodeUsingARA())
+                menu->addItem ("Show ARA host controls", [this] { showWindow (PluginWindow::Type::araHost); });
+       #endif
 
-                break;
-            }
-            case 10:  showWindow (PluginWindow::Type::normal); break;
-            case 11:  showWindow (PluginWindow::Type::programs); break;
-            case 12:  showWindow (PluginWindow::Type::generic)  ; break;
-            case 13:
-            {
-                if (auto* node = graph.graph.getNodeForId (pluginID))
-                    node->properties.set ("DPIAware", ! node->properties ["DPIAware"]);
-                break;
-            }
-            case 14:  showWindow (PluginWindow::Type::debug); break;
-            case 20:  showWindow (PluginWindow::Type::audioIO); break;
-            case 21:  testStateSaveLoad(); break;
+        if (autoScaleOptionAvailable)
+            addPluginAutoScaleOptionsSubMenu (dynamic_cast<AudioPluginInstance*> (getProcessor()), *menu);
 
-            default:  break;
-        }
-        }));
+        menu->addSeparator();
+        menu->addItem ("Configure Audio I/O", [this] { showWindow (PluginWindow::Type::audioIO); });
+        menu->addItem ("Test state save/load", [this] { testStateSaveLoad(); });
+
+       #if ! JUCE_IOS && ! JUCE_ANDROID
+        menu->addSeparator();
+        menu->addItem ("Save plugin state", [this] { savePluginState(); });
+        menu->addItem ("Load plugin state", [this] { loadPluginState(); });
+       #endif
+
+        menu->showMenuAsync ({});
     }
 
     void testStateSaveLoad()
@@ -485,10 +477,67 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 
     void parameterValueChanged (int, float) override
     {
-        repaint();
+        // Parameter changes might come from the audio thread or elsewhere, but
+        // we can only call repaint from the message thread.
+        triggerAsyncUpdate();
     }
 
     void parameterGestureChanged (int, bool) override  {}
+
+    void handleAsyncUpdate() override { repaint(); }
+
+    void savePluginState()
+    {
+        fileChooser = std::make_unique<FileChooser> ("Save plugin state");
+
+        const auto onChosen = [ref = SafePointer<PluginComponent> (this)] (const FileChooser& chooser)
+        {
+            if (ref == nullptr)
+                return;
+
+            const auto result = chooser.getResult();
+
+            if (result == File())
+                return;
+
+            if (auto* node = ref->graph.graph.getNodeForId (ref->pluginID))
+            {
+                MemoryBlock block;
+                node->getProcessor()->getStateInformation (block);
+                result.replaceWithData (block.getData(), block.getSize());
+            }
+        };
+
+        fileChooser->launchAsync (FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting, onChosen);
+    }
+
+    void loadPluginState()
+    {
+        fileChooser = std::make_unique<FileChooser> ("Load plugin state");
+
+        const auto onChosen = [ref = SafePointer<PluginComponent> (this)] (const FileChooser& chooser)
+        {
+            if (ref == nullptr)
+                return;
+
+            const auto result = chooser.getResult();
+
+            if (result == File())
+                return;
+
+            if (auto* node = ref->graph.graph.getNodeForId (ref->pluginID))
+            {
+                if (auto stream = result.createInputStream())
+                {
+                    MemoryBlock block;
+                    stream->readIntoMemoryBlock (block);
+                    node->getProcessor()->setStateInformation (block.getData(), (int) block.getSize());
+                }
+            }
+        };
+
+        fileChooser->launchAsync (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, onChosen);
+    }
 
     GraphEditorPanel& panel;
     PluginGraph& graph;
@@ -501,6 +550,8 @@ struct GraphEditorPanel::PluginComponent   : public Component,
     int numIns = 0, numOuts = 0;
     DropShadowEffect shadow;
     std::unique_ptr<PopupMenu> menu;
+    std::unique_ptr<FileChooser> fileChooser;
+    const String formatSuffix = getFormatSuffix (getProcessor());
 };
 
 
@@ -508,7 +559,8 @@ struct GraphEditorPanel::PluginComponent   : public Component,
 struct GraphEditorPanel::ConnectorComponent   : public Component,
                                                 public SettableTooltipClient
 {
-    ConnectorComponent (GraphEditorPanel& p) : panel (p), graph (p.graph)
+    explicit ConnectorComponent (GraphEditorPanel& p)
+        : panel (p), graph (p.graph)
     {
         setAlwaysOnTop (true);
     }
@@ -746,7 +798,7 @@ void GraphEditorPanel::mouseDrag (const MouseEvent& e)
         stopTimer();
 }
 
-void GraphEditorPanel::createNewPlugin (const PluginDescription& desc, Point<int> position)
+void GraphEditorPanel::createNewPlugin (const PluginDescriptionAndPreference& desc, Point<int> position)
 {
     graph.addPlugin (desc, position.toDouble() / Point<double> ((double) getWidth(), (double) getHeight()));
 }
@@ -961,7 +1013,7 @@ struct GraphDocumentComponent::TooltipBar   : public Component,
 
     void paint (Graphics& g) override
     {
-        g.setFont (Font (getHeight() * 0.7f, Font::bold));
+        g.setFont (Font ((float) getHeight() * 0.7f, Font::bold));
         g.setColour (Colours::black);
         g.drawFittedText (tip, 10, 0, getWidth() - 12, getHeight(), Justification::centredLeft, 1);
     }
@@ -992,7 +1044,7 @@ class GraphDocumentComponent::TitleBarComponent    : public Component,
                                                      private Button::Listener
 {
 public:
-    TitleBarComponent (GraphDocumentComponent& graphDocumentComponent)
+    explicit TitleBarComponent (GraphDocumentComponent& graphDocumentComponent)
         : owner (graphDocumentComponent)
     {
         static const unsigned char burgerMenuPathData[]
@@ -1155,7 +1207,7 @@ struct GraphDocumentComponent::PluginListBoxModel    : public ListBoxModel,
 GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm,
                                                 AudioDeviceManager& dm,
                                                 KnownPluginList& kpl)
-    : graph (new PluginGraph (fm)),
+    : graph (new PluginGraph (fm, kpl)),
       deviceManager (dm),
       pluginList (kpl),
       graphPlayer (getAppProperties().getUserSettings()->getBoolValue ("doublePrecisionProcessing", false))
@@ -1165,10 +1217,13 @@ GraphDocumentComponent::GraphDocumentComponent (AudioPluginFormatManager& fm,
     deviceManager.addChangeListener (graphPanel.get());
     deviceManager.addAudioCallback (&graphPlayer);
     deviceManager.addMidiInputDeviceCallback ({}, &graphPlayer.getMidiMessageCollector());
+    deviceManager.addChangeListener (this);
 }
 
 void GraphDocumentComponent::init()
 {
+    updateMidiOutput();
+
     graphPanel.reset (new GraphEditorPanel (*graph));
     addAndMakeVisible (graphPanel.get());
     graphPlayer.setProcessor (&graph->graph);
@@ -1184,11 +1239,8 @@ void GraphDocumentComponent::init()
 
     if (isOnTouchDevice())
     {
-        if (isOnTouchDevice())
-        {
-            titleBarComponent.reset (new TitleBarComponent (*this));
-            addAndMakeVisible (titleBarComponent.get());
-        }
+        titleBarComponent.reset (new TitleBarComponent (*this));
+        addAndMakeVisible (titleBarComponent.get());
 
         pluginListBoxModel.reset (new PluginListBoxModel (pluginListBox, pluginList));
 
@@ -1201,16 +1253,16 @@ void GraphDocumentComponent::init()
                                                                               0, 2, 0, 2,
                                                                               true, true, true, false));
 
-        if (isOnTouchDevice())
-        {
-            addAndMakeVisible (pluginListSidePanel);
-            addAndMakeVisible (mobileSettingsSidePanel);
-        }
+        addAndMakeVisible (pluginListSidePanel);
+        addAndMakeVisible (mobileSettingsSidePanel);
     }
 }
 
 GraphDocumentComponent::~GraphDocumentComponent()
 {
+    if (midiOutput != nullptr)
+        midiOutput->stopBackgroundThread();
+
     releaseGraph();
 
     keyState.removeListener (&graphPlayer.getMidiMessageCollector());
@@ -1218,7 +1270,16 @@ GraphDocumentComponent::~GraphDocumentComponent()
 
 void GraphDocumentComponent::resized()
 {
-    auto r = getLocalBounds();
+    auto r = [this]
+    {
+        auto bounds = getLocalBounds();
+
+        if (auto* display = Desktop::getInstance().getDisplays().getDisplayForRect (getScreenBounds()))
+            return display->safeAreaInsets.subtractedFrom (bounds);
+
+        return bounds;
+    }();
+
     const int titleBarHeight = 40;
     const int keysHeight = 60;
     const int statusHeight = 20;
@@ -1233,14 +1294,9 @@ void GraphDocumentComponent::resized()
     checkAvailableWidth();
 }
 
-void GraphDocumentComponent::createNewPlugin (const PluginDescription& desc, Point<int> pos)
+void GraphDocumentComponent::createNewPlugin (const PluginDescriptionAndPreference& desc, Point<int> pos)
 {
     graphPanel->createNewPlugin (desc, pos);
-}
-
-void GraphDocumentComponent::unfocusKeyboardComponent()
-{
-    keyboardComp->unfocusAllComponents();
 }
 
 void GraphDocumentComponent::releaseGraph()
@@ -1280,7 +1336,8 @@ void GraphDocumentComponent::itemDropped (const SourceDetails& details)
     // must be a valid index!
     jassert (isPositiveAndBelow (pluginTypeIndex, pluginList.getNumTypes()));
 
-    createNewPlugin (pluginList.getTypes()[pluginTypeIndex], details.localPosition);
+    createNewPlugin (PluginDescriptionAndPreference { pluginList.getTypes()[pluginTypeIndex] },
+                     details.localPosition);
 }
 
 void GraphDocumentComponent::showSidePanel (bool showSettingsPanel)
@@ -1323,4 +1380,24 @@ void GraphDocumentComponent::setDoublePrecision (bool doublePrecision)
 bool GraphDocumentComponent::closeAnyOpenPluginWindows()
 {
     return graphPanel->graph.closeAnyOpenPluginWindows();
+}
+
+void GraphDocumentComponent::changeListenerCallback (ChangeBroadcaster*)
+{
+    updateMidiOutput();
+}
+
+void GraphDocumentComponent::updateMidiOutput()
+{
+    auto* defaultMidiOutput = deviceManager.getDefaultMidiOutput();
+
+    if (midiOutput != defaultMidiOutput)
+    {
+        midiOutput = defaultMidiOutput;
+
+        if (midiOutput != nullptr)
+            midiOutput->startBackgroundThread();
+
+        graphPlayer.setMidiOutput (midiOutput);
+    }
 }

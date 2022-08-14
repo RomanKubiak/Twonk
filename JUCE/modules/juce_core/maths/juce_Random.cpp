@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -30,10 +30,6 @@ Random::Random (int64 seedValue) noexcept  : seed (seedValue)
 Random::Random()  : seed (1)
 {
     setSeedRandomly();
-}
-
-Random::~Random() noexcept
-{
 }
 
 void Random::setSeed (const int64 newSeed) noexcept
@@ -105,7 +101,9 @@ bool Random::nextBool() noexcept
 
 float Random::nextFloat() noexcept
 {
-    return static_cast<uint32> (nextInt()) / (std::numeric_limits<uint32>::max() + 1.0f);
+    auto result = static_cast<float> (static_cast<uint32> (nextInt()))
+                  / (static_cast<float> (std::numeric_limits<uint32>::max()) + 1.0f);
+    return result == 1.0f ? 1.0f - std::numeric_limits<float>::epsilon() : result;
 }
 
 double Random::nextDouble() noexcept

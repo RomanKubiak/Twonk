@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE examples.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    The code included in this file is provided under the terms of the ISC license
    http://www.isc.org/downloads/software-support-policy/isc-license. Permission
@@ -23,24 +23,26 @@
 
  BEGIN_JUCE_PIP_METADATA
 
- name:             ArpeggiatorPlugin
- version:          1.0.0
- vendor:           JUCE
- website:          http://juce.com
- description:      Arpeggiator audio plugin.
+ name:                  ArpeggiatorPlugin
+ version:               1.0.0
+ vendor:                JUCE
+ website:               http://juce.com
+ description:           Arpeggiator audio plugin.
 
- dependencies:     juce_audio_basics, juce_audio_devices, juce_audio_formats,
-                   juce_audio_plugin_client, juce_audio_processors,
-                   juce_audio_utils, juce_core, juce_data_structures,
-                   juce_events, juce_graphics, juce_gui_basics, juce_gui_extra
- exporters:        xcode_mac, vs2019
+ dependencies:          juce_audio_basics, juce_audio_devices, juce_audio_formats,
+                        juce_audio_plugin_client, juce_audio_processors,
+                        juce_audio_utils, juce_core, juce_data_structures,
+                        juce_events, juce_graphics, juce_gui_basics, juce_gui_extra
+ exporters:             xcode_mac, vs2022
 
- moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1
+ moduleFlags:           JUCE_STRICT_REFCOUNTEDPOINTER=1
 
- type:             AudioProcessor
- mainClass:        Arpeggiator
+ type:                  AudioProcessor
+ mainClass:             Arpeggiator
 
- useLocalCopy:     1
+ useLocalCopy:          1
+
+ pluginCharacteristics: pluginWantsMidiIn, pluginProducesMidiOut, pluginIsMidiEffectPlugin
 
  END_JUCE_PIP_METADATA
 
@@ -58,10 +60,8 @@ public:
     Arpeggiator()
         : AudioProcessor (BusesProperties()) // add no audio buses at all
     {
-        addParameter (speed = new AudioParameterFloat ("speed", "Arpeggiator Speed", 0.0, 1.0, 0.5));
+        addParameter (speed = new AudioParameterFloat ({ "speed", 1 }, "Arpeggiator Speed", 0.0, 1.0, 0.5));
     }
-
-    ~Arpeggiator() {}
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override
@@ -71,7 +71,7 @@ public:
         notes.clear();
         currentNote = 0;
         lastNoteValue = -1;
-        time = 0.0;
+        time = 0;
         rate = static_cast<float> (sampleRate);
     }
 
@@ -79,7 +79,7 @@ public:
 
     void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midi) override
     {
-        // the audio buffer in a midi effect will have zero channels!
+        // A pure MIDI plugin shouldn't be provided any audio data
         jassert (buffer.getNumChannels() == 0);
 
         // however we use the buffer to get timing information
@@ -88,11 +88,9 @@ public:
         // get note duration
         auto noteDuration = static_cast<int> (std::ceil (rate * 0.25f * (0.1f + (1.0f - (*speed)))));
 
-        MidiMessage msg;
-        int ignore;
-
-        for (MidiBuffer::Iterator it (midi); it.getNextEvent (msg, ignore);)
+        for (const auto metadata : midi)
         {
+            const auto msg = metadata.getMessage();
             if      (msg.isNoteOn())  notes.add (msg.getNoteNumber());
             else if (msg.isNoteOff()) notes.removeValue (msg.getNoteNumber());
         }
@@ -121,6 +119,8 @@ public:
         time = (time + numSamples) % noteDuration;
     }
 
+    using AudioProcessor::processBlock;
+
     //==============================================================================
     bool isMidiEffect() const override                     { return true; }
 
@@ -139,7 +139,7 @@ public:
     int getNumPrograms() override                          { return 1; }
     int getCurrentProgram() override                       { return 0; }
     void setCurrentProgram (int) override                  {}
-    const String getProgramName (int) override             { return {}; }
+    const String getProgramName (int) override             { return "None"; }
     void changeProgramName (int, const String&) override   {}
 
     //==============================================================================

@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -40,7 +39,11 @@ public:
 
     bool initialise()
     {
-        return frameBuffer.initialise (context, width, height);
+        if (! frameBuffer.initialise (context, width, height))
+            return false;
+
+        frameBuffer.clear (Colours::transparentBlack);
+        return true;
     }
 
     std::unique_ptr<LowLevelGraphicsContext> createLowLevelContext() override
@@ -53,7 +56,12 @@ public:
 
     ImagePixelData::Ptr clone() override
     {
-        Image newImage (*new OpenGLFrameBufferImage (context, width, height));
+        std::unique_ptr<OpenGLFrameBufferImage> im (new OpenGLFrameBufferImage (context, width, height));
+
+        if (! im->initialise())
+            return ImagePixelData::Ptr();
+
+        Image newImage (im.release());
         Graphics g (newImage);
         g.drawImageAt (Image (*this), 0, 0, false);
 
@@ -160,6 +168,9 @@ private:
             bitmapData.dataReleaser.reset (r);
 
             bitmapData.data = (uint8*) r->data.get();
+            bitmapData.size = (size_t) bitmapData.width
+                              * (size_t) bitmapData.height
+                              * sizeof (PixelARGB);
             bitmapData.lineStride = (bitmapData.width * bitmapData.pixelStride + 3) & ~3;
 
             ReaderType::read (frameBuffer, bitmapData, x, y);
@@ -192,7 +203,6 @@ ImagePixelData::Ptr OpenGLImageType::create (Image::PixelFormat, int width, int 
     if (! im->initialise())
         return ImagePixelData::Ptr();
 
-    im->frameBuffer.clear (Colours::transparentBlack);
     return *im.release();
 }
 

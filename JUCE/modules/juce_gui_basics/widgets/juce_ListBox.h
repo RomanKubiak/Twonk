@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -87,6 +86,12 @@ public:
     virtual Component* refreshComponentForRow (int rowNumber, bool isRowSelected,
                                                Component* existingComponentToUpdate);
 
+    /** This can be overridden to return a name for the specified row.
+
+        By default this will just return a string containing the row number.
+    */
+    virtual String getNameForRow (int rowNumber);
+
     /** This can be overridden to react to the user clicking on a row.
         @see listBoxItemDoubleClicked
     */
@@ -158,8 +163,14 @@ public:
 
     /** You can override this to return a custom mouse cursor for each row. */
     virtual MouseCursor getMouseCursorForRow (int row);
-};
 
+private:
+   #if ! JUCE_DISABLE_ASSERTIONS
+    friend class ListBox;
+    struct Empty {};
+    std::shared_ptr<Empty> sharedState = std::make_shared<Empty>();
+   #endif
+};
 
 //==============================================================================
 /**
@@ -182,6 +193,11 @@ public:
 
         The model pointer passed-in can be null, in which case you can set it later
         with setModel().
+
+        The ListBoxModel instance must stay alive for as long as the ListBox
+        holds a pointer to it. Be careful to destroy the ListBox before the
+        ListBoxModel, or to call ListBox::setModel (nullptr) before destroying
+        the ListBoxModel.
     */
     ListBox (const String& componentName = String(),
              ListBoxModel* model = nullptr);
@@ -189,14 +205,25 @@ public:
     /** Destructor. */
     ~ListBox() override;
 
-
     //==============================================================================
-    /** Changes the current data model to display. */
+    /** Changes the current data model to display.
+
+        The ListBoxModel instance must stay alive for as long as the ListBox
+        holds a pointer to it. Be careful to destroy the ListBox before the
+        ListBoxModel, or to call ListBox::setModel (nullptr) before destroying
+        the ListBoxModel.
+    */
     void setModel (ListBoxModel* newModel);
 
     /** Returns the current list model. */
-    ListBoxModel* getModel() const noexcept                     { return model; }
+    ListBoxModel* getModel() const noexcept
+    {
+       #if ! JUCE_DISABLE_ASSERTIONS
+        checkModelPtrIsValid();
+       #endif
 
+        return model;
+    }
 
     //==============================================================================
     /** Causes the list to refresh its content.
@@ -492,7 +519,7 @@ public:
         The component will be deleted when setHeaderComponent() is called with a
         different component, or when the listbox is deleted.
     */
-    void setHeaderComponent (Component* newHeaderComponent);
+    void setHeaderComponent (std::unique_ptr<Component> newHeaderComponent);
 
     /** Returns whatever header component was set with setHeaderComponent(). */
     Component* getHeaderComponent() const noexcept      { return headerComponent.get(); }
@@ -533,7 +560,7 @@ public:
 
         @see Component::createComponentSnapshot
     */
-    virtual Image createSnapshotOfRows (const SparseSet<int>& rows, int& x, int& y);
+    virtual ScaledImage createSnapshotOfRows (const SparseSet<int>& rows, int& x, int& y);
 
     /** Returns the viewport that this ListBox uses.
 
@@ -567,13 +594,19 @@ public:
     void startDragAndDrop (const MouseEvent&, const SparseSet<int>& rowsToDrag,
                            const var& dragDescription, bool allowDraggingToOtherWindows);
 
+    //==============================================================================
+   #ifndef DOXYGEN
+    [[deprecated ("This method's bool parameter has changed: see the new method signature.")]]
+    void setSelectedRows (const SparseSet<int>&, bool);
+   #endif
+
 private:
     //==============================================================================
     JUCE_PUBLIC_IN_DLL_BUILD (class ListViewport)
     JUCE_PUBLIC_IN_DLL_BUILD (class RowComponent)
     friend class ListViewport;
     friend class TableListBox;
-    ListBoxModel* model;
+    ListBoxModel* model = nullptr;
     std::unique_ptr<ListViewport> viewport;
     std::unique_ptr<Component> headerComponent;
     std::unique_ptr<MouseListener> mouseMoveSelector;
@@ -583,16 +616,16 @@ private:
     int lastRowSelected = -1;
     bool multipleSelection = false, alwaysFlipSelection = false, hasDoneInitialUpdate = false, selectOnMouseDown = true;
 
+   #if ! JUCE_DISABLE_ASSERTIONS
+    std::weak_ptr<ListBoxModel::Empty> weakModelPtr;
+   #endif
+
+    void assignModelPtr (ListBoxModel*);
+    void checkModelPtrIsValid() const;
+    std::unique_ptr<AccessibilityHandler> createAccessibilityHandler() override;
+    bool hasAccessibleHeaderComponent() const;
     void selectRowInternal (int rowNumber, bool dontScrollToShowThisRow,
                             bool deselectOthersFirst, bool isMouseClick);
-
-   #if JUCE_CATCH_DEPRECATED_CODE_MISUSE
-    // This method's bool parameter has changed: see the new method signature.
-    JUCE_DEPRECATED (void setSelectedRows (const SparseSet<int>&, bool));
-    // This method has been replaced by the more flexible method createSnapshotOfRows.
-    // Please call createSnapshotOfRows (getSelectedRows(), x, y) to get the same behaviour.
-    JUCE_DEPRECATED (virtual void createSnapshotOfSelectedRows (int&, int&)) {}
-   #endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ListBox)
 };

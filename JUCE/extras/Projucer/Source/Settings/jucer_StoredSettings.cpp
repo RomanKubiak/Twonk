@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -181,8 +180,7 @@ void StoredSettings::updateOldProjectSettingsFiles()
     auto newProjectSettingsDir = projucerSettingsDirectory.getChildFile ("ProjectSettings");
     newProjectSettingsDir.createDirectory();
 
-    DirectoryIterator iter (projucerSettingsDirectory, false, "*.settings");
-    while (iter.next())
+    for (const auto& iter : RangedDirectoryIterator (projucerSettingsDirectory, false, "*.settings"))
     {
         auto f = iter.getFile();
         auto oldFileName = f.getFileName();
@@ -281,17 +279,13 @@ static bool isGlobalPathValid (const File& relativeTo, const Identifier& key, co
     {
         fileToCheckFor = "pluginterfaces/vst2.x/aeffect.h";
     }
-    if (key == Ids::vst3Path)
-    {
-        fileToCheckFor = "base/source/baseiids.cpp";
-    }
-    else if (key == Ids::rtasPath)
-    {
-        fileToCheckFor = "AlturaPorts/TDMPlugIns/PlugInLibrary/EffectClasses/CEffectProcessMIDI.cpp";
-    }
     else if (key == Ids::aaxPath)
     {
         fileToCheckFor = "Interfaces/AAX_Exports.cpp";
+    }
+    else if (key == Ids::araPath)
+    {
+        fileToCheckFor = "ARA_API/ARAInterface.h";
     }
     else if (key == Ids::androidSDKPath)
     {
@@ -301,14 +295,6 @@ static bool isGlobalPathValid (const File& relativeTo, const Identifier& key, co
         fileToCheckFor = "platform-tools/adb";
        #endif
     }
-    else if (key == Ids::androidNDKPath)
-    {
-       #if JUCE_WINDOWS
-        fileToCheckFor = "ndk-depends.cmd";
-       #else
-        fileToCheckFor = "ndk-depends";
-       #endif
-    }
     else if (key == Ids::defaultJuceModulePath)
     {
         fileToCheckFor = "juce_core";
@@ -316,16 +302,6 @@ static bool isGlobalPathValid (const File& relativeTo, const Identifier& key, co
     else if (key == Ids::defaultUserModulePath)
     {
         fileToCheckFor = {};
-    }
-    else if (key == Ids::clionExePath)
-    {
-       #if JUCE_MAC
-        fileToCheckFor = path.trim().endsWith (".app") ? "Contents/MacOS/clion" : "../clion";
-       #elif JUCE_WINDOWS
-        fileToCheckFor = "../clion64.exe";
-       #else
-        fileToCheckFor = "../clion.sh";
-       #endif
     }
     else if (key == Ids::androidStudioExePath)
     {
@@ -363,18 +339,9 @@ void StoredSettings::checkJUCEPaths()
         projectDefaults.getPropertyAsValue (Ids::defaultJuceModulePath, nullptr) = File (juceFolder).getChildFile ("modules").getFullPathName();
 }
 
-bool StoredSettings::shouldAskUserToSetJUCEPath() noexcept
+bool StoredSettings::isJUCEPathIncorrect()
 {
-    if (! isGlobalPathValid ({}, Ids::jucePath, getStoredPath (Ids::jucePath, TargetOS::getThisOS()).get().toString())
-        && getGlobalProperties().getValue ("dontAskAboutJUCEPath", {}).isEmpty())
-        return true;
-
-    return false;
-}
-
-void StoredSettings::setDontAskAboutJUCEPathAgain() noexcept
-{
-    getGlobalProperties().setValue ("dontAskAboutJUCEPath", 1);
+    return ! isGlobalPathValid ({}, Ids::jucePath, getStoredPath (Ids::jucePath, TargetOS::getThisOS()).get().toString());
 }
 
 static String getFallbackPathForOS (const Identifier& key, DependencyPathOS os)
@@ -391,15 +358,9 @@ static String getFallbackPathForOS (const Identifier& key, DependencyPathOS os)
     {
         return (os == TargetOS::windows ? "C:\\modules" : "~/modules");
     }
-    else if (key == Ids::vstLegacyPath || key == Ids::vst3Path)
+    else if (key == Ids::vstLegacyPath)
     {
         return {};
-    }
-    else if (key == Ids::rtasPath)
-    {
-        if      (os == TargetOS::windows)  return "C:\\SDKs\\PT_90_SDK";
-        else if (os == TargetOS::osx)      return "~/SDKs/PT_90_SDK";
-        else                               return {}; // no RTAS on this OS!
     }
     else if (key == Ids::aaxPath)
     {
@@ -407,37 +368,20 @@ static String getFallbackPathForOS (const Identifier& key, DependencyPathOS os)
         else if (os == TargetOS::osx)      return "~/SDKs/AAX";
         else                               return {}; // no AAX on this OS!
     }
+    else if (key == Ids::araPath)
+    {
+        if      (os == TargetOS::windows)  return "C:\\SDKs\\ARA_SDK";
+        else if (os == TargetOS::osx)      return "~/SDKs/ARA_SDK";
+        else                               return {};
+    }
     else if (key == Ids::androidSDKPath)
     {
-        return (os == TargetOS::linux ? "${user.home}/Android/Sdk" :
-                                        "${user.home}/Library/Android/sdk");
-    }
-    else if (key == Ids::androidNDKPath)
-    {
-        return getFallbackPathForOS (Ids::androidSDKPath, os) + "/ndk-bundle";
-    }
-    else if (key == Ids::clionExePath)
-    {
-        if (os == TargetOS::windows)
-        {
-          #if JUCE_WINDOWS
-            auto regValue = WindowsRegistry::getValue ("HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\Applications\\clion64.exe\\shell\\open\\command\\", {}, {});
-            auto openCmd = StringArray::fromTokens (regValue, true);
+        if      (os == TargetOS::windows)  return "${user.home}\\AppData\\Local\\Android\\Sdk";
+        else if (os == TargetOS::osx)      return "${user.home}/Library/Android/sdk";
+        else if (os == TargetOS::linux)    return "${user.home}/Android/Sdk";
 
-            if (! openCmd.isEmpty())
-                return openCmd[0].unquoted();
-          #endif
-
-            return "C:\\Program Files\\JetBrains\\CLion YYYY.MM.DD\\bin\\clion64.exe";
-        }
-        else if (os == TargetOS::osx)
-        {
-            return "/Applications/CLion.app";
-        }
-        else
-        {
-            return "${user.home}/clion/bin/clion.sh";
-        }
+        jassertfalse;
+        return {};
     }
     else if (key == Ids::androidStudioExePath)
     {
@@ -477,10 +421,16 @@ static Identifier identifierForOS (DependencyPathOS os) noexcept
     return {};
 }
 
-ValueWithDefault StoredSettings::getStoredPath (const Identifier& key, DependencyPathOS os)
+ValueTreePropertyWithDefault StoredSettings::getStoredPath (const Identifier& key, DependencyPathOS os)
 {
     auto tree = (os == TargetOS::getThisOS() ? projectDefaults
                                              : fallbackPaths.getOrCreateChildWithName (identifierForOS (os), nullptr));
 
     return { tree, key, nullptr, getFallbackPathForOS (key, os) };
 }
+
+void StoredSettings::addProjectDefaultsListener (ValueTree::Listener& l)     { projectDefaults.addListener (&l); }
+void StoredSettings::removeProjectDefaultsListener (ValueTree::Listener& l)  { projectDefaults.removeListener (&l); }
+
+void StoredSettings::addFallbackPathsListener (ValueTree::Listener& l)       { fallbackPaths.addListener (&l); }
+void StoredSettings::removeFallbackPathsListener (ValueTree::Listener& l)    { fallbackPaths.removeListener (&l); }

@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -166,21 +165,7 @@ public:
         }
 
         g.setColour (textColour);
-
-        if (selectedCategory.isEmpty())
-        {
-            if (isPositiveAndBelow (rowNumber, JUCEDemos::getCategories().size()))
-                g.drawFittedText (JUCEDemos::getCategories()[(size_t) rowNumber].name,
-                                  bounds, Justification::centred, 1);
-        }
-        else
-        {
-            auto& category = JUCEDemos::getCategory (selectedCategory);
-
-            if (isPositiveAndBelow (rowNumber, category.demos.size()))
-                g.drawFittedText (category.demos[(size_t) rowNumber].demoFile.getFileName(),
-                                  bounds, Justification::centred, 1);
-        }
+        g.drawFittedText (getNameForRow (rowNumber), bounds, Justification::centred, 1);
     }
 
     int getNumRows() override
@@ -189,16 +174,26 @@ public:
                                                  : JUCEDemos::getCategory (selectedCategory).demos.size());
     }
 
-    void selectedRowsChanged (int row) override
+    String getNameForRow (int rowNumber) override
     {
-        if (row < 0)
-            return;
-
         if (selectedCategory.isEmpty())
-            showCategory (JUCEDemos::getCategories()[(size_t) row].name);
+        {
+            if (isPositiveAndBelow (rowNumber, JUCEDemos::getCategories().size()))
+                return JUCEDemos::getCategories()[(size_t) rowNumber].name;
+        }
         else
-            demoHolder.setDemo (selectedCategory, row);
+        {
+            auto& category = JUCEDemos::getCategory (selectedCategory);
+
+            if (isPositiveAndBelow (rowNumber, category.demos.size()))
+                return category.demos[(size_t) rowNumber].demoFile.getFileName();
+        }
+
+        return {};
     }
+
+    void returnKeyPressed (int row) override                       { selectRow (row); }
+    void listBoxItemClicked (int row, const MouseEvent&) override  { selectRow (row); }
 
     //==============================================================================
     void showCategory (const String& categoryName) noexcept
@@ -207,37 +202,75 @@ public:
 
         demos.deselectAllRows();
         demos.setHeaderComponent (categoryName.isEmpty() ? nullptr
-                                                         : new Header (*this));
+                                                         : std::make_unique<CategoryListHeaderComponent> (*this));
         demos.updateContent();
     }
 
 private:
-    String selectedCategory;
-
-    DemoContentComponent& demoHolder;
-    ListBox demos;
-
-    struct Header    : public Component
+    //==============================================================================
+    class CategoryListHeaderComponent  : public Button
     {
-        Header (DemoList& o)
-            : owner (o)
+    public:
+        explicit CategoryListHeaderComponent (DemoList& o)
+            : Button ({}),
+              owner (o)
         {
+            setTitle ("Previous");
             setSize (0, 30);
         }
 
-        void paint (Graphics& g) override
+        void paintButton (Graphics& g, bool, bool) override
         {
             g.setColour (findColour (Label::textColourId));
             g.drawFittedText ("<", getLocalBounds().reduced (20, 0), Justification::centredLeft, 1);
         }
 
-        void mouseDown (const MouseEvent&) override
+        void clicked() override
         {
             owner.showCategory ({});
         }
 
+        using Button::clicked;
+
+    private:
         DemoList& owner;
     };
+
+    //==============================================================================
+    void selectRow (int row)
+    {
+        if (row < 0)
+            return;
+
+        if (selectedCategory.isEmpty())
+            showCategory (JUCEDemos::getCategories()[(size_t) row].name);
+        else
+            demoHolder.setDemo (selectedCategory, row);
+
+        if (demos.isShowing())
+            selectFirstRow();
+    }
+
+    void selectFirstRow()
+    {
+        if (auto* handler = demos.getAccessibilityHandler())
+        {
+            for (auto* child : handler->getChildren())
+            {
+                if (child->getRole() == AccessibilityRole::listItem)
+                {
+                    child->grabFocus();
+                    break;
+                }
+            }
+        }
+    }
+
+    //==============================================================================
+    String selectedCategory;
+
+    DemoContentComponent& demoHolder;
+    ListBox demos;
 };
 
 //==============================================================================
@@ -267,6 +300,9 @@ MainComponent::MainComponent()
     addAndMakeVisible (showDemosButton);
     addAndMakeVisible (demosPanel);
 
+    demosPanel.setTitle ("Demos");
+    demosPanel.setFocusContainerType (FocusContainerType::focusContainer);
+
     showDemosButton.onClick = [this] { demosPanel.showOrHide (true); };
 
     demosPanel.onPanelMove = [this]
@@ -285,6 +321,9 @@ MainComponent::MainComponent()
 
             if (isShowingHeavyweightDemo)
                 resized();
+
+            if (auto* handler = demosPanel.getAccessibilityHandler())
+                handler->grabFocus();
         }
         else
         {
@@ -314,14 +353,21 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    auto bounds = getLocalBounds();
+    auto safeBounds = [this]
+    {
+        auto bounds = getLocalBounds();
 
-    showDemosButton.setBounds (0, 0, 150, contentComponent->getTabBarDepth());
+        if (auto* display = Desktop::getInstance().getDisplays().getDisplayForRect (getScreenBounds()))
+            return display->safeAreaInsets.subtractedFrom (bounds);
+
+        return bounds;
+    }();
+
+    showDemosButton.setBounds (safeBounds.getX(), safeBounds.getY(), 150, contentComponent->getTabBarDepth());
 
     if (isShowingHeavyweightDemo)
     {
-        bounds.removeFromLeft (sidePanelWidth);
-
+        safeBounds.removeFromLeft (sidePanelWidth);
         contentComponent->setTabBarIndent (jmax (0, 150 - sidePanelWidth));
     }
     else
@@ -329,7 +375,7 @@ void MainComponent::resized()
         contentComponent->setTabBarIndent (150);
     }
 
-    contentComponent->setBounds (bounds);
+    contentComponent->setBounds (safeBounds);
 }
 
 void MainComponent::homeButtonClicked()

@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -220,7 +219,7 @@ private:
     {
         if (reader == nullptr && source != nullptr)
             if (auto* audioFileStream = source->createInputStream())
-                reader.reset (owner.formatManagerToUse.createReaderFor (audioFileStream));
+                reader.reset (owner.formatManagerToUse.createReaderFor (std::unique_ptr<InputStream> (audioFileStream)));
     }
 
     bool readNextBlock()
@@ -733,7 +732,7 @@ void AudioThumbnail::setLevels (const MinMaxValue* const* values, int thumbIndex
     const ScopedLock sl (lock);
 
     for (int i = jmin (numChans, channels.size()); --i >= 0;)
-        channels.getUnchecked(i)->write (values[i], thumbIndex, numValues);
+        channels.getUnchecked (i)->write (values[i], thumbIndex, numValues);
 
     auto start = thumbIndex * (int64) samplesPerThumbSample;
     auto end   = (thumbIndex + numValues) * (int64) samplesPerThumbSample;
@@ -741,7 +740,7 @@ void AudioThumbnail::setLevels (const MinMaxValue* const* values, int thumbIndex
     if (numSamplesFinished >= start && end > numSamplesFinished)
         numSamplesFinished = end;
 
-    totalSamples = jmax (numSamplesFinished, totalSamples.load());
+    totalSamples = jmax (numSamplesFinished, totalSamples);
     window->invalidate();
     sendChangeMessage();
 }
@@ -749,26 +748,31 @@ void AudioThumbnail::setLevels (const MinMaxValue* const* values, int thumbIndex
 //==============================================================================
 int AudioThumbnail::getNumChannels() const noexcept
 {
+    const ScopedLock sl (lock);
     return numChannels;
 }
 
 double AudioThumbnail::getTotalLength() const noexcept
 {
-    return sampleRate > 0 ? (totalSamples / sampleRate) : 0;
+    const ScopedLock sl (lock);
+    return sampleRate > 0 ? ((double) totalSamples / sampleRate) : 0.0;
 }
 
 bool AudioThumbnail::isFullyLoaded() const noexcept
 {
+    const ScopedLock sl (lock);
     return numSamplesFinished >= totalSamples - samplesPerThumbSample;
 }
 
 double AudioThumbnail::getProportionComplete() const noexcept
 {
-    return jlimit (0.0, 1.0, numSamplesFinished / (double) jmax ((int64) 1, totalSamples.load()));
+    const ScopedLock sl (lock);
+    return jlimit (0.0, 1.0, (double) numSamplesFinished / (double) jmax ((int64) 1, totalSamples));
 }
 
 int64 AudioThumbnail::getNumSamplesFinished() const noexcept
 {
+    const ScopedLock sl (lock);
     return numSamplesFinished;
 }
 
@@ -780,7 +784,7 @@ float AudioThumbnail::getApproximatePeak() const
     for (auto* c : channels)
         peak = jmax (peak, c->getPeak());
 
-    return jlimit (0, 127, peak) / 127.0f;
+    return (float) jlimit (0, 127, peak) / 127.0f;
 }
 
 void AudioThumbnail::getApproximateMinMax (double startTime, double endTime, int channelIndex,

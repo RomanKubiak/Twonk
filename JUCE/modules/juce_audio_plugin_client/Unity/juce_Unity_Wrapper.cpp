@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -24,11 +23,12 @@
   ==============================================================================
 */
 
+#include <juce_core/system/juce_TargetPlatform.h>
+
 #if JucePlugin_Build_Unity
 
-#include "../../juce_core/system/juce_TargetPlatform.h"
 #include "../utility/juce_IncludeModuleHeaders.h"
-#include "../../juce_audio_processors/format_types/juce_LegacyAudioParameter.cpp"
+#include <juce_audio_processors/format_types/juce_LegacyAudioParameter.cpp>
 
 #if JUCE_WINDOWS
  #include "../utility/juce_IncludeSystemHeaders.h"
@@ -59,6 +59,9 @@ public:
     Rectangle<int> getBounds() const override                              { return bounds; }
     Point<float> localToGlobal (Point<float> relativePosition) override    { return relativePosition + getBounds().getPosition().toFloat(); }
     Point<float> globalToLocal (Point<float> screenPosition) override      { return screenPosition - getBounds().getPosition().toFloat(); }
+
+    using ComponentPeer::localToGlobal;
+    using ComponentPeer::globalToLocal;
 
     StringArray getAvailableRenderingEngines() override                    { return StringArray ("Software Renderer"); }
 
@@ -123,8 +126,8 @@ public:
     {
         ModifierKeys::currentModifiers = mods;
 
-        handleMouseEvent (juce::MouseInputSource::mouse, position, mods, juce::MouseInputSource::invalidPressure,
-                          juce::MouseInputSource::invalidOrientation, juce::Time::currentTimeMillis());
+        handleMouseEvent (juce::MouseInputSource::mouse, position, mods, juce::MouseInputSource::defaultPressure,
+                          juce::MouseInputSource::defaultOrientation, juce::Time::currentTimeMillis());
     }
 
     void forwardKeyPress (int code, String name, ModifierKeys mods)
@@ -159,7 +162,9 @@ private:
         {
             ignoreUnused (mode);
 
-            bitmap.data = imageData + x * pixelStride + y * lineStride;
+            const auto offset = (size_t) x * (size_t) pixelStride + (size_t) y * (size_t) lineStride;
+            bitmap.data = imageData + offset;
+            bitmap.size = (size_t) (lineStride * height) - offset;
             bitmap.pixelFormat = pixelFormat;
             bitmap.lineStride = lineStride;
             bitmap.pixelStride = pixelStride;
@@ -196,7 +201,7 @@ private:
 
                 if (! ms.getCurrentModifiers().isLeftButtonDown())
                     owner.handleMouseEvent (juce::MouseInputSource::mouse, owner.globalToLocal (pos.toFloat()), {},
-                                            juce::MouseInputSource::invalidPressure, juce::MouseInputSource::invalidOrientation, juce::Time::currentTimeMillis());
+                                            juce::MouseInputSource::defaultPressure, juce::MouseInputSource::defaultOrientation, juce::Time::currentTimeMillis());
 
                 lastMousePos = pos;
             }
@@ -267,6 +272,7 @@ private:
     bool isFocused() const override                                   { return true; }
     void grabFocus() override                                         {}
     void* getNativeHandle() const override                            { return nullptr; }
+    OptionalBorderSize getFrameSizeIfPresent() const override         { return {}; }
     BorderSize<int> getFrameSize() const override                     { return {}; }
     void setVisible (bool) override                                   {}
     void setTitle (const String&) override                            {}
@@ -280,7 +286,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UnityPeer)
 };
 
-ComponentPeer* createUnityPeer (Component& c)    { return new UnityPeer (c); }
+static ComponentPeer* createUnityPeer (Component& c)    { return new UnityPeer (c); }
 
 //==============================================================================
 class AudioProcessorUnityWrapper
@@ -322,7 +328,7 @@ public:
         short configs[][2] = { JucePlugin_PreferredChannelConfigurations };
         const int numConfigs = sizeof (configs) / sizeof (short[2]);
 
-        jassert (numConfigs > 0 && (configs[0][0] > 0 || configs[0][1] > 0));
+        jassertquiet (numConfigs > 0 && (configs[0][0] > 0 || configs[0][1] > 0));
 
         pluginInstance->setPlayConfigDetails (configs[0][0], configs[0][1], state->sampleRate, samplesPerBlock);
        #else
@@ -346,6 +352,11 @@ public:
 
     void process (float* inBuffer, float* outBuffer, int bufferSize, int numInChannels, int numOutChannels, bool isBypassed)
     {
+        // If the plugin has a bypass parameter, set it to the current bypass state
+        if (auto* param = pluginInstance->getBypassParameter())
+            if (isBypassed != (param->getValue() >= 0.5f))
+                param->setValueNotifyingHost (isBypassed ? 1.0f : 0.0f);
+
         for (int pos = 0; pos < bufferSize;)
         {
             auto max = jmin (bufferSize - pos, samplesPerBlock);
@@ -362,7 +373,7 @@ public:
 
         if (parametersPtr == nullptr)
         {
-            numParams = juceParameters.params.size();
+            numParams = (int) juceParameters.size();
 
             parametersPtr.reset (static_cast<UnityAudioParameterDefinition*> (std::calloc (static_cast<size_t> (numParams),
                                                                               sizeof (UnityAudioParameterDefinition))));
@@ -371,13 +382,16 @@ public:
 
             for (int i = 0; i < numParams; ++i)
             {
-                auto* parameter = juceParameters.params[i];
+                auto* parameter = juceParameters.getParamForIndex (i);
                 auto& paramDef = parametersPtr.get()[i];
 
-                strncpy (paramDef.name, parameter->getName (15).toRawUTF8(), 15);
+                const auto nameLength = (size_t) numElementsInArray (paramDef.name);
+                const auto unitLength = (size_t) numElementsInArray (paramDef.unit);
+
+                parameter->getName ((int) nameLength - 1).copyToUTF8 (paramDef.name, nameLength);
 
                 if (parameter->getLabel().isNotEmpty())
-                    strncpy (paramDef.unit, parameter->getLabel().toRawUTF8(), 15);
+                    parameter->getLabel().copyToUTF8 (paramDef.unit, unitLength);
 
                 parameterDescriptions.add (parameter->getName (15));
                 paramDef.description = parameterDescriptions[i].toRawUTF8();
@@ -445,7 +459,7 @@ private:
             {
                 MidiBuffer mb;
 
-                if (isBypassed)
+                if (isBypassed && pluginInstance->getBypassParameter() == nullptr)
                     pluginInstance->processBlockBypassed (scratchBuffer, mb);
                 else
                     pluginInstance->processBlock (scratchBuffer, mb);
@@ -479,7 +493,7 @@ private:
 };
 
 //==============================================================================
-HashMap<int, AudioProcessorUnityWrapper*>& getWrapperMap()
+static HashMap<int, AudioProcessorUnityWrapper*>& getWrapperMap()
 {
     static HashMap<int, AudioProcessorUnityWrapper*> wrapperMap;
     return wrapperMap;
@@ -498,7 +512,7 @@ static void onWrapperDeletion (AudioProcessorUnityWrapper* wrapperToRemove)
 //==============================================================================
 namespace UnityCallbacks
 {
-    int UNITY_INTERFACE_API createCallback (UnityAudioEffectState* state)
+    static int UNITY_INTERFACE_API createCallback (UnityAudioEffectState* state)
     {
         auto* pluginInstance = new AudioProcessorUnityWrapper (false);
         pluginInstance->create (state);
@@ -510,7 +524,7 @@ namespace UnityCallbacks
         return 0;
     }
 
-    int UNITY_INTERFACE_API releaseCallback (UnityAudioEffectState* state)
+    static int UNITY_INTERFACE_API releaseCallback (UnityAudioEffectState* state)
     {
         auto* pluginInstance = state->getEffectData<AudioProcessorUnityWrapper>();
         pluginInstance->release();
@@ -524,7 +538,7 @@ namespace UnityCallbacks
         return 0;
     }
 
-    int UNITY_INTERFACE_API resetCallback (UnityAudioEffectState* state)
+    static int UNITY_INTERFACE_API resetCallback (UnityAudioEffectState* state)
     {
         auto* pluginInstance = state->getEffectData<AudioProcessorUnityWrapper>();
         pluginInstance->reset();
@@ -532,14 +546,14 @@ namespace UnityCallbacks
         return 0;
     }
 
-    int UNITY_INTERFACE_API setPositionCallback (UnityAudioEffectState* state, unsigned int pos)
+    static int UNITY_INTERFACE_API setPositionCallback (UnityAudioEffectState* state, unsigned int pos)
     {
         ignoreUnused (state, pos);
 
         return 0;
     }
 
-    int UNITY_INTERFACE_API setFloatParameterCallback (UnityAudioEffectState* state, int index, float value)
+    static int UNITY_INTERFACE_API setFloatParameterCallback (UnityAudioEffectState* state, int index, float value)
     {
         auto* pluginInstance = state->getEffectData<AudioProcessorUnityWrapper>();
         pluginInstance->setParameter (index, value);
@@ -547,17 +561,17 @@ namespace UnityCallbacks
         return 0;
     }
 
-    int UNITY_INTERFACE_API getFloatParameterCallback (UnityAudioEffectState* state, int index, float* value, char* valueStr)
+    static int UNITY_INTERFACE_API getFloatParameterCallback (UnityAudioEffectState* state, int index, float* value, char* valueStr)
     {
         auto* pluginInstance = state->getEffectData<AudioProcessorUnityWrapper>();
         *value = pluginInstance->getParameter (index);
 
-        strncpy (valueStr, pluginInstance->getParameterString (index).toRawUTF8(), 15);
+        pluginInstance->getParameterString (index).copyToUTF8 (valueStr, 15);
 
         return 0;
     }
 
-    int UNITY_INTERFACE_API getFloatBufferCallback (UnityAudioEffectState* state, const char* name, float* buffer, int numSamples)
+    static int UNITY_INTERFACE_API getFloatBufferCallback (UnityAudioEffectState* state, const char* name, float* buffer, int numSamples)
     {
         ignoreUnused (numSamples);
 
@@ -601,8 +615,8 @@ namespace UnityCallbacks
         return 0;
     }
 
-    int UNITY_INTERFACE_API processCallback (UnityAudioEffectState* state, float* inBuffer, float* outBuffer,
-                                             unsigned int bufferSize, int numInChannels, int numOutChannels)
+    static int UNITY_INTERFACE_API processCallback (UnityAudioEffectState* state, float* inBuffer, float* outBuffer,
+                                                    unsigned int bufferSize, int numInChannels, int numOutChannels)
     {
         auto* pluginInstance = state->getEffectData<AudioProcessorUnityWrapper>();
 
@@ -612,8 +626,7 @@ namespace UnityCallbacks
             auto isMuted   = ((state->flags & stateIsMuted)   != 0);
             auto isPaused  = ((state->flags & stateIsPaused)  != 0);
 
-            auto bypassed = ! isPlaying || (isMuted || isPaused);
-
+            const auto bypassed = ! isPlaying || (isMuted || isPaused);
             pluginInstance->process (inBuffer, outBuffer, static_cast<int> (bufferSize), numInChannels, numOutChannels, bypassed);
         }
         else
@@ -636,7 +649,7 @@ static void declareEffect (UnityAudioEffectDefinition& definition)
     if (! name.startsWithIgnoreCase ("audioplugin"))
         name = "audioplugin_" + name;
 
-    strcpy (definition.name, name.toRawUTF8());
+    name.copyToUTF8 (definition.name, (size_t) numElementsInArray (definition.name));
 
     definition.structSize = sizeof (UnityAudioEffectDefinition);
     definition.parameterStructSize = sizeof (UnityAudioParameterDefinition);
@@ -763,6 +776,8 @@ UNITY_INTERFACE_EXPORT void UNITY_INTERFACE_API unitySetScreenBounds (int id, fl
 
 //==============================================================================
 #if JUCE_WINDOWS
+ JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wmissing-prototypes")
+
  extern "C" BOOL WINAPI DllMain (HINSTANCE instance, DWORD reason, LPVOID)
  {
      if (reason == DLL_PROCESS_ATTACH)
@@ -770,6 +785,8 @@ UNITY_INTERFACE_EXPORT void UNITY_INTERFACE_API unitySetScreenBounds (int id, fl
 
      return true;
  }
+
+ JUCE_END_IGNORE_WARNINGS_GCC_LIKE
 #endif
 
 #endif

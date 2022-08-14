@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -26,12 +25,12 @@
 
 namespace VideoRenderers
 {
-    //======================================================================
+    //==============================================================================
     struct Base
     {
-        virtual ~Base() {}
+        virtual ~Base() = default;
 
-        virtual HRESULT create (ComSmartPtr<IGraphBuilder>&, ComSmartPtr<IBaseFilter>&, HWND) = 0;
+        virtual HRESULT create (ComSmartPtr<ComTypes::IGraphBuilder>&, ComSmartPtr<ComTypes::IBaseFilter>&, HWND) = 0;
         virtual void setVideoWindow (HWND) = 0;
         virtual void setVideoPosition (HWND) = 0;
         virtual void repaintVideo (HWND, HDC) = 0;
@@ -39,24 +38,24 @@ namespace VideoRenderers
         virtual HRESULT getVideoSize (long& videoWidth, long& videoHeight) = 0;
     };
 
-    //======================================================================
+    //==============================================================================
     struct VMR7  : public Base
     {
         VMR7() {}
 
-        HRESULT create (ComSmartPtr<IGraphBuilder>& graphBuilder,
-                        ComSmartPtr<IBaseFilter>& baseFilter, HWND hwnd) override
+        HRESULT create (ComSmartPtr<ComTypes::IGraphBuilder>& graphBuilder,
+                        ComSmartPtr<ComTypes::IBaseFilter>& baseFilter, HWND hwnd) override
         {
-            ComSmartPtr<IVMRFilterConfig> filterConfig;
+            ComSmartPtr<ComTypes::IVMRFilterConfig> filterConfig;
 
-            HRESULT hr = baseFilter.CoCreateInstance (CLSID_VideoMixingRenderer);
+            HRESULT hr = baseFilter.CoCreateInstance (ComTypes::CLSID_VideoMixingRenderer);
 
             if (SUCCEEDED (hr))   hr = graphBuilder->AddFilter (baseFilter, L"VMR-7");
             if (SUCCEEDED (hr))   hr = baseFilter.QueryInterface (filterConfig);
-            if (SUCCEEDED (hr))   hr = filterConfig->SetRenderingMode (VMRMode_Windowless);
+            if (SUCCEEDED (hr))   hr = filterConfig->SetRenderingMode (ComTypes::VMRMode_Windowless);
             if (SUCCEEDED (hr))   hr = baseFilter.QueryInterface (windowlessControl);
             if (SUCCEEDED (hr))   hr = windowlessControl->SetVideoClippingWindow (hwnd);
-            if (SUCCEEDED (hr))   hr = windowlessControl->SetAspectRatioMode (VMR_ARMODE_LETTER_BOX);
+            if (SUCCEEDED (hr))   hr = windowlessControl->SetAspectRatioMode (ComTypes::VMR_ARMODE_LETTER_BOX);
 
             return hr;
         }
@@ -93,30 +92,32 @@ namespace VideoRenderers
             return windowlessControl->GetNativeVideoSize (&videoWidth, &videoHeight, nullptr, nullptr);
         }
 
-        ComSmartPtr<IVMRWindowlessControl> windowlessControl;
+        ComSmartPtr<ComTypes::IVMRWindowlessControl> windowlessControl;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VMR7)
     };
 
 
-    //======================================================================
+    //==============================================================================
     struct EVR  : public Base
     {
-        EVR() {}
+        EVR() = default;
 
-        HRESULT create (ComSmartPtr<IGraphBuilder>& graphBuilder,
-                        ComSmartPtr<IBaseFilter>& baseFilter, HWND hwnd) override
+        HRESULT create (ComSmartPtr<ComTypes::IGraphBuilder>& graphBuilder,
+                        ComSmartPtr<ComTypes::IBaseFilter>& baseFilter, HWND hwnd) override
         {
-            ComSmartPtr<IMFGetService> getService;
+            ComSmartPtr<ComTypes::IMFGetService> getService;
 
-            HRESULT hr = baseFilter.CoCreateInstance (CLSID_EnhancedVideoRenderer);
+            HRESULT hr = baseFilter.CoCreateInstance (ComTypes::CLSID_EnhancedVideoRenderer);
 
             if (SUCCEEDED (hr))   hr = graphBuilder->AddFilter (baseFilter, L"EVR");
             if (SUCCEEDED (hr))   hr = baseFilter.QueryInterface (getService);
-            if (SUCCEEDED (hr))   hr = getService->GetService (MR_VIDEO_RENDER_SERVICE, IID_IMFVideoDisplayControl,
+            JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wlanguage-extension-token")
+            if (SUCCEEDED (hr))   hr = getService->GetService (ComTypes::MR_VIDEO_RENDER_SERVICE, __uuidof (ComTypes::IMFVideoDisplayControl),
                                                                (void**) videoDisplayControl.resetAndGetPointerAddress());
+            JUCE_END_IGNORE_WARNINGS_GCC_LIKE
             if (SUCCEEDED (hr))   hr = videoDisplayControl->SetVideoWindow (hwnd);
-            if (SUCCEEDED (hr))   hr = videoDisplayControl->SetAspectRatioMode (MFVideoARMode_PreservePicture);
+            if (SUCCEEDED (hr))   hr = videoDisplayControl->SetAspectRatioMode (ComTypes::MFVideoARMode_PreservePicture);
 
             return hr;
         }
@@ -128,7 +129,7 @@ namespace VideoRenderers
 
         void setVideoPosition (HWND hwnd) override
         {
-            const MFVideoNormalizedRect src = { 0.0f, 0.0f, 1.0f, 1.0f };
+            const ComTypes::MFVideoNormalizedRect src { 0.0f, 0.0f, 1.0f, 1.0f };
 
             RECT dest;
             GetClientRect (hwnd, &dest);
@@ -152,38 +153,32 @@ namespace VideoRenderers
             return hr;
         }
 
-        ComSmartPtr<IMFVideoDisplayControl> videoDisplayControl;
+        ComSmartPtr<ComTypes::IMFVideoDisplayControl> videoDisplayControl;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EVR)
     };
-};
+}
 
 //==============================================================================
-struct VideoComponent::Pimpl  : public Component
-                             #if JUCE_WIN_PER_MONITOR_DPI_AWARE
-                              , public ComponentPeer::ScaleFactorListener
-                             #endif
+struct VideoComponent::Pimpl  : public Component,
+                                private ComponentPeer::ScaleFactorListener
 {
     Pimpl (VideoComponent& ownerToUse, bool)
-        : owner (ownerToUse),
-          videoLoaded (false)
+        : owner (ownerToUse)
     {
         setOpaque (true);
         context.reset (new DirectShowContext (*this));
         componentWatcher.reset (new ComponentWatcher (*this));
     }
 
-    ~Pimpl()
+    ~Pimpl() override
     {
         close();
         context = nullptr;
         componentWatcher = nullptr;
 
-       #if JUCE_WIN_PER_MONITOR_DPI_AWARE
-        for (int i = 0; i < ComponentPeer::getNumPeers(); ++i)
-            if (auto* peer = ComponentPeer::getPeer (i))
-                peer->removeScaleFactorListener (this);
-       #endif
+        if (currentPeer != nullptr)
+            currentPeer->removeScaleFactorListener (this);
     }
 
     Result loadFromString (const String& fileOrURLPath)
@@ -310,7 +305,8 @@ struct VideoComponent::Pimpl  : public Component
 
         if (getWidth() > 0 && getHeight() > 0)
             if (auto* peer = getTopLevelComponent()->getPeer())
-                context->updateWindowPosition ((peer->getAreaCoveredBy (*this).toDouble() * peer->getPlatformScaleFactor()).toNearestInt());
+                context->updateWindowPosition ((peer->getAreaCoveredBy (*this).toDouble()
+                                                * peer->getPlatformScaleFactor()).toNearestInt());
     }
 
     void updateContextVisibility()
@@ -342,21 +338,20 @@ struct VideoComponent::Pimpl  : public Component
             owner.onErrorOccurred (errorMessage);
     }
 
-   #if JUCE_WIN_PER_MONITOR_DPI_AWARE
-    void nativeScaleFactorChanged (double /*newScaleFactor*/) override
-    {
-        if (videoLoaded)
-            updateContextPosition();
-    }
-   #endif
-
     File currentFile;
     URL currentURL;
 
 private:
     VideoComponent& owner;
+    ComponentPeer* currentPeer = nullptr;
+    bool videoLoaded = false;
 
-    bool videoLoaded;
+    //==============================================================================
+    void nativeScaleFactorChanged (double /*newScaleFactor*/) override
+    {
+        if (videoLoaded)
+            updateContextPosition();
+    }
 
     //==============================================================================
     struct ComponentWatcher   : public ComponentMovementWatcher
@@ -365,6 +360,7 @@ private:
         {
         }
 
+        using ComponentMovementWatcher::componentMovedOrResized;
         void componentMovedOrResized (bool, bool) override
         {
             if (owner.videoLoaded)
@@ -373,10 +369,14 @@ private:
 
         void componentPeerChanged() override
         {
+            if (owner.currentPeer != nullptr)
+                owner.currentPeer->removeScaleFactorListener (&owner);
+
             if (owner.videoLoaded)
                 owner.recreateNativeWindowAsync();
         }
 
+        using ComponentMovementWatcher::componentVisibilityChanged;
         void componentVisibilityChanged() override
         {
             if (owner.videoLoaded)
@@ -390,21 +390,21 @@ private:
 
     std::unique_ptr<ComponentWatcher> componentWatcher;
 
-    //======================================================================
+    //==============================================================================
     struct DirectShowContext    : public AsyncUpdater
     {
         DirectShowContext (Pimpl& c)  : component (c)
         {
-            CoInitialize (0);
+            ignoreUnused (CoInitialize (nullptr));
         }
 
-        ~DirectShowContext()
+        ~DirectShowContext() override
         {
             release();
             CoUninitialize();
         }
 
-        //======================================================================
+        //==============================================================================
         void updateWindowPosition (const Rectangle<int>& newBounds)
         {
             nativeWindow->setWindowPosition (newBounds);
@@ -415,7 +415,7 @@ private:
             nativeWindow->showWindow (shouldBeVisible);
         }
 
-        //======================================================================
+        //==============================================================================
         void repaint()
         {
             if (hasVideo)
@@ -434,7 +434,7 @@ private:
                 videoRenderer->displayModeChanged();
         }
 
-        //======================================================================
+        //==============================================================================
         void peerChanged()
         {
             deleteNativeWindow();
@@ -446,8 +446,8 @@ private:
 
             createNativeWindow();
 
-            mediaEvent->CancelDefaultHandling (EC_STATE_CHANGE);
-            mediaEvent->SetNotifyWindow ((OAHWND) hwnd, graphEventID, 0);
+            mediaEvent->CancelDefaultHandling (ComTypes::EC_STATE_CHANGE);
+            mediaEvent->SetNotifyWindow ((ComTypes::OAHWND) hwnd, graphEventID, 0);
 
             if (videoRenderer != nullptr)
                 videoRenderer->setVideoWindow (hwnd);
@@ -455,7 +455,7 @@ private:
 
         void handleAsyncUpdate() override
         {
-            if (hwnd != 0)
+            if (hwnd != nullptr)
             {
                 if (needToRecreateNativeWindow)
                 {
@@ -489,7 +489,7 @@ private:
             triggerAsyncUpdate();
         }
 
-        //======================================================================
+        //==============================================================================
         Result loadFile (const String& fileOrURLPath)
         {
             jassert (state == uninitializedState);
@@ -497,7 +497,7 @@ private:
             if (! createNativeWindow())
                 return Result::fail ("Can't create window");
 
-            HRESULT hr = graphBuilder.CoCreateInstance (CLSID_FilterGraph);
+            HRESULT hr = graphBuilder.CoCreateInstance (ComTypes::CLSID_FilterGraph);
 
             // basic playback interfaces
             if (SUCCEEDED (hr))   hr = graphBuilder.QueryInterface (mediaControl);
@@ -559,8 +559,8 @@ private:
             // set window to receive events
             if (SUCCEEDED (hr))
             {
-                mediaEvent->CancelDefaultHandling (EC_STATE_CHANGE);
-                hr = mediaEvent->SetNotifyWindow ((OAHWND) hwnd, graphEventID, 0);
+                mediaEvent->CancelDefaultHandling (ComTypes::EC_STATE_CHANGE);
+                hr = mediaEvent->SetNotifyWindow ((ComTypes::OAHWND) hwnd, graphEventID, 0);
             }
 
             if (SUCCEEDED (hr))
@@ -581,18 +581,18 @@ private:
         {
             switch (hr)
             {
-                case VFW_E_INVALID_FILE_FORMAT:         return Result::fail ("Invalid file format");
-                case VFW_E_NOT_FOUND:                   return Result::fail ("File not found");
-                case VFW_E_UNKNOWN_FILE_TYPE:           return Result::fail ("Unknown file type");
-                case VFW_E_UNSUPPORTED_STREAM:          return Result::fail ("Unsupported stream");
-                case VFW_E_CANNOT_CONNECT:              return Result::fail ("Cannot connect");
-                case VFW_E_CANNOT_LOAD_SOURCE_FILTER:   return Result::fail ("Cannot load source filter");
+                case ComTypes::VFW_E_INVALID_FILE_FORMAT:         return Result::fail ("Invalid file format");
+                case ComTypes::VFW_E_NOT_FOUND:                   return Result::fail ("File not found");
+                case ComTypes::VFW_E_UNKNOWN_FILE_TYPE:           return Result::fail ("Unknown file type");
+                case ComTypes::VFW_E_UNSUPPORTED_STREAM:          return Result::fail ("Unsupported stream");
+                case ComTypes::VFW_E_CANNOT_CONNECT:              return Result::fail ("Cannot connect");
+                case ComTypes::VFW_E_CANNOT_LOAD_SOURCE_FILTER:   return Result::fail ("Cannot load source filter");
             }
 
             TCHAR messageBuffer[512] = { 0 };
 
             FormatMessage (FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                           nullptr, hr, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
+                           nullptr, (DWORD) hr, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
                            messageBuffer, (DWORD) numElementsInArray (messageBuffer) - 1, nullptr);
 
             return Result::fail (String (messageBuffer));
@@ -607,7 +607,7 @@ private:
                 mediaEvent->SetNotifyWindow (0, 0, 0);
 
             if (videoRenderer != nullptr)
-                videoRenderer->setVideoWindow (0);
+                videoRenderer->setVideoWindow (nullptr);
 
             hasVideo = false;
             videoRenderer = nullptr;
@@ -637,28 +637,28 @@ private:
 
                 switch (ec)
                 {
-                    case EC_REPAINT:
+                    case ComTypes::EC_REPAINT:
                         component.repaint();
                         break;
 
-                    case EC_COMPLETE:
+                    case ComTypes::EC_COMPLETE:
                         component.stop();
                         component.setPosition (0.0);
                         break;
 
-                    case EC_ERRORABORT:
-                    case EC_ERRORABORTEX:
+                    case ComTypes::EC_ERRORABORT:
+                    case ComTypes::EC_ERRORABORTEX:
                         component.errorOccurred (getErrorMessageFromResult ((HRESULT) p1).getErrorMessage());
                         // intentional fallthrough
-                    case EC_USERABORT:
+                    case ComTypes::EC_USERABORT:
                         component.close();
                         break;
 
-                    case EC_STATE_CHANGE:
+                    case ComTypes::EC_STATE_CHANGE:
                         switch (p1)
                         {
-                            case State_Paused:  component.playbackStopped(); break;
-                            case State_Running: component.playbackStarted(); break;
+                            case ComTypes::State_Paused:  component.playbackStopped(); break;
+                            case ComTypes::State_Running: component.playbackStarted(); break;
                             default: break;
                         }
 
@@ -668,7 +668,7 @@ private:
             }
         }
 
-        //======================================================================
+        //==============================================================================
         void play()
         {
             mediaControl->Run();
@@ -687,7 +687,7 @@ private:
             state = pausedState;
         }
 
-        //======================================================================
+        //==============================================================================
         Rectangle<int> getVideoSize() const noexcept
         {
             long width = 0, height = 0;
@@ -698,10 +698,10 @@ private:
             return { (int) width, (int) height };
         }
 
-        //======================================================================
+        //==============================================================================
         double getDuration() const
         {
-            REFTIME duration;
+            ComTypes::REFTIME duration;
             mediaPosition->get_Duration (&duration);
             return duration;
         }
@@ -715,7 +715,7 @@ private:
 
         double getPosition() const
         {
-            REFTIME seconds;
+            ComTypes::REFTIME seconds;
             mediaPosition->get_CurrentPosition (&seconds);
             return seconds;
         }
@@ -737,32 +737,32 @@ private:
         {
             long volume;
             basicAudio->get_Volume (&volume);
-            return (volume + 10000) / 10000.0f;
+            return (float) (volume + 10000) / 10000.0f;
         }
 
         enum State { uninitializedState, runningState, pausedState, stoppedState };
         State state = uninitializedState;
 
     private:
-        //======================================================================
+        //==============================================================================
         enum { graphEventID = WM_APP + 0x43f0 };
 
         Pimpl& component;
         HWND hwnd = {};
         HDC hdc = {};
 
-        ComSmartPtr<IGraphBuilder> graphBuilder;
-        ComSmartPtr<IMediaControl> mediaControl;
-        ComSmartPtr<IMediaPosition> mediaPosition;
-        ComSmartPtr<IMediaEventEx> mediaEvent;
-        ComSmartPtr<IBasicAudio> basicAudio;
-        ComSmartPtr<IBaseFilter> baseFilter;
+        ComSmartPtr<ComTypes::IGraphBuilder> graphBuilder;
+        ComSmartPtr<ComTypes::IMediaControl> mediaControl;
+        ComSmartPtr<ComTypes::IMediaPosition> mediaPosition;
+        ComSmartPtr<ComTypes::IMediaEventEx> mediaEvent;
+        ComSmartPtr<ComTypes::IBasicAudio> basicAudio;
+        ComSmartPtr<ComTypes::IBaseFilter> baseFilter;
 
         std::unique_ptr<VideoRenderers::Base> videoRenderer;
 
         bool hasVideo = false, needToUpdateViewport = true, needToRecreateNativeWindow = false;
 
-        //======================================================================
+        //==============================================================================
         bool createNativeWindow()
         {
             jassert (nativeWindow == nullptr);
@@ -772,12 +772,10 @@ private:
                 nativeWindow.reset (new NativeWindow ((HWND) topLevelPeer->getNativeHandle(), this));
 
                 hwnd = nativeWindow->hwnd;
+                component.currentPeer = topLevelPeer;
+                component.currentPeer->addScaleFactorListener (&component);
 
-               #if JUCE_WIN_PER_MONITOR_DPI_AWARE
-                topLevelPeer->addScaleFactorListener (&component);
-               #endif
-
-                if (hwnd != 0)
+                if (hwnd != nullptr)
                 {
                     hdc = GetDC (hwnd);
                     component.updateContextPosition();
@@ -806,31 +804,31 @@ private:
 
         bool isRendererConnected()
         {
-            ComSmartPtr<IEnumPins> enumPins;
+            ComSmartPtr<ComTypes::IEnumPins> enumPins;
 
             HRESULT hr = baseFilter->EnumPins (enumPins.resetAndGetPointerAddress());
 
             if (SUCCEEDED (hr))
                 hr = enumPins->Reset();
 
-            ComSmartPtr<IPin> pin;
+            ComSmartPtr<ComTypes::IPin> pin;
 
             while (SUCCEEDED (hr)
                     && enumPins->Next (1, pin.resetAndGetPointerAddress(), nullptr) == S_OK)
             {
-                ComSmartPtr<IPin> otherPin;
+                ComSmartPtr<ComTypes::IPin> otherPin;
 
                 hr = pin->ConnectedTo (otherPin.resetAndGetPointerAddress());
 
                 if (SUCCEEDED (hr))
                 {
-                    PIN_DIRECTION direction;
+                    ComTypes::PIN_DIRECTION direction;
                     hr = pin->QueryDirection (&direction);
 
-                    if (SUCCEEDED (hr) && direction == PINDIR_INPUT)
+                    if (SUCCEEDED (hr) && direction == ComTypes::PINDIR_INPUT)
                         return true;
                 }
-                else if (hr == VFW_E_NOT_CONNECTED)
+                else if (hr == ComTypes::VFW_E_NOT_CONNECTED)
                 {
                     hr = S_OK;
                 }
@@ -839,7 +837,7 @@ private:
             return false;
         }
 
-        //======================================================================
+        //==============================================================================
         struct NativeWindowClass   : private DeletedAtShutdown
         {
             bool isRegistered() const noexcept              { return atom != 0; }
@@ -855,10 +853,10 @@ private:
 
                 HINSTANCE moduleHandle = (HINSTANCE) Process::getCurrentModuleInstanceHandle();
 
-                TCHAR moduleFile [1024] = { 0 };
+                TCHAR moduleFile [1024] = {};
                 GetModuleFileName (moduleHandle, moduleFile, 1024);
 
-                WNDCLASSEX wcex = { 0 };
+                WNDCLASSEX wcex = {};
                 wcex.cbSize         = sizeof (wcex);
                 wcex.style          = CS_OWNDC;
                 wcex.lpfnWndProc    = (WNDPROC) wndProc;
@@ -899,7 +897,7 @@ private:
             JUCE_DECLARE_NON_COPYABLE (NativeWindowClass)
         };
 
-        //======================================================================
+        //==============================================================================
         struct NativeWindow
         {
             NativeWindow (HWND parentToAddTo, void* userData)
@@ -912,22 +910,22 @@ private:
                     DWORD type = WS_CHILD;
 
                     hwnd = CreateWindowEx (exstyle, wc->getWindowClassName(),
-                                           L"", type, 0, 0, 0, 0, parentToAddTo, 0,
-                                           (HINSTANCE) Process::getCurrentModuleInstanceHandle(), 0);
+                                           L"", type, 0, 0, 0, 0, parentToAddTo, nullptr,
+                                           (HINSTANCE) Process::getCurrentModuleInstanceHandle(), nullptr);
 
-                    if (hwnd != 0)
+                    if (hwnd != nullptr)
                     {
                         hdc = GetDC (hwnd);
                         SetWindowLongPtr (hwnd, GWLP_USERDATA, (LONG_PTR) userData);
                     }
                 }
 
-                jassert (hwnd != 0);
+                jassert (hwnd != nullptr);
             }
 
             ~NativeWindow()
             {
-                if (hwnd != 0)
+                if (hwnd != nullptr)
                 {
                     SetWindowLongPtr (hwnd, GWLP_USERDATA, (LONG_PTR) 0);
                     DestroyWindow (hwnd);
@@ -936,7 +934,7 @@ private:
 
             void setWindowPosition (Rectangle<int> newBounds)
             {
-                SetWindowPos (hwnd, 0, newBounds.getX(), newBounds.getY(),
+                SetWindowPos (hwnd, nullptr, newBounds.getX(), newBounds.getY(),
                               newBounds.getWidth(), newBounds.getHeight(),
                               SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER);
             }

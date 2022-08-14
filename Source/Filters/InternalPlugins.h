@@ -141,7 +141,7 @@ public:
 		descr.manufacturerName = "JUCE";
 		descr.version = ProjectInfo::versionString;
 		descr.fileOrIdentifier = pluginName + ":" + pluginState;
-		descr.uid = pluginName.hashCode();
+		descr.uniqueId = pluginName.hashCode();
 		descr.isInstrument = (acceptsMidi && registerAsGenerator);
 		descr.numInputChannels = (registerAsGenerator ? 0 : channelSetToUse.size());
 		descr.numOutputChannels = channelSetToUse.size();
@@ -244,7 +244,7 @@ public:
 		descr.manufacturerName = "Twonk";
 		descr.version = ProjectInfo::versionString;
 		descr.fileOrIdentifier = pluginName + ":" + pluginState;
-		descr.uid = pluginName.hashCode();
+		descr.uniqueId = pluginName.hashCode();
 		descr.isInstrument = (acceptsMidi && registerAsGenerator);
 		descr.numInputChannels = (registerAsGenerator ? 0 : channelSetToUse.size());
 		descr.numOutputChannels = channelSetToUse.size();

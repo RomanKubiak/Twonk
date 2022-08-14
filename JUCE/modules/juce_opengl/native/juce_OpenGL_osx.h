@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -27,11 +26,7 @@
 namespace juce
 {
 
-#if JUCE_CLANG && ! (defined (MAC_OS_X_VERSION_10_16) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_16)
- #pragma clang diagnostic push
- #pragma clang diagnostic ignored "-Wdeprecated-declarations"
- #define JUCE_DEPRECATION_IGNORED 1
-#endif
+JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wdeprecated-declarations")
 
 class OpenGLContext::NativeContext
 {
@@ -41,6 +36,7 @@ public:
                    void* contextToShare,
                    bool shouldUseMultisampling,
                    OpenGLVersion version)
+        : owner (component)
     {
         NSOpenGLPixelFormatAttribute attribs[64] = { 0 };
         createAttribs (attribs, version, pixFormat, shouldUseMultisampling);
@@ -54,10 +50,12 @@ public:
         if ([view respondsToSelector: @selector (setWantsBestResolutionOpenGLSurface:)])
             [view setWantsBestResolutionOpenGLSurface: YES];
 
+        JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wundeclared-selector")
         [[NSNotificationCenter defaultCenter] addObserver: view
                                                  selector: @selector (_surfaceNeedsUpdate:)
                                                      name: NSViewGlobalFrameDidChangeNotification
                                                    object: view];
+        JUCE_END_IGNORE_WARNINGS_GCC_LIKE
 
         renderContext = [[[NSOpenGLContext alloc] initWithFormat: format
                                                     shareContext: (NSOpenGLContext*) contextToShare] autorelease];
@@ -83,11 +81,9 @@ public:
         ignoreUnused (version);
         int numAttribs = 0;
 
-       #if JUCE_OPENGL3
         attribs[numAttribs++] = NSOpenGLPFAOpenGLProfile;
         attribs[numAttribs++] = version >= openGL3_2 ? NSOpenGLProfileVersion3_2Core
                                                      : NSOpenGLProfileVersionLegacy;
-       #endif
 
         attribs[numAttribs++] = NSOpenGLPFADoubleBuffer;
         attribs[numAttribs++] = NSOpenGLPFAClosestPolicy;
@@ -200,22 +196,30 @@ public:
         lastSwapTime = now;
     }
 
-    void updateWindowPosition (Rectangle<int>) {}
-
-    bool setSwapInterval (int numFramesPerSwap)
+    void updateWindowPosition (Rectangle<int>)
     {
+        if (auto* peer = owner.getTopLevelComponent()->getPeer())
+        {
+            const auto newArea = peer->getAreaCoveredBy (owner);
+
+            if (convertToRectInt ([view frame]) != newArea)
+                [view setFrame: makeNSRect (newArea)];
+        }
+    }
+
+    bool setSwapInterval (int numFramesPerSwapIn)
+    {
+        numFramesPerSwap = numFramesPerSwapIn;
+
         // The macOS OpenGL programming guide says that numFramesPerSwap
         // can only be 0 or 1.
         jassert (isPositiveAndBelow (numFramesPerSwap, 2));
 
-        minSwapTimeMs = (numFramesPerSwap * 1000) / 60;
-
         [renderContext setValues: (const GLint*) &numFramesPerSwap
-                   #if defined (MAC_OS_X_VERSION_10_12) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_12
-                    forParameter: NSOpenGLContextParameterSwapInterval];
-                   #else
-                    forParameter: NSOpenGLCPSwapInterval];
-                   #endif
+                    forParameter: getSwapIntervalParameter()];
+
+        updateMinSwapTime();
+
         return true;
     }
 
@@ -223,29 +227,51 @@ public:
     {
         GLint numFrames = 0;
         [renderContext getValues: &numFrames
-                   #if defined (MAC_OS_X_VERSION_10_12) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_12
-                    forParameter: NSOpenGLContextParameterSwapInterval];
-                   #else
-                    forParameter: NSOpenGLCPSwapInterval];
-                   #endif
+                    forParameter: getSwapIntervalParameter()];
 
         return numFrames;
     }
 
+    void setNominalVideoRefreshPeriodS (double periodS)
+    {
+        jassert (periodS > 0.0);
+        videoRefreshPeriodS = periodS;
+        updateMinSwapTime();
+    }
+
+    void updateMinSwapTime()
+    {
+        minSwapTimeMs = static_cast<int> (numFramesPerSwap * 1000 * videoRefreshPeriodS);
+    }
+
+    static NSOpenGLContextParameter getSwapIntervalParameter()
+    {
+        #if defined (MAC_OS_X_VERSION_10_12) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_12
+         if (@available (macOS 10.12, *))
+             return NSOpenGLContextParameterSwapInterval;
+        #endif
+
+        return NSOpenGLCPSwapInterval;
+    }
+
+    Component& owner;
     NSOpenGLContext* renderContext = nil;
     NSOpenGLView* view = nil;
     ReferenceCountedObjectPtr<ReferenceCountedObject> viewAttachment;
     double lastSwapTime = 0;
-    int minSwapTimeMs = 0, underrunCounter = 0;
+    std::atomic<int> minSwapTimeMs { 0 };
+    int underrunCounter = 0, numFramesPerSwap = 0;
+    double videoRefreshPeriodS = 1.0 / 60.0;
 
     //==============================================================================
     struct MouseForwardingNSOpenGLViewClass  : public ObjCClass<NSOpenGLView>
     {
         MouseForwardingNSOpenGLViewClass()  : ObjCClass<NSOpenGLView> ("JUCEGLView_")
         {
-            addMethod (@selector (rightMouseDown:),      rightMouseDown,     "v@:@");
-            addMethod (@selector (rightMouseUp:),        rightMouseUp,       "v@:@");
-            addMethod (@selector (acceptsFirstMouse:),   acceptsFirstMouse,  "v@:@");
+            addMethod (@selector (rightMouseDown:),       rightMouseDown);
+            addMethod (@selector (rightMouseUp:),         rightMouseUp);
+            addMethod (@selector (acceptsFirstMouse:),    acceptsFirstMouse);
+            addMethod (@selector (accessibilityHitTest:), accessibilityHitTest);
 
             registerClass();
         }
@@ -254,6 +280,7 @@ public:
         static void rightMouseDown (id self, SEL, NSEvent* ev)      { [[(NSOpenGLView*) self superview] rightMouseDown: ev]; }
         static void rightMouseUp   (id self, SEL, NSEvent* ev)      { [[(NSOpenGLView*) self superview] rightMouseUp:   ev]; }
         static BOOL acceptsFirstMouse (id, SEL, NSEvent*)           { return YES; }
+        static id accessibilityHitTest (id self, SEL, NSPoint p)    { return [[(NSOpenGLView*) self superview] accessibilityHitTest: p]; }
     };
 
 
@@ -266,9 +293,6 @@ bool OpenGLHelpers::isContextActive()
     return CGLGetCurrentContext() != CGLContextObj();
 }
 
-#if JUCE_DEPRECATION_IGNORED
- #pragma clang diagnostic pop
- #undef JUCE_DEPRECATION_IGNORED
-#endif
+JUCE_END_IGNORE_WARNINGS_GCC_LIKE
 
 } // namespace juce

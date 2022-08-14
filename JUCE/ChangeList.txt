@@ -1,7 +1,206 @@
 == Major JUCE features and updates ==
 
 This file just lists the more notable headline features. For more detailed info
-about minor changes and bugfixes, please see the git log!
+about changes and bugfixes please see the git log and BREAKING-CHANGES.txt.
+
+Version 7.0.1
+  - Fixed some Xcode and MSVC compiler warnings
+  - Improved VST3 bus configuration and channel handling
+  - Fixed some Metal layer rendering bugs
+
+Version 7.0.0
+  - Added Audio Random Access (ARA) SDK support
+  - Added support for authoring and hosting LV2 plug-ins
+  - Added a default renderer for macOS and iOS
+  - Added new macOS and iOS rendering options
+  - Added hardware synchronised drawing on Windows, macOS and iOS
+  - Updated the Android billing and file access APIs
+  - Revamped AudioPlayHead functionality
+  - Improved accessibility support
+
+Version 6.1.6
+  - Improved the handling of AU multichannel layouts
+  - Added JUCE_NODISCARD to builder-patten functions
+  - Added recursion options to DirectoryIterator
+  - Unified the loading of OpenGL 3.2 core profiles
+  - Improved macOS full-screen behaviour with non-native titlebars
+
+Version 6.1.5
+  - Improved the accessibility framework
+  - Added handling of non-Latin virtual key codes on macOS
+  - Improved X11 compatibility
+  - Updated the iOS in-app purchases workflow
+  - Improved macOS windowing behaviour
+  - Improved MinGW-w64 compatibility
+  - Added an MPEKeyboardComponent class
+
+Version 6.1.4
+  - Restored Projucer project saving behavior
+  - Fixed a CGImage memory access violation on Monterey
+  - Improved macOS thread priority management
+
+Version 6.1.3
+  - Added support for Visual Studio 2022 to the Projucer
+  - Added support for creating OpenGL 3.2 contexts on Windows
+  - Added support for plugin hosts to easily retrieve stable parameter IDs
+  - Added high-resolution image support to DragAndDropContainer
+  - Added support for a wider range of frame-rates in plugins and hosts
+  - Made Font and TypefaceCache threadsafe, to allow font rendering on background threads
+  - Improved FlexBox compatibility with the CSS FlexBox specification
+  - Improved macOS 12 compatibility, including OpenGL and FileChooser fixes
+  - Improved accessibility support
+
+Version 6.1.2
+  - Fixed an OpenGL display refresh rate issue on macOS
+  - Improved the scaling behaviour of hosted VST3 plug-ins
+  - Improved accessibility support
+
+Version 6.1.1
+  - Fixed a CMake installation issue
+  - Improved parameter value loading after plug-in restarts
+  - Fixed some problems with multi-line text layouts
+  - Added a fallback for modal native message boxes on Windows
+  - Fixed an issue setting OpenGL repaint events
+  - Improved accessibility support
+
+Version 6.1.0
+  - Added accessibility support
+  - Enabled use of VST3 plug-in extensions
+  - Improved OpenGL function loading
+  - Updated to C++14
+  - Added support for macOS Monterey and iOS 15
+  - Added async versions of all modal functions
+  - Fixed some VST3 threading issues
+  - Added cross-platform-compatible VST3 UID hash
+  - Improved MinGW compatibility
+  - Fixed some issues with BufferingAudioReader
+  - Improved TextEditor repainting
+  - Added support for larger ASIO buffers
+  - Updated Android Oboe to 1.6.1
+  - Improved modal dismissing
+  - Improved assertion handling on macOS ARM
+
+Version 6.0.8
+  - Fixed a macOS graphics invalidation region issue
+  - Improved the handling of modal dialog dismissal
+  - Fixed audio glitching in CoreAudio before microphone permission is granted
+  - Improved AUv3 resizing and initialisation
+  - Fixed some string to double conversions
+  - Improved iOS split view behaviour
+  - Added Display::safeAreaInserts
+  - Improved assertion behaviour on macOS ARM
+  - Multiple resizing and display scaling fixes
+  - Added more information to audioProcessorChanged callbacks
+  - Fixed some DSP convolution issues
+  - Added host detection on macOS ARM
+
+Version 6.0.7
+  - Fixed a macOS drawing issue
+  - Updated the DemoRunner bundle ID
+
+Version 6.0.6
+  - Moved to the new CoreMIDI API on supported platforms
+  - Added support for the "New Build System" in Xcode
+  - Made the audio format readers more robust
+  - Improved the HiResTimer implementation
+  - Fixed a VST3 program parameter issue
+  - Updated to Oboe 1.5 on Android
+
+Version 6.0.5
+  - Added more support for styling PopupMenus
+  - Fixed some race conditions in the IPC and name named pipe classes
+  - Implemented multiple FileChooser improvements
+  - Added compatibility with the latest Android SDK
+  - Prevented CoreAudio glitches before accepting audio access permissions
+  - Made reading MIDI and audio files more robust
+
+Version 6.0.4
+  - Improved the Projucer update mechanism
+  - Fixed an AUv3 parameter normalisation issue
+  - Fixed WASAPI exclusive mode sample rate selection bug
+  - Fixed a Linux build issue when omitting ALSA
+
+Version 6.0.3
+  - Fixed version numbers in project files
+
+Version 6.0.2
+  - Added support for macOS 11 and arm64
+  - Added Windows IAudioClient3 support for low latency audio drivers
+  - Added Windows and macOS precompiled header support in the Projucer
+  - Improved accessibility support in the macOS menu bar
+  - Fixed VST3 hosting for plug-ins requiring persistent DLL loads
+  - Updated macOS camera capture API
+  - Improved resave diffs in Projucer project files
+  - Fixed some Linux JACK issues
+
+Version 6.0.1
+  - Fixed a bug in the Projucer GUI editor causing existing code to be overwritten
+  - Updated Android Oboe to 1.4.2
+  - Bumped default Android Studio gradle and plugin versions to the latest
+  - Fixed some Android Oboe and OpenSL issues
+  - Fixed some Doxygen parsing issues
+  - Fixed MIDI input/output bus enablement in VST3 plug-ins
+  - Improved Windows Clang compatibility
+  - Fixed GCC 4.8 and 5.0 compatibility
+  - Fixed some VST3 build errors and warnings on Linux
+  - Fixed dynamically loaded X11 library names on Linux
+  - Fixed Projucer CLion exporter generated CMakeLists.txt
+  - Fixed drag and drop for non-DPI aware plug-ins on Windows
+
+Version 6.0.0
+  - Added support for building JUCE projects with CMake
+  - Revamped the DSP module
+  - Added VST3 support on Linux
+  - Added support for the latest webview components on macOS/iOS and Windows
+  - Removed the sign-in requirement, app reporting and analytics from the Projucer
+  - Added support for running headlessly on Linux
+  - Bundled Oboe source in JUCE and made it the default audio device on Android
+  - Various Oboe stability improvements
+  - Various Projucer UI improvements
+  - Added HWNDComponent for embedding native HWNDs on Windows
+  - Added support for all camera names on macOS
+  - Added support for building with Clang on Windows
+  - Modified MidiMessageCollector to preallocate storage
+  - Modified AudioProcessorGraph to allow extracting nodes
+  - Refactored the APVTS parameter attachment classes and added a new ParameterAttachment class
+  - Added IPP FFT implementation
+  - Added all example plugins as internal nodes in AudioPluginHost project
+  - Removed JuceHeader requirement from Projucer projects
+  - Added support for legacy CC output events
+  - Added MidiBuffer::Iterator class compatible with C++11 range-for
+  - Added RangedDirectoryIterator class compatible with C++11 range-for
+  - Provided range-for comaptibility for String class
+  - Windows and Linux hiDPI scaling improvements
+  - Various bug-fixes, improvements and documentation updates
+
+Version 5.4.7
+  - Fixed a macOS focus bug causing Components to not receive mouse events
+  - Fixed a potential NullPointerException in the Android IAP code
+  - Fixed an entitlements file generation bug in the Projucer
+  - Send VST2 audioMasterUpdateDisplay opcode on the message thread to fix some hosts not updating
+  - Fixed some build errors and warnings when using Clang on Windows
+  - Changed the default architecture specified in Linux Makefiles generated by the Projucer
+
+Version 5.4.6
+  - Fixed compatibility with macOS versions below 10.11
+  - Multiple thread safety improvements
+  - Added dynamic parameter and parameter group names
+  - Updated to the latest Android In-App Purchases API
+  - Improvements to the Windows message queue under high load
+  - Replaced WaitableEvent internals with std::condition_variable
+  - Fixed some macOS text alignment issues
+
+Version 5.4.5
+  - Improved message queue performance on Linux
+  - Added missing lifecycle callbacks on Android Q
+  - Refactored the AudioBlock class
+  - Fixed APVTS parameter update recursion
+  - Updated Bela code to support latest release
+  - Fixed issues drawing italicised text on macOS
+  - Fixed broken back button behaviour on Android
+  - Added Bluetooth permissions settings needed for iOS 13.0+ to the Projucer
+  - Replaced select() calls with poll()
+  - Various bug-fixes, improvements and documentation updates
 
 Version 5.4.4
   - Improvements to floating point number printing

@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -24,7 +23,7 @@
   ==============================================================================
 */
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 
 namespace
 {
@@ -39,10 +38,10 @@ namespace
     static const String canvasStateOSCAddress = "/juce/nfd/canvasState";
     static const String newClientOSCAddress   = "/juce/nfd/newClient";
     static const String userInputOSCAddress   = "/juce/nfd/userInput";
-};
+}
 
 #include "SharedCanvas.h"
-#include "SlaveComponent.h"
+#include "ClientComponent.h"
 #include "Demos.h"
 #include "MasterComponent.h"
 
@@ -92,7 +91,7 @@ public:
     //==============================================================================
     struct MainWindow    : public DocumentWindow
     {
-        MainWindow (PropertiesFile& props)
+        explicit MainWindow (PropertiesFile& props)
             : DocumentWindow ("JUCE Networked Graphics Demo - Master", Colours::white, DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
@@ -108,7 +107,7 @@ public:
             : DocumentWindow ("JUCE Networked Graphics Demo", Colours::black, DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
-            setContentOwned (new SlaveCanvasComponent (props, windowIndex), true);
+            setContentOwned (new ClientCanvasComponent (props, windowIndex), true);
             setBounds (500, 100, getWidth(), getHeight());
             setResizable (true, false);
             setVisible (true);
@@ -122,7 +121,7 @@ public:
            #endif
         }
 
-        ~MainWindow()
+        ~MainWindow() override
         {
             glContext.detach();
         }

@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -26,6 +25,8 @@
 
 #pragma once
 
+#include "../Utility/Helpers/jucer_VersionInfo.h"
+
 class DownloadAndInstallThread;
 
 class LatestVersionCheckerAndUpdater   : public DeletedAtShutdown,
@@ -35,7 +36,7 @@ public:
     LatestVersionCheckerAndUpdater();
     ~LatestVersionCheckerAndUpdater() override;
 
-    void checkForNewVersion (bool showAlerts);
+    void checkForNewVersion (bool isBackgroundCheck);
 
     //==============================================================================
     JUCE_DECLARE_SINGLETON_SINGLETHREADED_MINIMAL (LatestVersionCheckerAndUpdater)
@@ -43,18 +44,19 @@ public:
 private:
     //==============================================================================
     void run() override;
-    void queryUpdateServer();
-    void processResult();
-    void askUserAboutNewVersion (const String&, const String&);
-    void askUserForLocationToDownload();
-    void downloadAndInstall (const File&);
+    void askUserAboutNewVersion (const String&, const String&, const VersionInfo::Asset&);
+    void askUserForLocationToDownload (const VersionInfo::Asset&);
+    void downloadAndInstall (const VersionInfo::Asset&, const File&);
+
+    void showDialogWindow (const String&, const String&, const VersionInfo::Asset&);
+    void addNotificationToOpenProjects (const VersionInfo::Asset&);
 
     //==============================================================================
-    bool showAlertWindows = false;
-    int statusCode = 0;
-    String relativeDownloadPath;
-    var jsonReply;
+    bool backgroundCheck = false;
 
     std::unique_ptr<DownloadAndInstallThread> installer;
     std::unique_ptr<Component> dialogWindow;
+    std::unique_ptr<FileChooser> chooser;
+
+    JUCE_DECLARE_WEAK_REFERENCEABLE (LatestVersionCheckerAndUpdater)
 };

@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -72,13 +71,11 @@ public:
     /** Tries to load the type for this description, by trying all the formats
         that this manager knows about.
 
-        The caller is responsible for deleting the object that is returned.
-
         If it can't load the plugin, it returns nullptr and leaves a message in the
         errorMessage string.
 
         If you intend to instantiate a AudioUnit v3 plug-in then you must either
-        use the non-blocking asynchrous version below - or call this method from a
+        use the non-blocking asynchronous version below - or call this method from a
         thread other than the message thread and without blocking the message
         thread.
     */
@@ -90,7 +87,7 @@ public:
         all the formats that this manager knows about.
 
         The caller must supply a callback object which will be called when
-        the instantantiation has completed.
+        the instantiation has completed.
 
         If it can't load the plugin then the callback function will be called
         passing a nullptr as the instance argument along with an error message.
@@ -105,12 +102,28 @@ public:
         the callback function.
 
         If you intend to instantiate a AudioUnit v3 plug-in then you must use
-        this non-blocking asynchrous version - or call the synchrous method
+        this non-blocking asynchronous version - or call the synchronous method
         from an auxiliary thread.
     */
     void createPluginInstanceAsync (const PluginDescription& description,
                                     double initialSampleRate, int initialBufferSize,
                                     AudioPluginFormat::PluginCreationCallback callback);
+
+    /** Tries to create an ::ARAFactoryWrapper for this description.
+
+        The result of the operation will be wrapped into an ARAFactoryResult,
+        which will be passed to a callback object supplied by the caller.
+
+        The operation may fail, in which case the callback will be called with
+        with a result object where ARAFactoryResult::araFactory.get() will return
+        a nullptr.
+
+        In case of success the returned ::ARAFactoryWrapper will ensure that
+        modules required for the correct functioning of the ARAFactory will remain
+        loaded for the lifetime of the object.
+    */
+    void createARAFactoryAsync (const PluginDescription& description,
+                                AudioPluginFormat::ARAFactoryCreationCallback callback) const;
 
     /** Checks that the file or component for this plugin actually still exists.
         (This won't try to load the plugin)

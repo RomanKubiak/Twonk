@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -35,12 +34,15 @@ ComponentPeer::ComponentPeer (Component& comp, int flags)
       styleFlags (flags),
       uniqueID (lastUniquePeerID += 2) // increment by 2 so that this can never hit 0
 {
-    Desktop::getInstance().peers.add (this);
+    auto& desktop = Desktop::getInstance();
+    desktop.peers.add (this);
+    desktop.addFocusChangeListener (this);
 }
 
 ComponentPeer::~ComponentPeer()
 {
     auto& desktop = Desktop::getInstance();
+    desktop.removeFocusChangeListener (this);
     desktop.peers.removeFirstMatchingValue (this);
     desktop.triggerFocusCallback();
 }
@@ -116,8 +118,8 @@ void ComponentPeer::handlePaint (LowLevelGraphicsContext& contextToPaintTo)
 
     if (peerBounds.getWidth() != componentBounds.getWidth() || peerBounds.getHeight() != componentBounds.getHeight())
         // Tweak the scaling so that the component's integer size exactly aligns with the peer's scaled size
-        g.addTransform (AffineTransform::scale (peerBounds.getWidth()  / (float) componentBounds.getWidth(),
-                                                peerBounds.getHeight() / (float) componentBounds.getHeight()));
+        g.addTransform (AffineTransform::scale ((float) peerBounds.getWidth()  / (float) componentBounds.getWidth(),
+                                                (float) peerBounds.getHeight() / (float) componentBounds.getHeight()));
 
   #if JUCE_ENABLE_REPAINT_DEBUGGING
    #ifdef JUCE_IS_REPAINT_DEBUGGING_ACTIVE
@@ -193,7 +195,7 @@ bool ComponentPeer::handleKeyPress (const KeyPress& keyInfo)
         {
             for (int i = keyListeners->size(); --i >= 0;)
             {
-                keyWasUsed = keyListeners->getUnchecked(i)->keyPressed (keyInfo, target);
+                keyWasUsed = keyListeners->getUnchecked (i)->keyPressed (keyInfo, target);
 
                 if (keyWasUsed || deletionChecker == nullptr)
                     return keyWasUsed;
@@ -206,20 +208,14 @@ bool ComponentPeer::handleKeyPress (const KeyPress& keyInfo)
 
         if (keyWasUsed || deletionChecker == nullptr)
             break;
+    }
 
+    if (! keyWasUsed && keyInfo.isKeyCode (KeyPress::tabKey))
+    {
         if (auto* currentlyFocused = Component::getCurrentlyFocusedComponent())
         {
-            const bool isTab      = (keyInfo == KeyPress::tabKey);
-            const bool isShiftTab = (keyInfo == KeyPress (KeyPress::tabKey, ModifierKeys::shiftModifier, 0));
-
-            if (isTab || isShiftTab)
-            {
-                currentlyFocused->moveKeyboardFocusToSibling (isTab);
-                keyWasUsed = (currentlyFocused != Component::getCurrentlyFocusedComponent());
-
-                if (keyWasUsed || deletionChecker == nullptr)
-                    break;
-            }
+            currentlyFocused->moveKeyboardFocusToSibling (! keyInfo.getModifiers().isShiftDown());
+            return true;
         }
     }
 
@@ -243,7 +239,7 @@ bool ComponentPeer::handleKeyUpOrDown (const bool isKeyDown)
         {
             for (int i = keyListeners->size(); --i >= 0;)
             {
-                keyWasUsed = keyListeners->getUnchecked(i)->keyStateChanged (isKeyDown, target);
+                keyWasUsed = keyListeners->getUnchecked (i)->keyStateChanged (isKeyDown, target);
 
                 if (keyWasUsed || deletionChecker == nullptr)
                     return keyWasUsed;
@@ -269,6 +265,19 @@ void ComponentPeer::handleModifierKeysChange()
     target->internalModifierKeysChanged();
 }
 
+void ComponentPeer::refreshTextInputTarget()
+{
+    const auto* lastTarget = std::exchange (textInputTarget, findCurrentTextInputTarget());
+
+    if (lastTarget == textInputTarget)
+        return;
+
+    if (textInputTarget == nullptr)
+        dismissPendingTextInput();
+    else if (auto* c = Component::getCurrentlyFocusedComponent())
+        textInputRequired (globalToLocal (c->getScreenPosition()), *textInputTarget);
+}
+
 TextInputTarget* ComponentPeer::findCurrentTextInputTarget()
 {
     auto* c = Component::getCurrentlyFocusedComponent();
@@ -281,7 +290,12 @@ TextInputTarget* ComponentPeer::findCurrentTextInputTarget()
     return nullptr;
 }
 
-void ComponentPeer::dismissPendingTextInput() {}
+void ComponentPeer::closeInputMethodContext() {}
+
+void ComponentPeer::dismissPendingTextInput()
+{
+    closeInputMethodContext();
+}
 
 //==============================================================================
 void ComponentPeer::handleBroughtToFront()
@@ -329,7 +343,9 @@ void ComponentPeer::handleMovedOrResized()
         component.sendVisibilityChangeMessage();
     }
 
-    if (! isFullScreen())
+    const auto windowInSpecialState = isFullScreen() || isKioskMode() || nowMinimised;
+
+    if (! windowInSpecialState)
         lastNonFullscreenBounds = component.getBounds();
 }
 
@@ -341,7 +357,7 @@ void ComponentPeer::handleFocusGain()
     {
         Component::currentlyFocusedComponent = lastFocusedComponent;
         Desktop::getInstance().triggerFocusCallback();
-        lastFocusedComponent->internalFocusGain (Component::focusChangedDirectly);
+        lastFocusedComponent->internalKeyboardFocusGain (Component::focusChangedDirectly);
     }
     else
     {
@@ -362,7 +378,7 @@ void ComponentPeer::handleFocusLoss()
         {
             Component::currentlyFocusedComponent = nullptr;
             Desktop::getInstance().triggerFocusCallback();
-            lastFocusedComponent->internalFocusLoss (Component::focusChangedByMouseClick);
+            lastFocusedComponent->internalKeyboardFocusLoss (Component::focusChangedByMouseClick);
         }
     }
 }
@@ -403,7 +419,17 @@ Rectangle<int> ComponentPeer::globalToLocal (const Rectangle<int>& screenPositio
     return screenPosition.withPosition (globalToLocal (screenPosition.getPosition()));
 }
 
-Rectangle<int> ComponentPeer::getAreaCoveredBy (Component& subComponent) const
+Rectangle<float> ComponentPeer::localToGlobal (const Rectangle<float>& relativePosition)
+{
+    return relativePosition.withPosition (localToGlobal (relativePosition.getPosition()));
+}
+
+Rectangle<float> ComponentPeer::globalToLocal (const Rectangle<float>& screenPosition)
+{
+    return screenPosition.withPosition (globalToLocal (screenPosition.getPosition()));
+}
+
+Rectangle<int> ComponentPeer::getAreaCoveredBy (const Component& subComponent) const
 {
     return ScalingHelpers::scaledScreenPosToUnscaled
             (component, component.getLocalArea (&subComponent, subComponent.getLocalBounds()));
@@ -575,5 +601,15 @@ ModifierKeys ComponentPeer::getCurrentModifiersRealtime() noexcept
     return ModifierKeys::currentModifiers;
 }
 
+//==============================================================================
+void ComponentPeer::forceDisplayUpdate()
+{
+    Desktop::getInstance().displays->refresh();
+}
+
+void ComponentPeer::globalFocusChanged (Component*)
+{
+    refreshTextInputTarget();
+}
 
 } // namespace juce

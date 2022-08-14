@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -57,8 +57,6 @@ public:
     //==============================================================================
     /** Constructor. */
     SmoothedValueBase() = default;
-
-    virtual ~SmoothedValueBase() {}
 
     //==============================================================================
     /** Returns true if the current value is currently being interpolated. */
@@ -179,10 +177,18 @@ protected:
 */
 namespace ValueSmoothingTypes
 {
-    /** Used to indicate a linear smoothing between values. */
+    /**
+        Used to indicate a linear smoothing between values.
+
+        @tags{Audio}
+    */
     struct Linear {};
 
-    /** Used to indicate a smoothing between multiplicative values. */
+    /**
+        Used to indicate a smoothing between multiplicative values.
+
+        @tags{Audio}
+    */
     struct Multiplicative {};
 }
 
@@ -322,9 +328,8 @@ public:
     }
 
     //==============================================================================
-    /** THIS FUNCTION IS DEPRECATED.
-
-        Use `setTargetValue (float)` and `setCurrentAndTargetValue()` instead:
+   #ifndef DOXYGEN
+    /** Using the new methods:
 
         lsv.setValue (x, false); -> lsv.setTargetValue (x);
         lsv.setValue (x, true);  -> lsv.setCurrentAndTargetValue (x);
@@ -332,7 +337,8 @@ public:
         @param newValue     The new target value
         @param force        If true, the value will be set immediately, bypassing the ramp
     */
-    JUCE_DEPRECATED_WITH_BODY (void setValue (FloatType newValue, bool force = false) noexcept,
+    [[deprecated ("Use setTargetValue and setCurrentAndTargetValue instead.")]]
+    void setValue (FloatType newValue, bool force = false) noexcept
     {
         if (force)
         {
@@ -341,7 +347,8 @@ public:
         }
 
         setTargetValue (newValue);
-    })
+    }
+   #endif
 
 private:
     //==============================================================================
@@ -361,7 +368,7 @@ private:
     template <typename T = SmoothingType>
     MultiplicativeVoid<T> setStepSize()
     {
-        step = std::exp ((std::log (std::abs (this->target)) - std::log (std::abs (this->currentValue))) / this->countdown);
+        step = std::exp ((std::log (std::abs (this->target)) - std::log (std::abs (this->currentValue))) / (FloatType) this->countdown);
     }
 
     //==============================================================================
@@ -502,7 +509,7 @@ public:
             expect (referenceData.getSample (0, 10) < sv.getTargetValue());
             expectWithinAbsoluteError (referenceData.getSample (0, 11),
                                        sv.getTargetValue(),
-                                       1.0e-7f);
+                                       2.0e-7f);
 
             auto getUnitData = [] (int numSamplesToGenerate)
             {
@@ -514,13 +521,13 @@ public:
                 return result;
             };
 
-            auto compareData = [this](const AudioBuffer<float>& test,
-                                      const AudioBuffer<float>& reference)
+            auto compareData = [this] (const AudioBuffer<float>& test,
+                                       const AudioBuffer<float>& reference)
             {
                 for (int i = 0; i < test.getNumSamples(); ++i)
                     expectWithinAbsoluteError (test.getSample (0, i),
                                                reference.getSample (0, i),
-                                               1.0e-7f);
+                                               2.0e-7f);
             };
 
             auto testData = getUnitData (numSamples);

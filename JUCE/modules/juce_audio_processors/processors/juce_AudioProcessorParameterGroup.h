@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -143,9 +142,17 @@ public:
         addChild (std::forward<Args> (remainingChildren)...);
     }
 
+    /** Once a group has been added to an AudioProcessor don't try to mutate it by
+        moving or swapping it - this will crash most hosts.
+    */
     AudioProcessorParameterGroup (AudioProcessorParameterGroup&&);
+
+    /** Once a group has been added to an AudioProcessor don't try to mutate it by
+        moving or swapping it - this will crash most hosts.
+    */
     AudioProcessorParameterGroup& operator= (AudioProcessorParameterGroup&&);
 
+    /** Destructor. */
     ~AudioProcessorParameterGroup();
 
     //==============================================================================
@@ -158,8 +165,15 @@ public:
     /** Returns the group's separator string. */
     String getSeparator() const;
 
-    /** Returns the parent of the group, or nullptr if this is a top-levle group. */
+    /** Returns the parent of the group, or nullptr if this is a top-level group. */
     const AudioProcessorParameterGroup* getParent() const noexcept;
+
+    //==============================================================================
+    /** Changes the name of the group. If you do this after the group has been added
+        to an AudioProcessor, call updateHostDisplay() to inform the host of the
+        change. Not all hosts support dynamic group name changes.
+    */
+    void setName (String newName);
 
     //==============================================================================
     const AudioProcessorParameterNode* const* begin() const noexcept;
@@ -186,7 +200,11 @@ public:
     Array<const AudioProcessorParameterGroup*> getGroupsForParameter (AudioProcessorParameter*) const;
 
     //==============================================================================
-    /** Adds a child to the group. */
+    /** Adds a child to the group.
+
+        Do not add children to a group which has itself already been added to the
+        AudioProcessor - the new elements will be ignored.
+    */
     template <typename ParameterOrGroup>
     void addChild (std::unique_ptr<ParameterOrGroup> child)
     {
@@ -196,7 +214,11 @@ public:
         append (std::move (child));
     }
 
-    /** Adds multiple parameters or sub-groups to this group. */
+    /** Adds multiple parameters or sub-groups to this group.
+
+        Do not add children to a group which has itself already been added to the
+        AudioProcessor - the new elements will be ignored.
+    */
     template <typename ParameterOrGroup, typename... Args>
     void addChild (std::unique_ptr<ParameterOrGroup> firstChild, Args&&... remainingChildren)
     {
@@ -205,9 +227,11 @@ public:
     }
 
    #ifndef DOXYGEN
-    // This class now has a move operator, so if you're try to move them around, you should
-    // use that, or if you really need to swap two groups, just call std::swap
-    JUCE_DEPRECATED_WITH_BODY (void swapWith (AudioProcessorParameterGroup& other), { std::swap (*this, other); })
+    [[deprecated ("This class now has a move operator, so if you're trying to move them around, you "
+                 "should use that, or if you really need to swap two groups, just call std::swap. "
+                 "However, remember that swapping a group that's already owned by an AudioProcessor "
+                 "will most likely crash the host, so don't do that.")]]
+    void swapWith (AudioProcessorParameterGroup& other)  { std::swap (*this, other); }
    #endif
 
 private:

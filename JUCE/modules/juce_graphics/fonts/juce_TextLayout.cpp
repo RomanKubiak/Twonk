@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -37,42 +36,12 @@ TextLayout::Glyph::Glyph (int glyph, Point<float> anch, float w) noexcept
 {
 }
 
-TextLayout::Glyph::Glyph (const Glyph& other) noexcept
-    : glyphCode (other.glyphCode), anchor (other.anchor), width (other.width)
-{
-}
-
-TextLayout::Glyph& TextLayout::Glyph::operator= (const Glyph& other) noexcept
-{
-    glyphCode = other.glyphCode;
-    anchor = other.anchor;
-    width = other.width;
-    return *this;
-}
-
-TextLayout::Glyph::~Glyph() noexcept {}
-
 //==============================================================================
-TextLayout::Run::Run() noexcept
-    : colour (0xff000000)
-{
-}
-
 TextLayout::Run::Run (Range<int> range, int numGlyphsToPreallocate)
-    : colour (0xff000000), stringRange (range)
+    : stringRange (range)
 {
     glyphs.ensureStorageAllocated (numGlyphsToPreallocate);
 }
-
-TextLayout::Run::Run (const Run& other)
-    : font (other.font),
-      colour (other.colour),
-      glyphs (other.glyphs),
-      stringRange (other.stringRange)
-{
-}
-
-TextLayout::Run::~Run() noexcept {}
 
 Range<float> TextLayout::Run::getRunBoundsX() const noexcept
 {
@@ -98,11 +67,6 @@ Range<float> TextLayout::Run::getRunBoundsX() const noexcept
 }
 
 //==============================================================================
-TextLayout::Line::Line() noexcept
-    : ascent (0.0f), descent (0.0f), leading (0.0f)
-{
-}
-
 TextLayout::Line::Line (Range<int> range, Point<float> o, float asc, float desc,
                         float lead, int numRunsToPreallocate)
     : stringRange (range), lineOrigin (o),
@@ -118,8 +82,11 @@ TextLayout::Line::Line (const Line& other)
     runs.addCopiesOf (other.runs);
 }
 
-TextLayout::Line::~Line() noexcept
+TextLayout::Line& TextLayout::Line::operator= (const Line& other)
 {
+    auto copy = other;
+    swap (copy);
+    return *this;
 }
 
 Range<float> TextLayout::Line::getLineBoundsX() const noexcept
@@ -157,6 +124,16 @@ Rectangle<float> TextLayout::Line::getLineBounds() const noexcept
     auto y = getLineBoundsY();
 
     return { x.getStart(), y.getStart(), x.getLength(), y.getLength() };
+}
+
+void TextLayout::Line::swap (Line& other) noexcept
+{
+    std::swap (other.runs,          runs);
+    std::swap (other.stringRange,   stringRange);
+    std::swap (other.lineOrigin,    lineOrigin);
+    std::swap (other.ascent,        ascent);
+    std::swap (other.descent,       descent);
+    std::swap (other.leading,       leading);
 }
 
 //==============================================================================
@@ -222,9 +199,11 @@ void TextLayout::draw (Graphics& g, Rectangle<float> area) const
     auto origin = justification.appliedToRectangle (Rectangle<float> (width, getHeight()), area).getPosition();
 
     auto& context   = g.getInternalContext();
+    context.saveState();
+
     auto clip       = context.getClipBounds();
-    auto clipTop    = clip.getY()      - origin.y;
-    auto clipBottom = clip.getBottom() - origin.y;
+    auto clipTop    = (float) clip.getY()      - origin.y;
+    auto clipBottom = (float) clip.getBottom() - origin.y;
 
     for (auto& line : *this)
     {
@@ -257,6 +236,8 @@ void TextLayout::draw (Graphics& g, Rectangle<float> area) const
             }
         }
     }
+
+    context.restoreState();
 }
 
 void TextLayout::createLayout (const AttributedString& text, float maxWidth)
@@ -371,7 +352,11 @@ namespace TextLayoutHelpers
                 if (currentRun == nullptr)  currentRun  = std::make_unique<TextLayout::Run>();
                 if (currentLine == nullptr) currentLine = std::make_unique<TextLayout::Line>();
 
-                if (newGlyphs.size() > 0)
+                const auto numGlyphs = newGlyphs.size();
+                charPosition += numGlyphs;
+
+                if (numGlyphs > 0
+                    && (! (t.isWhitespace || t.isNewLine) || needToSetLineOrigin))
                 {
                     currentRun->glyphs.ensureStorageAllocated (currentRun->glyphs.size() + newGlyphs.size());
                     auto tokenOrigin = t.area.getPosition().translated (0, t.font.getAscent());
@@ -387,16 +372,10 @@ namespace TextLayoutHelpers
                     for (int j = 0; j < newGlyphs.size(); ++j)
                     {
                         auto x = xOffsets.getUnchecked (j);
-                        currentRun->glyphs.add (TextLayout::Glyph (newGlyphs.getUnchecked(j),
+                        currentRun->glyphs.add (TextLayout::Glyph (newGlyphs.getUnchecked (j),
                                                                    glyphOffset.translated (x, 0),
                                                                    xOffsets.getUnchecked (j + 1) - x));
                     }
-
-                    charPosition += newGlyphs.size();
-                }
-                else if (t.isWhitespace || t.isNewLine)
-                {
-                    ++charPosition;
                 }
 
                 if (auto* nextToken = tokens[i + 1])
@@ -517,7 +496,7 @@ namespace TextLayoutHelpers
 
             for (i = 0; i < tokens.size(); ++i)
             {
-                auto& t = *tokens.getUnchecked(i);
+                auto& t = *tokens.getUnchecked (i);
                 t.area.setPosition (x, y);
                 t.line = totalLines;
                 x += t.area.getWidth();
@@ -616,67 +595,5 @@ void TextLayout::recalculateSize()
         height = 0;
     }
 }
-
-//==============================================================================
-#if JUCE_UNIT_TESTS
-
-struct TextLayoutTests  : public UnitTest
-{
-    TextLayoutTests()
-        : UnitTest ("Text Layout", UnitTestCategories::text)
-    {}
-
-    static TextLayout createLayout (StringRef text, float width)
-    {
-        Font fontToUse (12.0f);
-
-        AttributedString string (text);
-        string.setFont (std::move (fontToUse));
-
-        TextLayout layout;
-        layout.createLayout (std::move (string), width);
-
-        return layout;
-    }
-
-    void testLineBreaks (const String& line, float width, const StringArray& expected)
-    {
-        const auto layout = createLayout (line, width);
-
-        beginTest ("A line is split into expected pieces");
-        {
-            expectEquals (layout.getNumLines(), expected.size());
-
-            const auto limit = jmin (layout.getNumLines(), expected.size());
-
-            for (int i = 0; i != limit; ++i)
-                expectEquals (substring (line, layout.getLine (i).stringRange), expected[i]);
-        }
-    }
-
-    void runTest() override
-    {
-        const String shortLine ("hello world");
-        testLineBreaks (shortLine, 1.0e7f, { shortLine });
-
-        testLineBreaks ("this line should be split",
-                        60.0f,
-                        { "this line ",
-                          "should be ",
-                          "split" });
-
-        testLineBreaks ("these\nlines \nhave\n weird  \n spacing  ",
-                        80.0f,
-                        { "these\n",
-                          "lines \n",
-                          "have\n",
-                          " weird  \n",
-                          " spacing  " });
-    }
-};
-
-static TextLayoutTests textLayoutTests;
-
-#endif
 
 } // namespace juce

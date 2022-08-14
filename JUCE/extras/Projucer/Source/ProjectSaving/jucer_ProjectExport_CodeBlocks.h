@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -39,39 +38,24 @@ public:
     };
 
     //==============================================================================
-    static const char* getNameWindows() noexcept    { return "Code::Blocks (Windows)"; }
-    static const char* getNameLinux() noexcept      { return "Code::Blocks (Linux)"; }
+    static String getDisplayNameWindows()        { return "Code::Blocks (Windows)"; }
+    static String getDisplayNameLinux()          { return "Code::Blocks (Linux)"; }
 
-    static const char* getName (CodeBlocksOS os) noexcept
-    {
-        if (os == windowsTarget) return getNameWindows();
-        if (os == linuxTarget)   return getNameLinux();
+    static String getValueTreeTypeNameWindows()  { return "CODEBLOCKS_WINDOWS"; }
+    static String getValueTreeTypeNameLinux()    { return "CODEBLOCKS_LINUX"; }
 
-        // currently no other OSes supported by Codeblocks exporter!
-        jassertfalse;
-        return "Code::Blocks (Unknown OS)";
-    }
-
-    //==============================================================================
-    static const char* getValueTreeTypeName (CodeBlocksOS os)
-    {
-        if (os == windowsTarget)  return "CODEBLOCKS_WINDOWS";
-        if (os == linuxTarget)    return "CODEBLOCKS_LINUX";
-
-        // currently no other OSes supported by Codeblocks exporter!
-        jassertfalse;
-        return "CODEBLOCKS_UNKNOWN_OS";
-    }
+    static String getTargetFolderNameWindows()   { return "CodeBlocksWindows"; }
+    static String getTargetFolderNameLinux()     { return "CodeBlocksLinux"; }
 
     //==============================================================================
     static CodeBlocksProjectExporter* createForSettings (Project& projectToUse, const ValueTree& settingsToUse)
     {
         // this will also import legacy jucer files where CodeBlocks only worked for Windows,
         // had valueTreetTypeName "CODEBLOCKS", and there was no OS distinction
-        if (settingsToUse.hasType (getValueTreeTypeName (windowsTarget)) || settingsToUse.hasType ("CODEBLOCKS"))
+        if (settingsToUse.hasType (getValueTreeTypeNameWindows()) || settingsToUse.hasType ("CODEBLOCKS"))
             return new CodeBlocksProjectExporter (projectToUse, settingsToUse, windowsTarget);
 
-        if (settingsToUse.hasType (getValueTreeTypeName (linuxTarget)))
+        if (settingsToUse.hasType (getValueTreeTypeNameLinux()))
             return new CodeBlocksProjectExporter (projectToUse, settingsToUse, linuxTarget);
 
         return nullptr;
@@ -81,12 +65,17 @@ public:
     CodeBlocksProjectExporter (Project& p, const ValueTree& t, CodeBlocksOS codeBlocksOs)
         : ProjectExporter (p, t), os (codeBlocksOs)
     {
-        name = getName (os);
-
-        targetLocationValue.setDefault (getDefaultBuildsRootFolder() + getTargetFolderForExporter (getValueTreeTypeName (os)));
-
         if (isWindows())
+        {
+            name = getDisplayNameWindows();
+            targetLocationValue.setDefault (getDefaultBuildsRootFolder() + getTargetFolderNameWindows());
             targetPlatformValue.referTo (settings, Ids::codeBlocksWindowsTarget, getUndoManager());
+        }
+        else
+        {
+            name = getDisplayNameLinux();
+            targetLocationValue.setDefault (getDefaultBuildsRootFolder() + getTargetFolderNameLinux());
+        }
     }
 
     //==============================================================================
@@ -101,7 +90,6 @@ public:
     bool isCodeBlocks() const override               { return true; }
     bool isMakefile() const override                 { return false; }
     bool isAndroidStudio() const override            { return false; }
-    bool isCLion() const override                    { return false; }
 
     bool isAndroid() const override                  { return false; }
     bool isWindows() const override                  { return os == windowsTarget; }
@@ -109,19 +97,36 @@ public:
     bool isOSX() const override                      { return false; }
     bool isiOS() const override                      { return false; }
 
-    bool supportsTargetType (ProjectType::Target::Type type) const override
+    Identifier getExporterIdentifier() const override
     {
+        return isLinux() ? getValueTreeTypeNameLinux() : getValueTreeTypeNameWindows();
+    }
+
+    String getNewLineString() const override         { return isWindows() ? "\r\n" : "\n"; }
+
+    bool supportsTargetType (build_tools::ProjectType::Target::Type type) const override
+    {
+        using Target = build_tools::ProjectType::Target;
+
         switch (type)
         {
-            case ProjectType::Target::StandalonePlugIn:
-            case ProjectType::Target::GUIApp:
-            case ProjectType::Target::ConsoleApp:
-            case ProjectType::Target::StaticLibrary:
-            case ProjectType::Target::SharedCodeTarget:
-            case ProjectType::Target::AggregateTarget:
-            case ProjectType::Target::VSTPlugIn:
-            case ProjectType::Target::DynamicLibrary:
+            case Target::StandalonePlugIn:
+            case Target::GUIApp:
+            case Target::ConsoleApp:
+            case Target::StaticLibrary:
+            case Target::SharedCodeTarget:
+            case Target::AggregateTarget:
+            case Target::VSTPlugIn:
+            case Target::DynamicLibrary:
                 return true;
+            case Target::AAXPlugIn:
+            case Target::UnityPlugIn:
+            case Target::LV2PlugIn:
+            case Target::LV2TurtleProgram:
+            case Target::VST3PlugIn:
+            case Target::AudioUnitPlugIn:
+            case Target::AudioUnitv3PlugIn:
+            case Target::unspecified:
             default:
                 break;
         }
@@ -155,25 +160,20 @@ public:
     }
 
     //==============================================================================
-    void addPlatformSpecificSettingsForProjectType (const ProjectType&) override
+    void addPlatformSpecificSettingsForProjectType (const build_tools::ProjectType&) override
     {
         // add shared code target first as order matters for Codeblocks
-        if (shouldBuildTargetType (ProjectType::Target::SharedCodeTarget))
-            targets.add (new CodeBlocksTarget (*this, ProjectType::Target::SharedCodeTarget));
+        if (shouldBuildTargetType (build_tools::ProjectType::Target::SharedCodeTarget))
+            targets.add (new CodeBlocksTarget (*this, build_tools::ProjectType::Target::SharedCodeTarget));
 
-        //ProjectType::Target::SharedCodeTarget
-        callForAllSupportedTargets ([this] (ProjectType::Target::Type targetType)
+        //resource::ProjectType::Target::SharedCodeTarget
+        callForAllSupportedTargets ([this] (build_tools::ProjectType::Target::Type targetType)
                                     {
-                                        if (targetType == ProjectType::Target::SharedCodeTarget)
+                                        if (targetType == build_tools::ProjectType::Target::SharedCodeTarget)
                                             return;
 
-                                        if (auto* target = new CodeBlocksTarget (*this, targetType))
-                                        {
-                                            if (targetType == ProjectType::Target::AggregateTarget)
-                                                targets.insert (0, target);
-                                            else
-                                                targets.add (target);
-                                        }
+                                        targets.insert (targetType == build_tools::ProjectType::Target::AggregateTarget ? 0 : -1,
+                                                        new CodeBlocksTarget (*this, targetType));
                                     });
 
         // If you hit this assert, you tried to generate a project for an exporter
@@ -190,7 +190,7 @@ public:
     }
 
 private:
-    ValueWithDefault targetPlatformValue;
+    ValueTreePropertyWithDefault targetPlatformValue;
 
     String getTargetPlatformString() const    { return targetPlatformValue.get(); }
 
@@ -237,7 +237,7 @@ private:
         String getArchitectureTypeString() const    { return architectureTypeValue.get(); }
 
         //==============================================================================
-        ValueWithDefault architectureTypeValue;
+        ValueTreePropertyWithDefault architectureTypeValue;
     };
 
     BuildConfiguration::Ptr createBuildConfig (const ValueTree& tree) const override
@@ -246,17 +246,18 @@ private:
     }
 
     //==============================================================================
-    class CodeBlocksTarget : public ProjectType::Target
+    class CodeBlocksTarget : public build_tools::ProjectType::Target
     {
     public:
-        CodeBlocksTarget (const CodeBlocksProjectExporter& e, ProjectType::Target::Type typeToUse)
-            : ProjectType::Target (typeToUse),
+        CodeBlocksTarget (const CodeBlocksProjectExporter& e,
+                          build_tools::ProjectType::Target::Type typeToUse)
+            : Target (typeToUse),
               exporter (e)
         {}
 
         String getTargetNameForConfiguration (const BuildConfiguration& config) const
         {
-            if (type == ProjectType::Target::AggregateTarget)
+            if (type == build_tools::ProjectType::Target::AggregateTarget)
                 return config.getName();
 
             return getName() + String (" | ") + config.getName();
@@ -274,6 +275,8 @@ private:
                     case staticLibrary:         return ".lib";
                     case sharedLibraryOrDLL:
                     case pluginBundle:          return ".dll";
+                    case macOSAppex:
+                    case unknown:
                     default:
                         break;
                 }
@@ -284,17 +287,10 @@ private:
                 {
                     case executable:            return {};
                     case staticLibrary:         return ".a";
-                    case sharedLibraryOrDLL:    return ".so";
-
                     case pluginBundle:
-                        switch (type)
-                        {
-                            case VSTPlugIn:     return ".so";
-                            default:            break;
-                        }
-
-                        return ".so";
-
+                    case sharedLibraryOrDLL:    return ".so";
+                    case macOSAppex:
+                    case unknown:
                     default:
                         break;
                 }
@@ -312,28 +308,6 @@ private:
     };
 
     //==============================================================================
-
-    StringArray getPackages() const
-    {
-        auto result = linuxPackages;
-
-        if (project.getEnabledModules().isModuleEnabled ("juce_gui_extra")
-            && project.isConfigFlagEnabled ("JUCE_WEB_BROWSER", true))
-        {
-            result.add ("webkit2gtk-4.0");
-            result.add ("gtk+-x11-3.0");
-        }
-
-        if (project.getEnabledModules().isModuleEnabled ("juce_core")
-            && project.isConfigFlagEnabled ("JUCE_USE_CURL", true)
-            && ! project.isConfigFlagEnabled ("JUCE_LOAD_CURL_SYMBOLS_LAZILY", false))
-            result.add ("libcurl");
-
-        result.removeDuplicates (false);
-
-        return result;
-    }
-
     void addVersion (XmlElement& xml) const
     {
         auto* fileVersion = xml.createNewChildElement ("FileVersion");
@@ -383,12 +357,14 @@ private:
         auto keys = defines.getAllKeys();
         auto values = defines.getAllValues();
 
+        const auto escapedQuote = isWindows() ? "\\\"" : "\\\\\"";
+
         for (int i = 0; i < defines.size(); ++i)
         {
             auto result = keys[i];
 
             if (values[i].isNotEmpty())
-                result += "=" + values[i];
+                result += "=\"" + values[i].replace ("\"", escapedQuote) + "\"";
 
             defs.add (result);
         }
@@ -403,8 +379,11 @@ private:
         if (auto* codeBlocksConfig = dynamic_cast<const CodeBlocksBuildConfiguration*> (&config))
             flags.add (codeBlocksConfig->getArchitectureTypeString());
 
-        for (auto& recommended : config.getRecommendedCompilerWarningFlags())
-            flags.add (recommended);
+        auto recommendedFlags = config.getRecommendedCompilerWarningFlags();
+
+        for (auto& recommendedFlagsType : { recommendedFlags.common, recommendedFlags.cpp })
+            for (auto& recommended : recommendedFlagsType)
+                flags.add (recommended);
 
         flags.add ("-O" + config.getGCCOptimisationFlag());
 
@@ -415,11 +394,9 @@ private:
             auto cppStandard = config.project.getCppStandardString();
 
             if (cppStandard == "latest")
-                cppStandard = "17";
+                cppStandard = project.getLatestNumberedCppStandardString();
 
-            cppStandard = "-std=" + String (shouldUseGNUExtensions() ? "gnu++" : "c++") + cppStandard;
-
-            flags.add (cppStandard);
+            flags.add ("-std=" + String (shouldUseGNUExtensions() ? "gnu++" : "c++") + cppStandard);
         }
 
         flags.add ("-mstackrealign");
@@ -432,22 +409,23 @@ private:
 
         if (config.exporter.isLinux())
         {
-            if (target.isDynamicLibrary() || getProject().getProjectType().isAudioPlugin())
+            if (target.isDynamicLibrary() || getProject().isAudioPluginProject())
                 flags.add ("-fPIC");
 
-            auto packages = getPackages();
+            auto packages = config.exporter.getLinuxPackages (PackageDependencyType::compile);
 
-            if (packages.size() > 0)
+            if (! packages.isEmpty())
             {
                 auto pkgconfigFlags = String ("`pkg-config --cflags");
-                for (auto p : packages)
+
+                for (auto& p : packages)
                     pkgconfigFlags << " " << p;
 
                 pkgconfigFlags << "`";
                 flags.add (pkgconfigFlags);
             }
 
-            if (linuxLibs.contains("pthread"))
+            if (linuxLibs.contains ("pthread"))
                 flags.add ("-pthread");
         }
 
@@ -469,14 +447,14 @@ private:
 
         flags.addTokens (replacePreprocessorTokens (config, getExtraLinkerFlagsString()).trim(), " \n", "\"'");
 
-        auto packages = getPackages();
-
         if (config.exporter.isLinux())
         {
             if (target.isDynamicLibrary())
                 flags.add ("-shared");
 
-            if (packages.size() > 0)
+            auto packages = config.exporter.getLinuxPackages (PackageDependencyType::link);
+
+            if (! packages.isEmpty())
             {
                 String pkgconfigLibs ("`pkg-config --libs");
 
@@ -495,8 +473,8 @@ private:
     {
         auto librarySearchPaths = config.getLibrarySearchPaths();
 
-        if (getProject().getProjectType().isAudioPlugin() && target.type != ProjectType::Target::SharedCodeTarget)
-            librarySearchPaths.add (RelativePath (getSharedCodePath (config), RelativePath::buildTargetFolder).getParentDirectory().toUnixStyle().quoted());
+        if (getProject().isAudioPluginProject() && target.type != build_tools::ProjectType::Target::SharedCodeTarget)
+            librarySearchPaths.add (build_tools::RelativePath (getSharedCodePath (config), build_tools::RelativePath::buildTargetFolder).getParentDirectory().toUnixStyle().quoted());
 
         return librarySearchPaths;
     }
@@ -521,24 +499,12 @@ private:
         return getCleanedStringArray (paths);
     }
 
-    static int getTypeIndex (const ProjectType::Target::Type& type)
+    static int getTypeIndex (const build_tools::ProjectType::Target::Type& type)
     {
-        switch (type)
-        {
-            case ProjectType::Target::GUIApp:
-            case ProjectType::Target::StandalonePlugIn:
-                return 0;
-            case ProjectType::Target::ConsoleApp:
-                return 1;
-            case ProjectType::Target::StaticLibrary:
-            case ProjectType::Target::SharedCodeTarget:
-                return 2;
-            case ProjectType::Target::DynamicLibrary:
-            case ProjectType::Target::VSTPlugIn:
-                return 3;
-            default:
-                break;
-        }
+        if (type == build_tools::ProjectType::Target::GUIApp || type == build_tools::ProjectType::Target::StandalonePlugIn)         return 0;
+        if (type == build_tools::ProjectType::Target::ConsoleApp)                                                                   return 1;
+        if (type == build_tools::ProjectType::Target::StaticLibrary || type == build_tools::ProjectType::Target::SharedCodeTarget)  return 2;
+        if (type == build_tools::ProjectType::Target::DynamicLibrary || type == build_tools::ProjectType::Target::VSTPlugIn)        return 3;
 
         return 0;
     }
@@ -548,8 +514,8 @@ private:
         String outputPath;
         if (config.getTargetBinaryRelativePathString().isNotEmpty())
         {
-            RelativePath binaryPath (config.getTargetBinaryRelativePathString(), RelativePath::projectFolder);
-            binaryPath = binaryPath.rebased (projectFolder, getTargetFolder(), RelativePath::buildTargetFolder);
+            build_tools::RelativePath binaryPath (config.getTargetBinaryRelativePathString(), build_tools::RelativePath::projectFolder);
+            binaryPath = binaryPath.rebased (projectFolder, getTargetFolder(), build_tools::RelativePath::buildTargetFolder);
             outputPath = config.getTargetBinaryRelativePathString();
         }
         else
@@ -562,8 +528,8 @@ private:
 
     String getSharedCodePath (const BuildConfiguration& config) const
     {
-        auto outputPath = getOutputPathForTarget (getTargetWithType (ProjectType::Target::SharedCodeTarget), config);
-        RelativePath path (outputPath, RelativePath::buildTargetFolder);
+        auto outputPath = getOutputPathForTarget (getTargetWithType (build_tools::ProjectType::Target::SharedCodeTarget), config);
+        build_tools::RelativePath path (outputPath, build_tools::RelativePath::buildTargetFolder);
         auto filename = path.getFileName();
 
         if (isLinux())
@@ -583,7 +549,7 @@ private:
 
             if (isLinux())
             {
-                bool keepPrefix = (target.type == ProjectType::Target::VSTPlugIn);
+                bool keepPrefix = (target.type == build_tools::ProjectType::Target::VSTPlugIn);
 
                 output->setAttribute ("prefix_auto", keepPrefix ? 0 : 1);
             }
@@ -601,7 +567,7 @@ private:
         xml.createNewChildElement ("Option")->setAttribute ("type", getTypeIndex (target.type));
         xml.createNewChildElement ("Option")->setAttribute ("compiler", "gcc");
 
-        if (getProject().getProjectType().isAudioPlugin() && target.type != ProjectType::Target::SharedCodeTarget)
+        if (getProject().isAudioPluginProject() && target.type != build_tools::ProjectType::Target::SharedCodeTarget)
             xml.createNewChildElement ("Option")->setAttribute ("external_deps", getSharedCodePath (config));
 
         {
@@ -613,7 +579,7 @@ private:
                 for (auto& def : getDefines (config, target))
                 {
                     if (! def.containsChar ('='))
-                            def << '=';
+                        def << '=';
 
                     flags.add ("-D" + def);
                 }
@@ -635,7 +601,7 @@ private:
         {
             auto* linker = xml.createNewChildElement ("Linker");
 
-            if (getProject().getProjectType().isAudioPlugin() && target.type != ProjectType::Target::SharedCodeTarget)
+            if (getProject().isAudioPluginProject() && target.type != build_tools::ProjectType::Target::SharedCodeTarget)
                 setAddOption (*linker, "option", getSharedCodePath (config).quoted());
 
             for (auto& flag : getLinkerFlags (config, target))
@@ -647,7 +613,8 @@ private:
                 setAddOption (*linker, "library", lib);
 
             for (auto& path : getLinkerSearchPaths (config, target))
-                setAddOption (*linker, "directory", replacePreprocessorDefs (getAllPreprocessorDefs(), path));
+                setAddOption (*linker, "directory",
+                              build_tools::replacePreprocessorDefs (getAllPreprocessorDefs(), path));
         }
     }
 
@@ -657,7 +624,7 @@ private:
 
         for (ConstConfigIterator config (*this); config.next();)
             for (auto target : targets)
-                if (target->type != ProjectType::Target::AggregateTarget)
+                if (target->type != build_tools::ProjectType::Target::AggregateTarget)
                     createBuildTarget (*build->createNewChildElement ("Target"), *target, *config);
     }
 
@@ -670,12 +637,12 @@ private:
             StringArray allTargets;
 
             for (auto target : targets)
-                if (target->type != ProjectType::Target::AggregateTarget)
+                if (target->type != build_tools::ProjectType::Target::AggregateTarget)
                     allTargets.add (target->getTargetNameForConfiguration (*config));
 
             for (auto target : targets)
             {
-                if (target->type == ProjectType::Target::AggregateTarget)
+                if (target->type == build_tools::ProjectType::Target::AggregateTarget)
                 {
                     auto* configTarget = virtualTargets->createNewChildElement ("Add");
 
@@ -711,7 +678,7 @@ private:
         result = getCleanedStringArray (result);
 
         for (auto& option : result)
-            option = replacePreprocessorDefs (getAllPreprocessorDefs(), option);
+            option = build_tools::replacePreprocessorDefs (getAllPreprocessorDefs(), option);
 
         return result;
     }
@@ -724,7 +691,7 @@ private:
             setAddOption (*linker, "library", lib);
     }
 
-    CodeBlocksTarget& getTargetWithType (ProjectType::Target::Type type) const
+    CodeBlocksTarget& getTargetWithType (build_tools::ProjectType::Target::Type type) const
     {
         CodeBlocksTarget* nonAggregrateTarget = nullptr;
 
@@ -733,7 +700,7 @@ private:
             if (target->type == type)
                 return *target;
 
-            if (target->type != ProjectType::Target::AggregateTarget)
+            if (target->type != build_tools::ProjectType::Target::AggregateTarget)
                 nonAggregrateTarget = target;
         }
 
@@ -747,11 +714,11 @@ private:
     // the single target
     CodeBlocksTarget& getMainTarget() const
     {
-        if (getProject().getProjectType().isAudioPlugin())
-            return getTargetWithType (ProjectType::Target::SharedCodeTarget);
+        if (getProject().isAudioPluginProject())
+            return getTargetWithType (build_tools::ProjectType::Target::SharedCodeTarget);
 
         for (auto* target : targets)
-            if (target->type != ProjectType::Target::AggregateTarget)
+            if (target->type != build_tools::ProjectType::Target::AggregateTarget)
                 return *target;
 
         jassertfalse;
@@ -761,10 +728,10 @@ private:
 
     CodeBlocksTarget& getTargetForProjectItem (const Project::Item& projectItem) const
     {
-        if (getProject().getProjectType().isAudioPlugin())
+        if (getProject().isAudioPluginProject())
         {
             if (! projectItem.shouldBeCompiled())
-                return getTargetWithType (ProjectType::Target::SharedCodeTarget);
+                return getTargetWithType (build_tools::ProjectType::Target::SharedCodeTarget);
 
             return getTargetWithType (getProject().getTargetTypeFromFilePath (projectItem.getFile(), true));
         }
@@ -781,7 +748,7 @@ private:
         }
         else if (projectItem.shouldBeAddedToTargetProject() && projectItem.shouldBeAddedToTargetExporter (*this))
         {
-            RelativePath file (projectItem.getFile(), getTargetFolder(), RelativePath::buildTargetFolder);
+            build_tools::RelativePath file (projectItem.getFile(), getTargetFolder(), build_tools::RelativePath::buildTargetFolder);
 
             auto* unit = xml.createNewChildElement ("Unit");
             unit->setAttribute ("filename", file.toUnixStyle());
@@ -825,8 +792,11 @@ private:
 
         if (hasResourceFile())
         {
-            auto iconFile = getTargetFolder().getChildFile ("icon.ico");
-            MSVCProjectExporterBase::writeIconFile (*this, iconFile);
+            const auto iconFile = getTargetFolder().getChildFile ("icon.ico");
+
+            if (! build_tools::asArray (getIcons()).isEmpty())
+                build_tools::writeWinIcon (getIcons(), iconFile);
+
             auto rcFile = getTargetFolder().getChildFile ("resources.rc");
             MSVCProjectExporterBase::createRCFile (project, iconFile, rcFile);
 
@@ -854,8 +824,6 @@ private:
     CodeBlocksOS os;
 
     OwnedArray<CodeBlocksTarget> targets;
-
-    friend class CLionProjectExporter;
 
     JUCE_DECLARE_NON_COPYABLE (CodeBlocksProjectExporter)
 };

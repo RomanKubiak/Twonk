@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -28,6 +28,7 @@ namespace UnitTestCategories
     static const String analytics                  { "Analytics" };
     static const String audio                      { "Audio" };
     static const String audioProcessorParameters   { "AudioProcessorParameters" };
+    static const String audioProcessors            { "AudioProcessors" };
     static const String blocks                     { "Blocks" };
     static const String compression                { "Compression" };
     static const String containers                 { "Containers" };
@@ -35,6 +36,7 @@ namespace UnitTestCategories
     static const String dsp                        { "DSP" };
     static const String files                      { "Files" };
     static const String function                   { "Function" };
+    static const String graphics                   { "Graphics" };
     static const String gui                        { "GUI" };
     static const String json                       { "JSON" };
     static const String maths                      { "Maths" };

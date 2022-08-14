@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -203,7 +202,7 @@ TabbedButtonBar::TabbedButtonBar (Orientation orientationToUse)
     setInterceptsMouseClicks (false, true);
     behindFrontTab.reset (new BehindFrontTabComp (*this));
     addAndMakeVisible (behindFrontTab.get());
-    setFocusContainer (true);
+    setFocusContainerType (FocusContainerType::keyboardFocusContainer);
 }
 
 TabbedButtonBar::~TabbedButtonBar()
@@ -574,5 +573,11 @@ void TabbedButtonBar::showExtraItemsMenu()
 //==============================================================================
 void TabbedButtonBar::currentTabChanged (int, const String&) {}
 void TabbedButtonBar::popupMenuClickOnTab (int, const String&) {}
+
+//==============================================================================
+std::unique_ptr<AccessibilityHandler> TabbedButtonBar::createAccessibilityHandler()
+{
+    return std::make_unique<AccessibilityHandler> (*this, AccessibilityRole::group);
+}
 
 } // namespace juce

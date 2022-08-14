@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -28,830 +27,674 @@ namespace juce
 {
 
 #define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
-    METHOD (isBillingSupported,      "isBillingSupported",      "(ILjava/lang/String;Ljava/lang/String;)I") \
-    METHOD (getSkuDetails,           "getSkuDetails",           "(ILjava/lang/String;Ljava/lang/String;Landroid/os/Bundle;)Landroid/os/Bundle;") \
-    METHOD (getBuyIntent,            "getBuyIntent",            "(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Landroid/os/Bundle;") \
-    METHOD (getBuyIntentExtraParams, "getBuyIntentExtraParams", "(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Landroid/os/Bundle;)Landroid/os/Bundle;") \
-    METHOD (getPurchases,            "getPurchases",            "(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)Landroid/os/Bundle;") \
-    METHOD (consumePurchase,         "consumePurchase",         "(ILjava/lang/String;Ljava/lang/String;)I") \
-    METHOD (getPurchaseHistory,      "getPurchaseHistory",      "(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Landroid/os/Bundle;)Landroid/os/Bundle;")
+  METHOD (getProductId,                     "getProductId",                         "()Ljava/lang/String;") \
+  METHOD (getTitle,                         "getTitle",                             "()Ljava/lang/String;") \
+  METHOD (getDescription,                   "getDescription",                       "()Ljava/lang/String;") \
+  METHOD (getOneTimePurchaseOfferDetails,   "getOneTimePurchaseOfferDetails",       "()Lcom/android/billingclient/api/ProductDetails$OneTimePurchaseOfferDetails;") \
+  METHOD (getSubscriptionOfferDetails,      "getSubscriptionOfferDetails",          "()Ljava/util/List;")
 
-DECLARE_JNI_CLASS (IInAppBillingService, "com/android/vending/billing/IInAppBillingService")
+DECLARE_JNI_CLASS (ProductDetails, "com/android/billingclient/api/ProductDetails")
 #undef JNI_CLASS_MEMBERS
 
 #define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
-    STATICMETHOD (asInterface,      "asInterface",      "(Landroid/os/IBinder;)Lcom/android/vending/billing/IInAppBillingService;") \
+  METHOD (getFormattedPrice,                "getFormattedPrice",                    "()Ljava/lang/String;") \
+  METHOD (getPriceCurrencyCode,             "getPriceCurrencyCode",                 "()Ljava/lang/String;")
 
-DECLARE_JNI_CLASS (IInAppBillingServiceStub, "com/android/vending/billing/IInAppBillingService$Stub")
+DECLARE_JNI_CLASS (OneTimePurchaseOfferDetails, "com/android/billingclient/api/ProductDetails$OneTimePurchaseOfferDetails")
 #undef JNI_CLASS_MEMBERS
 
-//==============================================================================
-struct ServiceConnection  : public AndroidInterfaceImplementer
+#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
+  METHOD (getFormattedPrice,                "getFormattedPrice",                    "()Ljava/lang/String;") \
+  METHOD (getPriceCurrencyCode,             "getPriceCurrencyCode",                 "()Ljava/lang/String;")
+
+DECLARE_JNI_CLASS (PricingPhase, "com/android/billingclient/api/ProductDetails$PricingPhase")
+#undef JNI_CLASS_MEMBERS
+
+#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
+  METHOD (getOfferToken,                "getOfferToken",                    "()Ljava/lang/String;") \
+  METHOD (getPricingPhases,             "getPricingPhases",                 "()Lcom/android/billingclient/api/ProductDetails$PricingPhases;")
+
+DECLARE_JNI_CLASS (SubscriptionOfferDetails, "com/android/billingclient/api/ProductDetails$SubscriptionOfferDetails")
+#undef JNI_CLASS_MEMBERS
+
+#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
+  METHOD (getPricingPhaseList,             "getPricingPhaseList",                 "()Ljava/util/List;")
+
+DECLARE_JNI_CLASS (PricingPhases, "com/android/billingclient/api/ProductDetails$PricingPhases")
+#undef JNI_CLASS_MEMBERS
+
+#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
+  STATICMETHOD (newBuilder, "newBuilder", "()Lcom/android/billingclient/api/BillingFlowParams$ProductDetailsParams$Builder;")
+
+DECLARE_JNI_CLASS (BillingFlowParamsProductDetailsParams, "com/android/billingclient/api/BillingFlowParams$ProductDetailsParams")
+#undef JNI_CLASS_MEMBERS
+
+#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
+  STATICMETHOD (newBuilder, "newBuilder", "()Lcom/android/billingclient/api/BillingFlowParams$Builder;")
+
+DECLARE_JNI_CLASS (BillingFlowParams, "com/android/billingclient/api/BillingFlowParams")
+#undef JNI_CLASS_MEMBERS
+
+#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
+  STATICMETHOD (newBuilder, "newBuilder", "()Lcom/android/billingclient/api/BillingFlowParams$SubscriptionUpdateParams$Builder;")
+
+DECLARE_JNI_CLASS (BillingFlowParamsSubscriptionUpdateParams, "com/android/billingclient/api/BillingFlowParams$SubscriptionUpdateParams")
+#undef JNI_CLASS_MEMBERS
+
+#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
+  METHOD (build,                       "build",                       "()Lcom/android/billingclient/api/BillingFlowParams;") \
+  METHOD (setSubscriptionUpdateParams, "setSubscriptionUpdateParams", "(Lcom/android/billingclient/api/BillingFlowParams$SubscriptionUpdateParams;)Lcom/android/billingclient/api/BillingFlowParams$Builder;") \
+  METHOD (setProductDetailsParamsList, "setProductDetailsParamsList", "(Ljava/util/List;)Lcom/android/billingclient/api/BillingFlowParams$Builder;")
+
+DECLARE_JNI_CLASS (BillingFlowParamsBuilder, "com/android/billingclient/api/BillingFlowParams$Builder")
+#undef JNI_CLASS_MEMBERS
+
+#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
+  METHOD (build,                       "build",                       "()Lcom/android/billingclient/api/BillingFlowParams$SubscriptionUpdateParams;") \
+  METHOD (setOldPurchaseToken,         "setOldPurchaseToken",         "(Ljava/lang/String;)Lcom/android/billingclient/api/BillingFlowParams$SubscriptionUpdateParams$Builder;") \
+  METHOD (setReplaceProrationMode,     "setReplaceProrationMode",     "(I)Lcom/android/billingclient/api/BillingFlowParams$SubscriptionUpdateParams$Builder;")
+
+DECLARE_JNI_CLASS (BillingFlowParamsSubscriptionUpdateParamsBuilder, "com/android/billingclient/api/BillingFlowParams$SubscriptionUpdateParams$Builder")
+#undef JNI_CLASS_MEMBERS
+
+#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
+  METHOD (build,                       "build",                       "()Lcom/android/billingclient/api/BillingFlowParams$ProductDetailsParams;") \
+  METHOD (setOfferToken,               "setOfferToken",               "(Ljava/lang/String;)Lcom/android/billingclient/api/BillingFlowParams$ProductDetailsParams$Builder;") \
+  METHOD (setProductDetails,           "setProductDetails",           "(Lcom/android/billingclient/api/ProductDetails;)Lcom/android/billingclient/api/BillingFlowParams$ProductDetailsParams$Builder;")
+
+DECLARE_JNI_CLASS (BillingFlowParamsProductDetailsParamsBuilder, "com/android/billingclient/api/BillingFlowParams$ProductDetailsParams$Builder")
+#undef JNI_CLASS_MEMBERS
+
+#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
+  METHOD (getOrderId,       "getOrderId",       "()Ljava/lang/String;") \
+  METHOD (getPurchaseState, "getPurchaseState", "()I") \
+  METHOD (getProducts,      "getProducts",      "()Ljava/util/List;") \
+  METHOD (getPackageName,   "getPackageName",   "()Ljava/lang/String;") \
+  METHOD (getPurchaseTime,  "getPurchaseTime",  "()J") \
+  METHOD (getPurchaseToken, "getPurchaseToken", "()Ljava/lang/String;")
+
+DECLARE_JNI_CLASS (AndroidPurchase, "com/android/billingclient/api/Purchase")
+#undef JNI_CLASS_MEMBERS
+
+template <typename Fn>
+static void callOnMainThread (Fn&& fn)
 {
-    virtual void onServiceConnected    (jobject component, jobject iBinder) = 0;
-    virtual void onServiceDisconnected (jobject component) = 0;
+    if (MessageManager::getInstance()->isThisTheMessageThread())
+        fn();
+    else
+        MessageManager::callAsync (std::forward<Fn> (fn));
+}
 
-    jobject invoke (jobject proxy, jobject method, jobjectArray args) override
-    {
-        auto* env = getEnv();
-        auto methodName = juceString ((jstring) env->CallObjectMethod (method, JavaMethod.getName));
+inline StringArray javaListOfStringToJuceStringArray (const LocalRef<jobject>& javaArray)
+{
+    if (javaArray.get() == nullptr)
+        return {};
 
-        if (methodName == "onServiceConnected")
-        {
-            onServiceConnected (env->GetObjectArrayElement (args, 0),
-                                env->GetObjectArrayElement (args, 1));
-            return nullptr;
-        }
+    auto* env = getEnv();
 
-        if (methodName == "onServiceDisconnected")
-        {
-            onServiceDisconnected (env->GetObjectArrayElement (args, 0));
-            return nullptr;
-        }
+    StringArray result;
 
-        return AndroidInterfaceImplementer::invoke (proxy, method, args);
-    }
-};
+    const auto size = env->CallIntMethod (javaArray, JavaList.size);
+
+    for (int i = 0; i < size; ++i)
+        result.add (juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (javaArray, JavaList.get, i) }.get()));
+
+    return result;
+}
 
 //==============================================================================
-struct InAppPurchases::Pimpl    : private AsyncUpdater,
-                                  private ServiceConnection
+struct InAppPurchases::Pimpl
 {
-    Pimpl (InAppPurchases& parent)  : owner (parent)
+    Pimpl (InAppPurchases& parent)
+        : owner (parent),
+          billingClient (LocalRef<jobject> { getEnv()->NewObject (JuceBillingClient,
+                                                                  JuceBillingClient.constructor,
+                                                                  getAppContext().get(),
+                                                                  (jlong) this) })
     {
-        auto* env = getEnv();
-        auto intent = env->NewObject (AndroidIntent, AndroidIntent.constructWithString,
-                                      javaString ("com.android.vending.billing.InAppBillingService.BIND").get());
-        env->CallObjectMethod (intent, AndroidIntent.setPackage, javaString ("com.android.vending").get());
-
-        serviceConnection = GlobalRef (CreateJavaInterface (this, "android/content/ServiceConnection"));
-
-        env->CallBooleanMethod (getCurrentActivity().get(), AndroidContext.bindService, intent,
-                                serviceConnection.get(), 1 /*BIND_AUTO_CREATE*/);
-
-        if (threadPool == nullptr)
-            threadPool.reset (new ThreadPool (1));
     }
 
     ~Pimpl()
     {
-        threadPool = nullptr;
-
-        if (serviceConnection != nullptr)
-        {
-            getEnv()->CallVoidMethod (getCurrentActivity().get(), AndroidContext.unbindService, serviceConnection.get());
-            serviceConnection.clear();
-        }
+        getEnv()->CallVoidMethod (billingClient, JuceBillingClient.endConnection);
     }
 
     //==============================================================================
-    bool isInAppPurchasesSupported()       { return isInAppPurchasesSupported (inAppBillingService); }
+    bool isInAppPurchasesSupported() const
+    {
+        return isReady() && getEnv()->CallBooleanMethod (billingClient, JuceBillingClient.isBillingSupported);
+    }
 
     void getProductsInformation (const StringArray& productIdentifiers)
     {
-        auto callback = [this](const Array<InAppPurchases::Product>& products)
+        productDetailsQueryCallbackQueue.emplace ([this] (LocalRef<jobject> productDetailsList)
         {
-            const ScopedLock lock (getProductsInformationJobResultsLock);
-            getProductsInformationJobResults.insert (0, products);
-            triggerAsyncUpdate();
-        };
+            if (productDetailsList != nullptr)
+            {
+                auto* env = getEnv();
+                Array<InAppPurchases::Product> products;
 
-        threadPool->addJob (new GetProductsInformationJob (*this, getPackageName(),
-                                                           productIdentifiers, callback), true);
+                for (int i = 0; i < env->CallIntMethod (productDetailsList, JavaList.size); ++i)
+                    products.add (buildProduct (LocalRef<jobject> { env->CallObjectMethod (productDetailsList, JavaList.get, i) }));
+
+                callMemberOnMainThread ([this, products]
+                {
+                    owner.listeners.call ([&] (Listener& l) { l.productsInfoReturned (products); });
+                });
+            }
+        });
+
+        queryProductDetailsAsync (convertToLowerCase (productIdentifiers));
     }
 
-    void purchaseProduct (const String& productIdentifier, bool isSubscription,
-                          const StringArray& subscriptionIdentifiers, bool creditForUnusedSubscription)
+    void purchaseProduct (const String& productIdentifier,
+                          const String& subscriptionIdentifier,
+                          bool creditForUnusedSubscription)
     {
-        // Upgrading/downgrading only makes sense for subscriptions!
-        jassert (subscriptionIdentifiers.isEmpty() || isSubscription);
-
-        auto buyIntentBundle = getBuyIntentBundle (productIdentifier, isSubscription,
-                                                   subscriptionIdentifiers, creditForUnusedSubscription);
-        auto* env = getEnv();
-
-        auto responseCodeString = javaString ("RESPONSE_CODE");
-        auto responseCode = env->CallIntMethod (buyIntentBundle.get(), AndroidBundle.getInt, responseCodeString.get());
-
-        if (responseCode == 0)
+        productDetailsQueryCallbackQueue.emplace ([=] (LocalRef<jobject> productDetailsList)
         {
-            auto buyIntentString = javaString ("BUY_INTENT");
-            auto pendingIntent   = LocalRef<jobject> (env->CallObjectMethod (buyIntentBundle.get(), AndroidBundle.getParcelable, buyIntentString.get()));
+            if (productDetailsList != nullptr)
+            {
+                auto* env = getEnv();
 
-            auto  requestCode = 1001;
-            auto intentSender    = LocalRef<jobject> (env->CallObjectMethod (pendingIntent.get(), AndroidPendingIntent.getIntentSender));
-            auto fillInIntent    = LocalRef<jobject> (env->NewObject (AndroidIntent, AndroidIntent.constructor));
-            auto flagsMask       = LocalRef<jobject> (env->CallStaticObjectMethod (JavaInteger, JavaInteger.valueOf, 0));
-            auto flagsValues     = LocalRef<jobject> (env->CallStaticObjectMethod (JavaInteger, JavaInteger.valueOf, 0));
-            auto extraFlags      = LocalRef<jobject> (env->CallStaticObjectMethod (JavaInteger, JavaInteger.valueOf, 0));
+                if (env->CallIntMethod (productDetailsList, JavaList.size) > 0)
+                {
+                    GlobalRef productDetails (LocalRef<jobject> { env->CallObjectMethod (productDetailsList, JavaList.get, 0) });
 
-            env->CallVoidMethod (getCurrentActivity().get(), AndroidActivity.startIntentSenderForResult, intentSender.get(), requestCode,
-                                 fillInIntent.get(), flagsMask.get(), flagsValues.get(), extraFlags.get());
-        }
-        else if (responseCode == 7)
-        {
-            // Item already bought.
-            notifyAboutPurchaseResult ({ {}, productIdentifier, juceString (getPackageName()), {}, {} }, true, statusCodeToUserString (responseCode));
-        }
+                    callMemberOnMainThread ([this, productDetails, subscriptionIdentifier, creditForUnusedSubscription]
+                    {
+                        if (subscriptionIdentifier.isNotEmpty())
+                            changeExistingSubscription (productDetails, subscriptionIdentifier, creditForUnusedSubscription);
+                        else
+                            purchaseProductWithProductDetails (productDetails);
+                    });
+                }
+            }
+        });
+
+        queryProductDetailsAsync (convertToLowerCase ({ productIdentifier }));
     }
 
     void restoreProductsBoughtList (bool, const juce::String&)
     {
-        auto callback = [this](const GetProductsBoughtJob::Result& r)
+        purchasesListQueryCallbackQueue.emplace ([this] (LocalRef<jobject> purchasesList)
         {
-            const ScopedLock lock (getProductsBoughtJobResultsLock);
-            getProductsBoughtJobResults.insert (0, r);
-            triggerAsyncUpdate();
-        };
+            if (purchasesList != nullptr)
+            {
+                auto* env = getEnv();
+                Array<InAppPurchases::Listener::PurchaseInfo> purchases;
 
-        threadPool->addJob (new GetProductsBoughtJob (*this,
-                                                      getPackageName(), callback), true);
+                for (int i = 0; i < env->CallIntMethod (purchasesList, JavaArrayList.size); ++i)
+                {
+                    const LocalRef<jobject> purchase { env->CallObjectMethod (purchasesList, JavaArrayList.get, i) };
+                    purchases.add ({ buildPurchase (purchase), {} });
+                }
+
+                callMemberOnMainThread ([this, purchases]
+                {
+                        owner.listeners.call ([&] (Listener& l) { l.purchasesListRestored (purchases, true, NEEDS_TRANS ("Success")); });
+                });
+            }
+            else
+            {
+                callMemberOnMainThread ([this]
+                {
+                    owner.listeners.call ([&] (Listener& l) { l.purchasesListRestored ({}, false, NEEDS_TRANS ("Failure")); });
+                });
+            }
+        });
+
+        getProductsBoughtAsync();
     }
 
     void consumePurchase (const String& productIdentifier, const String& purchaseToken)
     {
-        auto callback = [this](const ConsumePurchaseJob::Result& r)
+        if (purchaseToken.isEmpty())
         {
-            const ScopedLock lock (consumePurchaseJobResultsLock);
-            consumePurchaseJobResults.insert (0, r);
-            triggerAsyncUpdate();
-        };
+            productDetailsQueryCallbackQueue.emplace ([=] (LocalRef<jobject> productDetailsList)
+            {
+                if (productDetailsList != nullptr)
+                {
+                    auto* env = getEnv();
 
-        threadPool->addJob (new ConsumePurchaseJob (*this, getPackageName(), productIdentifier,
-                                                    purchaseToken, callback), true);
-    }
+                    if (env->CallIntMethod (productDetailsList, JavaList.size) > 0)
+                    {
+                        const LocalRef<jobject> product { env->CallObjectMethod (productDetailsList, JavaList.get, 0) };
 
-    //==============================================================================
-    void startDownloads  (const Array<Download*>& downloads)
-    {
-        // Not available on this platform.
-        ignoreUnused (downloads);
-        jassertfalse;
-    }
+                        auto token = juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (product, ProductDetails.getProductId) });
 
-    void pauseDownloads  (const Array<Download*>& downloads)
-    {
-        // Not available on this platform.
-        ignoreUnused (downloads);
-        jassertfalse;
-    }
+                        if (token.isNotEmpty())
+                        {
+                            consumePurchaseWithToken (productIdentifier, token);
+                            return;
+                        }
+                    }
+                }
 
-    void resumeDownloads  (const Array<Download*>& downloads)
-    {
-        // Not available on this platform.
-        ignoreUnused (downloads);
-        jassertfalse;
-    }
+                callMemberOnMainThread ([this, productIdentifier]
+                {
+                    notifyListenersAboutConsume (productIdentifier, false, NEEDS_TRANS ("Item unavailable"));
+                });
+            });
 
-    void cancelDownloads  (const Array<Download*>& downloads)
-    {
-        // Not available on this platform.
-        ignoreUnused (downloads);
-        jassertfalse;
-    }
-
-    //==============================================================================
-    LocalRef<jobject> getBuyIntentBundle (const String& productIdentifier, bool isSubscription,
-                                          const StringArray& subscriptionIdentifiers, bool creditForUnusedSubscription)
-    {
-        auto* env = getEnv();
-
-        auto skuString         = javaString (productIdentifier);
-        auto productTypeString = javaString (isSubscription ? "subs" : "inapp");
-        auto devString         = javaString ("");
-
-        if (subscriptionIdentifiers.isEmpty())
-            return LocalRef<jobject> (inAppBillingService.callObjectMethod (IInAppBillingService.getBuyIntent, 3,
-                                                                            getPackageName().get(), skuString.get(),
-                                                                            productTypeString.get(), devString.get()));
-
-        auto skuList = LocalRef<jobject> (env->NewObject (JavaArrayList, JavaArrayList.constructor,
-                                                          (int) subscriptionIdentifiers.size()));
-
-        if (skuList.get() == 0)
-        {
-            jassertfalse;
-            return LocalRef<jobject> (0);
+            queryProductDetailsAsync (convertToLowerCase ({ productIdentifier }));
         }
 
-        for (const auto& identifier : subscriptionIdentifiers)
-            env->CallBooleanMethod (skuList.get(), JavaArrayList.add, javaString (identifier).get());
+        consumePurchaseWithToken (productIdentifier, purchaseToken);
+    }
 
-        auto extraParams = LocalRef<jobject> (env->NewObject (AndroidBundle, AndroidBundle.constructor));
+    //==============================================================================
+    void startDownloads (const Array<Download*>& downloads)
+    {
+        // Not available on this platform.
+        ignoreUnused (downloads);
+        jassertfalse;
+    }
 
-        if (extraParams.get() == 0)
+    void pauseDownloads (const Array<Download*>& downloads)
+    {
+        // Not available on this platform.
+        ignoreUnused (downloads);
+        jassertfalse;
+    }
+
+    void resumeDownloads (const Array<Download*>& downloads)
+    {
+        // Not available on this platform.
+        ignoreUnused (downloads);
+        jassertfalse;
+    }
+
+    void cancelDownloads (const Array<Download*>& downloads)
+    {
+        // Not available on this platform.
+        ignoreUnused (downloads);
+        jassertfalse;
+    }
+
+private:
+    #define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD, CALLBACK) \
+      METHOD (constructor,                   "<init>",                      "(Landroid/content/Context;J)V")                                              \
+      METHOD (endConnection,                 "endConnection",               "()V")                                                                        \
+      METHOD (isReady,                       "isReady",                     "()Z")                                                                        \
+      METHOD (isBillingSupported,            "isBillingSupported",          "()Z")                                                                        \
+      METHOD (queryProductDetails,           "queryProductDetails",         "([Ljava/lang/String;)V")                                                     \
+      METHOD (launchBillingFlow,             "launchBillingFlow",           "(Landroid/app/Activity;Lcom/android/billingclient/api/BillingFlowParams;)V") \
+      METHOD (queryPurchases,                "queryPurchases",              "()V")                                                                        \
+      METHOD (consumePurchase,               "consumePurchase",             "(Ljava/lang/String;Ljava/lang/String;)V")                                    \
+                                                                                                                                                          \
+      CALLBACK (productDetailsQueryCallback, "productDetailsQueryCallback", "(JLjava/util/List;)V")                                                       \
+      CALLBACK (purchasesListQueryCallback,  "purchasesListQueryCallback",  "(JLjava/util/List;)V")                                                       \
+      CALLBACK (purchaseCompletedCallback,   "purchaseCompletedCallback",   "(JLcom/android/billingclient/api/Purchase;I)V")                              \
+      CALLBACK (purchaseConsumedCallback,    "purchaseConsumedCallback",    "(JLjava/lang/String;I)V")
+
+    DECLARE_JNI_CLASS (JuceBillingClient, "com/rmsl/juce/JuceBillingClient")
+    #undef JNI_CLASS_MEMBERS
+
+    static void JNICALL productDetailsQueryCallback (JNIEnv*, jobject, jlong host, jobject productDetailsList)
+    {
+        if (auto* myself = reinterpret_cast<Pimpl*> (host))
+            myself->updateProductDetails (productDetailsList);
+    }
+
+    static void JNICALL purchasesListQueryCallback (JNIEnv*, jobject, jlong host, jobject purchasesList)
+    {
+        if (auto* myself = reinterpret_cast<Pimpl*> (host))
+            myself->updatePurchasesList (purchasesList);
+    }
+
+    static void JNICALL purchaseCompletedCallback (JNIEnv*, jobject, jlong host, jobject purchase, int responseCode)
+    {
+        if (auto* myself = reinterpret_cast<Pimpl*> (host))
+            myself->purchaseCompleted (purchase, responseCode);
+    }
+
+    static void JNICALL purchaseConsumedCallback (JNIEnv*, jobject, jlong host, jstring productIdentifier, int responseCode)
+    {
+        if (auto* myself = reinterpret_cast<Pimpl*> (host))
+            myself->purchaseConsumed (productIdentifier, responseCode);
+    }
+
+    //==============================================================================
+    bool isReady() const
+    {
+        return getEnv()->CallBooleanMethod (billingClient, JuceBillingClient.isReady);
+    }
+
+    bool checkIsReady() const
+    {
+        for (int i = 0; i < 10; ++i)
         {
-            jassertfalse;
-            return LocalRef<jobject> (0);
-        }
+            if (isReady())
+                return true;
 
-        auto skusToReplaceString        = javaString ("skusToReplace");
-        auto replaceSkusProrationString = javaString ("replaceSkusProration");
-
-        env->CallVoidMethod (extraParams.get(), AndroidBundle.putStringArrayList, skusToReplaceString.get(), skuList.get());
-        env->CallVoidMethod (extraParams.get(), AndroidBundle.putBoolean, replaceSkusProrationString.get(), creditForUnusedSubscription);
-
-        return LocalRef<jobject> (inAppBillingService.callObjectMethod (IInAppBillingService.getBuyIntentExtraParams, 6,
-                                                                        getPackageName().get(), skuString.get(),
-                                                                        productTypeString.get(), devString.get(),
-                                                                        extraParams.get()));
-    }
-
-    //==============================================================================
-    void notifyAboutPurchaseResult (const InAppPurchases::Purchase& purchase, bool success, const String& statusDescription)
-    {
-        owner.listeners.call ([&] (Listener& l) { l.productPurchaseFinished ({ purchase, {} }, success, statusDescription); });
-    }
-
-    //==============================================================================
-    bool checkIsReady()
-    {
-        // It may take a few seconds for the in-app purchase service to connect
-        for (auto retries = 0; retries < 10 && inAppBillingService.get() == 0; ++retries)
             Thread::sleep (500);
-
-        return (inAppBillingService.get() != 0);
-    }
-
-    static bool isInAppPurchasesSupported (jobject iapService)
-    {
-        if (iapService != nullptr)
-        {
-            auto* env = getEnv();
-
-            auto inAppString = javaString ("inapp");
-            auto subsString  = javaString ("subs");
-
-            if (env->CallIntMethod (iapService, IInAppBillingService.isBillingSupported, 3,
-                                    getPackageName().get(), inAppString.get()) != 0)
-                return false;
-
-            if (env->CallIntMethod (iapService, IInAppBillingService.isBillingSupported, 3,
-                                    getPackageName().get(), subsString.get()) != 0)
-                return false;
-
-            return true;
         }
 
-        // Connecting to the in-app purchase server failed! This could have multiple reasons:
-        // 1) Your phone/emulator must support the google play store
-        // 2) Your phone must be logged into the google play store and be able to receive updates
-        // 3) It can take a few seconds after instantiation of the InAppPurchase class for
-        //    in-app purchases to be avaialable on Android.
         return false;
     }
 
     //==============================================================================
-    void onServiceConnected (jobject, jobject iBinder) override
+    static StringArray convertToLowerCase (const StringArray& stringsToConvert)
     {
-        auto* env = getEnv();
+        StringArray lowerCase;
 
-        LocalRef<jobject> iapService (env->CallStaticObjectMethod (IInAppBillingServiceStub,
-                                                                   IInAppBillingServiceStub.asInterface,
-                                                                   iBinder));
+        for (auto& s : stringsToConvert)
+            lowerCase.add (s.toLowerCase());
 
-        if (isInAppPurchasesSupported (iapService))
-            inAppBillingService = GlobalRef (iapService);
-
-        // If you hit this assert, then in-app purchases is not available on your device,
-        // most likely due to too old version of Google Play API (hint: update Google Play on the device).
-        jassert (isInAppPurchasesSupported());
+        return lowerCase;
     }
 
-    void onServiceDisconnected (jobject) override
+    void queryProductDetailsAsync (const StringArray& productIdentifiers)
     {
-        inAppBillingService.clear();
+        Thread::launch ([=]
+        {
+            if (! checkIsReady())
+                return;
+
+            MessageManager::callAsync ([=]
+            {
+                getEnv()->CallVoidMethod (billingClient,
+                                          JuceBillingClient.queryProductDetails,
+                                          juceStringArrayToJava (productIdentifiers).get());
+            });
+        });
     }
 
-    //==============================================================================
-    static LocalRef<jstring> getPackageName()
+    void getProductsBoughtAsync()
     {
-        return LocalRef<jstring> ((jstring) (getEnv()->CallObjectMethod (getAppContext().get(), AndroidContext.getPackageName)));
-    }
-
-    //==============================================================================
-    struct GetProductsInformationJob  : public ThreadPoolJob
-    {
-        using Callback = std::function<void(const Array<InAppPurchases::Product>&)>;
-
-        GetProductsInformationJob (Pimpl& parent,
-                                   const LocalRef<jstring>& packageNameToUse,
-                                   const StringArray& productIdentifiersToUse,
-                                   const Callback& callbackToUse)
-            : ThreadPoolJob ("GetProductsInformationJob"),
-              owner (parent),
-              packageName (LocalRef<jobject> (getEnv()->NewLocalRef (packageNameToUse.get()))),
-              productIdentifiers (productIdentifiersToUse),
-              callback (callbackToUse)
-        {}
-
-        ThreadPoolJob::JobStatus runJob() override
+        Thread::launch ([=]
         {
-            jassert (callback);
+            if (! checkIsReady())
+                return;
 
-            if (owner.checkIsReady())
+            MessageManager::callAsync ([=]
             {
-                // Google's Billing API limitation
-                auto maxQuerySize = 20;
-                auto pi = 0;
-
-                Array<InAppPurchases::Product> results;
-                StringArray identifiersToUse;
-
-                for (auto i = 0; i < productIdentifiers.size(); ++i)
-                {
-                    identifiersToUse.add (productIdentifiers[i].toLowerCase());
-                    ++pi;
-
-                    if (pi == maxQuerySize || i == productIdentifiers.size() - 1)
-                    {
-                        auto inAppProducts = processRetrievedProducts (queryProductsInformationFromService (identifiersToUse, "inapp"));
-                        auto subsProducts  = processRetrievedProducts (queryProductsInformationFromService (identifiersToUse, "subs"));
-
-                        results.addArray (inAppProducts);
-                        results.addArray (subsProducts);
-                        identifiersToUse.clear();
-                        pi = 0;
-                    }
-                }
-
-                if (callback)
-                    callback (results);
-            }
-            else
-            {
-                if (callback)
-                    callback ({});
-            }
-
-            return jobHasFinished;
-        }
-
-    private:
-        LocalRef<jobject> queryProductsInformationFromService (const StringArray& productIdentifiersToQuery, const String& productType)
-        {
-            auto* env = getEnv();
-
-            auto skuList = LocalRef<jobject> (env->NewObject (JavaArrayList, JavaArrayList.constructor, productIdentifiersToQuery.size()));
-
-            if (skuList.get() == 0)
-                return LocalRef<jobject> (0);
-
-            for (const auto& pi : productIdentifiersToQuery)
-                env->CallBooleanMethod (skuList.get(), JavaArrayList.add, javaString (pi).get());
-
-            auto querySkus = LocalRef<jobject> (env->NewObject (AndroidBundle, AndroidBundle.constructor));
-
-            if (querySkus.get() == 0)
-                return LocalRef<jobject> (0);
-
-            auto itemIdListString = javaString ("ITEM_ID_LIST");
-
-            env->CallVoidMethod (querySkus.get(), AndroidBundle.putStringArrayList, itemIdListString.get(), skuList.get());
-
-            auto productTypeString = javaString (productType);
-
-            auto productDetails = LocalRef<jobject> (owner.inAppBillingService.callObjectMethod (IInAppBillingService.getSkuDetails,
-                                                                                           3, (jstring) packageName.get(),
-                                                                                           productTypeString.get(), querySkus.get()));
-
-            return productDetails;
-        }
-
-        Array<InAppPurchases::Product> processRetrievedProducts (LocalRef<jobject> retrievedProducts)
-        {
-            Array<InAppPurchases::Product> products;
-
-            if (owner.checkIsReady())
-            {
-                auto* env = getEnv();
-
-                auto responseCodeString = javaString ("RESPONSE_CODE");
-
-                auto responseCode = env->CallIntMethod (retrievedProducts.get(), AndroidBundle.getInt, responseCodeString.get());
-
-                if (responseCode == 0)
-                {
-                    auto detailsListString = javaString ("DETAILS_LIST");
-
-                    auto responseList = LocalRef<jobject> (env->CallObjectMethod (retrievedProducts.get(), AndroidBundle.getStringArrayList,
-                                                                                  detailsListString.get()));
-
-                    if (responseList != 0)
-                    {
-                        auto iterator = LocalRef<jobject> (env->CallObjectMethod (responseList.get(), JavaArrayList.iterator));
-
-                        if (iterator.get() != 0)
-                        {
-                            for (;;)
-                            {
-                                if (! env->CallBooleanMethod (iterator, JavaIterator.hasNext))
-                                    break;
-
-                                auto response = juce::LocalRef<jstring> ((jstring)env->CallObjectMethod (iterator, JavaIterator.next));
-
-                                if (response.get() != 0)
-                                {
-                                    var responseData = JSON::parse (juceString (response.get()));
-
-                                    if (DynamicObject* object = responseData.getDynamicObject())
-                                    {
-                                        NamedValueSet& props = object->getProperties();
-
-                                        static Identifier productIdIdentifier         ("productId");
-                                        static Identifier titleIdentifier             ("title");
-                                        static Identifier descriptionIdentifier       ("description");
-                                        static Identifier priceIdentifier             ("price");
-                                        static Identifier priceCurrencyCodeIdentifier ("price_currency_code");
-
-                                        var productId         = props[productIdIdentifier];
-                                        var title             = props[titleIdentifier];
-                                        var description       = props[descriptionIdentifier];
-                                        var price             = props[priceIdentifier];
-                                        var priceCurrencyCode = props[priceCurrencyCodeIdentifier];
-
-                                        products.add ( { productId.toString(),
-                                                         title.toString(),
-                                                         description.toString(),
-                                                         price.toString(),
-                                                         priceCurrencyCode.toString() } );
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return products;
-        }
-
-        Pimpl& owner;
-        GlobalRef packageName;
-        const StringArray productIdentifiers;
-        Callback callback;
-    };
-
-    //==============================================================================
-    struct GetProductsBoughtJob  : public ThreadPoolJob
-    {
-        struct Result
-        {
-            bool success = false;
-            Array<InAppPurchases::Listener::PurchaseInfo> purchases;
-            String statusDescription;
-        };
-
-        using Callback = std::function<void(const Result&)>;
-
-        GetProductsBoughtJob (Pimpl& parent,
-                              const LocalRef<jstring>& packageNameToUse,
-                              const Callback& callbackToUse)
-            : ThreadPoolJob ("GetProductsBoughtJob"),
-              owner (parent),
-              packageName (LocalRef<jobject> (getEnv()->NewLocalRef (packageNameToUse.get()))),
-              callback (callbackToUse)
-        {}
-
-        ThreadPoolJob::JobStatus runJob() override
-        {
-            jassert (callback);
-
-            if (owner.checkIsReady())
-            {
-                auto inAppPurchases = getProductsBought ("inapp", 0);
-                auto subsPurchases  = getProductsBought ("subs", 0);
-
-                inAppPurchases.addArray (subsPurchases);
-
-                Array<InAppPurchases::Listener::PurchaseInfo> purchases;
-
-                for (const auto& purchase : inAppPurchases)
-                    purchases.add ({ purchase, {} });
-
-                if (callback)
-                    callback ({true, purchases, "Success"});
-            }
-            else
-            {
-                if (callback)
-                    callback ({false, {}, "In-App purchases unavailable"});
-            }
-
-            return jobHasFinished;
-        }
-
-    private:
-        Array<InAppPurchases::Purchase> getProductsBought (const String& productType, jstring continuationToken)
-        {
-            Array<InAppPurchases::Purchase> purchases;
-            auto* env = getEnv();
-
-            auto productTypeString = javaString (productType);
-            auto ownedItems = LocalRef<jobject> (owner.inAppBillingService.callObjectMethod (IInAppBillingService.getPurchases, 3,
-                                                                                       (jstring) packageName.get(), productTypeString.get(),
-                                                                                       continuationToken));
-
-            if (ownedItems.get() != 0)
-            {
-                auto responseCodeString = javaString ("RESPONSE_CODE");
-                auto responseCode = env->CallIntMethod (ownedItems.get(), AndroidBundle.getInt, responseCodeString.get());
-
-                if (responseCode == 0)
-                {
-                    auto itemListString          = javaString ("INAPP_PURCHASE_ITEM_LIST");
-                    auto dataListString          = javaString ("INAPP_PURCHASE_DATA_LIST");
-                    auto signatureListString     = javaString ("INAPP_DATA_SIGNATURE_LIST");
-                    auto continuationTokenString = javaString ("INAPP_CONTINUATION_TOKEN");
-
-                    auto ownedSkus            = LocalRef<jobject> (env->CallObjectMethod (ownedItems.get(), AndroidBundle.getStringArrayList, itemListString.get()));
-                    auto purchaseDataList     = LocalRef<jobject> (env->CallObjectMethod (ownedItems.get(), AndroidBundle.getStringArrayList, dataListString.get()));
-                    auto signatureList        = LocalRef<jobject> (env->CallObjectMethod (ownedItems.get(), AndroidBundle.getStringArrayList, signatureListString.get()));
-                    auto newContinuationToken = LocalRef<jstring> ((jstring) env->CallObjectMethod (ownedItems.get(), AndroidBundle.getString, continuationTokenString.get()));
-
-                    for (auto i = 0; i < env->CallIntMethod (purchaseDataList.get(), JavaArrayList.size); ++i)
-                    {
-                        auto sku          = juceString ((jstring) (env->CallObjectMethod (ownedSkus.get(),        JavaArrayList.get, i)));
-                        auto purchaseData = juceString ((jstring) (env->CallObjectMethod (purchaseDataList.get(), JavaArrayList.get, i)));
-                        auto signature    = juceString ((jstring) (env->CallObjectMethod (signatureList.get(),    JavaArrayList.get, i)));
-
-                        var responseData = JSON::parse (purchaseData);
-
-                        if (auto* object = responseData.getDynamicObject())
-                        {
-                            auto& props = object->getProperties();
-
-                            static const Identifier orderIdIdentifier       ("orderId"),
-                                                    packageNameIdentifier   ("packageName"),
-                                                    productIdIdentifier     ("productId"),
-                                                    purchaseTimeIdentifier  ("purchaseTime"),
-                                                    purchaseTokenIdentifier ("purchaseToken");
-
-                            var orderId          = props[orderIdIdentifier];
-                            var appPackageName   = props[packageNameIdentifier];
-                            var productId        = props[productIdIdentifier];
-                            var purchaseTime     = props[purchaseTimeIdentifier];
-                            var purchaseToken    = props[purchaseTokenIdentifier];
-
-                            String purchaseTimeString = Time (purchaseTime.toString().getLargeIntValue()).toString (true, true, true, true);
-                            purchases.add ({ orderId.toString(), productId.toString(), appPackageName.toString(), purchaseTimeString, purchaseToken.toString() });
-                        }
-                    }
-
-                    if (newContinuationToken.get() != 0)
-                        getProductsBought (productType, newContinuationToken.get());
-                }
-            }
-
-            return purchases;
-        }
-
-        Pimpl& owner;
-        GlobalRef packageName;
-        Callback callback;
-    };
-
-    //==============================================================================
-    class ConsumePurchaseJob : public ThreadPoolJob
-    {
-    public:
-        struct Result
-        {
-            bool success = false;
-            String productIdentifier;
-            String statusDescription;
-        };
-
-        using Callback = std::function<void(const Result&)>;
-
-        ConsumePurchaseJob (Pimpl& parent,
-                            const LocalRef<jstring>& packageNameToUse,
-                            const String& productIdentifierToUse,
-                            const String& purchaseTokenToUse,
-                            const Callback& callbackToUse)
-            : ThreadPoolJob ("ConsumePurchaseJob"),
-              owner (parent),
-              packageName (LocalRef<jobject> (getEnv()->NewLocalRef (packageNameToUse.get()))),
-              productIdentifier (productIdentifierToUse),
-              purchaseToken (purchaseTokenToUse),
-              callback (callbackToUse)
-        {}
-
-        ThreadPoolJob::JobStatus runJob() override
-        {
-            jassert (callback);
-
-            if (owner.checkIsReady())
-            {
-                auto token = (! purchaseToken.isEmpty() ? purchaseToken : getPurchaseTokenForProductId (productIdentifier, false, 0));
-
-                if (token.isEmpty())
-                {
-                    if (callback)
-                        callback ({ false, productIdentifier, NEEDS_TRANS ("Item not owned") });
-
-                    return jobHasFinished;
-                }
-
-                auto responseCode = owner.inAppBillingService.callIntMethod (IInAppBillingService.consumePurchase, 3,
-                                                                       (jstring)packageName.get(), javaString (token).get());
-
-                if (callback)
-                    callback ({ responseCode == 0, productIdentifier, statusCodeToUserString (responseCode) });
-            }
-            else
-            {
-                if (callback)
-                    callback ({false, {}, "In-App purchases unavailable"});
-            }
-
-            return jobHasFinished;
-        }
-
-    private:
-        String getPurchaseTokenForProductId (const String productIdToLookFor, bool isSubscription, jstring continuationToken)
-        {
-            auto productTypeString = javaString (isSubscription ? "subs" : "inapp");
-            auto ownedItems = LocalRef<jobject> (owner.inAppBillingService.callObjectMethod (IInAppBillingService.getPurchases, 3,
-                                                                                       (jstring) packageName.get(), productTypeString.get(),
-                                                                                       continuationToken));
-
-            if (ownedItems.get() != 0)
-            {
-                auto* env = getEnv();
-
-                auto responseCodeString = javaString ("RESPONSE_CODE");
-                auto responseCode = env->CallIntMethod (ownedItems.get(), AndroidBundle.getInt, responseCodeString.get());
-
-                if (responseCode == 0)
-                {
-                    auto dataListString          = javaString ("INAPP_PURCHASE_DATA_LIST");
-                    auto continuationTokenString = javaString ("INAPP_CONTINUATION_TOKEN");
-
-                    auto purchaseDataList     = LocalRef<jobject> (env->CallObjectMethod (ownedItems.get(), AndroidBundle.getStringArrayList, dataListString.get()));
-                    auto newContinuationToken = LocalRef<jstring> ((jstring) env->CallObjectMethod (ownedItems.get(), AndroidBundle.getString, continuationTokenString.get()));
-
-                    for (auto i = 0; i < env->CallIntMethod (purchaseDataList.get(), JavaArrayList.size); ++i)
-                    {
-                        auto purchaseData = juceString ((jstring) (env->CallObjectMethod (purchaseDataList.get(), JavaArrayList.get, i)));
-
-                        var responseData = JSON::parse (purchaseData);
-
-                        if (auto* object = responseData.getDynamicObject())
-                        {
-                            static const Identifier productIdIdentifier     ("productId"),
-                                                    purchaseTokenIdentifier ("purchaseToken");
-
-                            auto& props = object->getProperties();
-                            var productId = props[productIdIdentifier];
-
-                            if (productId.toString() == productIdToLookFor)
-                                return props[purchaseTokenIdentifier].toString();
-                        }
-                    }
-
-                    if (newContinuationToken.get() != 0)
-                        return getPurchaseTokenForProductId (productIdToLookFor, isSubscription, newContinuationToken.get());
-                }
-            }
-
-            return {};
-        }
-
-        Pimpl& owner;
-        GlobalRef packageName;
-        const String productIdentifier, purchaseToken;
-        Callback callback;
-    };
-
-    //==============================================================================
-    void handleAsyncUpdate() override
-    {
-        {
-            const ScopedLock lock (getProductsInformationJobResultsLock);
-
-            for (int i = getProductsInformationJobResults.size(); --i >= 0;)
-            {
-                const auto& result = getProductsInformationJobResults.getReference (i);
-
-                owner.listeners.call ([&] (Listener& l) { l.productsInfoReturned (result); });
-                getProductsInformationJobResults.remove (i);
-            }
-        }
-
-        {
-            const ScopedLock lock (getProductsBoughtJobResultsLock);
-
-            for (int i = getProductsBoughtJobResults.size(); --i >= 0;)
-            {
-                const auto& result = getProductsBoughtJobResults.getReference (i);
-
-                owner.listeners.call ([&] (Listener& l) { l.purchasesListRestored (result.purchases, result.success, result.statusDescription); });
-                getProductsBoughtJobResults.remove (i);
-            }
-        }
-
-        {
-            const ScopedLock lock (consumePurchaseJobResultsLock);
-
-            for (int i = consumePurchaseJobResults.size(); --i >= 0;)
-            {
-                const auto& result = consumePurchaseJobResults.getReference (i);
-
-                owner.listeners.call ([&] (Listener& l) { l.productConsumed (result.productIdentifier, result.success, result.statusDescription); });
-                consumePurchaseJobResults.remove (i);
-            }
-        }
+                getEnv()->CallVoidMethod (billingClient,
+                                          JuceBillingClient.queryPurchases);
+            });
+        });
     }
 
     //==============================================================================
-    void inAppPurchaseCompleted (jobject intentData)
+    void notifyListenersAboutPurchase (const InAppPurchases::Purchase& purchase, bool success, const String& statusDescription)
     {
-        auto* env = getEnv();
+        owner.listeners.call ([&] (Listener& l) { l.productPurchaseFinished ({ purchase, {} }, success, statusDescription); });
+    }
 
-        auto inAppPurchaseDataString  = javaString ("INAPP_PURCHASE_DATA");
-        auto inAppDataSignatureString = javaString ("INAPP_DATA_SIGNATURE");
-        auto responseCodeString       = javaString ("RESPONSE_CODE");
+    void notifyListenersAboutConsume (const String& productIdentifier, bool success, const String& statusDescription)
+    {
+        owner.listeners.call ([&] (Listener& l) { l.productConsumed (productIdentifier, success, statusDescription); });
+    }
 
-        auto pd  = LocalRef<jstring> ((jstring) env->CallObjectMethod (intentData, AndroidIntent.getStringExtra, inAppPurchaseDataString.get()));
-        auto sig = LocalRef<jstring> ((jstring) env->CallObjectMethod (intentData, AndroidIntent.getStringExtra, inAppDataSignatureString.get()));
-        auto purchaseDataString  = pd.get()  != 0 ? juceString (pd.get())  : String();
-        auto dataSignatureString = sig.get() != 0 ? juceString (sig.get()) : String();
-
-        var responseData = JSON::parse (purchaseDataString);
-
-        auto responseCode = env->CallIntMethod (intentData, AndroidIntent.getIntExtra, responseCodeString.get());
-        auto statusCodeUserString = statusCodeToUserString (responseCode);
-
-        if (auto* object = responseData.getDynamicObject())
+    void launchBillingFlowWithParameters (LocalRef<jobject> params)
+    {
+        const auto activity = []
         {
-            auto& props = object->getProperties();
+            if (auto current = getCurrentActivity())
+                return current;
 
-            static const Identifier orderIdIdentifier          ("orderId"),
-                                    packageNameIdentifier      ("packageName"),
-                                    productIdIdentifier        ("productId"),
-                                    purchaseTimeIdentifier     ("purchaseTime"),
-                                    purchaseTokenIdentifier    ("purchaseToken"),
-                                    developerPayloadIdentifier ("developerPayload");
+            return getMainActivity();
+        }();
 
-            var orderId          = props[orderIdIdentifier];
-            var packageName      = props[packageNameIdentifier];
-            var productId        = props[productIdIdentifier];
-            var purchaseTime     = props[purchaseTimeIdentifier];
-            var purchaseToken    = props[purchaseTokenIdentifier];
-            var developerPayload = props[developerPayloadIdentifier];
+        getEnv()->CallVoidMethod (billingClient,
+                                  JuceBillingClient.launchBillingFlow,
+                                  activity.get(),
+                                  params.get());
+    }
 
-            auto purchaseTimeString = Time (purchaseTime.toString().getLargeIntValue())
-                                        .toString (true, true, true, true);
-
-            notifyAboutPurchaseResult ({ orderId.toString(), productId.toString(), packageName.toString(),
-                                         purchaseTimeString, purchaseToken.toString() },
-                                       true, statusCodeUserString);
+    void changeExistingSubscription (GlobalRef productDetails, const String& subscriptionIdentifier, bool creditForUnusedSubscription)
+    {
+        if (! isReady())
+        {
+            notifyListenersAboutPurchase ({}, false, NEEDS_TRANS ("In-App purchases unavailable"));
             return;
         }
 
-        notifyAboutPurchaseResult ({}, false, statusCodeUserString);
+        purchasesListQueryCallbackQueue.emplace ([=] (LocalRef<jobject> purchasesList)
+        {
+            if (purchasesList != nullptr)
+            {
+                auto* env = getEnv();
+
+                for (int i = 0; i < env->CallIntMethod (purchasesList, JavaArrayList.size); ++i)
+                {
+                    auto purchase = buildPurchase (LocalRef<jobject> { env->CallObjectMethod (purchasesList.get(), JavaArrayList.get, i) });
+
+                    if (purchase.productIds.contains (subscriptionIdentifier))
+                    {
+                        const LocalRef<jobject> subscriptionBuilder { getEnv()->CallStaticObjectMethod (BillingFlowParamsSubscriptionUpdateParams,
+                                                                                                        BillingFlowParamsSubscriptionUpdateParams.newBuilder) };
+                        env->CallObjectMethod (subscriptionBuilder.get(),
+                                               BillingFlowParamsSubscriptionUpdateParamsBuilder.setOldPurchaseToken,
+                                               javaString (purchase.purchaseToken).get());
+
+                        if (! creditForUnusedSubscription)
+                        {
+                            env->CallObjectMethod (subscriptionBuilder.get(),
+                                                   BillingFlowParamsSubscriptionUpdateParamsBuilder.setReplaceProrationMode,
+                                                   3 /*IMMEDIATE_WITHOUT_PRORATION*/);
+                        }
+
+                        const LocalRef<jobject> subscriptionParams { env->CallObjectMethod (subscriptionBuilder.get(),
+                                                                                            BillingFlowParamsSubscriptionUpdateParamsBuilder.build) };
+
+                        const LocalRef<jobject> builder { env->CallStaticObjectMethod (BillingFlowParams, BillingFlowParams.newBuilder) };
+                        env->CallObjectMethod (builder.get(),
+                                               BillingFlowParamsBuilder.setSubscriptionUpdateParams,
+                                               subscriptionParams.get());
+                        const LocalRef<jobject> params { env->CallObjectMethod (builder.get(), BillingFlowParamsBuilder.build) };
+
+                        launchBillingFlowWithParameters (params);
+                    }
+                }
+            }
+
+            callMemberOnMainThread ([this]
+            {
+                notifyListenersAboutPurchase ({}, false, NEEDS_TRANS ("Unable to get subscription details"));
+            });
+        });
+
+        getProductsBoughtAsync();
+    }
+
+    void purchaseProductWithProductDetails (GlobalRef productDetails)
+    {
+        if (! isReady())
+        {
+            notifyListenersAboutPurchase ({}, false, NEEDS_TRANS ("In-App purchases unavailable"));
+            return;
+        }
+
+        auto* env = getEnv();
+        const LocalRef<jobject> billingFlowParamsProductDetailsParamsBuilder { env->CallStaticObjectMethod (BillingFlowParamsProductDetailsParams, BillingFlowParamsProductDetailsParams.newBuilder) };
+        env->CallObjectMethod (billingFlowParamsProductDetailsParamsBuilder, BillingFlowParamsProductDetailsParamsBuilder.setProductDetails, productDetails.get());
+
+        if (const LocalRef<jobject> subscriptionDetailsList { env->CallObjectMethod (productDetails, ProductDetails.getSubscriptionOfferDetails) })
+        {
+            if (env->CallIntMethod (subscriptionDetailsList, JavaList.size) > 0)
+            {
+                const LocalRef<jobject> subscriptionDetails { env->CallObjectMethod (subscriptionDetailsList, JavaList.get, 0) };
+                const LocalRef<jobject> offerToken { env->CallObjectMethod (subscriptionDetails, SubscriptionOfferDetails.getOfferToken) };
+                env->CallObjectMethod (billingFlowParamsProductDetailsParamsBuilder, BillingFlowParamsProductDetailsParamsBuilder.setOfferToken, offerToken.get());
+            }
+        }
+
+        const LocalRef<jobject> billingFlowParamsProductDetailsParams { env->CallObjectMethod (billingFlowParamsProductDetailsParamsBuilder, BillingFlowParamsProductDetailsParamsBuilder.build) };
+
+        const LocalRef<jobject> list { env->NewObject (JavaArrayList, JavaArrayList.constructor, 0) };
+        env->CallBooleanMethod (list, JavaArrayList.add, billingFlowParamsProductDetailsParams.get());
+
+        const LocalRef<jobject> billingFlowParamsBuilder { env->CallStaticObjectMethod (BillingFlowParams, BillingFlowParams.newBuilder) };
+        env->CallObjectMethod (billingFlowParamsBuilder, BillingFlowParamsBuilder.setProductDetailsParamsList, list.get());
+        const LocalRef<jobject> params { env->CallObjectMethod (billingFlowParamsBuilder, BillingFlowParamsBuilder.build) };
+
+        launchBillingFlowWithParameters (params);
+    }
+
+    void consumePurchaseWithToken (const String& productIdentifier, const String& purchaseToken)
+    {
+        if (! isReady())
+        {
+            callMemberOnMainThread ([this, productIdentifier]
+            {
+                notifyListenersAboutConsume (productIdentifier, false, NEEDS_TRANS ("In-App purchases unavailable"));
+            });
+
+            return;
+        }
+
+        getEnv()->CallObjectMethod (billingClient,
+                                    JuceBillingClient.consumePurchase,
+                                    LocalRef<jstring> { javaString (productIdentifier) }.get(),
+                                    LocalRef<jstring> { javaString (purchaseToken) }.get());
     }
 
     //==============================================================================
-    static String statusCodeToUserString (int statusCode)
+    static InAppPurchases::Purchase buildPurchase (LocalRef<jobject> purchase)
     {
-        switch (statusCode)
+        if (purchase == nullptr)
+            return {};
+
+        auto* env = getEnv();
+
+        if (env->CallIntMethod(purchase, AndroidPurchase.getPurchaseState) != 1 /* PURCHASED */)
+            return {};
+
+        return { juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (purchase, AndroidPurchase.getOrderId) }),
+                 javaListOfStringToJuceStringArray (LocalRef<jobject> { env->CallObjectMethod (purchase, AndroidPurchase.getProducts) }),
+                 juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (purchase, AndroidPurchase.getPackageName) }),
+                 Time (env->CallLongMethod (purchase, AndroidPurchase.getPurchaseTime)).toString (true, true, true, true),
+                 juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (purchase, AndroidPurchase.getPurchaseToken) }) };
+    }
+
+    static InAppPurchases::Product buildProduct (LocalRef<jobject> productDetails)
+    {
+        if (productDetails == nullptr)
+            return {};
+
+        auto* env = getEnv();
+
+        if (LocalRef<jobject> oneTimePurchase { env->CallObjectMethod (productDetails, ProductDetails.getOneTimePurchaseOfferDetails) })
         {
-            case 0:  return NEEDS_TRANS ("Success");
-            case 1:  return NEEDS_TRANS ("Cancelled by user");
-            case 2:  return NEEDS_TRANS ("Service unavailable");
-            case 3:  return NEEDS_TRANS ("Billing unavailable");
-            case 4:  return NEEDS_TRANS ("Item unavailable");
-            case 5:  return NEEDS_TRANS ("Internal error");
-            case 6:  return NEEDS_TRANS ("Generic error");
-            case 7:  return NEEDS_TRANS ("Item already owned");
-            case 8:  return NEEDS_TRANS ("Item not owned");
-            default: jassertfalse; return NEEDS_TRANS ("Unknown status");
+            return { juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (productDetails, ProductDetails.getProductId) }),
+                     juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (productDetails, ProductDetails.getTitle) }),
+                     juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (productDetails, ProductDetails.getDescription) }),
+                     juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (oneTimePurchase, OneTimePurchaseOfferDetails.getFormattedPrice) }),
+                     juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (oneTimePurchase, OneTimePurchaseOfferDetails.getPriceCurrencyCode) }) };
         }
+
+        LocalRef<jobject> subscription { env->CallObjectMethod (productDetails, ProductDetails.getSubscriptionOfferDetails) };
+
+        if (env->CallIntMethod (subscription, JavaList.size) == 0)
+            return {};
+
+        // We can only return a single subscription price for this subscription,
+        // but the subscription has more than one pricing scheme.
+        jassert (env->CallIntMethod (subscription, JavaList.size) == 1);
+
+        const LocalRef<jobject> offerDetails { env->CallObjectMethod (subscription, JavaList.get, 0) };
+        const LocalRef<jobject> pricingPhases { env->CallObjectMethod (offerDetails, SubscriptionOfferDetails.getPricingPhases) };
+        const LocalRef<jobject> phaseList { env->CallObjectMethod (pricingPhases, PricingPhases.getPricingPhaseList) };
+
+        if (env->CallIntMethod (phaseList, JavaList.size) == 0)
+            return {};
+
+        // We can only return a single subscription price for this subscription,
+        // but the pricing scheme for this subscription has more than one phase.
+        jassert (env->CallIntMethod (phaseList, JavaList.size) == 1);
+
+        const LocalRef<jobject> phase { env->CallObjectMethod (phaseList, JavaList.get, 0) };
+
+        return { juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (productDetails, ProductDetails.getProductId) }),
+                 juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (productDetails, ProductDetails.getTitle) }),
+                 juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (productDetails, ProductDetails.getDescription) }),
+                 juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (phase, PricingPhase.getFormattedPrice) }),
+                 juceString (LocalRef<jstring> { (jstring) env->CallObjectMethod (phase, PricingPhase.getPriceCurrencyCode) }) };
+    }
+
+    static String getStatusDescriptionFromResponseCode (int responseCode)
+    {
+        switch (responseCode)
+        {
+            case 0:   return NEEDS_TRANS ("Success");
+            case 1:   return NEEDS_TRANS ("Cancelled by user");
+            case 2:   return NEEDS_TRANS ("Service unavailable");
+            case 3:   return NEEDS_TRANS ("Billing unavailable");
+            case 4:   return NEEDS_TRANS ("Item unavailable");
+            case 5:   return NEEDS_TRANS ("Internal error");
+            case 6:   return NEEDS_TRANS ("Generic error");
+            case 7:   return NEEDS_TRANS ("Item already owned");
+            case 8:   return NEEDS_TRANS ("Item not owned");
+            default:  return NEEDS_TRANS ("Unknown status");
+        }
+    }
+
+    static bool wasSuccessful (int responseCode)
+    {
+        return responseCode == 0;
+    }
+
+    void purchaseCompleted (jobject purchase, int responseCode)
+    {
+        notifyListenersAboutPurchase (buildPurchase (LocalRef<jobject> { purchase }),
+                                      wasSuccessful (responseCode),
+                                      getStatusDescriptionFromResponseCode (responseCode));
+    }
+
+    void purchaseConsumed (jstring productIdentifier, int responseCode)
+    {
+        notifyListenersAboutConsume (juceString (LocalRef<jstring> { productIdentifier }),
+                                     wasSuccessful (responseCode),
+                                     getStatusDescriptionFromResponseCode (responseCode));
+    }
+
+    void updateProductDetails (jobject productDetailsList)
+    {
+        jassert (! productDetailsQueryCallbackQueue.empty());
+        productDetailsQueryCallbackQueue.front() (LocalRef<jobject> { productDetailsList });
+        productDetailsQueryCallbackQueue.pop();
+    }
+
+    void updatePurchasesList (jobject purchasesList)
+    {
+        jassert (! purchasesListQueryCallbackQueue.empty());
+        purchasesListQueryCallbackQueue.front() (LocalRef<jobject> { purchasesList });
+        purchasesListQueryCallbackQueue.pop();
     }
 
     //==============================================================================
     InAppPurchases& owner;
-    GlobalRef inAppBillingService, serviceConnection;
-    std::unique_ptr<ThreadPool> threadPool;
+    GlobalRef billingClient;
 
-    CriticalSection getProductsInformationJobResultsLock,
-                    getProductsBoughtJobResultsLock,
-                    consumePurchaseJobResultsLock;
+    std::queue<std::function<void (LocalRef<jobject>)>> productDetailsQueryCallbackQueue,
+                                                        purchasesListQueryCallbackQueue;
 
-    Array<Array<InAppPurchases::Product>> getProductsInformationJobResults;
-    Array<GetProductsBoughtJob::Result> getProductsBoughtJobResults;
-    Array<ConsumePurchaseJob::Result> consumePurchaseJobResults;
+    //==============================================================================
+    void callMemberOnMainThread (std::function<void()> callback)
+    {
+        callOnMainThread ([ref = WeakReference<Pimpl> (this), callback]
+        {
+            if (ref != nullptr)
+                callback();
+        });
+    }
+
+    //==============================================================================
+    JUCE_DECLARE_WEAK_REFERENCEABLE(Pimpl)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Pimpl)
 };
 
-
-//==============================================================================
-void juce_inAppPurchaseCompleted (void* intentData)
+void juce_handleOnResume()
 {
-    if (auto* instance = InAppPurchases::getInstance())
-        instance->pimpl->inAppPurchaseCompleted (static_cast<jobject> (intentData));
+    callOnMainThread ([]
+    {
+        InAppPurchases::getInstance()->restoreProductsBoughtList (false);
+    });
 }
+
+
+InAppPurchases::Pimpl::JuceBillingClient_Class InAppPurchases::Pimpl::JuceBillingClient;
 
 } // namespace juce

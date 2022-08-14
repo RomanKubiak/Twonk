@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -58,9 +57,10 @@ struct JUCEDemos
     static File findExamplesDirectoryFromExecutable (File exec);
 };
 
+void registerDemos_One() noexcept;
+void registerDemos_Two() noexcept;
+
 //==============================================================================
-// used by child-process demo
-bool invokeChildProcessDemo (const String& commandLine);
 void registerAllDemos() noexcept;
 
 Component* createIntroDemo();
@@ -73,3 +73,9 @@ CodeEditorComponent::ColourScheme getLightColourScheme();
 extern std::unique_ptr<AudioDeviceManager> sharedAudioDeviceManager;
 
 AudioDeviceManager& getSharedAudioDeviceManager (int numInputChannels = -1, int numOutputChannels = -1);
+ApplicationCommandManager& getGlobalCommandManager();
+
+// A function in this demo is called from the DemoRunner's entry point
+#if JUCE_MAC || JUCE_WINDOWS || JUCE_LINUX || JUCE_BSD
+ #include "../../../Utilities/ChildProcessDemo.h"
+#endif

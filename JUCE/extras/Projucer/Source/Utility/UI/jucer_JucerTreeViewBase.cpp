@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -29,10 +28,10 @@
 #include "../../Project/UI/jucer_ProjectContentComponent.h"
 
 //==============================================================================
-void TreePanelBase::setRoot (JucerTreeViewBase* root)
+void TreePanelBase::setRoot (std::unique_ptr<JucerTreeViewBase> root)
 {
-    rootItem.reset (root);
-    tree.setRootItem (root);
+    rootItem = std::move (root);
+    tree.setRootItem (rootItem.get());
     tree.getRootItem()->setOpen (true);
 
     if (project != nullptr)
@@ -62,14 +61,10 @@ void TreePanelBase::saveOpenness()
 }
 
 //==============================================================================
-JucerTreeViewBase::JucerTreeViewBase()  : textX (0)
+JucerTreeViewBase::JucerTreeViewBase()
 {
     setLinesDrawnForSubItems (false);
     setDrawsInLeftMargin (true);
-}
-
-JucerTreeViewBase::~JucerTreeViewBase()
-{
 }
 
 void JucerTreeViewBase::refreshSubItems()
@@ -81,7 +76,7 @@ void JucerTreeViewBase::refreshSubItems()
 
 Font JucerTreeViewBase::getFont() const
 {
-    return Font (getItemHeight() * 0.6f);
+    return Font ((float) getItemHeight() * 0.6f);
 }
 
 void JucerTreeViewBase::paintOpenCloseButton (Graphics& g, const Rectangle<float>& area, Colour /*backgroundColour*/, bool isMouseOver)
@@ -124,9 +119,9 @@ void JucerTreeViewBase::paintContent (Graphics& g, Rectangle<int> area)
     g.drawFittedText (getDisplayName(), area, Justification::centredLeft, 1, 1.0f);
 }
 
-Component* JucerTreeViewBase::createItemComponent()
+std::unique_ptr<Component> JucerTreeViewBase::createItemComponent()
 {
-    return new TreeItemComponent (*this);
+    return std::make_unique<TreeItemComponent> (*this);
 }
 
 //==============================================================================
@@ -182,9 +177,9 @@ void JucerTreeViewBase::itemClicked (const MouseEvent& e)
     if (e.mods.isPopupMenu())
     {
         if (getOwnerView()->getNumSelectedItems() > 1)
-            showMultiSelectionPopupMenu();
+            showMultiSelectionPopupMenu (e.getMouseDownScreenPosition());
         else
-            showPopupMenu();
+            showPopupMenu (e.getMouseDownScreenPosition());
     }
     else if (isSelected())
     {
@@ -192,27 +187,16 @@ void JucerTreeViewBase::itemClicked (const MouseEvent& e)
     }
 }
 
-void JucerTreeViewBase::deleteItem()    {}
-void JucerTreeViewBase::deleteAllSelectedItems() {}
-void JucerTreeViewBase::showDocument()  {}
-void JucerTreeViewBase::showPopupMenu() {}
-void JucerTreeViewBase::showAddMenu()  {}
-void JucerTreeViewBase::showMultiSelectionPopupMenu() {}
-
 static void treeViewMenuItemChosen (int resultCode, WeakReference<JucerTreeViewBase> item)
 {
     if (item != nullptr)
         item->handlePopupMenuResult (resultCode);
 }
 
-void JucerTreeViewBase::launchPopupMenu (PopupMenu& m)
+void JucerTreeViewBase::launchPopupMenu (PopupMenu& m, Point<int> p)
 {
-    m.showMenuAsync (PopupMenu::Options(),
+    m.showMenuAsync (PopupMenu::Options().withTargetScreenArea ({ p.x, p.y, 1, 1 }),
                      ModalCallbackFunction::create (treeViewMenuItemChosen, WeakReference<JucerTreeViewBase> (this)));
-}
-
-void JucerTreeViewBase::handlePopupMenuResult (int)
-{
 }
 
 ProjectContentComponent* JucerTreeViewBase::getProjectContentComponent() const
@@ -228,7 +212,7 @@ ProjectContentComponent* JucerTreeViewBase::getProjectContentComponent() const
 class JucerTreeViewBase::ItemSelectionTimer  : public Timer
 {
 public:
-    ItemSelectionTimer (JucerTreeViewBase& tvb)  : owner (tvb) {}
+    explicit ItemSelectionTimer (JucerTreeViewBase& tvb)  : owner (tvb) {}
 
     void timerCallback() override    { owner.invokeShowDocument(); }
 

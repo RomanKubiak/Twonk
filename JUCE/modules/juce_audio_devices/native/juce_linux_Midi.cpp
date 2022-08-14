@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
@@ -24,10 +24,6 @@ namespace juce
 {
 
 #if JUCE_ALSA
-
-//==============================================================================
-namespace
-{
 
 //==============================================================================
 class AlsaClient  : public ReferenceCountedObject
@@ -55,13 +51,13 @@ public:
         jassert (instance != nullptr);
         instance = nullptr;
 
-        if (handle != nullptr)
-            snd_seq_close (handle);
-
         jassert (activeCallbacks.get() == 0);
 
         if (inputThread)
             inputThread->stopThread (3000);
+
+        if (handle != nullptr)
+            snd_seq_close (handle);
     }
 
     static String getAlsaMidiName()
@@ -127,10 +123,10 @@ public:
 
         void enableCallback (bool enable)
         {
-            if (callbackEnabled != enable)
-            {
-                callbackEnabled = enable;
+            const auto oldValue = callbackEnabled.exchange (enable);
 
+            if (oldValue != enable)
+            {
                 if (enable)
                     client.registerCallback();
                 else
@@ -207,14 +203,20 @@ public:
 
         void handleIncomingMidiMessage (const MidiMessage& message) const
         {
-            callback->handleIncomingMidiMessage (midiInput, message);
+            if (callbackEnabled)
+                callback->handleIncomingMidiMessage (midiInput, message);
         }
 
         void handlePartialSysexMessage (const uint8* messageData, int numBytesSoFar, double timeStamp)
         {
-            callback->handlePartialSysexMessage (midiInput, messageData, numBytesSoFar, timeStamp);
+            if (callbackEnabled)
+                callback->handlePartialSysexMessage (midiInput, messageData, numBytesSoFar, timeStamp);
         }
 
+        int getPortId() const               { return portId; }
+        const String& getPortName() const   { return portName; }
+
+    private:
         AlsaClient& client;
 
         MidiInputCallback* callback = nullptr;
@@ -224,7 +226,8 @@ public:
         String portName;
 
         int maxEventSize = 4096, portId = -1;
-        bool callbackEnabled = false, isInput = false;
+        std::atomic<bool> callbackEnabled { false };
+        bool isInput = false;
     };
 
     static Ptr getInstance()
@@ -254,15 +257,18 @@ public:
 
     void handleIncomingMidiMessage (snd_seq_event* event, const MidiMessage& message)
     {
-        if (event->dest.port < ports.size() && ports[event->dest.port]->callbackEnabled)
-            ports[event->dest.port]->handleIncomingMidiMessage (message);
+        const ScopedLock sl (callbackLock);
+
+        if (auto* port = ports[event->dest.port])
+            port->handleIncomingMidiMessage (message);
     }
 
     void handlePartialSysexMessage (snd_seq_event* event, const uint8* messageData, int numBytesSoFar, double timeStamp)
     {
-        if (event->dest.port < ports.size()
-            && ports[event->dest.port]->callbackEnabled)
-            ports[event->dest.port]->handlePartialSysexMessage (messageData, numBytesSoFar, timeStamp);
+        const ScopedLock sl (callbackLock);
+
+        if (auto* port = ports[event->dest.port])
+            port->handlePartialSysexMessage (messageData, numBytesSoFar, timeStamp);
     }
 
     snd_seq_t* get() const noexcept     { return handle; }
@@ -270,16 +276,20 @@ public:
 
     Port* createPort (const String& name, bool forInput, bool enableSubscription)
     {
+        const ScopedLock sl (callbackLock);
+
         auto port = new Port (*this, forInput);
         port->createPort (name, enableSubscription);
-        ports.set (port->portId, port);
+        ports.set (port->getPortId(), port);
         incReferenceCount();
         return port;
     }
 
     void deletePort (Port* port)
     {
-        ports.set (port->portId, nullptr);
+        const ScopedLock sl (callbackLock);
+
+        ports.set (port->getPortId(), nullptr);
         decReferenceCount();
     }
 
@@ -453,9 +463,23 @@ static AlsaClient::Port* iterateMidiDevices (bool forInput,
     return port;
 }
 
-} // namespace
+struct AlsaPortPtr
+{
+    explicit AlsaPortPtr (AlsaClient::Port* p)
+        : ptr (p) {}
+
+    ~AlsaPortPtr() noexcept { AlsaClient::getInstance()->deletePort (ptr); }
+
+    AlsaClient::Port* ptr = nullptr;
+};
 
 //==============================================================================
+class MidiInput::Pimpl : public AlsaPortPtr
+{
+public:
+    using AlsaPortPtr::AlsaPortPtr;
+};
+
 Array<MidiDeviceInfo> MidiInput::getAvailableDevices()
 {
     Array<MidiDeviceInfo> devices;
@@ -482,10 +506,10 @@ std::unique_ptr<MidiInput> MidiInput::openDevice (const String& deviceIdentifier
 
     jassert (port->isValid());
 
-    std::unique_ptr<MidiInput> midiInput (new MidiInput (port->portName, deviceIdentifier));
+    std::unique_ptr<MidiInput> midiInput (new MidiInput (port->getPortName(), deviceIdentifier));
 
     port->setupInput (midiInput.get(), callback);
-    midiInput->internal = port;
+    midiInput->internal = std::make_unique<Pimpl> (port);
 
     return midiInput;
 }
@@ -498,10 +522,10 @@ std::unique_ptr<MidiInput> MidiInput::createNewDevice (const String& deviceName,
     if (port == nullptr || ! port->isValid())
         return {};
 
-    std::unique_ptr<MidiInput> midiInput (new MidiInput (deviceName, getFormattedPortIdentifier (client->getId(), port->portId)));
+    std::unique_ptr<MidiInput> midiInput (new MidiInput (deviceName, getFormattedPortIdentifier (client->getId(), port->getPortId())));
 
     port->setupInput (midiInput.get(), callback);
-    midiInput->internal = port;
+    midiInput->internal = std::make_unique<Pimpl> (port);
 
     return midiInput;
 }
@@ -536,20 +560,25 @@ MidiInput::MidiInput (const String& deviceName, const String& deviceIdentifier)
 MidiInput::~MidiInput()
 {
     stop();
-    AlsaClient::getInstance()->deletePort (static_cast<AlsaClient::Port*> (internal));
 }
 
 void MidiInput::start()
 {
-    static_cast<AlsaClient::Port*> (internal)->enableCallback (true);
+    internal->ptr->enableCallback (true);
 }
 
 void MidiInput::stop()
 {
-    static_cast<AlsaClient::Port*> (internal)->enableCallback (false);
+    internal->ptr->enableCallback (false);
 }
 
 //==============================================================================
+class MidiOutput::Pimpl : public AlsaPortPtr
+{
+public:
+    using AlsaPortPtr::AlsaPortPtr;
+};
+
 Array<MidiDeviceInfo> MidiOutput::getAvailableDevices()
 {
     Array<MidiDeviceInfo> devices;
@@ -574,10 +603,10 @@ std::unique_ptr<MidiOutput> MidiOutput::openDevice (const String& deviceIdentifi
     if (port == nullptr || ! port->isValid())
         return {};
 
-    std::unique_ptr<MidiOutput> midiOutput (new MidiOutput (port->portName, deviceIdentifier));
+    std::unique_ptr<MidiOutput> midiOutput (new MidiOutput (port->getPortName(), deviceIdentifier));
 
     port->setupOutput();
-    midiOutput->internal = port;
+    midiOutput->internal = std::make_unique<Pimpl> (port);
 
     return midiOutput;
 }
@@ -590,10 +619,10 @@ std::unique_ptr<MidiOutput> MidiOutput::createNewDevice (const String& deviceNam
     if (port == nullptr || ! port->isValid())
         return {};
 
-    std::unique_ptr<MidiOutput> midiOutput (new MidiOutput (deviceName, getFormattedPortIdentifier (client->getId(), port->portId)));
+    std::unique_ptr<MidiOutput> midiOutput (new MidiOutput (deviceName, getFormattedPortIdentifier (client->getId(), port->getPortId())));
 
     port->setupOutput();
-    midiOutput->internal = port;
+    midiOutput->internal = std::make_unique<Pimpl> (port);
 
     return midiOutput;
 }
@@ -623,16 +652,17 @@ std::unique_ptr<MidiOutput> MidiOutput::openDevice (int index)
 MidiOutput::~MidiOutput()
 {
     stopBackgroundThread();
-    AlsaClient::getInstance()->deletePort (static_cast<AlsaClient::Port*> (internal));
 }
 
 void MidiOutput::sendMessageNow (const MidiMessage& message)
 {
-    static_cast<AlsaClient::Port*> (internal)->sendMessageNow (message);
+    internal->ptr->sendMessageNow (message);
 }
 
 //==============================================================================
 #else
+
+class MidiInput::Pimpl {};
 
 // (These are just stub functions if ALSA is unavailable...)
 MidiInput::MidiInput (const String& deviceName, const String& deviceID)
@@ -650,6 +680,8 @@ std::unique_ptr<MidiInput> MidiInput::createNewDevice (const String&, MidiInputC
 StringArray MidiInput::getDevices()                                                       { return {}; }
 int MidiInput::getDefaultDeviceIndex()                                                    { return 0;}
 std::unique_ptr<MidiInput> MidiInput::openDevice (int, MidiInputCallback*)                { return {}; }
+
+class MidiOutput::Pimpl {};
 
 MidiOutput::~MidiOutput()                                                                 {}
 void MidiOutput::sendMessageNow (const MidiMessage&)                                      {}

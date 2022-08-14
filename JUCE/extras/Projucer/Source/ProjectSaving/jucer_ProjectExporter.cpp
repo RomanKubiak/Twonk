@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -34,206 +33,151 @@
 #include "jucer_ProjectExport_Android.h"
 #include "jucer_ProjectExport_CodeBlocks.h"
 
-#include "jucer_ProjectExport_CLion.h"
-
 #include "../Utility/UI/PropertyComponents/jucer_FilePathPropertyComponent.h"
 
 //==============================================================================
-static void addType (Array<ProjectExporter::ExporterTypeInfo>& list,
-                     const char* name, const void* iconData, int iconDataSize)
+static auto createIcon (const void* iconData, size_t iconDataSize)
 {
-    ProjectExporter::ExporterTypeInfo type = { name, iconData, iconDataSize };
-    list.add (type);
+    Image image (Image::ARGB, 200, 200, true);
+    Graphics g (image);
+
+    std::unique_ptr<Drawable> svgDrawable (Drawable::createFromImageData (iconData, iconDataSize));
+    svgDrawable->drawWithin (g, image.getBounds().toFloat(), RectanglePlacement::fillDestination, 1.0f);
+
+    return image;
 }
 
-Array<ProjectExporter::ExporterTypeInfo> ProjectExporter::getExporterTypes()
+template <typename Exporter>
+static ProjectExporter::ExporterTypeInfo createExporterTypeInfo (const void* iconData, size_t iconDataSize)
 {
-    Array<ProjectExporter::ExporterTypeInfo> types;
-
-    addType (types, XcodeProjectExporter::getNameMac(),          BinaryData::export_xcode_svg,          BinaryData::export_xcode_svgSize);
-    addType (types, XcodeProjectExporter::getNameiOS(),          BinaryData::export_xcode_svg,          BinaryData::export_xcode_svgSize);
-    addType (types, MSVCProjectExporterVC2019::getName(),        BinaryData::export_visualStudio_svg,   BinaryData::export_visualStudio_svgSize);
-    addType (types, MSVCProjectExporterVC2017::getName(),        BinaryData::export_visualStudio_svg,   BinaryData::export_visualStudio_svgSize);
-    addType (types, MSVCProjectExporterVC2015::getName(),        BinaryData::export_visualStudio_svg,   BinaryData::export_visualStudio_svgSize);
-    addType (types, MakefileProjectExporter::getNameLinux(),     BinaryData::export_linux_svg,          BinaryData::export_linux_svgSize);
-    addType (types, AndroidProjectExporter::getName(),           BinaryData::export_android_svg,        BinaryData::export_android_svgSize);
-    addType (types, CodeBlocksProjectExporter::getNameWindows(), BinaryData::export_codeBlocks_svg,     BinaryData::export_codeBlocks_svgSize);
-    addType (types, CodeBlocksProjectExporter::getNameLinux(),   BinaryData::export_codeBlocks_svg,     BinaryData::export_codeBlocks_svgSize);
-    addType (types, CLionProjectExporter::getName(),             BinaryData::export_clion_svg,          BinaryData::export_clion_svgSize);
-
-    return types;
+    return { Exporter::getValueTreeTypeName(),
+             Exporter::getDisplayName(),
+             Exporter::getTargetFolderName(),
+             createIcon (iconData, iconDataSize) };
 }
 
-ProjectExporter* ProjectExporter::createNewExporter (Project& project, const int index)
+std::vector<ProjectExporter::ExporterTypeInfo> ProjectExporter::getExporterTypeInfos()
 {
-    ProjectExporter* exp = nullptr;
+    using namespace BinaryData;
 
-    switch (index)
+    static std::vector<ProjectExporter::ExporterTypeInfo> infos
     {
-        case 0:     exp = new XcodeProjectExporter         (project, ValueTree (XcodeProjectExporter         ::getValueTreeTypeName (false)), false); break;
-        case 1:     exp = new XcodeProjectExporter         (project, ValueTree (XcodeProjectExporter         ::getValueTreeTypeName (true)), true); break;
-        case 2:     exp = new MSVCProjectExporterVC2019    (project, ValueTree (MSVCProjectExporterVC2019    ::getValueTreeTypeName())); break;
-        case 3:     exp = new MSVCProjectExporterVC2017    (project, ValueTree (MSVCProjectExporterVC2017    ::getValueTreeTypeName())); break;
-        case 4:     exp = new MSVCProjectExporterVC2015    (project, ValueTree (MSVCProjectExporterVC2015    ::getValueTreeTypeName())); break;
-        case 5:     exp = new MakefileProjectExporter      (project, ValueTree (MakefileProjectExporter      ::getValueTreeTypeName())); break;
-        case 6:     exp = new AndroidProjectExporter       (project, ValueTree (AndroidProjectExporter       ::getValueTreeTypeName())); break;
-        case 7:     exp = new CodeBlocksProjectExporter    (project, ValueTree (CodeBlocksProjectExporter    ::getValueTreeTypeName (CodeBlocksProjectExporter::windowsTarget)), CodeBlocksProjectExporter::windowsTarget); break;
-        case 8:     exp = new CodeBlocksProjectExporter    (project, ValueTree (CodeBlocksProjectExporter    ::getValueTreeTypeName (CodeBlocksProjectExporter::linuxTarget)),   CodeBlocksProjectExporter::linuxTarget); break;
-        case 9:     exp = new CLionProjectExporter         (project, ValueTree (CLionProjectExporter         ::getValueTreeTypeName())); break;
-    }
+        { XcodeProjectExporter::getValueTreeTypeNameMac(),
+          XcodeProjectExporter::getDisplayNameMac(),
+          XcodeProjectExporter::getTargetFolderNameMac(),
+          createIcon (export_xcode_svg, (size_t) export_xcode_svgSize) },
+        { XcodeProjectExporter::getValueTreeTypeNameiOS(),
+          XcodeProjectExporter::getDisplayNameiOS(),
+          XcodeProjectExporter::getTargetFolderNameiOS(),
+          createIcon (export_xcode_svg, (size_t) export_xcode_svgSize) },
 
-    exp->createDefaultConfigs();
-    exp->createDefaultModulePaths();
+        createExporterTypeInfo<MSVCProjectExporterVC2022> (export_visualStudio_svg, export_visualStudio_svgSize),
+        createExporterTypeInfo<MSVCProjectExporterVC2019> (export_visualStudio_svg, export_visualStudio_svgSize),
+        createExporterTypeInfo<MSVCProjectExporterVC2017> (export_visualStudio_svg, export_visualStudio_svgSize),
 
-    return exp;
+        createExporterTypeInfo<MakefileProjectExporter> (export_linux_svg, export_linux_svgSize),
+
+        createExporterTypeInfo<AndroidProjectExporter> (export_android_svg, export_android_svgSize),
+
+        { CodeBlocksProjectExporter::getValueTreeTypeNameWindows(),
+          CodeBlocksProjectExporter::getDisplayNameWindows(),
+          CodeBlocksProjectExporter::getTargetFolderNameWindows(),
+          createIcon (export_codeBlocks_svg, export_codeBlocks_svgSize) },
+        { CodeBlocksProjectExporter::getValueTreeTypeNameLinux(),
+          CodeBlocksProjectExporter::getDisplayNameLinux(),
+          CodeBlocksProjectExporter::getTargetFolderNameLinux(),
+          createIcon (export_codeBlocks_svg, export_codeBlocks_svgSize) }
+    };
+
+    return infos;
 }
 
-StringArray ProjectExporter::getExporterNames()
+ProjectExporter::ExporterTypeInfo ProjectExporter::getTypeInfoForExporter (const Identifier& exporterIdentifier)
 {
-    StringArray s;
+    auto typeInfos = getExporterTypeInfos();
 
-    for (auto& e : getExporterTypes())
-        s.add (e.name);
+    auto iter = std::find_if (typeInfos.begin(), typeInfos.end(),
+                              [exporterIdentifier] (const ProjectExporter::ExporterTypeInfo& info) { return info.identifier == exporterIdentifier; });
 
-    return s;
-}
+    if (iter != typeInfos.end())
+        return *iter;
 
-StringArray ProjectExporter::getExporterValueTreeNames()
-{
-    StringArray s;
-
-    for (auto& n : getExporterNames())
-        s.add (getValueTreeNameForExporter (n));
-
-    return s;
-}
-
-String ProjectExporter::getValueTreeNameForExporter (const String& exporterName)
-{
-    if (exporterName == XcodeProjectExporter::getNameMac())
-        return XcodeProjectExporter::getValueTreeTypeName (false);
-
-    if (exporterName == XcodeProjectExporter::getNameiOS())
-        return XcodeProjectExporter::getValueTreeTypeName (true);
-
-    if (exporterName == MSVCProjectExporterVC2019::getName())
-        return MSVCProjectExporterVC2019::getValueTreeTypeName();
-
-    if (exporterName == MSVCProjectExporterVC2017::getName())
-        return MSVCProjectExporterVC2017::getValueTreeTypeName();
-
-    if (exporterName == MSVCProjectExporterVC2015::getName())
-        return MSVCProjectExporterVC2015::getValueTreeTypeName();
-
-    if (exporterName == MakefileProjectExporter::getNameLinux())
-        return MakefileProjectExporter::getValueTreeTypeName();
-
-    if (exporterName == AndroidProjectExporter::getName())
-        return AndroidProjectExporter::getValueTreeTypeName();
-
-    if (exporterName == CodeBlocksProjectExporter::getNameLinux())
-        return CodeBlocksProjectExporter::getValueTreeTypeName (CodeBlocksProjectExporter::CodeBlocksOS::linuxTarget);
-
-    if (exporterName == CodeBlocksProjectExporter::getNameWindows())
-        return CodeBlocksProjectExporter::getValueTreeTypeName (CodeBlocksProjectExporter::CodeBlocksOS::windowsTarget);
-
-    if (exporterName == CLionProjectExporter::getName())
-        return CLionProjectExporter::getValueTreeTypeName();
-
+    jassertfalse;
     return {};
 }
 
-String ProjectExporter::getTargetFolderForExporter (const String& exporterValueTreeName)
+ProjectExporter::ExporterTypeInfo ProjectExporter::getCurrentPlatformExporterTypeInfo()
 {
-    if (exporterValueTreeName == "XCODE_MAC")             return "MacOSX";
-    if (exporterValueTreeName == "XCODE_IPHONE")          return "iOS";
-    if (exporterValueTreeName == "VS2019")                return "VisualStudio2019";
-    if (exporterValueTreeName == "VS2017")                return "VisualStudio2017";
-    if (exporterValueTreeName == "VS2015")                return "VisualStudio2015";
-    if (exporterValueTreeName == "LINUX_MAKE")            return "LinuxMakefile";
-    if (exporterValueTreeName == "ANDROIDSTUDIO")         return "Android";
-    if (exporterValueTreeName == "CODEBLOCKS_WINDOWS")    return "CodeBlocksWindows";
-    if (exporterValueTreeName == "CODEBLOCKS_LINUX")      return "CodeBlocksLinux";
-    if (exporterValueTreeName == "CLION")                 return "CLion";
-
-    return {};
+    #if JUCE_MAC
+     return ProjectExporter::getTypeInfoForExporter (XcodeProjectExporter::getValueTreeTypeNameMac());
+    #elif JUCE_WINDOWS
+     return ProjectExporter::getTypeInfoForExporter (MSVCProjectExporterVC2022::getValueTreeTypeName());
+    #elif JUCE_LINUX || JUCE_BSD
+     return ProjectExporter::getTypeInfoForExporter (MakefileProjectExporter::getValueTreeTypeName());
+    #else
+     #error "unknown platform!"
+    #endif
 }
 
-StringArray ProjectExporter::getAllDefaultBuildsFolders()
+std::unique_ptr<ProjectExporter> ProjectExporter::createNewExporter (Project& project, const Identifier& exporterIdentifier)
 {
-    StringArray folders;
+    auto exporter = createExporterFromSettings (project, ValueTree (exporterIdentifier));
+    jassert (exporter != nullptr);
 
-    folders.add (getDefaultBuildsRootFolder() + "iOS");
-    folders.add (getDefaultBuildsRootFolder() + "MacOSX");
-    folders.add (getDefaultBuildsRootFolder() + "VisualStudio2019");
-    folders.add (getDefaultBuildsRootFolder() + "VisualStudio2017");
-    folders.add (getDefaultBuildsRootFolder() + "VisualStudio2015");
-    folders.add (getDefaultBuildsRootFolder() + "LinuxMakefile");
-    folders.add (getDefaultBuildsRootFolder() + "CodeBlocksWindows");
-    folders.add (getDefaultBuildsRootFolder() + "CodeBlocksLinux");
-    folders.add (getDefaultBuildsRootFolder() + "Android");
-    folders.add (getDefaultBuildsRootFolder() + "CLion");
+    exporter->createDefaultConfigs();
+    exporter->createDefaultModulePaths();
 
-    return folders;
+    return exporter;
 }
 
-String ProjectExporter::getCurrentPlatformExporterName()
+template <typename T> struct Tag {};
+
+static std::unique_ptr<ProjectExporter> tryCreatingExporter (Project&, const ValueTree&) { return nullptr; }
+
+template <typename Exporter, typename... Exporters>
+static std::unique_ptr<ProjectExporter> tryCreatingExporter (Project& project,
+                                                             const ValueTree& settings,
+                                                             Tag<Exporter>,
+                                                             Tag<Exporters>... exporters)
 {
-   #if JUCE_MAC
-    return XcodeProjectExporter::getNameMac();
-   #elif JUCE_WINDOWS
-    return MSVCProjectExporterVC2019::getName();
-   #elif JUCE_LINUX
-    return MakefileProjectExporter::getNameLinux();
-   #else
-    #error // huh?
-   #endif
+    if (auto* exporter = Exporter::createForSettings (project, settings))
+        return rawToUniquePtr (exporter);
+
+    return tryCreatingExporter (project, settings, exporters...);
 }
 
-ProjectExporter* ProjectExporter::createNewExporter (Project& project, const String& name)
+std::unique_ptr<ProjectExporter> ProjectExporter::createExporterFromSettings (Project& project, const ValueTree& settings)
 {
-    return createNewExporter (project, getExporterNames().indexOf (name));
-}
-
-ProjectExporter* ProjectExporter::createExporter (Project& project, const ValueTree& settings)
-{
-    ProjectExporter*       exp = MSVCProjectExporterVC2019    ::createForSettings (project, settings);
-    if (exp == nullptr)    exp = MSVCProjectExporterVC2017    ::createForSettings (project, settings);
-    if (exp == nullptr)    exp = MSVCProjectExporterVC2015    ::createForSettings (project, settings);
-    if (exp == nullptr)    exp = XcodeProjectExporter         ::createForSettings (project, settings);
-    if (exp == nullptr)    exp = MakefileProjectExporter      ::createForSettings (project, settings);
-    if (exp == nullptr)    exp = AndroidProjectExporter       ::createForSettings (project, settings);
-    if (exp == nullptr)    exp = CodeBlocksProjectExporter    ::createForSettings (project, settings);
-    if (exp == nullptr)    exp = CLionProjectExporter         ::createForSettings (project, settings);
-
-    jassert (exp != nullptr);
-    return exp;
+    return tryCreatingExporter (project,
+                                settings,
+                                Tag<XcodeProjectExporter>{},
+                                Tag<MSVCProjectExporterVC2022>{},
+                                Tag<MSVCProjectExporterVC2019>{},
+                                Tag<MSVCProjectExporterVC2017>{},
+                                Tag<MakefileProjectExporter>{},
+                                Tag<AndroidProjectExporter>{},
+                                Tag<CodeBlocksProjectExporter>{});
 }
 
 bool ProjectExporter::canProjectBeLaunched (Project* project)
 {
     if (project != nullptr)
     {
-        const char* types[] =
+        static Identifier types[]
         {
-           #if JUCE_MAC
-            XcodeProjectExporter::getValueTreeTypeName (false),
-            XcodeProjectExporter::getValueTreeTypeName (true),
-           #elif JUCE_WINDOWS
-            MSVCProjectExporterVC2019::getValueTreeTypeName(),
-            MSVCProjectExporterVC2017::getValueTreeTypeName(),
-            MSVCProjectExporterVC2015::getValueTreeTypeName(),
-           #elif JUCE_LINUX
-            // (this doesn't currently launch.. not really sure what it would do on linux)
-            //MakefileProjectExporter::getValueTreeTypeName(),
-           #endif
-            AndroidProjectExporter::getValueTreeTypeName(),
-
-            nullptr
+            #if JUCE_MAC
+             XcodeProjectExporter::getValueTreeTypeNameMac(),
+             XcodeProjectExporter::getValueTreeTypeNameiOS(),
+            #elif JUCE_WINDOWS
+             MSVCProjectExporterVC2022::getValueTreeTypeName(),
+             MSVCProjectExporterVC2019::getValueTreeTypeName(),
+             MSVCProjectExporterVC2017::getValueTreeTypeName(),
+            #endif
+             AndroidProjectExporter::getValueTreeTypeName()
         };
 
-        for (const char** type = types; *type != nullptr; ++type)
-            if (project->getExporters().getChildWithName (*type).isValid())
+        for (auto& exporterIdentifier : types)
+            if (project->getExporters().getChildWithName (exporterIdentifier).isValid())
                 return true;
     }
 
@@ -262,16 +206,20 @@ ProjectExporter::ProjectExporter (Project& p, const ValueTree& state)
     updateCompilerFlagValues();
 }
 
-ProjectExporter::~ProjectExporter()
+String ProjectExporter::getUniqueName() const
 {
-}
+    auto targetLocationString = getTargetLocationString();
+    auto defaultBuildsRootFolder = getDefaultBuildsRootFolder();
 
-void ProjectExporter::updateDeprecatedProjectSettingsInteractively() {}
+    auto typeInfos = getExporterTypeInfos();
 
-String ProjectExporter::getName() const
-{
-    if (! getAllDefaultBuildsFolders().contains (getTargetLocationString()))
-        return name + " - " + getTargetLocationString();
+    auto predicate = [targetLocationString, defaultBuildsRootFolder] (const ProjectExporter::ExporterTypeInfo& info)
+    {
+        return defaultBuildsRootFolder + info.targetFolder == targetLocationString;
+    };
+
+    if (std::none_of (typeInfos.begin(), typeInfos.end(), std::move (predicate)))
+        return name + " - " + targetLocationString;
 
     return name;
 }
@@ -281,9 +229,9 @@ File ProjectExporter::getTargetFolder() const
     return project.resolveFilename (getTargetLocationString());
 }
 
-RelativePath ProjectExporter::rebaseFromProjectFolderToBuildTarget (const RelativePath& path) const
+build_tools::RelativePath ProjectExporter::rebaseFromProjectFolderToBuildTarget (const build_tools::RelativePath& path) const
 {
-    return path.rebased (project.getProjectFolder(), getTargetFolder(), RelativePath::buildTargetFolder);
+    return path.rebased (project.getProjectFolder(), getTargetFolder(), build_tools::RelativePath::buildTargetFolder);
 }
 
 bool ProjectExporter::shouldFileBeCompiledByDefault (const File& file) const
@@ -303,68 +251,57 @@ void ProjectExporter::updateCompilerFlagValues()
 //==============================================================================
 void ProjectExporter::createPropertyEditors (PropertyListBuilder& props)
 {
-    if (! isCLion())
+    props.add (new TextPropertyComponent (targetLocationValue, "Target Project Folder", 2048, false),
+               "The location of the folder in which the " + name + " project will be created. "
+               "This path can be absolute, but it's much more sensible to make it relative to the jucer project directory.");
+
+    if ((shouldBuildTargetType (build_tools::ProjectType::Target::VSTPlugIn) && project.shouldBuildVST()) || (project.isVSTPluginHost() && supportsTargetType (build_tools::ProjectType::Target::VSTPlugIn)))
     {
-        props.add (new TextPropertyComponent (targetLocationValue, "Target Project Folder", 2048, false),
-                   "The location of the folder in which the " + name + " project will be created. "
-                   "This path can be absolute, but it's much more sensible to make it relative to the jucer project directory.");
-
-        if ((shouldBuildTargetType (ProjectType::Target::VSTPlugIn) && project.shouldBuildVST()) || (project.isVSTPluginHost() && supportsTargetType (ProjectType::Target::VSTPlugIn)))
-        {
-            props.add (new FilePathPropertyComponent (vstLegacyPathValueWrapper.wrappedValue, "VST (Legacy) SDK Folder", true,
-                                                      getTargetOSForExporter() == TargetOS::getThisOS(), "*", project.getProjectFolder()),
-                       "If you're building a VST plug-in or host, you can use this field to override the global VST (Legacy) SDK path with a project-specific path. "
-                       "This can be an absolute path, or a path relative to the Projucer project file.");
-        }
-
-        if ((shouldBuildTargetType (ProjectType::Target::VST3PlugIn) && project.shouldBuildVST3()) || (project.isVST3PluginHost() && supportsTargetType (ProjectType::Target::VST3PlugIn)))
-        {
-            props.add (new FilePathPropertyComponent (vst3PathValueWrapper.wrappedValue, "VST3 SDK Folder", true,
-                                                      getTargetOSForExporter() == TargetOS::getThisOS(), "*", project.getProjectFolder()),
-                       "If you're building a VST3 plug-in or host, you can use this field to override the global VST3 SDK path with a project-specific path. "
-                       "This can be an absolute path, or a path relative to the Projucer project file.");
-        }
-
-        if (shouldBuildTargetType (ProjectType::Target::AAXPlugIn) && project.shouldBuildAAX())
-        {
-            props.add (new FilePathPropertyComponent (aaxPathValueWrapper.wrappedValue, "AAX SDK Folder", true,
-                                                      getTargetOSForExporter() == TargetOS::getThisOS(), "*", project.getProjectFolder()),
-                       "If you're building an AAX plug-in, this must be the folder containing the AAX SDK. This can be an absolute path, or a path relative to the Projucer project file.");
-        }
-
-        if (shouldBuildTargetType (ProjectType::Target::RTASPlugIn) && project.shouldBuildRTAS())
-        {
-            props.add (new FilePathPropertyComponent (rtasPathValueWrapper.wrappedValue, "RTAS SDK Folder", true,
-                                                      getTargetOSForExporter() == TargetOS::getThisOS(), "*", project.getProjectFolder()),
-                       "If you're building an RTAS plug-in, this must be the folder containing the RTAS SDK. This can be an absolute path, or a path relative to the Projucer project file.");
-        }
-
-        props.add (new TextPropertyComponent (extraPPDefsValue, "Extra Preprocessor Definitions", 32768, true),
-                   "Extra preprocessor definitions. Use the form \"NAME1=value NAME2=value\", using whitespace, commas, "
-                   "or new-lines to separate the items - to include a space or comma in a definition, precede it with a backslash.");
-
-        props.add (new TextPropertyComponent (extraCompilerFlagsValue, "Extra Compiler Flags", 8192, true),
-                   "Extra command-line flags to be passed to the compiler. This string can contain references to preprocessor definitions in the "
-                   "form ${NAME_OF_DEFINITION}, which will be replaced with their values.");
-
-        for (HashMap<String, ValueWithDefault>::Iterator i (compilerFlagSchemesMap); i.next();)
-            props.add (new TextPropertyComponent (compilerFlagSchemesMap.getReference (i.getKey()), "Compiler Flags for " + i.getKey().quoted(), 8192, false),
-                       "The exporter-specific compiler flags that will be added to files using this scheme.");
-
-        props.add (new TextPropertyComponent (extraLinkerFlagsValue, "Extra Linker Flags", 8192, true),
-                   "Extra command-line flags to be passed to the linker. You might want to use this for adding additional libraries. "
-                   "This string can contain references to preprocessor definitions in the form ${NAME_OF_VALUE}, which will be replaced with their values.");
-
-        props.add (new TextPropertyComponent (externalLibrariesValue, "External Libraries to Link", 8192, true),
-                   "Additional libraries to link (one per line). You should not add any platform specific decoration to these names. "
-                   "This string can contain references to preprocessor definitions in the form ${NAME_OF_VALUE}, which will be replaced with their values.");
-
-        if (! isVisualStudio())
-            props.add (new ChoicePropertyComponent (gnuExtensionsValue, "GNU Compiler Extensions"),
-                       "Enabling this will use the GNU C++ language standard variant for compilation.");
-
-        createIconProperties (props);
+        props.add (new FilePathPropertyComponent (vstLegacyPathValueWrapper.getWrappedValueTreePropertyWithDefault(), "VST (Legacy) SDK Folder", true,
+                                                  getTargetOSForExporter() == TargetOS::getThisOS(), "*", project.getProjectFolder()),
+                   "If you're building a VST plug-in or host, you can use this field to override the global VST (Legacy) SDK path with a project-specific path. "
+                   "This can be an absolute path, or a path relative to the Projucer project file.");
     }
+
+    if (shouldBuildTargetType (build_tools::ProjectType::Target::AAXPlugIn) && project.shouldBuildAAX())
+    {
+        props.add (new FilePathPropertyComponent (aaxPathValueWrapper.getWrappedValueTreePropertyWithDefault(), "AAX SDK Folder", true,
+                                                  getTargetOSForExporter() == TargetOS::getThisOS(), "*", project.getProjectFolder()),
+                   "If you're building an AAX plug-in, this must be the folder containing the AAX SDK. This can be an absolute path, or a path relative to the Projucer project file.");
+    }
+
+    if (project.shouldEnableARA() || project.isARAPluginHost())
+    {
+        props.add (new FilePathPropertyComponent (araPathValueWrapper.getWrappedValueTreePropertyWithDefault(), "ARA SDK Folder", true,
+                                                  getTargetOSForExporter() == TargetOS::getThisOS(), "*", project.getProjectFolder()),
+                   "If you're building an ARA enabled plug-in, this must be the folder containing the ARA SDK. This can be an absolute path, or a path relative to the Projucer project file.");
+    }
+
+    props.add (new TextPropertyComponent (extraPPDefsValue, "Extra Preprocessor Definitions", 32768, true),
+               "Extra preprocessor definitions. Use the form \"NAME1=value NAME2=value\", using whitespace, commas, "
+               "or new-lines to separate the items - to include a space or comma in a definition, precede it with a backslash.");
+
+    props.add (new TextPropertyComponent (extraCompilerFlagsValue, "Extra Compiler Flags", 8192, true),
+               "Extra command-line flags to be passed to the compiler. This string can contain references to preprocessor definitions in the "
+               "form ${NAME_OF_DEFINITION}, which will be replaced with their values.");
+
+    for (HashMap<String, ValueTreePropertyWithDefault>::Iterator i (compilerFlagSchemesMap); i.next();)
+        props.add (new TextPropertyComponent (compilerFlagSchemesMap.getReference (i.getKey()), "Compiler Flags for " + i.getKey().quoted(), 8192, false),
+                   "The exporter-specific compiler flags that will be added to files using this scheme.");
+
+    props.add (new TextPropertyComponent (extraLinkerFlagsValue, "Extra Linker Flags", 8192, true),
+               "Extra command-line flags to be passed to the linker. You might want to use this for adding additional libraries. "
+               "This string can contain references to preprocessor definitions in the form ${NAME_OF_VALUE}, which will be replaced with their values.");
+
+    props.add (new TextPropertyComponent (externalLibrariesValue, "External Libraries to Link", 8192, true),
+               "Additional libraries to link (one per line). You should not add any platform specific decoration to these names. "
+               "This string can contain references to preprocessor definitions in the form ${NAME_OF_VALUE}, which will be replaced with their values.");
+
+    if (! isVisualStudio())
+        props.add (new ChoicePropertyComponent (gnuExtensionsValue, "GNU Compiler Extensions"),
+                   "Enabling this will use the GNU C++ language standard variant for compilation.");
+
+    createIconProperties (props);
 
     createExporterProperties (props);
 
@@ -383,10 +320,10 @@ void ProjectExporter::createIconProperties (PropertyListBuilder& props)
     choices.add ("<None>");
     ids.add (var());
 
-    for (int i = 0; i < images.size(); ++i)
+    for (const auto* imageItem : images)
     {
-        choices.add (images.getUnchecked(i)->getName());
-        ids.add (images.getUnchecked(i)->getID());
+        choices.add (imageItem->getName());
+        ids.add (imageItem->getID());
     }
 
     props.add (new ChoicePropertyComponent (smallIconValue, "Icon (Small)", choices, ids),
@@ -397,9 +334,11 @@ void ProjectExporter::createIconProperties (PropertyListBuilder& props)
 }
 
 //==============================================================================
-void ProjectExporter::addSettingsForProjectType (const ProjectType& type)
+void ProjectExporter::addSettingsForProjectType (const build_tools::ProjectType& type)
 {
-    addVSTPathsIfPluginOrHost();
+    addExtraIncludePathsIfPluginOrHost();
+
+    addARAPathsIfPluginOrHost();
 
     if (type.isAudioPlugin())
         addCommonAudioPluginSettings();
@@ -407,47 +346,75 @@ void ProjectExporter::addSettingsForProjectType (const ProjectType& type)
     addPlatformSpecificSettingsForProjectType (type);
 }
 
-void ProjectExporter::addVSTPathsIfPluginOrHost()
+void ProjectExporter::addExtraIncludePathsIfPluginOrHost()
 {
-    if (((shouldBuildTargetType (ProjectType::Target::VSTPlugIn) && project.shouldBuildVST()) || project.isVSTPluginHost())
-         || ((shouldBuildTargetType (ProjectType::Target::VST3PlugIn) && project.shouldBuildVST3()) || project.isVST3PluginHost()))
+    using Target = build_tools::ProjectType::Target;
+
+    if (((shouldBuildTargetType (Target::VSTPlugIn) && project.shouldBuildVST()) || project.isVSTPluginHost())
+         || ((shouldBuildTargetType (Target::VST3PlugIn) && project.shouldBuildVST3()) || project.isVST3PluginHost()))
     {
         addLegacyVSTFolderToPathIfSpecified();
-        addVST3FolderToPath();
+
+        if (! project.isConfigFlagEnabled ("JUCE_CUSTOM_VST3_SDK"))
+            addToExtraSearchPaths (getInternalVST3SDKPath(), 0);
     }
+
+    const auto lv2BasePath = getModuleFolderRelativeToProject ("juce_audio_processors").getChildFile ("format_types")
+                                                                                       .getChildFile ("LV2_SDK");
+
+    if ((shouldBuildTargetType (Target::LV2PlugIn) && project.shouldBuildLV2()) || project.isLV2PluginHost())
+    {
+        const std::vector<const char*> paths[] { { "" },
+                                                 { "lv2" },
+                                                 { "serd" },
+                                                 { "sord" },
+                                                 { "sord", "src" },
+                                                 { "sratom" },
+                                                 { "lilv" },
+                                                 { "lilv", "src" } };
+
+        for (const auto& components : paths)
+        {
+            const auto appendComponent = [] (const build_tools::RelativePath& f, const char* component)
+            {
+                return f.getChildFile (component);
+            };
+
+            const auto includePath = std::accumulate (components.begin(),
+                                                      components.end(),
+                                                      lv2BasePath,
+                                                      appendComponent);
+
+            addToExtraSearchPaths (includePath, 0);
+        }
+    }
+}
+
+void ProjectExporter::addARAPathsIfPluginOrHost()
+{
+    if (project.shouldEnableARA() || project.isARAPluginHost())
+        addARAFoldersToPath();
 }
 
 void ProjectExporter::addCommonAudioPluginSettings()
 {
-    if (shouldBuildTargetType (ProjectType::Target::AAXPlugIn))
+    if (shouldBuildTargetType (build_tools::ProjectType::Target::AAXPlugIn))
         addAAXFoldersToPath();
-
-    // Note: RTAS paths are platform-dependent, impl -> addPlatformSpecificSettingsForProjectType
- }
+}
 
 void ProjectExporter::addLegacyVSTFolderToPathIfSpecified()
 {
     auto vstFolder = getVSTLegacyPathString();
 
     if (vstFolder.isNotEmpty())
-        addToExtraSearchPaths (RelativePath (vstFolder, RelativePath::projectFolder), 0);
+        addToExtraSearchPaths (build_tools::RelativePath (vstFolder, build_tools::RelativePath::projectFolder), 0);
 }
 
-RelativePath ProjectExporter::getInternalVST3SDKPath()
+build_tools::RelativePath ProjectExporter::getInternalVST3SDKPath()
 {
     return getModuleFolderRelativeToProject ("juce_audio_processors")
                            .getChildFile ("format_types")
                            .getChildFile ("VST3_SDK");
-}
-
-void ProjectExporter::addVST3FolderToPath()
-{
-    auto vst3Folder = getVST3PathString();
-
-    if (vst3Folder.isNotEmpty())
-        addToExtraSearchPaths (RelativePath (vst3Folder, RelativePath::projectFolder), 0);
-    else
-        addToExtraSearchPaths (getInternalVST3SDKPath(), 0);
 }
 
 void ProjectExporter::addAAXFoldersToPath()
@@ -456,7 +423,7 @@ void ProjectExporter::addAAXFoldersToPath()
 
     if (aaxFolder.isNotEmpty())
     {
-        RelativePath aaxFolderPath (aaxFolder, RelativePath::projectFolder);
+        build_tools::RelativePath aaxFolderPath (aaxFolder, build_tools::RelativePath::projectFolder);
 
         addToExtraSearchPaths (aaxFolderPath);
         addToExtraSearchPaths (aaxFolderPath.getChildFile ("Interfaces"));
@@ -464,13 +431,25 @@ void ProjectExporter::addAAXFoldersToPath()
     }
 }
 
+void ProjectExporter::addARAFoldersToPath()
+{
+    const auto araFolder = getARAPathString();
+
+    if (araFolder.isNotEmpty())
+        addToExtraSearchPaths (build_tools::RelativePath (araFolder, build_tools::RelativePath::projectFolder));
+}
+
 //==============================================================================
-StringPairArray ProjectExporter::getAllPreprocessorDefs (const BuildConfiguration& config, const ProjectType::Target::Type targetType) const
+StringPairArray ProjectExporter::getAllPreprocessorDefs (const BuildConfiguration& config, const build_tools::ProjectType::Target::Type targetType) const
 {
     auto defs = mergePreprocessorDefs (config.getAllPreprocessorDefs(),
                                        parsePreprocessorDefs (getExporterPreprocessorDefsString()));
+
     addDefaultPreprocessorDefs (defs);
     addTargetSpecificPreprocessorDefs (defs, targetType);
+
+    if (! project.shouldUseAppConfig())
+        defs = mergePreprocessorDefs (project.getAppConfigDefs(), defs);
 
     return defs;
 }
@@ -480,33 +459,37 @@ StringPairArray ProjectExporter::getAllPreprocessorDefs() const
     auto defs = mergePreprocessorDefs (project.getPreprocessorDefs(),
                                        parsePreprocessorDefs (getExporterPreprocessorDefsString()));
     addDefaultPreprocessorDefs (defs);
+
     return defs;
 }
 
-void ProjectExporter::addTargetSpecificPreprocessorDefs (StringPairArray& defs, const ProjectType::Target::Type targetType) const
+void ProjectExporter::addTargetSpecificPreprocessorDefs (StringPairArray& defs, const build_tools::ProjectType::Target::Type targetType) const
 {
-    std::pair<String, ProjectType::Target::Type> targetFlags[] = {
-        {"JucePlugin_Build_VST",        ProjectType::Target::VSTPlugIn},
-        {"JucePlugin_Build_VST3",       ProjectType::Target::VST3PlugIn},
-        {"JucePlugin_Build_AU",         ProjectType::Target::AudioUnitPlugIn},
-        {"JucePlugin_Build_AUv3",       ProjectType::Target::AudioUnitv3PlugIn},
-        {"JucePlugin_Build_RTAS",       ProjectType::Target::RTASPlugIn},
-        {"JucePlugin_Build_AAX",        ProjectType::Target::AAXPlugIn},
-        {"JucePlugin_Build_Standalone", ProjectType::Target::StandalonePlugIn},
-        {"JucePlugin_Build_Unity",      ProjectType::Target::UnityPlugIn}
-    };
+    using Target = build_tools::ProjectType::Target::Type;
+    const std::pair<const char*, Target> targetFlags[] { { "JucePlugin_Build_VST",        Target::VSTPlugIn },
+                                                         { "JucePlugin_Build_VST3",       Target::VST3PlugIn },
+                                                         { "JucePlugin_Build_AU",         Target::AudioUnitPlugIn },
+                                                         { "JucePlugin_Build_AUv3",       Target::AudioUnitv3PlugIn },
+                                                         { "JucePlugin_Build_AAX",        Target::AAXPlugIn },
+                                                         { "JucePlugin_Build_Standalone", Target::StandalonePlugIn },
+                                                         { "JucePlugin_Build_Unity",      Target::UnityPlugIn },
+                                                         { "JucePlugin_Build_LV2",        Target::LV2PlugIn } };
 
-    if (targetType == ProjectType::Target::SharedCodeTarget)
+    if (targetType == build_tools::ProjectType::Target::SharedCodeTarget)
     {
         for (auto& flag : targetFlags)
             defs.set (flag.first, (shouldBuildTargetType (flag.second) ? "1" : "0"));
 
         defs.set ("JUCE_SHARED_CODE", "1");
     }
-    else if (targetType != ProjectType::Target::unspecified)
+    else if (targetType != build_tools::ProjectType::Target::unspecified)
     {
         for (auto& flag : targetFlags)
             defs.set (flag.first, (targetType == flag.second ? "1" : "0"));
+    }
+    if (project.shouldEnableARA())
+    {
+        defs.set ("JucePlugin_Enable_ARA", "1");
     }
 }
 
@@ -520,7 +503,8 @@ void ProjectExporter::addDefaultPreprocessorDefs (StringPairArray& defs) const
 String ProjectExporter::replacePreprocessorTokens (const ProjectExporter::BuildConfiguration& config,
                                                    const String& sourceString) const
 {
-    return replacePreprocessorDefs (getAllPreprocessorDefs (config, ProjectType::Target::unspecified), sourceString);
+    return build_tools::replacePreprocessorDefs (getAllPreprocessorDefs (config, build_tools::ProjectType::Target::unspecified),
+                                                 sourceString);
 }
 
 void ProjectExporter::copyMainGroupFromProject()
@@ -541,9 +525,56 @@ Project::Item& ProjectExporter::getModulesGroup()
     return *modulesGroup;
 }
 
-void ProjectExporter::addProjectPathToBuildPathList (StringArray& pathList, const RelativePath& pathFromProjectFolder, int index) const
+//==============================================================================
+static bool isWebBrowserComponentEnabled (Project& project)
 {
-    auto localPath = RelativePath (rebaseFromProjectFolderToBuildTarget (pathFromProjectFolder));
+    static String guiExtrasModule ("juce_gui_extra");
+
+    return (project.getEnabledModules().isModuleEnabled (guiExtrasModule)
+            && project.isConfigFlagEnabled ("JUCE_WEB_BROWSER", true));
+}
+
+static bool isCurlEnabled (Project& project)
+{
+    static String juceCoreModule ("juce_core");
+
+    return (project.getEnabledModules().isModuleEnabled (juceCoreModule)
+            && project.isConfigFlagEnabled ("JUCE_USE_CURL", true));
+}
+
+static bool isLoadCurlSymbolsLazilyEnabled (Project& project)
+{
+    static String juceCoreModule ("juce_core");
+
+    return (project.getEnabledModules().isModuleEnabled (juceCoreModule)
+            && project.isConfigFlagEnabled ("JUCE_LOAD_CURL_SYMBOLS_LAZILY", false));
+}
+
+StringArray ProjectExporter::getLinuxPackages (PackageDependencyType type) const
+{
+    auto packages = linuxPackages;
+
+    // don't add libcurl if curl symbols are loaded at runtime
+    if (isCurlEnabled (project) && ! isLoadCurlSymbolsLazilyEnabled (project))
+        packages.add ("libcurl");
+
+    if (isWebBrowserComponentEnabled (project) && type == PackageDependencyType::compile)
+    {
+        packages.add ("webkit2gtk-4.0");
+        packages.add ("gtk+-x11-3.0");
+    }
+
+    packages.removeEmptyStrings();
+    packages.removeDuplicates (false);
+
+    return packages;
+}
+
+void ProjectExporter::addProjectPathToBuildPathList (StringArray& pathList,
+                                                     const build_tools::RelativePath& pathFromProjectFolder,
+                                                     int index) const
+{
+    auto localPath = build_tools::RelativePath (rebaseFromProjectFolderToBuildTarget (pathFromProjectFolder));
 
     auto path = isVisualStudio() ? localPath.toWindowsStyle() : localPath.toUnixStyle();
 
@@ -551,12 +582,12 @@ void ProjectExporter::addProjectPathToBuildPathList (StringArray& pathList, cons
         pathList.insert (index, path);
 }
 
-void ProjectExporter::addToModuleLibPaths (const RelativePath& pathFromProjectFolder)
+void ProjectExporter::addToModuleLibPaths (const build_tools::RelativePath& pathFromProjectFolder)
 {
     addProjectPathToBuildPathList (moduleLibSearchPaths, pathFromProjectFolder);
 }
 
-void ProjectExporter::addToExtraSearchPaths (const RelativePath& pathFromProjectFolder, int index)
+void ProjectExporter::addToExtraSearchPaths (const build_tools::RelativePath& pathFromProjectFolder, int index)
 {
     addProjectPathToBuildPathList (extraSearchPaths, pathFromProjectFolder, index);
 }
@@ -567,7 +598,7 @@ static var getStoredPathForModule (const String& id, const ProjectExporter& exp)
                                            exp.getTargetOSForExporter()).get();
 }
 
-ValueWithDefault ProjectExporter::getPathForModuleValue (const String& moduleID)
+ValueTreePropertyWithDefault ProjectExporter::getPathForModuleValue (const String& moduleID)
 {
     auto* um = getUndoManager();
 
@@ -610,23 +641,23 @@ TargetOS::OS ProjectExporter::getTargetOSForExporter() const
     if      (isWindows())                 targetOS = TargetOS::windows;
     else if (isOSX() || isiOS())          targetOS = TargetOS::osx;
     else if (isLinux())                   targetOS = TargetOS::linux;
-    else if (isAndroid() || isCLion())    targetOS = TargetOS::getThisOS();
+    else if (isAndroid())                 targetOS = TargetOS::getThisOS();
 
     return targetOS;
 }
 
-RelativePath ProjectExporter::getModuleFolderRelativeToProject (const String& moduleID) const
+build_tools::RelativePath ProjectExporter::getModuleFolderRelativeToProject (const String& moduleID) const
 {
-    if (project.getEnabledModules().shouldCopyModuleFilesLocally (moduleID).getValue())
-        return RelativePath (project.getRelativePathForFile (project.getLocalModuleFolder (moduleID)),
-                             RelativePath::projectFolder);
+    if (project.getEnabledModules().shouldCopyModuleFilesLocally (moduleID))
+        return build_tools::RelativePath (project.getRelativePathForFile (project.getLocalModuleFolder (moduleID)),
+                             build_tools::RelativePath::projectFolder);
 
     auto path = getPathForModuleString (moduleID);
 
     if (path.isEmpty())
         return getLegacyModulePath (moduleID).getChildFile (moduleID);
 
-    return RelativePath (path, RelativePath::projectFolder).getChildFile (moduleID);
+    return build_tools::RelativePath (path, build_tools::RelativePath::projectFolder).getChildFile (moduleID);
 }
 
 String ProjectExporter::getLegacyModulePath() const
@@ -634,19 +665,19 @@ String ProjectExporter::getLegacyModulePath() const
     return getSettingString ("juceFolder");
 }
 
-RelativePath ProjectExporter::getLegacyModulePath (const String& moduleID) const
+build_tools::RelativePath ProjectExporter::getLegacyModulePath (const String& moduleID) const
 {
-    if (project.getEnabledModules().state.getChildWithProperty (Ids::ID, moduleID) ["useLocalCopy"])
-        return RelativePath (project.getRelativePathForFile (project.getGeneratedCodeFolder()
-                                                                .getChildFile ("modules")
-                                                                .getChildFile (moduleID)), RelativePath::projectFolder);
+    if (project.getEnabledModules().shouldCopyModuleFilesLocally (moduleID))
+        return build_tools::RelativePath (project.getRelativePathForFile (project.getGeneratedCodeFolder()
+                                                                           .getChildFile ("modules")
+                                                                           .getChildFile (moduleID)), build_tools::RelativePath::projectFolder);
 
     auto oldJucePath = getLegacyModulePath();
 
     if (oldJucePath.isEmpty())
-        return RelativePath();
+        return build_tools::RelativePath();
 
-    RelativePath p (oldJucePath, RelativePath::projectFolder);
+    build_tools::RelativePath p (oldJucePath, build_tools::RelativePath::projectFolder);
     if (p.getFileName() != "modules")
         p = p.getChildFile ("modules");
 
@@ -669,6 +700,11 @@ void ProjectExporter::updateOldModulePaths()
     }
 }
 
+static bool areSameExporters (const ProjectExporter& p1, const ProjectExporter& p2)
+{
+    return p1.getExporterIdentifier() == p2.getExporterIdentifier();
+}
+
 static bool areCompatibleExporters (const ProjectExporter& p1, const ProjectExporter& p2)
 {
     return (p1.isVisualStudio() && p2.isVisualStudio())
@@ -680,39 +716,33 @@ static bool areCompatibleExporters (const ProjectExporter& p1, const ProjectExpo
 
 void ProjectExporter::createDefaultModulePaths()
 {
-    for (Project::ExporterIterator exporter (project); exporter.next();)
+    auto exporterToCopy = [this]() -> std::unique_ptr<ProjectExporter>
     {
-        if (areCompatibleExporters (*this, *exporter))
+        std::vector<std::unique_ptr<ProjectExporter>> exporters;
+
+        for (Project::ExporterIterator exporter (project); exporter.next();)
+            exporters.push_back (std::move (exporter.exporter));
+
+        auto getIf = [&exporters] (auto predicate)
         {
-            for (int i = project.getEnabledModules().getNumModules(); --i >= 0;)
-            {
-                auto modID = project.getEnabledModules().getModuleID (i);
-                getPathForModuleValue (modID) = exporter->getPathForModuleValue (modID);
-            }
+            auto iter = std::find_if (exporters.begin(), exporters.end(), predicate);
+            return iter != exporters.end() ? std::move (*iter) : nullptr;
+        };
 
-            return;
-        }
-    }
+        if (auto exporter = getIf ([this] (auto& x) { return areSameExporters (*this, *x); }))
+            return exporter;
 
-    for (Project::ExporterIterator exporter (project); exporter.next();)
-    {
-        if (exporter->canLaunchProject())
-        {
-            for (int i = project.getEnabledModules().getNumModules(); --i >= 0;)
-            {
-                auto modID = project.getEnabledModules().getModuleID (i);
-                getPathForModuleValue (modID) = exporter->getPathForModuleValue (modID);
-            }
+        if (auto exporter = getIf ([this] (auto& x) { return areCompatibleExporters (*this, *x); }))
+            return exporter;
 
-            return;
-        }
-    }
+        if (auto exporter = getIf ([] (auto& x) { return x->canLaunchProject(); }))
+            return exporter;
 
-    for (int i = project.getEnabledModules().getNumModules(); --i >= 0;)
-    {
-        auto modID = project.getEnabledModules().getModuleID (i);
-        getPathForModuleValue (modID) = "../../juce";
-    }
+        return {};
+    }();
+
+    for (const auto& modID : project.getEnabledModules().getAllModules())
+        getPathForModuleValue (modID) = (exporterToCopy != nullptr ? exporterToCopy->getPathForModuleString (modID) : "../../juce");
 }
 
 //==============================================================================
@@ -820,64 +850,6 @@ std::unique_ptr<Drawable> ProjectExporter::getSmallIcon() const
     return project.getMainGroup().findItemWithID (settings [Ids::smallIcon]).loadAsImageFile();
 }
 
-Image ProjectExporter::getBestIconForSize (int size, bool returnNullIfNothingBigEnough) const
-{
-    Drawable* im = nullptr;
-
-    auto im1 = getSmallIcon();
-    auto im2 = getBigIcon();
-
-    if (im1 != nullptr && im2 != nullptr)
-    {
-        if (im1->getWidth() >= size && im2->getWidth() >= size)
-            im = im1->getWidth() < im2->getWidth() ? im1.get() : im2.get();
-        else if (im1->getWidth() >= size)
-            im = im1.get();
-        else if (im2->getWidth() >= size)
-            im = im2.get();
-    }
-    else
-    {
-        im = im1 != nullptr ? im1.get() : im2.get();
-    }
-
-    if (im == nullptr)
-        return {};
-
-    if (returnNullIfNothingBigEnough && im->getWidth() < size && im->getHeight() < size)
-        return {};
-
-    return rescaleImageForIcon (*im, size);
-}
-
-Image ProjectExporter::rescaleImageForIcon (Drawable& d, const int size)
-{
-    if (auto* drawableImage = dynamic_cast<DrawableImage*> (&d))
-    {
-        auto im = SoftwareImageType().convert (drawableImage->getImage());
-
-        if (im.getWidth() == size && im.getHeight() == size)
-            return im;
-
-        // (scale it down in stages for better resampling)
-        while (im.getWidth() > 2 * size && im.getHeight() > 2 * size)
-            im = im.rescaled (im.getWidth() / 2,
-                              im.getHeight() / 2);
-
-        Image newIm (Image::ARGB, size, size, true, SoftwareImageType());
-        Graphics g (newIm);
-        g.drawImageWithin (im, 0, 0, size, size,
-                           RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, false);
-        return newIm;
-    }
-
-    Image im (Image::ARGB, size, size, true, SoftwareImageType());
-    Graphics g (im);
-    d.drawWithin (g, im.getBounds().toFloat(), RectanglePlacement::centred, 1.0f);
-    return im;
-}
-
-
 //==============================================================================
 ProjectExporter::ConfigIterator::ConfigIterator (ProjectExporter& e)
     : index (-1), exporter (e)
@@ -910,30 +882,41 @@ bool ProjectExporter::ConstConfigIterator::next()
 //==============================================================================
 ProjectExporter::BuildConfiguration::BuildConfiguration (Project& p, const ValueTree& configNode, const ProjectExporter& e)
    : config (configNode), project (p), exporter (e),
-     isDebugValue              (config, Ids::isDebug,              getUndoManager(), getValue (Ids::isDebug)),
-     configNameValue           (config, Ids::name,                 getUndoManager(), "Build Configuration"),
-     targetNameValue           (config, Ids::targetName,           getUndoManager(), project.getProjectFilenameRootString()),
-     targetBinaryPathValue     (config, Ids::binaryPath,           getUndoManager()),
-     recommendedWarningsValue  (config, Ids::recommendedWarnings,  getUndoManager()),
-     optimisationLevelValue    (config, Ids::optimisation,         getUndoManager()),
-     linkTimeOptimisationValue (config, Ids::linkTimeOptimisation, getUndoManager(), ! isDebug()),
-     ppDefinesValue            (config, Ids::defines,              getUndoManager()),
-     headerSearchPathValue     (config, Ids::headerPath,           getUndoManager()),
-     librarySearchPathValue    (config, Ids::libraryPath,          getUndoManager()),
-     userNotesValue            (config, Ids::userNotes,            getUndoManager())
+     isDebugValue                  (config, Ids::isDebug,                  getUndoManager(), getValue (Ids::isDebug)),
+     configNameValue               (config, Ids::name,                     getUndoManager(), "Build Configuration"),
+     targetNameValue               (config, Ids::targetName,               getUndoManager(), project.getProjectFilenameRootString()),
+     targetBinaryPathValue         (config, Ids::binaryPath,               getUndoManager()),
+     recommendedWarningsValue      (config, Ids::recommendedWarnings,      getUndoManager()),
+     optimisationLevelValue        (config, Ids::optimisation,             getUndoManager()),
+     linkTimeOptimisationValue     (config, Ids::linkTimeOptimisation,     getUndoManager(), ! isDebug()),
+     ppDefinesValue                (config, Ids::defines,                  getUndoManager()),
+     headerSearchPathValue         (config, Ids::headerPath,               getUndoManager()),
+     librarySearchPathValue        (config, Ids::libraryPath,              getUndoManager()),
+     userNotesValue                (config, Ids::userNotes,                getUndoManager()),
+     usePrecompiledHeaderFileValue (config, Ids::usePrecompiledHeaderFile, getUndoManager(), false),
+     precompiledHeaderFileValue    (config, Ids::precompiledHeaderFile,    getUndoManager())
 {
-    recommendedCompilerWarningFlags["LLVM"] = { "-Wall", "-Wshadow-all", "-Wshorten-64-to-32", "-Wstrict-aliasing", "-Wuninitialized", "-Wunused-parameter",
-        "-Wconversion", "-Wsign-compare", "-Wint-conversion", "-Wconditional-uninitialized", "-Woverloaded-virtual",
-        "-Wreorder", "-Wconstant-conversion", "-Wsign-conversion", "-Wunused-private-field", "-Wbool-conversion",
-        "-Wextra-semi", "-Wunreachable-code", "-Wzero-as-null-pointer-constant", "-Wcast-align",
-        "-Winconsistent-missing-destructor-override", "-Wshift-sign-overflow", "-Wnullable-to-nonnull-conversion",
-        "-Wno-missing-field-initializers", "-Wno-ignored-qualifiers" };
-    recommendedCompilerWarningFlags["GCC"] = { "-Wall", "-Wextra", "-Wstrict-aliasing", "-Wuninitialized", "-Wunused-parameter", "-Wsign-compare",
-        "-Woverloaded-virtual", "-Wreorder", "-Wsign-conversion", "-Wunreachable-code",
-        "-Wzero-as-null-pointer-constant", "-Wcast-align", "-Wno-implicit-fallthrough",
-        "-Wno-maybe-uninitialized", "-Wno-missing-field-initializers", "-Wno-ignored-qualifiers" };
-    recommendedCompilerWarningFlags["GCC-7"] = recommendedCompilerWarningFlags["GCC"];
-    recommendedCompilerWarningFlags["GCC-7"].add ("-Wno-strict-overflow");
+    auto& llvmFlags = recommendedCompilerWarningFlags[CompilerNames::llvm] = BuildConfiguration::CompilerWarningFlags::getRecommendedForGCCAndLLVM();
+    llvmFlags.common.addArray ({
+        "-Wshorten-64-to-32", "-Wconversion", "-Wint-conversion",
+        "-Wconditional-uninitialized", "-Wconstant-conversion", "-Wbool-conversion",
+        "-Wextra-semi", "-Wshift-sign-overflow",
+        "-Wshadow-all", "-Wnullable-to-nonnull-conversion",
+        "-Wmissing-prototypes"
+    });
+    llvmFlags.cpp.addArray ({
+        "-Wunused-private-field", "-Winconsistent-missing-destructor-override"
+    });
+    llvmFlags.objc.addArray ({
+        "-Wunguarded-availability", "-Wunguarded-availability-new"
+    });
+
+    auto& gccFlags = recommendedCompilerWarningFlags[CompilerNames::gcc] = BuildConfiguration::CompilerWarningFlags::getRecommendedForGCCAndLLVM();
+    gccFlags.common.addArray ({
+        "-Wextra", "-Wsign-compare", "-Wno-implicit-fallthrough", "-Wno-maybe-uninitialized",
+        "-Wredundant-decls", "-Wno-strict-overflow",
+        "-Wshadow"
+    });
 }
 
 ProjectExporter::BuildConfiguration::~BuildConfiguration()
@@ -967,25 +950,31 @@ void ProjectExporter::BuildConfiguration::addGCCOptimisationProperty (PropertyLi
 
 void ProjectExporter::BuildConfiguration::addRecommendedLinuxCompilerWarningsProperty (PropertyListBuilder& props)
 {
-    props.add (new ChoicePropertyComponent (recommendedWarningsValue, "Add Recommended Compiler Warning Flags",
-                                            { "GCC", "GCC 7 and below", "LLVM", "Disabled" },
-                                            { "GCC", "GCC-7", "LLVM", "" }),
-               "Enable this to add a set of recommended compiler warning flags.");
     recommendedWarningsValue.setDefault ("");
+
+    props.add (new ChoicePropertyComponent (recommendedWarningsValue, "Add Recommended Compiler Warning Flags",
+                                            { CompilerNames::gcc, CompilerNames::llvm, "Disabled" },
+                                            { CompilerNames::gcc, CompilerNames::llvm, "" }),
+               "Enable this to add a set of recommended compiler warning flags.");
 }
 
 void ProjectExporter::BuildConfiguration::addRecommendedLLVMCompilerWarningsProperty (PropertyListBuilder& props)
 {
-    props.add (new ChoicePropertyComponent (recommendedWarningsValue, "Add Recommended Compiler Warning Flags",
-                                            { "Enabled", "Disabled" },
-                                            { "LLVM", "" }),
-               "Enable this to add a set of recommended compiler warning flags.");
     recommendedWarningsValue.setDefault ("");
+
+    props.add (new ChoicePropertyComponent (recommendedWarningsValue, "Add Recommended Compiler Warning Flags",
+                                            { "Enabled",           "Disabled" },
+                                            { CompilerNames::llvm, "" }),
+               "Enable this to add a set of recommended compiler warning flags.");
 }
 
-StringArray ProjectExporter::BuildConfiguration::getRecommendedCompilerWarningFlags() const
+ProjectExporter::BuildConfiguration::CompilerWarningFlags ProjectExporter::BuildConfiguration::getRecommendedCompilerWarningFlags() const
 {
     auto label = recommendedWarningsValue.get().toString();
+
+    if (label == "GCC-7")
+        label = CompilerNames::gcc;
+
     auto it = recommendedCompilerWarningFlags.find (label);
 
     if (it != recommendedCompilerWarningFlags.end())
@@ -1020,6 +1009,22 @@ void ProjectExporter::BuildConfiguration::createPropertyEditors (PropertyListBui
 
     props.add (new ChoicePropertyComponent (linkTimeOptimisationValue, "Link-Time Optimisation"),
                "Enable this to perform link-time code optimisation. This is recommended for release builds.");
+
+    if (exporter.supportsPrecompiledHeaders())
+    {
+        props.add (new ChoicePropertyComponent (usePrecompiledHeaderFileValue, "Use Precompiled Header"),
+                   "Enable this to turn on precompiled header support for this configuration. Use the setting "
+                   "below to specify the header file to use.");
+
+        auto quotedHeaderFileName = (getPrecompiledHeaderFilename() + ".h").quoted();
+
+        props.add (new FilePathPropertyComponentWithEnablement (precompiledHeaderFileValue, usePrecompiledHeaderFileValue,
+                                                                "Precompiled Header File", false, true, "*", project.getProjectFolder()),
+                   "Specify an input header file that will be used to generate a file named " + quotedHeaderFileName + " which is used to generate the "
+                   "PCH file artefact for this exporter configuration. This file can be an absolute path, or relative to the jucer project folder. "
+                   "The " + quotedHeaderFileName + " file will be force included to all source files unless the \"Skip PCH\" setting has been enabled. "
+                   "The generated header will be written on project save and placed in the target folder for this exporter.");
+    }
 
     createConfigProperties (props);
 
@@ -1066,9 +1071,39 @@ StringArray ProjectExporter::BuildConfiguration::getLibrarySearchPaths() const
     auto s = getSearchPathsFromString (getLibrarySearchPathString());
 
     for (auto path : exporter.moduleLibSearchPaths)
+    {
+        if (exporter.isXcode())
+            s.add (path);
+
         s.add (path + separator + getModuleLibraryArchName());
+    }
 
     return s;
+}
+
+String ProjectExporter::BuildConfiguration::getPrecompiledHeaderFileContent() const
+{
+    if (shouldUsePrecompiledHeaderFile())
+    {
+        auto f = project.getProjectFolder().getChildFile (precompiledHeaderFileValue.get().toString());
+
+        if (f.existsAsFile() && f.hasFileExtension (headerFileExtensions))
+        {
+            MemoryOutputStream content;
+            content.setNewLineString (exporter.getNewLineString());
+
+            writeAutoGenWarningComment (content);
+
+            content << "*/" << newLine << newLine
+                    << "#ifndef " << getSkipPrecompiledHeaderDefine() << newLine << newLine
+                    << f.loadFileAsString() << newLine
+                    << "#endif" << newLine;
+
+            return content.toString();
+        }
+    }
+
+    return {};
 }
 
 String ProjectExporter::getExternalLibraryFlags (const BuildConfiguration& config) const

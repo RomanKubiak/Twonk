@@ -2,22 +2,23 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2018 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
@@ -82,7 +83,7 @@ struct VideoComponent::Pimpl   : public Base
         return Result::fail ("Couldn't open movie");
     }
 
-    void loadAsync (const URL& url, std::function<void(const URL&, Result)> callback)
+    void loadAsync (const URL& url, std::function<void (const URL&, Result)> callback)
     {
         if (url.isEmpty())
         {
@@ -194,8 +195,15 @@ private:
     public:
         ~PlayerControllerBase()
         {
-            detachPlayerStatusObserver();
-            detachPlaybackObserver();
+            // Derived classes must call detachPlayerStatusObserver() before destruction!
+            jassert (! playerStatusObserverAttached);
+
+            // Derived classes must call detachPlaybackObserver() before destruction!
+            jassert (! playbackObserverAttached);
+
+            // Note that it's unsafe to call detachPlayerStatusObserver and detachPlaybackObserver
+            // directly here, because those functions call into the derived class, which will have
+            // been destroyed at this point.
         }
 
     protected:
@@ -204,10 +212,9 @@ private:
         {
             JucePlayerStatusObserverClass()    : ObjCClass<NSObject> ("JucePlayerStatusObserverClass_")
             {
-               #pragma clang diagnostic push
-               #pragma clang diagnostic ignored "-Wundeclared-selector"
-                addMethod (@selector (observeValueForKeyPath:ofObject:change:context:), valueChanged, "v@:@@@?");
-               #pragma clang diagnostic pop
+                JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wundeclared-selector")
+                addMethod (@selector (observeValueForKeyPath:ofObject:change:context:), valueChanged);
+                JUCE_END_IGNORE_WARNINGS_GCC_LIKE
 
                 addIvar<PlayerAsyncInitialiser*> ("owner");
 
@@ -226,8 +233,8 @@ private:
 
                 if ([keyPath isEqualToString: nsStringLiteral ("rate")])
                 {
-                    auto oldRate = [change[NSKeyValueChangeOldKey] floatValue];
-                    auto newRate = [change[NSKeyValueChangeNewKey] floatValue];
+                    auto oldRate = [[change objectForKey: NSKeyValueChangeOldKey] floatValue];
+                    auto newRate = [[change objectForKey: NSKeyValueChangeNewKey] floatValue];
 
                     if (oldRate == 0 && newRate != 0)
                         owner.playbackStarted();
@@ -236,7 +243,7 @@ private:
                 }
                 else if ([keyPath isEqualToString: nsStringLiteral ("status")])
                 {
-                    auto status = [change[NSKeyValueChangeNewKey] intValue];
+                    auto status = [[change objectForKey: NSKeyValueChangeNewKey] intValue];
 
                     if (status == AVPlayerStatusFailed)
                         owner.errorOccurred();
@@ -249,10 +256,9 @@ private:
         {
             JucePlayerItemPlaybackStatusObserverClass()    : ObjCClass<NSObject> ("JucePlayerItemPlaybackStatusObserverClass_")
             {
-               #pragma clang diagnostic push
-               #pragma clang diagnostic ignored "-Wundeclared-selector"
-                addMethod (@selector (processNotification:), notificationReceived, "v@:@");
-               #pragma clang diagnostic pop
+                JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wundeclared-selector")
+                addMethod (@selector (processNotification:), notificationReceived);
+                JUCE_END_IGNORE_WARNINGS_GCC_LIKE
 
                 addIvar<PlayerControllerBase*> ("owner");
 
@@ -305,10 +311,9 @@ private:
             {
                 JucePlayerItemPreparationStatusObserverClass()    : ObjCClass<NSObject> ("JucePlayerItemStatusObserverClass_")
                 {
-                   #pragma clang diagnostic push
-                   #pragma clang diagnostic ignored "-Wundeclared-selector"
-                    addMethod (@selector (observeValueForKeyPath:ofObject:change:context:), valueChanged, "v@:@@@?");
-                   #pragma clang diagnostic pop
+                    JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wundeclared-selector")
+                    addMethod (@selector (observeValueForKeyPath:ofObject:change:context:), valueChanged);
+                    JUCE_END_IGNORE_WARNINGS_GCC_LIKE
 
                     addIvar<PlayerAsyncInitialiser*> ("owner");
 
@@ -331,8 +336,8 @@ private:
                         auto* urlAsset = (AVURLAsset*) playerItem.asset;
 
                         URL url (nsStringToJuce (urlAsset.URL.absoluteString));
-                        auto oldStatus = [change[NSKeyValueChangeOldKey] intValue];
-                        auto newStatus = [change[NSKeyValueChangeNewKey] intValue];
+                        auto oldStatus = [[change objectForKey: NSKeyValueChangeOldKey] intValue];
+                        auto newStatus = [[change objectForKey: NSKeyValueChangeNewKey] intValue];
 
                         // Ignore spurious notifications
                         if (oldStatus == newStatus)
@@ -348,7 +353,7 @@ private:
                         }
                         else if (newStatus == AVPlayerItemStatusReadyToPlay)
                         {
-                            owner.notifyOwnerPreparationFinished (url, Result::ok(), owner.player.release());
+                            owner.notifyOwnerPreparationFinished (url, Result::ok(), owner.player.get());
                         }
                         else
                         {
@@ -394,8 +399,11 @@ private:
                             notifyOwnerPreparationFinished (url, Result::fail (errorMessage), nullptr);
                             return;
                         }
+
+                        case AVKeyValueStatusUnknown:
+                        case AVKeyValueStatusLoading:
                         default:
-                        {}
+                            break;
                     }
                 }
 
@@ -434,9 +442,8 @@ private:
             //==============================================================================
             void notifyOwnerPreparationFinished (const URL& url, Result r, AVPlayer* preparedPlayer)
             {
-                WeakReference<PlayerAsyncInitialiser> safeThis (this);
-
-                MessageManager::callAsync ([safeThis, url, r, preparedPlayer]() mutable
+                MessageManager::callAsync ([url, preparedPlayer, r,
+                                            safeThis = WeakReference<PlayerAsyncInitialiser> { this }]() mutable
                 {
                     if (safeThis != nullptr)
                         safeThis->owner.playerPreparationFinished (url, r, preparedPlayer);
@@ -481,39 +488,45 @@ private:
                                  forKeyPath: nsStringLiteral ("status")
                                     options: NSKeyValueObservingOptionNew
                                     context: this];
+
+            playerStatusObserverAttached = true;
         }
 
         void detachPlayerStatusObserver()
         {
             if (crtp().getPlayer() != nullptr && playerStatusObserver != nullptr)
             {
-                    [crtp().getPlayer() removeObserver: playerStatusObserver.get()
-                                            forKeyPath: nsStringLiteral ("rate")
-                                               context: this];
+                [crtp().getPlayer() removeObserver: playerStatusObserver.get()
+                                        forKeyPath: nsStringLiteral ("rate")
+                                           context: this];
 
-                    [crtp().getPlayer() removeObserver: playerStatusObserver.get()
-                                            forKeyPath: nsStringLiteral ("status")
-                                               context: this];
+                [crtp().getPlayer() removeObserver: playerStatusObserver.get()
+                                        forKeyPath: nsStringLiteral ("status")
+                                           context: this];
             }
+
+            playerStatusObserverAttached = false;
         }
 
         void attachPlaybackObserver()
         {
-           #pragma clang diagnostic push
-           #pragma clang diagnostic ignored "-Wundeclared-selector"
+            JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wundeclared-selector")
             [[NSNotificationCenter defaultCenter] addObserver: playerItemPlaybackStatusObserver.get()
                                                      selector: @selector (processNotification:)
                                                          name: AVPlayerItemDidPlayToEndTimeNotification
                                                        object: [crtp().getPlayer() currentItem]];
-           #pragma clang diagnostic pop
+            JUCE_END_IGNORE_WARNINGS_GCC_LIKE
+
+            playbackObserverAttached = true;
         }
 
         void detachPlaybackObserver()
         {
-           #pragma clang diagnostic push
-           #pragma clang diagnostic ignored "-Wundeclared-selector"
+            JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wundeclared-selector")
             [[NSNotificationCenter defaultCenter] removeObserver: playerItemPlaybackStatusObserver.get()];
-           #pragma clang diagnostic pop
+            JUCE_END_IGNORE_WARNINGS_GCC_LIKE
+
+            playbackObserverAttached = false;
         }
 
     private:
@@ -531,9 +544,7 @@ private:
 
         void playbackReachedEndTime()
         {
-            WeakReference<PlayerControllerBase> safeThis (this);
-
-            MessageManager::callAsync ([safeThis]() mutable
+            MessageManager::callAsync ([safeThis = WeakReference<PlayerControllerBase> { this }]() mutable
                                        {
                                            if (safeThis != nullptr)
                                                safeThis->owner.playbackReachedEndTime();
@@ -560,6 +571,8 @@ private:
             owner.playbackStopped();
         }
 
+        bool playerStatusObserverAttached = false, playbackObserverAttached = false;
+
         JUCE_DECLARE_WEAK_REFERENCEABLE (PlayerControllerBase)
     };
 
@@ -571,43 +584,19 @@ private:
         PlayerController (Pimpl& ownerToUse, bool useNativeControlsIfAvailable)
             : PlayerControllerBase (ownerToUse, useNativeControlsIfAvailable)
         {
-           #if JUCE_32BIT
-            // 32-bit builds don't have AVPlayerView, so need to use a layer
-            useNativeControls = false;
-           #endif
-
-            if (useNativeControls)
+            wrappedPlayer = [&]() -> std::unique_ptr<WrappedPlayer>
             {
-               #if ! JUCE_32BIT
-                playerView = [[AVPlayerView alloc] init];
-               #endif
-            }
-            else
-            {
-                view = [[NSView alloc] init];
-                playerLayer = [[AVPlayerLayer alloc] init];
-                [view setLayer: playerLayer];
-            }
-        }
+                if (@available (macOS 10.9, *))
+                    if (useNativeControls)
+                        return std::make_unique<WrappedPlayerView>();
 
-        ~PlayerController()
-        {
-           #if JUCE_32BIT
-            [view release];
-            [playerLayer release];
-           #else
-            [playerView release];
-           #endif
+                return std::make_unique<WrappedPlayerLayer> ();
+            }();
         }
 
         NSView* getView()
         {
-           #if ! JUCE_32BIT
-            if (useNativeControls)
-                return playerView;
-           #endif
-
-            return view;
+            return wrappedPlayer->getView();
         }
 
         Result load (NSURL* url)
@@ -630,42 +619,58 @@ private:
 
         void setPlayer (AVPlayer* player)
         {
-           #if ! JUCE_32BIT
-            if (useNativeControls)
-                [playerView setPlayer: player];
-            else
-           #endif
-                [playerLayer setPlayer: player];
+            detachPlayerStatusObserver();
+            detachPlaybackObserver();
+
+            wrappedPlayer->setPlayer (player);
 
             if (player != nil)
             {
                 attachPlayerStatusObserver();
                 attachPlaybackObserver();
             }
-            else
-            {
-                detachPlayerStatusObserver();
-                detachPlaybackObserver();
-            }
         }
 
         AVPlayer* getPlayer() const
         {
-           #if ! JUCE_32BIT
-            if (useNativeControls)
-                return [playerView player];
-           #endif
-
-            return [playerLayer player];
+            return wrappedPlayer->getPlayer();
         }
 
     private:
-        NSView* view = nil;
-        AVPlayerLayer* playerLayer = nil;
-       #if ! JUCE_32BIT
-        // 32-bit builds don't have AVPlayerView
-        AVPlayerView* playerView = nil;
-       #endif
+        struct WrappedPlayer
+        {
+            virtual ~WrappedPlayer() = default;
+            virtual NSView* getView() const = 0;
+            virtual AVPlayer* getPlayer() const = 0;
+            virtual void setPlayer (AVPlayer*) = 0;
+        };
+
+        class WrappedPlayerLayer : public WrappedPlayer
+        {
+        public:
+            WrappedPlayerLayer ()                       { [view.get() setLayer: playerLayer.get()]; }
+            NSView* getView() const override            { return view.get(); }
+            AVPlayer* getPlayer() const override        { return [playerLayer.get() player]; }
+            void setPlayer (AVPlayer* player) override  { [playerLayer.get() setPlayer: player]; }
+
+        private:
+            NSUniquePtr<NSView> view                    { [[NSView alloc] init] };
+            NSUniquePtr<AVPlayerLayer> playerLayer      { [[AVPlayerLayer alloc] init] };
+        };
+
+        class API_AVAILABLE (macos (10.9)) WrappedPlayerView : public WrappedPlayer
+        {
+        public:
+            WrappedPlayerView() = default;
+            NSView* getView() const override            { return playerView.get(); }
+            AVPlayer* getPlayer() const override        { return [playerView.get() player]; }
+            void setPlayer (AVPlayer* player) override  { [playerView.get() setPlayer: player]; }
+
+        private:
+            NSUniquePtr<AVPlayerView> playerView        { [[AVPlayerView alloc] init] };
+        };
+
+        std::unique_ptr<WrappedPlayer> wrappedPlayer;
     };
    #else
     //==============================================================================
@@ -722,13 +727,19 @@ private:
 
         void setPlayer (AVPlayer* playerToUse)
         {
+            detachPlayerStatusObserver();
+            detachPlaybackObserver();
+
             if (useNativeControls)
                 [playerViewController.get() setPlayer: playerToUse];
             else
                 [playerLayer.get() setPlayer: playerToUse];
 
-            attachPlayerStatusObserver();
-            attachPlaybackObserver();
+            if (playerToUse != nil)
+            {
+                attachPlayerStatusObserver();
+                attachPlaybackObserver();
+            }
         }
 
     private:
@@ -737,7 +748,7 @@ private:
         {
             JuceVideoViewerClass()  : ObjCClass<UIView> ("JuceVideoViewerClass_")
             {
-                addMethod (@selector (layoutSubviews), layoutSubviews, "v@:");
+                addMethod (@selector (layoutSubviews), layoutSubviews);
 
                 registerClass();
             }
@@ -745,7 +756,7 @@ private:
         private:
             static void layoutSubviews (id self, SEL)
             {
-                sendSuperclassMessage (self, @selector (layoutSubviews));
+                sendSuperclassMessage<void> (self, @selector (layoutSubviews));
 
                 UIView* asUIView = (UIView*) self;
 
@@ -778,7 +789,7 @@ private:
 
     PlayerController playerController;
 
-    std::function<void(const URL&, Result)> loadFinishedCallback;
+    std::function<void (const URL&, Result)> loadFinishedCallback;
 
     double playSpeedMult = 1.0;
 

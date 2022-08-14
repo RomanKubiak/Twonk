@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -27,8 +26,7 @@
 namespace juce
 {
 
-#if JUCE_WINDOWS || JUCE_LINUX || JUCE_MAC || DOXYGEN
-
+#if JUCE_WINDOWS || JUCE_LINUX || JUCE_BSD || JUCE_MAC || DOXYGEN
 
 //==============================================================================
 /**
@@ -92,7 +90,7 @@ public:
     */
     void* getNativeHandle() const;
 
-   #if JUCE_LINUX
+   #if JUCE_LINUX || JUCE_BSD
     /** @internal */
     void paint (Graphics&) override;
    #endif
@@ -107,13 +105,11 @@ private:
     JUCE_PUBLIC_IN_DLL_BUILD (class Pimpl)
     std::unique_ptr<Pimpl> pimpl;
 
-    // The new setIconImage function signature requires different images for macOS
-    // and the other platforms
-    JUCE_DEPRECATED (void setIconImage (const Image& newImage));
+    [[deprecated ("The new setIconImage function signature requires different images for macOS and the other platforms.")]]
+    void setIconImage (const Image& newImage);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SystemTrayIconComponent)
 };
-
 
 #endif
 

@@ -14,7 +14,7 @@
 class TwonkClockListener
 {
 	public:
-		virtual void positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo) = 0;
+		virtual void positionChanged(const AudioPlayHead::PositionInfo &positionInfo) = 0;
 };
 
 class TwonkPlayHead : public AudioPlayHead, public AsyncUpdater, public AudioIODeviceCallback
@@ -34,7 +34,12 @@ class TwonkPlayHead : public AudioPlayHead, public AsyncUpdater, public AudioIOD
 		void setExternalSync(const bool _shouldSync) { }
 		void addClockListener(TwonkClockListener *listenerToAdd);
 		void removeClockListener(TwonkClockListener *listenerToRemove);
-		void setLoopLength(const int _loopLength) { currentPostion.ppqLoopEnd = _loopLength;  }
+		void setLoopLength(const int _loopLength)
+        {
+            AudioPlayHead::LoopPoints lp;
+            lp.ppqEnd = _loopLength;
+            pi.setLoopPoints(lp);
+        }
 		void handleAsyncUpdate();
 
 		//==============================================================================
@@ -46,13 +51,13 @@ class TwonkPlayHead : public AudioPlayHead, public AsyncUpdater, public AudioIOD
 		void audioDeviceStopped() override;
 		/** @internal */
 		void audioDeviceError (const String& errorMessage) override {}
-
+        Optional<PositionInfo> getPosition() const;
 	private:
 		CriticalSection cs;
 		ListenerList<TwonkClockListener> listeners;		
 		double sampleRate;
 		AudioDeviceManager &dm;
-		CurrentPositionInfo currentPostion;
+		PositionInfo pi;
 		double timeInSecondsOffset = 0.0;
 		double ppqPositionOffset = 0.0;
 		double timeInSamplesOffset = 0.0;

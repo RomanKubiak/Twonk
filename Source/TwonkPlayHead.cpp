@@ -6,16 +6,16 @@ TwonkPlayHead::TwonkPlayHead(AudioDeviceManager &_dm)
 	: dm(_dm),  sampleRate(44100)
 {
 	DBG("TwonkPlayHead::ctor");
-	currentPostion.timeSigNumerator = 4;
-	currentPostion.timeSigDenominator = 4;
-	currentPostion.isLooping = false;
-	currentPostion.isRecording = false;
-	currentPostion.ppqLoopEnd = 0;
-	currentPostion.ppqLoopStart = 0;
-	currentPostion.bpm = 120;
-	currentPostion.isPlaying = false;
-	currentPostion.ppqPositionOfLastBarStart = 0;
+    AudioPlayHead::TimeSignature ts;
+    ts.numerator = 4;
+    ts.denominator = 4;
 
+	pi.setIsLooping(false);
+    pi.setIsRecording(false);
+    pi.setPpqPosition(0);
+    pi.setBpm(120);
+    pi.setIsPlaying(false);
+    pi.setPpqPositionOfLastBarStart(0);
 	dm.addAudioCallback(this);
 	reset();
 }
@@ -29,7 +29,7 @@ void TwonkPlayHead::audioDeviceStopped()
 {
 	ScopedLock sl(cs);
 	reset();
-	currentPostion.isPlaying = false;
+	pi.setIsPlaying(false);
 }
 
 void TwonkPlayHead::audioDeviceAboutToStart (AudioIODevice *iodev)
@@ -37,20 +37,25 @@ void TwonkPlayHead::audioDeviceAboutToStart (AudioIODevice *iodev)
 	if (iodev->isOpen())
 	{
 		ScopedLock sl(cs);
-		currentPostion.timeInSeconds = 0.0;
-		currentPostion.timeInSamples = 0.0;
+		pi.setTimeInSeconds(0.0);
+        pi.setTimeInSamples(0.0);
 		sampleRate = iodev->getCurrentSampleRate();
 	}
 }
 
 void TwonkPlayHead::audioDeviceIOCallback (const float **in, int numIn, float **outputChannelData, int numOutputChannels, int numSamples)
 {
-	if (currentPostion.isPlaying)
+	if (pi.getIsPlaying())
 	{
 		ScopedLock sl(cs);
-		currentPostion.timeInSeconds += (double)(numSamples / sampleRate);
-		currentPostion.timeInSamples += numSamples;
-		currentPostion.ppqPosition = (currentPostion.timeInSamples / sampleRate) * currentPostion.bpm / 60.0L;
+        auto timeInSeconds = *pi.getTimeInSeconds() + (double)(numSamples / sampleRate);
+        auto timeInSamples = *pi.getTimeInSamples() + numSamples;
+        auto bpm = *pi.getBpm();
+
+        pi.setTimeInSeconds( timeInSeconds );
+        pi.setTimeInSamples( timeInSamples);
+
+        pi.setPpqPosition((timeInSamples / sampleRate) * bpm / 60.0L);
 	}
 
 	for (int i = 0; i < numOutputChannels; ++i)
@@ -62,56 +67,55 @@ void TwonkPlayHead::audioDeviceIOCallback (const float **in, int numIn, float **
 void TwonkPlayHead::setTempo(const double bpm)
 {
 	ScopedLock sl(cs);
-	currentPostion.bpm = bpm;
+    pi.setBpm(bpm);
 	// set offsets
-	timeInSecondsOffset = currentPostion.timeInSeconds;
-	ppqPositionOffset = currentPostion.ppqPosition;
-	timeInSamplesOffset = currentPostion.timeInSamples;
+	timeInSecondsOffset = *pi.getTimeInSeconds();
+	ppqPositionOffset = *pi.getPpqPosition();
+	timeInSamplesOffset = *pi.getTimeInSamples();
 	reset();
 }
 
 const double TwonkPlayHead::getTempo() const
 {
 	ScopedLock sl(cs);
-	return (currentPostion.bpm);
+	return *pi.getBpm();
 }
 
 void TwonkPlayHead::reset()
 {
-	ScopedLock sl(cs);	
-	currentPostion.timeInSamples = 0.0;
-	currentPostion.timeInSeconds = timeInSecondsOffset;
-	currentPostion.ppqPosition = ppqPositionOffset;
-	currentPostion.ppqPositionOfLastBarStart = 0;
+	ScopedLock sl(cs);
+    pi.setTimeInSamples(0.0);
+    pi.setTimeInSeconds(timeInSecondsOffset);
+    pi.setPpqPosition(ppqPositionOffset);
+    pi.setPpqPositionOfLastBarStart(0);
 }
 
-bool TwonkPlayHead::getCurrentPosition(CurrentPositionInfo &result)
+Optional<AudioPlayHead::PositionInfo> TwonkPlayHead::getPosition() const
 {
-	ScopedLock sl(cs);
-	result = currentPostion;
-	return (true);
+    ScopedLock sl(cs);
+    PositionInfo pi;
+    return pi;
 }
 
 const bool TwonkPlayHead::isPlaying() const
 {
 	ScopedLock sl(cs);
-	return (currentPostion.isPlaying);
+	return (pi.getIsPlaying());
 }
 
 void TwonkPlayHead::setLooping(const bool isLooping)
 {
 	ScopedLock sl(cs);
-	currentPostion.isLooping = isLooping;
+    pi.setIsLooping(isLooping);
 
 	triggerAsyncUpdate();
 }
 
 void TwonkPlayHead::stop()
 {
-	DBG("TwonkPlayHead::stop");
 	reset();
 	ScopedLock sl(cs);
-	currentPostion.isPlaying = false;
+	pi.setIsPlaying(false);
 
 	triggerAsyncUpdate();
 }
@@ -120,7 +124,7 @@ void TwonkPlayHead::pause()
 {
 	DBG("TwonkPlayHead::pause");
 	ScopedLock sl(cs);
-	currentPostion.isPlaying = false;
+	pi.setIsPlaying(false);
 }
 
 void TwonkPlayHead::play(const bool resetNow)
@@ -129,7 +133,7 @@ void TwonkPlayHead::play(const bool resetNow)
 	if (resetNow)
 		reset();
 	ScopedLock sl(cs);
-	currentPostion.isPlaying = true;
+	pi.setIsPlaying(true);
 
 	triggerAsyncUpdate();
 }

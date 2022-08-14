@@ -24,7 +24,7 @@ public:
     void closeCurrentlyOpenWindowsFor (AudioProcessorGraph::NodeID);
     bool closeAnyOpenPluginWindows();
     void audioProcessorParameterChanged (AudioProcessor*, int, float) override {}
-    void audioProcessorChanged (AudioProcessor*) override { changed(); }
+    void audioProcessorChanged (AudioProcessor* processor, const ChangeDetails& details) override { changed(); }
     std::unique_ptr<XmlElement> createXml() const;
     void restoreFromXml (const XmlElement&);
     static const char* getFilenameSuffix()      { return ".twonk"; }
