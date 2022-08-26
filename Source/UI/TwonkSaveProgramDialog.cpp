@@ -18,7 +18,7 @@
 */
 
 //[Headers] You can add your own extra header files here...
-#include "BinaryData.h"
+#include <JuceHeader.h>
 #include "MainHostWindow.h"
 //[/Headers]
 

@@ -20,7 +20,7 @@
 #pragma once
 
 //[Headers]     -- You can add your own extra header files here --
-#include "../../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 
 #define SEGMENT_RADIUS 0.89759790102342862372f
 //[/Headers]

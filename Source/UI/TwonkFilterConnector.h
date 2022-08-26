@@ -9,13 +9,13 @@
 */
 
 #pragma once
-#include "GraphEditorPanel.h"
+#include "UI/Panel/Editor.h"
 #include "Filters/PluginGraph.h"
 //==============================================================================
 class TwonkFilterConnector : public Component, public SettableTooltipClient
 {
 	public:
-		TwonkFilterConnector (GraphEditorPanel& p);
+		TwonkFilterConnector (Editor& p);
 		void setInput (AudioProcessorGraph::NodeAndChannel newSource);
 		void setOutput (AudioProcessorGraph::NodeAndChannel newDest);
 		void dragStart (Point<float> pos);
@@ -30,7 +30,7 @@ class TwonkFilterConnector : public Component, public SettableTooltipClient
 		void mouseUp (const MouseEvent& e) override;
 		void resized() override;
 		void getDistancesFromEnds (Point<float> p, double& distanceFromStart, double& distanceFromEnd) const;
-		GraphEditorPanel& panel;
+		Editor& panel;
 		PluginGraph& filterGraph;
 		AudioProcessorGraph::Connection connection {{ {}, 0 }, { {}, 0 }};
 		Point<float> lastInputPos, lastOutputPos;

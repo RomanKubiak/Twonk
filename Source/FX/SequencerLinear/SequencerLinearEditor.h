@@ -62,7 +62,7 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
 	void audioProcessorParameterChanged(AudioProcessor *processor, int parameterIndex, float newValue);
-	void audioProcessorChanged(AudioProcessor *processor);
+    void audioProcessorChanged (AudioProcessor* processor, const ChangeDetails& details);
 	void sliderValueChanged(Slider *slider) override;
 	void buttonClicked(Button *button) override;
 	void timerCallback();

@@ -1,7 +1,7 @@
 #include "TwonkFilterConnector.h"
-#include "TwonkFilterComponent.h"
-
-TwonkFilterConnector::TwonkFilterConnector (GraphEditorPanel& p) : panel (p), filterGraph (p.graph)
+#include "UI/Panel/Editor.h"
+#include "UI/Panel/Processor.h"
+TwonkFilterConnector::TwonkFilterConnector (Editor& p) : panel (p), filterGraph (p.graph)
 {
 	setAlwaysOnTop (true);
 }

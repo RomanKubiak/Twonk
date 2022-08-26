@@ -1,9 +1,7 @@
 #pragma once
-
-#include "Twonk.h"
+#include "TwonkPlayHead.h"
 #include "Filters/PluginGraph.h"
 #include "TwonkProgramList.h"
-#include "TwonkPlayHead.h"
 class Editor;
 
 class Document  : public Component,

@@ -195,7 +195,8 @@ void SequencerLinearEditor::resized()
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void SequencerLinearEditor::audioProcessorParameterChanged(AudioProcessor *processor, int parameterIndex, float newValue){}
-void SequencerLinearEditor::audioProcessorChanged(AudioProcessor *processor){}
+
+void SequencerLinearEditor::audioProcessorChanged(AudioProcessor *processor, const ChangeDetails& details){}
 
 void SequencerLinearEditor::sliderValueChanged(Slider *slider)
 {

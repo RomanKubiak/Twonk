@@ -1,0 +1,44 @@
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    add_compile_options(-fPIC)
+endif()
+
+juce_add_binary_data(TwonkResources SOURCES
+        audio_input.png
+        audio_output.png
+        Default.generic.twonk
+        icon_audio_dev.png
+        icon_bypass2.png
+        icon_close.png
+        icon_delete.png
+        icon_disconnect.png
+        icon_dock_on_bottom.png
+        icon_effect.png
+        icon_floppy.png
+        icon_gui.png
+        icon_loop.png
+        icon_midi_64.png
+        icon_min_max.png
+        icon_parameters.png
+        icon_pause.png
+        icon_piano.png
+        icon_pin.png
+        icon_play.png
+        icon_plugin_external.png
+        icon_plugin_internal.png
+        icon_plugin_midi.png
+        icon_preferences.png
+        icon_programs2.png
+        icon_project.png
+        icon_question.jpg
+        icon_rename.png
+        icon_slide_right.png
+        icon_stop.png
+        icon_synth.png
+        LiberationSans-Bold.ttf
+        LiberationSans-Regular.ttf
+        midi_input.png
+        midi_output.png
+        sampler_bg.jpg
+        terminess.ttf
+        terminus.ttf
+        )

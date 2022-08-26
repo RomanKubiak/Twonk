@@ -1,5 +1,4 @@
-#include "juce_amalgamated.h"
-#include "juce_StandaloneFilterWindow.h"
+#include "JuceHeader.h"
 
 //==============================================================================
 /** This is the application object that is started up when Juce starts. It handles

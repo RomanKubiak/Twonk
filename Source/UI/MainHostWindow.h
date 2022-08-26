@@ -4,7 +4,6 @@
 #include "Panel/Editor.h"
 #include "Panel/Document.h"
 #include "TwonkLookAndFeel.h"
-#include "BinaryData.h"
 
 class PluginListWindow;
 

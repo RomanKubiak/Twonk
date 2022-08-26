@@ -1,7 +1,6 @@
 #pragma once
 #include "../Filters/IOConfigurationWindow.h"
 #include "TwonkLookAndFeel.h"
-#include "BinaryData.h"
 #include "Twonk.h"
 class PluginGraph;
 

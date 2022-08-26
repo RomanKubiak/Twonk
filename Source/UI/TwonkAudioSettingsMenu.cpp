@@ -28,7 +28,6 @@
 #include "TwonkToolBarButton.h"
 #include "Panel/Editor.h"
 #include "MainHostWindow.h"
-#include "BinaryData.h"
 //[/MiscUserDefs]
 
 //==============================================================================

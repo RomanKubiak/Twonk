@@ -27,7 +27,7 @@ public:
 
 private:
   SF2Sound *sound_;
-  juce::FileInputStream *file_;
+  std::unique_ptr<juce::FileInputStream> file_;
 
   void addGeneratorToRegion(word genOper, SF2::genAmountType *amount, Region *region);
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SF2Reader)

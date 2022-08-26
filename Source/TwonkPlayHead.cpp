@@ -84,6 +84,15 @@ void TwonkPlayHead::reset()
 	currentPostion.ppqPositionOfLastBarStart = 0;
 }
 
+Optional<AudioPlayHead::PositionInfo> TwonkPlayHead::getPosition() const
+{
+    PositionInfo result;
+    result.setTimeInSamples (timeInSamples.load());
+    result.setIsPlaying (isPlaying.load());
+    return result;
+
+}
+
 bool TwonkPlayHead::getCurrentPosition(CurrentPositionInfo &result)
 {
 	ScopedLock sl(cs);

@@ -9,8 +9,8 @@
 */
 
 #pragma once
-#include "JuceHeader.h"
-#include "BinaryData.h"
+#include <JuceHeader.h>
+#include <cstdarg>
 #define TWONK_DEFAULT_TYPEFACE "Liberation Sans"
 #define DEFAULT_PPQN 960.0
 #define TITLEBAR_HEIGHT 48

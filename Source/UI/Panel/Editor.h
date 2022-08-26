@@ -77,6 +77,9 @@ public:
         PluginSynthWithInput,
         FuckIfIKnow
     };
+    Processor *getComponentForPlugin(AudioProcessorGraph::NodeID) const;
+    Connector *getComponentForConnection(const AudioProcessorGraph::Connection &) const;
+    Pin *findPinAt(Point<float>) const;
 private:
     OwnedArray<Editor::Processor> nodes;
     OwnedArray<Editor::Connector> connectors;
@@ -86,12 +89,6 @@ private:
     std::unique_ptr<TwonkTransport> twonkTransport;
     std::unique_ptr<TwonkFilterPopupProperties> filterPropertiesPopup;
     std::unique_ptr<BubbleMessageComponent> pinConnectionHint;
-
-    Processor *getComponentForPlugin(AudioProcessorGraph::NodeID) const;
-
-    Connector *getComponentForConnection(const AudioProcessorGraph::Connection &) const;
-
-    Pin *findPinAt(Point<float>) const;
 
     Image bgImage;
     TwonkPlayHead &twonkPlayHead;

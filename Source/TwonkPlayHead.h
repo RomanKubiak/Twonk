@@ -22,7 +22,8 @@ class TwonkPlayHead : public AudioPlayHead, public AsyncUpdater, public AudioIOD
 	public:
 		TwonkPlayHead(AudioDeviceManager &_dm);
 		~TwonkPlayHead();
-		bool getCurrentPosition(CurrentPositionInfo &result);
+		// bool getCurrentPosition(CurrentPositionInfo &result);
+        Optional<PositionInfo> getPosition() const;
 		void setTempo(const double _bpm);
 		const double getTempo() const;
 		void stop();

@@ -12,7 +12,6 @@
 #include "TwonkToolBarButton.h"
 #include "MainHostWindow.h"
 #include "Filters/PluginGraph.h"
-#include "BinaryData.h"
 #include "Twonk.h"
 
 TwonkProgramList::TwonkProgramList(DirectoryContentsList& listToShow, PluginGraph &g)
