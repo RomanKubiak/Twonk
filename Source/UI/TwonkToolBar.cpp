@@ -144,7 +144,7 @@ void TwonkToolBar::mouseDrag (const MouseEvent& e)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void TwonkToolBar::positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo)
+void TwonkToolBar::positionChanged(const AudioPlayHead::PositionInfo &positionInfo)
 {
 	/*if (!positionInfo.isPlaying)
 	{

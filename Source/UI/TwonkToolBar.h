@@ -66,7 +66,7 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     Editor &owner;
-	void positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo);
+	void positionChanged(const AudioPlayHead::PositionInfo &positionInfo);
 	void transportStopped();
 	Font labelFont;
 	ComponentAnimator toolbarAnimator;

@@ -342,7 +342,7 @@ void TwonkTransport::buttonClicked(Button *button)
 	}
 }
 
-void TwonkTransport::positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo)
+void TwonkTransport::positionChanged(const AudioPlayHead::PositionInfo &positionInfo)
 {
 		auto millisecs = roundToInt (positionInfo.timeInSeconds * 1000.0);
 		auto absMillisecs = std::abs (millisecs);

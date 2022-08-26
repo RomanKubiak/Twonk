@@ -48,7 +48,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-	void positionChanged(const AudioPlayHead::CurrentPositionInfo &positionInfo);
+	void positionChanged(const AudioPlayHead::PositionInfo &positionInfo);
 	void buttonClicked(Button *button);
 	void timerCallback();
     //[/UserMethods]
