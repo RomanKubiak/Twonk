@@ -149,7 +149,8 @@ void TwonkPlayHead::removeClockListener(TwonkClockListener *listenerToRemove)
 
 void TwonkPlayHead::handleAsyncUpdate()
 {
-	AudioPlayHead::CurrentPositionInfo pos;
-	getCurrentPosition(pos);
-	listeners.call ([pos](TwonkClockListener& l) { l.positionChanged(pos); });
+	listeners.call ([&](TwonkClockListener& l)
+    {
+        l.positionChanged(pi);
+    });
 }

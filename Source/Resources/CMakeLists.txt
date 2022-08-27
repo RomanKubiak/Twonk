@@ -41,4 +41,5 @@ juce_add_binary_data(TwonkResources SOURCES
         sampler_bg.jpg
         terminess.ttf
         terminus.ttf
+        background.jpg
         )

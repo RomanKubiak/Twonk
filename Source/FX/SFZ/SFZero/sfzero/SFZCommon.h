@@ -7,8 +7,6 @@
 #ifndef SFZCOMMON_H_INCLUDED
 #define SFZCOMMON_H_INCLUDED
 
-#include "AppConfig.h"
-
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_audio_formats/juce_audio_formats.h>
 #include <juce_audio_processors/juce_audio_processors.h>

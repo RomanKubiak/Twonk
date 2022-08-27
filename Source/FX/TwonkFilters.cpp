@@ -20,7 +20,6 @@
 #include "Ping-Pong Delay/TwonkPPDelayProcessor.h"
 #include "Phaser/TwonkPhaserProcessor.h"
 #include "DebugInfo/TwonkDebugInfoProcessor.h"
-#include "SequencerLinear/SequencerLinearProcessor.h"
 #include "MIDI Controller/MidiControllerProcessor.h"
 #include "Simpler/SimplerProcessor.h"
 #include "FifteenStep/FifteenStepProcessor.h"

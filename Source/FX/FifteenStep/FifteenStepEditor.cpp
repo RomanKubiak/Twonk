@@ -127,21 +127,24 @@ void FifteenStepEditor::mouseMove (const MouseEvent& e)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void FifteenStepEditor::timerCallback()
 {
-	AudioPlayHead::CurrentPositionInfo pos = processor.lastPosInfo;
+	auto pos = processor.getPlayHead()->getPosition();
 	double getPlayHeadColPrecise = processor.getPlayHeadColPrecise();
 	if (lastPlayStep != processor.getLastStep())
 	{
 		lastPlayStep = processor.getLastStep();
 		sendChangeMessage();
 	}
-	auto quarterNotesPerBar = (pos.timeSigNumerator * 4 / pos.timeSigDenominator);
-	auto beats = (fmod (pos.ppqPosition, quarterNotesPerBar) / quarterNotesPerBar) * pos.timeSigNumerator;
+    auto sig = pos->getTimeSignature().orFallback(AudioPlayHead::TimeSignature{});
+    auto ppq = pos->getPpqPosition().orFallback(0.0);
 
-	auto bar = ((int)pos.ppqPosition) / quarterNotesPerBar + 1;
+	auto quarterNotesPerBar = (sig.numerator * 4 / sig.denominator);
+	auto beats = (fmod (ppq, quarterNotesPerBar) / quarterNotesPerBar) * sig.numerator;
+
+	auto bar = ((int)ppq) / quarterNotesPerBar + 1;
 	auto beat = ((int)beats) + 1;
 	auto ticks = ((int)(fmod (beats, 1.0) * 960.0 + 0.5));
 
-	String timeInfo = quarterNotePositionToBarsBeatsString (pos.ppqPosition, pos.timeSigNumerator, pos.timeSigDenominator);
+	String timeInfo = quarterNotePositionToBarsBeatsString (ppq, sig);
 	timeInfo << " step: " + String(lastPlayStep);
 	timeInfo << " stepPrecise: " + String(getPlayHeadColPrecise, 2);
 	timeInfoLabel->setText(timeInfo, dontSendNotification);

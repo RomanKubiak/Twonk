@@ -112,13 +112,13 @@ static const Image getIconForType(const ProgramType type)
 	}
 }
 
-static const String quarterNotePositionToBarsBeatsString (double quarterNotes, int numerator, int denominator)
+static const String quarterNotePositionToBarsBeatsString (double quarterNotes, AudioPlayHead::TimeSignature sig)
 {
-	if (numerator == 0 || denominator == 0)
+	if (sig.numerator == 0 || sig.denominator == 0)
 		return "1.1.000";
 
-	auto quarterNotesPerBar = (numerator * 4 / denominator);
-	auto beats = (fmod (quarterNotes, quarterNotesPerBar) / quarterNotesPerBar) * numerator;
+	auto quarterNotesPerBar = (sig.numerator * 4 / sig.denominator);
+	auto beats = (fmod (quarterNotes, quarterNotesPerBar) / quarterNotesPerBar) * sig.numerator;
 
 	auto bar = ((int)quarterNotes) / quarterNotesPerBar + 1;
 	auto beat = ((int)beats) + 1;

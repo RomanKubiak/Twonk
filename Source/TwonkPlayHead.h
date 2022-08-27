@@ -52,13 +52,13 @@ class TwonkPlayHead : public AudioPlayHead, public AsyncUpdater, public AudioIOD
 		/** @internal */
 		void audioDeviceError (const String& errorMessage) override {}
         Optional<PositionInfo> getPosition() const;
+    double timeInSecondsOffset = 0.0;
+    double ppqPositionOffset = 0.0;
+    double timeInSamplesOffset = 0.0;
 	private:
 		CriticalSection cs;
 		ListenerList<TwonkClockListener> listeners;		
 		double sampleRate;
 		AudioDeviceManager &dm;
 		PositionInfo pi;
-		double timeInSecondsOffset = 0.0;
-		double ppqPositionOffset = 0.0;
-		double timeInSamplesOffset = 0.0;
 };

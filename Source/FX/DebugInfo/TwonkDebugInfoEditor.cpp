@@ -31,7 +31,9 @@ void DebugInfoProcessorEditor::resized()
 
 void DebugInfoProcessorEditor::timerCallback()
 {
-	updateTimecodeDisplay (processor.lastPosInfo);
+    auto pos = processor.getPlayHead()->getPosition();
+    if (pos.hasValue())
+	    updateTimecodeDisplay (*pos);
 	updateMidiDisplay (processor.lastMidiBuffer);
 }
 
@@ -48,21 +50,20 @@ String DebugInfoProcessorEditor::timeToTimecodeString (double seconds)
 }
 
 // Updates the text in our position label.
-void DebugInfoProcessorEditor::updateTimecodeDisplay (AudioPlayHead::CurrentPositionInfo pos)
+void DebugInfoProcessorEditor::updateTimecodeDisplay (AudioPlayHead::PositionInfo pos)
 {
 	MemoryOutputStream displayText;
 
 	displayText << "[" << SystemStats::getJUCEVersion() << "]   "
-		<< String (pos.bpm, 2) << " bpm, "
-		<< pos.timeSigNumerator << '/' << pos.timeSigDenominator
-		<< "  -  " << timeToTimecodeString (pos.timeInSeconds)
-		<< "  -  " << quarterNotePositionToBarsBeatsString (pos.ppqPosition,
-			pos.timeSigNumerator,
-			pos.timeSigDenominator);
+		<< String (*pos.getBpm(), 2) << " bpm, "
+		<< pos.getTimeSignature()->numerator << '/' << pos.getTimeSignature()->denominator
+		<< "  -  " << timeToTimecodeString (*pos.getTimeInSeconds())
+		<< "  -  " << quarterNotePositionToBarsBeatsString (*pos.getPpqPosition(),
+                                                            pos.getTimeSignature().orFallback(AudioPlayHead::TimeSignature{}));
 
-	if (pos.isRecording)
+	if (pos.getIsRecording())
 		displayText << "  (recording)";
-	else if (pos.isPlaying)
+	else if (pos.getIsPlaying())
 		displayText << "  (playing)";
 
 	timecodeDisplayLabel.setText (displayText.toString(), dontSendNotification);

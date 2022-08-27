@@ -60,7 +60,9 @@ Editor::~Editor()
 
 void Editor::paint (Graphics& g)
 {
-    g.fillAll(Colours::darkgrey);
+    auto im = IMG(background_jpg);
+    g.drawImageAt(im, 0, 0, false);
+    // g.fillAll(Colours::darkgrey);
 }
 
 void Editor::mouseDown (const MouseEvent& e)
